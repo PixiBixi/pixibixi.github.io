@@ -27,9 +27,6 @@ Dans notre cluster, nous allons utiliser les outils suivants :
     configurerons redis2/redis3 comme esclave, ce qui assurera que nos 
     trois nœuds redis ont les mêmes données RDB. 
  
-```{=html} 
-<!-- --> 
-``` 
 -   **Défaillance Redis** : Si notre maître Redis tombe en panne 
     (redis1), un des nœuds sentinelle/redis esclave (redis2) détecteront 
     la défaillance. Nous utilisons 3 nœuds sentinelle pour nous assurer 
@@ -43,9 +40,6 @@ Dans notre cluster, nous allons utiliser les outils suivants :
     s'assurera que le nœud maître sera celui vers lequel le trafic sera 
     dirigé. 
  
-```{=html} 
-<!-- --> 
-``` 
 -   **Défaillance de HAproxy** : En cas de problème de HAproxy, nous 
     avons probablement un problème plus important concernant le serveur. 
     L'IP sera donc re-routée sur un autre serveur avec pacemaker. 

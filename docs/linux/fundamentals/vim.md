@@ -43,8 +43,7 @@ vim)
 -   **p** : Copier après la ligne courante 
 -   **P** : Copier avant la ligne courante 
  
-<https://jordanelver.co.uk/blog/2014/03/12/sorting-columnds-of-text-in-vim-using-sort/> 
-='> Faire des colonnes propres 
+<https://jordanelver.co.uk/blog/2014/03/12/sorting-columnds-of-text-in-vim-using-sort/> Faire des colonnes propres 
  
 ### Misc 
  
@@ -52,30 +51,21 @@ vim)
 -   **'>** : Augmente la tab 
 -   **:r!ls :** Permet d'importer le résultat de la commande ls dans le 
     document actuel 
--   **:r '<filename'>** : Importe '<filename'> dans le document actuel 
+-   **:!r<filename>** : Importe '<filename'> dans le document actuel 
 -   **:!ls** : Permet de faire la commande ls depuis vim 
 -   **:!php -l %** : Permet d'exécuter un check syntax sur le document 
     actuel 
 -   **:vs** : Editer le même fichier sur 2 colonnes 
  
-```{=html} 
-<!-- --> 
-``` 
 -   **G** : Pour aller tout en bas d'un fichier 
 -   **Ctrl-P** : Liste des fichiers + Ouvrir 
  
-```{=html} 
-<!-- --> 
-``` 
 -   **gf** : Ouvre le lien du fichier 
     -   **Ctrl-o** : Revenir au fichier original 
 -   **gx** : Ouvre le lien vers un browser 
 -   **gd** : Déclaration locale d'une variable/fonction 
 -   **gD** : Déclaration globale d'une variable/fonction 
  
-```{=html} 
-<!-- --> 
-``` 
 -   **Ctrl a** : Incrémenter un chiffre 
 -   **Ctrl x** : Décrémenter un chiffre 
  

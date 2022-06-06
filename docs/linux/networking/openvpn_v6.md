@@ -60,15 +60,7 @@ Voici les modifications à appliquer à notre serveur pour qu'il soit
 dual-stack : 
  
 -   proto udp en proto udp6 
- 
-```{=html} 
-<!-- --> 
-``` 
 -   server-ipv6 2001:bc8:31d7:6e01:/64 
- 
-```{=html} 
-<!-- --> 
-``` 
 -   push '"route-ipv6 2000::/3'" 
  
 Une fois cette configuration faite, un restart de openvpn, et vous 

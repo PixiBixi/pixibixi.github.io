@@ -63,11 +63,7 @@ rm '<file'|dir'> : **r**e**m**ove
  
 -   -R : Remove recursivement (Pour des dossiers non vides) 
 -   -v : Affiche les infos détaillées 
- 
-```{=html} 
-<!-- --> 
-``` 
-    *  
+
  
 ## Droits 
  
@@ -77,11 +73,7 @@ chmod '<xyz'> '<file'|directory'> : **ch**ange file **mod**e bits
  
 -   **x** correspond aux droits pour le propriétaire 
 -   **y** les droits du groupe 
--   et **z** les droits pour tous les autres 
- 
-```{=html} 
-<!-- --> 
-``` 
+-   et **z** les droits pour tous les autres
 -   -R pour changer les droits récursivement 
  
 chown '<user:group'> '<file'> : **ch**ange **own**er 
@@ -179,3 +171,4 @@ kill '<pid'> : Tue un processus (via son PID)
     **dernier recours**) 
  
 killall '<processus_name'> : Tue un processus (via son nom) 
+

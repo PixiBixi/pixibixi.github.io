@@ -155,9 +155,7 @@ sécurité du CPU
     interruptions et celles qui sont utilisées. Pour expliquer un petit 
     peu le fichier : 
  
-```{=html} 
-<!-- --> 
-``` 
+```bash
     λ jeremy /proc →  head -n15 interrupts 
                CPU0       CPU1       CPU2       CPU3 
       0:          6          0          0          0  IR-IO-APIC   2-edge      timer 
@@ -174,6 +172,7 @@ sécurité du CPU
      27:      66007      20504      41564      25490  IR-PCI-MSI 1048578-edge      eno0 
      28:   76098051          0          0          0  IR-PCI-MSI 2097152-edge      hpsa0-msix0 
      29:          0   79605111          0          0  IR-PCI-MSI 2097153-edge      hpsa0-msix1 
+```
  
 La première colonne correspond à l'IRQ, les CPUX aux différents cores 
 de notre machine, et la dernière au nom de l'interruption. Il s'agit 
