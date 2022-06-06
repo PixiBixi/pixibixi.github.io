@@ -8,6 +8,11 @@ remote_branch: docs
 theme:
   features:
     - header.autohide
+    - navigation.tracking
+    - navigation.instant
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
   name: material
   language: fr
 
