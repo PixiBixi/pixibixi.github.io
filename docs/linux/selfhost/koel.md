@@ -157,9 +157,6 @@ d'éditer, selon ses besoins :
     large bibliothèque 
 -   **STREAMING_METHOD** : Méthode utilisée pour envoyer les musiques 
  
-```{=html} 
-<!-- --> 
-``` 
 -   **LASTFM_API_SECRET** : Identifiant secret pour activer 
     l'utilisation de Last.FM dans Koel 
 -   **LASTFM_API_KEY** : Clé secrète pour activer l'utilisation de 

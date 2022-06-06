@@ -14,9 +14,6 @@ parties :
     écrites en perl ou en shell script de générer les fichiers RRD qui 
     vont bien. Le démon écoute par défaut sur le port TCP 4949. 
  
-```{=html} 
-<!-- --> 
-``` 
       *__ Prérequis__ 
  
 Il faut posséder une **Debian Jessie** à jour. Veuillez noter que, si 

@@ -36,10 +36,6 @@ faire mes posts. Voici la plupart de mes sources :
 -   [Doc YCharbi](https://doc.ycharbi.fr/) 
 -   [SleepLessBeastie](https://sleeplessbeastie.eu/) 
 -   <https://www.101tech.net/101Tech> 
- 
-```{=html} 
-<!-- --> 
-``` 
 -   [Wiki Debian-FR.xyz](https://wiki.debian-fr.xyz/Accueil) 
 -   [Wiki Debian Facile](https://debian-facile.org/wiki) 
 -   [Wiki ArchLinux](https://wiki.archlinux.org/) 
@@ -50,9 +46,5 @@ faire mes posts. Voici la plupart de mes sources :
 -   [Wiki Deimos](https://wiki.deimos.fr/Linux) 
 -   [Wiki Sebsauvage](http://sebsauvage.net/wiki/doku.php) 
 -   [Wikibooks](https://en.wikibooks.org/wiki) 
- 
-```{=html} 
-<!-- --> 
-``` 
 -   [Chaine Youtube de 
     Xavki](https://www.youtube.com/channel/UCs_AZuYXi6NA9tkdbhjItHQ) 
