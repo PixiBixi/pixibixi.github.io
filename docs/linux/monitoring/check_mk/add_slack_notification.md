@@ -1,6 +1,6 @@
 # Configurer des notifications Slack pour check_mk 
  
-![](/monitoring/check_mk/screenshot_slack_monitoring.png){.align-center} 
+![](/monitoring/check_mk/screenshot_slack_monitoring.png)} 
  
 À l'heure actuelle où tout est convergé, la communication interne via 
 des outils comme Slack ou Mattermost, le mail semble presque dépassé. 
@@ -75,12 +75,12 @@ Websocket Notification** en tant que **Notification method** avec comme
 option **Call with the following parameters** avec comme paramètre le 
 nom de votre channel (Dans notre cas monitoring) 
  
-![](/monitoring/check_mk/check_mk_notification_method.png){.align-center} 
+![](/monitoring/check_mk/check_mk_notification_method.png) 
  
 Dans la partie **Contact Selection**, nous envoyons les notifications 
 uniquement pour le contact **cmkadmin** (ou celui que vous souhaitez) 
  
-![](/monitoring/check_mk/check_mk_user.png){.align-center} 
+![](/monitoring/check_mk/check_mk_user.png) 
  
 Et voilà, nous avons désormais un système de notification Slack 
 fonctionnel 

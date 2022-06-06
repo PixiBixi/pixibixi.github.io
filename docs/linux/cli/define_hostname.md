@@ -1,6 +1,6 @@
 # Configurer correctement son nom de domaine 
  
-![](/domainnameregistration.png){.align-center} 
+![](/domainnameregistration.png) 
  
 Dans cet article, nous allons voir comment configurer correctement notre 
 nom de domaine 
@@ -100,8 +100,8 @@ Voilà comment configurer son reverse sur différents panels d'hébergeur
  
 ![](//kimsufi_reverse_dns.png) 
  
-![](//online_reverse_dns.png){.align-left} 
+![](//online_reverse_dns.png) 
  
-![](//online_actuel_reverse_dns.png){.align-left} 
+![](//online_actuel_reverse_dns.png) 
  
-![](//server4you_reverse_dns.png){.align-left} 
+![](//server4you_reverse_dns.png) 

@@ -1,6 +1,6 @@
 # Rappel des commandes de base 
  
-![](/linux/gnu_and_tux.png){.align-center} 
+![](/linux/gnu_and_tux.png) 
  
 Linux est un système incroyable, malheureusement complexe pour les 
 néophytes. Dans cet article, nous allons voir les commandes de base que 
@@ -69,7 +69,7 @@ rm '<file'|dir'> : **r**e**m**ove
  
 chmod '<xyz'> '<file'|directory'> : **ch**ange file **mod**e bits 
  
-![](/linux/chmod.png){.align-center} 
+![](/linux/chmod.png) 
  
 -   **x** correspond aux droits pour le propriétaire 
 -   **y** les droits du groupe 
