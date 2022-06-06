@@ -21,14 +21,14 @@ echo "Mon premier script bash" # Ma commande
  
 Tout d'abord, nous observons une ligne commençant par #!, il s'agit du 
 shebang. Cette ligne est très utile dans le cas où nous lançons le 
-script via [./mon_script.sh]{.underline}, nous savons ici que ce script 
+script via ./mon_script.sh, nous savons ici que ce script 
 devra être exécuté avec l'interpreteur bash. 
  
 Nous avons ici notre première bonne pratique, nous n'utilisons pas 
-directement [/bin/bash]{.underline} en shebang mais [/usr/bin/env 
-bash]{.underline}. Même si le chemin du fichier binaire probablement le 
+directement /bin/bash en shebang mais /usr/bin/env 
+bash. Même si le chemin du fichier binaire probablement le 
 plus connu de Linux est dans une vaste majorité des cas 
-[/bin/bash]{.underline}, il se peut que celui-ci diffère (par exemple 
+/bin/bash, il se peut que celui-ci diffère (par exemple 
 dans une distribution BSD). Ce shebang peut également être adapté à 
 python ou d'autres langages de scripting. 
  
@@ -36,7 +36,7 @@ La commande echo affiche tout simplement le texte qui lui est passé en
 argument. echo est une commande dites '"built-in'", c'est à dire 
 qu'elle sera inclue dans toutes les versions de bash quelque soit la 
 distribution. Pour voir toutes les commandes built-in, nous utilisons la 
-commande [compgen -b]{.underline}. 
+commande compgen -b. 
  
 Le texte '"Ma commande'" a été écrit après un '# ce qui signifie que le 
 texte après ce caractère ne sera pas interprété, nous pouvons donc y 
@@ -78,7 +78,7 @@ HOST=$(hostname)
 ``` 
  
 La variable HOST contiendra le retour de la commande 
-[hostname]{.underline}. Enfin, il est possible d'attribuer des valeurs 
+hostname. Enfin, il est possible d'attribuer des valeurs 
 par défauts à des variables si l'utilisateur ne la réécrit pas (par 
 exemple, via un argument du script). 
  
@@ -94,7 +94,7 @@ la valeur BAR, sinon, la valeur de '$1.
  
 Sous bash, il est possible simplement de modifier ses variables 
 simplement. Dans les exemples suivant, nous supposons que notre variable 
-**FOO** contienne [monfichier.txt]{.underline} et que nous souhaitons 
+**FOO** contienne monfichier.txt et que nous souhaitons 
 garder que monfichier dans une variable nommée **BASE**. 
  
 ``` bash 
@@ -102,7 +102,7 @@ garder que monfichier dans une variable nommée **BASE**.
 BASE=${FOO%%.txt} 
 ``` 
  
-Comme vous pouvez le voir, via [%%.txt]{.underline}, nous supprimons 
+Comme vous pouvez le voir, via %%.txt, nous supprimons 
 .txt de notre variable 
  
 Il est également possible de subtituer .txt par .pdf par exemple. 
