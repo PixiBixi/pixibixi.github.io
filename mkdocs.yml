@@ -25,3 +25,8 @@ plugins:
       lang: fr
   - tags
   - search
+
+extra:
+  analytics:
+    provider: google
+    property: G-NHG8VK60NB
