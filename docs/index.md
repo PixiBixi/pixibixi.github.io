@@ -1,13 +1,13 @@
 # Sommaire
 
-Bienvenue sur mon wiki personnel où j\'écris toutes mes astuces, ainsi
-que des tutoriels divers que j\'ai pu prendre ici et là.
+Bienvenue sur mon wiki personnel où j'écris toutes mes astuces, ainsi
+que des tutoriels divers que j'ai pu prendre ici et là.
 
 De formation DUT Réseaux & Télécoms et passionné de logiciel libre
-depuis toujours, j\'ai pu m\'investir dans diverses communautés afin
-d\'aider un grand nombre de débutants dans le monde de Linux.
+depuis toujours, j'ai pu m'investir dans diverses communautés afin
+d'aider un grand nombre de débutants dans le monde de Linux.
 
-Ce wiki me permet d\'apprendre de nombreuses choses mais également de
+Ce wiki me permet d'apprendre de nombreuses choses mais également de
 vous en faire apprendre. Je reste disponible sur mon mail personnel pour
 toute question wiki\[at\]jdelgado\[dot\]fr
 
@@ -17,7 +17,7 @@ toute question wiki\[at\]jdelgado\[dot\]fr
 
 -   [Rappel des commandes de base](/linux/fundamentals/base_commands)
 -   [Rappel sur le cron](/linux/fundamentals/cron)
--   [VIM: L\'editeur de texte de la mort](/linux/fundamentals/vim)
+-   [VIM: L'editeur de texte de la mort](/linux/fundamentals/vim)
 -   [cURL: La commande à tout faire](/linux/fundamentals/cURL)
 -   [La commande find](/linux/cli/find)
 -   [Memo sur la commande ip](/linux/cli/ip)
@@ -42,17 +42,17 @@ toute question wiki\[at\]jdelgado\[dot\]fr
 
 -   [Désactiver les patchs de sécurité Meltdown &
     co](/linux/security/disable_patches)
--   [Apprendre à se servir d\'IPTables](/linux/security/iptables)\
-    \* [Apprendre à se servir d\'ipset](/linux/security/ipset)\
+-   [Apprendre à se servir d'IPTables](/linux/security/iptables)\
+    \* [Apprendre à se servir d'ipset](/linux/security/ipset)\
     \* [Installer et configurer Fail2Ban](/linux/security/fail2ban)\
     \* [Installer et configurer RKHunter](/linux/security/rkhunter)\
     \* [Installer et configurer LogWatch](/linux/security/logwatch)\
     \* [Installer et configurer SSH Guard](/linux/security/sshGuard)\
     \* [Hardening de son serveur SSH](/linux/security/hardening_sshd) \
     \* [Installer et configuer PortSentry](/linux/security/portsentry)\
-    \* [Bloquer tous les préfixes d\'un pays
+    \* [Bloquer tous les préfixes d'un pays
     entier](/linux/security/iptables_country)
--   [Whitelister une série d\'IP à l\'aide d\'IPset et
+-   [Whitelister une série d'IP à l'aide d'IPset et
     iptables](/linux/security/whitelist_ip)
 -   [Logger les actions SSH utilisateurs
     simplement](/linux/security/ssh_log_commands)
@@ -120,8 +120,8 @@ toute question wiki\[at\]jdelgado\[dot\]fr
 
 -   [Installer et configurer son VPN OpenVPN](/linux/networking/openvpn)
 -   [Configurer son serveur OpenVPN pour de
-    l\'IPv6](/linux/networking/openvpn_v6)
--   [Configurer l\'IPv6 sur son serveur
+    l'IPv6](/linux/networking/openvpn_v6)
+-   [Configurer l'IPv6 sur son serveur
     Online](/linux/networking/ipv6/setup_online)
 -   [Augmenter le buffer de sa carte
     réseau](/linux/networking/buffer_nic)
@@ -199,7 +199,7 @@ toute question wiki\[at\]jdelgado\[dot\]fr
 
 #### Docker
 
--   [Docker: l\'indispensable](docker)
+-   [Docker: l'indispensable](docker)
 -   [Utiliser un proxy pour pull les images Docker](/docker/use_proxy)
 -   [Templates docker-compose](/docker/compose/templates)
 
@@ -223,7 +223,7 @@ toute question wiki\[at\]jdelgado\[dot\]fr
 
 -   [Requêtes SQL pour migrer son
     WordPress](/web/wordpress/migrate_wordpress_sql)
--   [Requêtes SQL afin d\'optimiser son site](/web/wordpress/tips_sql)
+-   [Requêtes SQL afin d'optimiser son site](/web/wordpress/tips_sql)
 
 ## Linux BSD
 
@@ -236,7 +236,7 @@ toute question wiki\[at\]jdelgado\[dot\]fr
 ## Proxmox
 
 -   [Ajouter un ISO depuis une URL](/proxmox/insert_iso_from_url)
--   [Résoudre l\'erreur \"VM is
+-   [Résoudre l'erreur \"VM is
     locked\"](/proxmox/troubleshooting/vm_locked)
 -   [NAT pour les VMs Debian](/proxmox/networking/nat)
 
@@ -249,12 +249,12 @@ toute question wiki\[at\]jdelgado\[dot\]fr
 -   [ruTorrent le polyvalent](/rtorrent/rutorrent)
 -   [Flood le sublime](/rtorrent/flood)
 -   [Transmission, le client torrent facile](transmission)
--   [Deluge, l\'agressif](deluge)
+-   [Deluge, l'agressif](deluge)
 -   [Creer ses torrents avec mktorrent](/torrent/mktorrent)
 
 ## Accès à distance
 
--   [Une multitude d\'accès à distance via la WebApp
+-   [Une multitude d'accès à distance via la WebApp
     Guacamole](guacamole)
 -   [Accès à distance via TeamViewer (TV)](tv)
 -   [Accès à distance via VNC](vnc)
@@ -263,14 +263,14 @@ toute question wiki\[at\]jdelgado\[dot\]fr
 
 -   [Tester la bande passante effective de son serveur avec des \"proofs
     files\"](/networking/proof_files)
--   [Vérifié l\'état du réseau avec la
+-   [Vérifié l'état du réseau avec la
     Weathermap](/networking/weathermap)
 -   [Lister les préfixes annoncés par un
     ASN](/networking/list_prefix_asn)
 
 ## pfSense
 
--   [Mise à jour de la bogon list via l\'interface
+-   [Mise à jour de la bogon list via l'interface
     graphique](/pfsense/update_bogon_list)
 -   [Ajouter une gateway en dehors de son
     réseau](/pfsense/network/gateway_outside_network)
@@ -297,8 +297,8 @@ toute question wiki\[at\]jdelgado\[dot\]fr
 
 ## Mac OS X
 
--   [Brew, l\'apt-get d\'Apple](/mac/brew)
--   [Brew: L\'installer sans XCode](/mac/brew_xcode)
+-   [Brew, l'apt-get d'Apple](/mac/brew)
+-   [Brew: L'installer sans XCode](/mac/brew_xcode)
 -   [Informations sur MindView](/mac/mind-view)
 -   [Enlever le premier caractère bizarre de
     iTerm](/mac/iterm/troubleshooting/first_chat)
@@ -311,7 +311,7 @@ toute question wiki\[at\]jdelgado\[dot\]fr
 
 ## ESXi
 
--   [Acceder à la console de l\'ESXi](/esxi/misc/shell_access)
+-   [Acceder à la console de l'ESXi](/esxi/misc/shell_access)
 -   [Commandes network ESXi utiles](/esxi/commands/network)
 -   [Uploader ses ISO en ligne de commande](/esxi/upload_iso_cli)
 
@@ -324,7 +324,7 @@ toute question wiki\[at\]jdelgado\[dot\]fr
 
 ### Server
 
--   [Setup de base d\'un Windows 2012
+-   [Setup de base d'un Windows 2012
     R2](/windows_server/powershell/first_setup)
 -   [Connexion SSH \"native\" en
     Powershell](/windows_server/powershell/ssh)
@@ -338,7 +338,7 @@ toute question wiki\[at\]jdelgado\[dot\]fr
     PowerShell](/windows_server/powershell/storage/pool)
 -   [Gérer les exceptions pour les scripts
     PowerShell](/windows_server/powershell/exceptions)
--   [Autoriser l\'ICMP sur un serveur Windows 2012R2 en
+-   [Autoriser l'ICMP sur un serveur Windows 2012R2 en
     PowerShell](/windows_server/powershell/allow_icmp)
 -   [Importer des utilisateurs CSV dans un AD via
     PowerShell](/windows_server/powershell/import_csv_users)
@@ -347,7 +347,7 @@ toute question wiki\[at\]jdelgado\[dot\]fr
     planifiée](/windows_server/admin/jobs/schedule_jobs_scripts)
 -   [Désactiver TLSv1 sur IIS via un script
     PowerShell](/windows_server/powershell/disable_tlsv1)
--   [Connaitre le temps d\'exécution d\'une commande
+-   [Connaitre le temps d'exécution d'une commande
     PowerShell](/windows_server/powershell/command_time_execution)
 -   [Accéder au Firewall sans Icône ni
     raccourci](/windows_server/firewall/access_without_shortcut)
@@ -366,7 +366,7 @@ toute question wiki\[at\]jdelgado\[dot\]fr
     ?](/windows/tips/long_path)
 -   [Améliorer sa vie privée et les performances avec
     Blackbird](/windows/tips/improve_privacy)
--   [Bloquer les serveurs d\'activation via le fichiers
+-   [Bloquer les serveurs d'activation via le fichiers
     hosts](/windows/tips/hosts_file)
 -   [Installer tous les logiciels de base via un simple
     installateur](/windows/tips/install_main_softwares)
