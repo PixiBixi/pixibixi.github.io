@@ -1,0 +1,20 @@
+site_name: Jérémy Wiki
+site_description: "Tous les trucs & astuces de Jerem"
+site_author: "Jérémy DELGADO"
+
+repo_url: https://github.com/PixiBixi/documentation
+remote_branch: docs
+
+theme:
+  name: material
+  language: fr
+
+plugins:
+  - git-revision-date-localized:
+      type: date
+      fallback_to_build_date: true
+      enable_creation_date: true
+  - search:
+      lang: fr
+  - tags
+  - search
