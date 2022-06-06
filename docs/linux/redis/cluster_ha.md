@@ -48,12 +48,12 @@ Dans notre cluster, nous allons utiliser les outils suivants :
  
 Imaginons que nous avons ces IPs 
  
-  Machine    IPs 
-  --------- -------------- 
-  redis1     10.10.10.1 
-  redis2     10.10.10.2 
-  redis3     10.10.10.3 
-  IPFO      10.10.10.100 
+|  Machine |   IPs         |
+|----------|:-------------:|
+|  redis1  |   10.10.10.1  |
+|  redis2  |   10.10.10.2  |
+|  redis3  |   10.10.10.3  |
+|  IPFO    | 10.10.10.100  |
  
 redis1 sera pour nous le master. 
  
@@ -228,3 +228,4 @@ pouvoir se connecter depuis tous les noeuds.
 Attention à vérifier que sentinel écoute bien sur toutes les interfaces 
 (du moins, à minima celle que nous désirons) mais également que les 
 ports 6379 et 26379 soit bien ouverts 
+
