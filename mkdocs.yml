@@ -30,3 +30,8 @@ extra:
   analytics:
     provider: google
     property: G-NHG8VK60NB
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences
