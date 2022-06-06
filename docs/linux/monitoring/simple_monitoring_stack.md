@@ -1111,15 +1111,15 @@ futur avec l'intégration de VictoriaMetrics.
 Voici une liste d'exporter pour divers équipements/logiciels. 
 Cependant, je n'ai pas testé ces derniers : 
  
-  **Matériel/Logiciel**   **Lien** 
-  ----------------------- -------------------------------------------------------------------------------- 
-  JunOS                   [JunOS](https://github.com/czerwonk/junos_exporter) 
-  Cisco                   [Cisco](https://github.com/lwlcom/cisco_exporter) 
-  Mikrotik                [Mikrotik](https://github.com/nshttpd/mikrotik-exporter) 
-  Windows                 [WMI](https://github.com/martinlindhe/wmi_exporter) 
-  VMWare                  [VMWare](https://github.com/pryorda/vmware_exporter) 
-  Proxmox                 [Promxox](https://github.com/znerol/prometheus-pve-exporter) 
-  CloudFlare              [CloudFlare](https://github.com/wehkamp/docker-prometheus-cloudflare-exporter) 
+|  **Matériel/Logiciel** |   **Lien** |
+|----------|:-------------:|
+|  JunOS | [JunOS](https://github.com/czerwonk/junos_exporter) |
+|  Cisco | [Cisco](https://github.com/lwlcom/cisco_exporter) |
+|  Mikrotik | [Mikrotik](https://github.com/nshttpd/mikrotik-exporter) |
+|  Windows | [WMI](https://github.com/martinlindhe/wmi_exporter) |
+|  VMWare | [VMWare](https://github.com/pryorda/vmware_exporter) |
+|  Proxmox | [Promxox](https://github.com/znerol/prometheus-pve-exporter) |
+|  CloudFlare | [CloudFlare](https://github.com/wehkamp/docker-prometheus-cloudflare-exporter) |
  
 ## Conclusion 
  
