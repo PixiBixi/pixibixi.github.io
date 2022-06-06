@@ -4,10 +4,6 @@ Template prédéfinis pour les applications Docker
  
 ## Plex 
  
-``` linenums:1|plex 
- 
-``` 
- 
 ## Let's Encrypt + Reverse Proxy 
  
 ## Backend nginx 

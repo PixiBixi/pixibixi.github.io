@@ -305,7 +305,7 @@ Voici un aperçu des couleurs : **A FAIRE**
  
 <https://github.com/JasonMortonNZ/bs3-sublime-plugin>' 
 <https://github.com/idleberg/sublime-icon-fonts>' 
-===== Plugins ===== 
+### Plugins 
  
 ### Divers 
  
@@ -324,7 +324,7 @@ dépot Git, ou bien toute autre source officielle**
 <https://github.com/benmatselby/sublime-phpcs>' 
 <https://github.com/spadgos/sublime-jsdocs>' 
 <https://github.com/erichard/SublimePHPCompanion>' 
-==== CSS ==== 
+### CSS 
  
 <https://github.com/weslly/ColorPicker>' 
 <https://github.com/Monnoroch/ColorHighlighter>' 
@@ -345,7 +345,7 @@ dépot Git, ou bien toute autre source officielle**
 <https://github.com/akalongman/sublimetext-codeformatter>' 
 <https://github.com/al63/SublimeFiles>' 
 <https://github.com/liamja/sublime-nfo>' 
-==== SQL ==== 
+### SQL ### 
  
 <https://github.com/freewizard/SublimeFormatSQL>' 
 <https://github.com/alienhard/SublimeAllAutocomplete>' 

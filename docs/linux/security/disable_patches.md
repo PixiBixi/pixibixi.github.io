@@ -53,7 +53,7 @@ récent :
 -   **mds**=off '[X86'] - Control mitigation for the Micro-architectural 
     Data Sampling (MDS) vulnerability. 
  
-&===== Vérification ===== 
+## Vérification 
  
 Pour vérifier que les vulnérabilités ne sont plus mitigées, il faut se 
 pencher du côté du dossier **/sys/devices/system/cpu/vulnerabilities/** 

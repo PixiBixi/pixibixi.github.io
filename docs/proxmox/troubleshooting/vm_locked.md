@@ -7,13 +7,13 @@ Le premier est de supprimer le fichier de lock à la main :
  
 XXX représente la VM ID 
  
-``` linenums:1|Delete 
+``` 
 rm /var/lock/qemu-server/lock-XXX.conf 
 ``` 
  
 Si cela ne marche pas, il existe également une commande en ligne de 
 commande 
  
-``` linenums:1|Unlock 
+``` 
 qm unlock XXX 
 ``` 

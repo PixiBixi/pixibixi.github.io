@@ -7,13 +7,13 @@ Cependant, nous pouvons le faire en ligne de commande.
  
 Pour cela, on se rend dans le dossier où sont situés les ISOs : 
  
-``` linenums:1|Move 
+``` 
 cd /var/lib/vz/template/iso 
 ``` 
  
 Et on télécharge l'ISO souhaité : 
  
-``` linenums:1|wget 
+``` 
 wget https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-9.9.0-amd64-netinst.iso 
 ``` 
  

@@ -24,7 +24,7 @@ listes d'IP.
  
 Il faut tout d'abord installer les pré-requis 
  
-``` linenums:1|Install 
+```
 apt-get install ipset iptables netfilter-persistent iptables-persistent 
 ``` 
  
@@ -32,7 +32,7 @@ apt-get install ipset iptables netfilter-persistent iptables-persistent
  
 Tout d'abord, nous commencons à créer notre liste ipset 
  
-``` linenums:1|Create 
+``` 
 ipset create whitelist hash:ip hashsize 4096 
 ``` 
  
@@ -42,7 +42,7 @@ autorisons que des IPs et non des réseaux de tailles différentes)
  
 Puis nous créons nos règles iptables 
  
-``` linenums:1|Create 
+``` 
 iptables -A INPUT -p tcp -m tcp --dport 9001 -m set --match-set whitelist src -j ACCEPT 
 iptables -A INPUT -p tcp -m tcp --dport 9001 -j DROP 
 ``` 
@@ -53,7 +53,7 @@ rejetons tout le reste, règles à adapter bien évidemment
 **Pour faire du multiport**, nous utilisons un module dédié à ça dans 
 iptables 
  
-``` linenums:1|Create 
+``` 
 iptables -A INPUT -p tcp -m multiport --destination-ports 9000:9005,9006,9021,9041,9042,9099 -m set --match-set whitelist src -j ACCEPT 
 iptables -A INPUT -p tcp -m multiport --destination-ports 9000:9005,9006,9021,9041,9042,9099 -j DROP 
 ``` 
@@ -64,7 +64,7 @@ Pour rendre notre configuration permanente, nous utilisons le logiciel
 **netfilter-persistent** ainsi qu'un plugin ipset disponible 
 [ici](https://github.com/freeyoung/netfilter-persistent-plugin-ipset) 
  
-``` linenums:1|Install 
+``` 
 cd ~  
 git clone https://github.com/freeyoung/netfilter-persistent-plugin-ipset 
 chmod +x netfilter-persistent-plugin-ipset/10-ipset 
@@ -73,13 +73,13 @@ mv netfilter-persistent-plugin-ipset/10-ipset /usr/share/netfilter-persistent/pl
  
 Une fois le plugin installé, il faut activer le service au démarrage 
  
-``` linenums|Enable 
+``` 
 systemctl enable netfilter-persistent 
 ``` 
  
 Et sauvegarder la configuration actuelle 
  
-``` linenums|Save 
+``` 
 /etc/init.d/netfilter-persistent save 
 ``` 
  

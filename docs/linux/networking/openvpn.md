@@ -1,6 +1,6 @@
 # Installer et configurer son VPN OpenVPN 
  
-======= Préambule ======= 
+## Préambule 
  
 Pourquoi installer un serveur VPN ? Il existe une multitude raisons 
 d'installer un serveur VPN, la première est d'éviter la surveillance. 
@@ -28,7 +28,7 @@ vraiment peur de Hadopi & co, chez
 [YourServer](https://www.yourserver.se/) (Excellent petit hébergeur, 
 staff facilement accessible). 
  
-======= Installation ======= 
+## Installation 
  
 Pour installer OpenVPN, rien de plus simple: 
  
@@ -48,7 +48,7 @@ $ source vars
 $ ./clean-all 
 ``` 
  
-======= Création des certificats ======= 
+## Création des certificats 
  
 Afin d'être sécuriser, un VPN a besoin de certificats SSL. Ceux-ci sont 
 très facile à build via easy-rsa 
@@ -63,14 +63,14 @@ terminal de base
  
 Puis on creer le Diffie-Hellman 
  
-``` linenums:1|Generate 
+``` 
 $ openvpn --genkey --secret /etc/openvpn/ta.key 
 ``` 
  
 Et enfin, le certificat côté serveur, que l'on n'oublie pas de signer 
 ! 
  
-``` linenums:1|Generate 
+``` 
 $ ./build-key-server srvcert 
 ``` 
  
@@ -82,13 +82,13 @@ correctement notre OpenVPN
 OpenVPN fournit des fichiers de configurations exemple relativement bien 
 complet, nous allons donc les réutiliser 
  
-``` linenums:1|Get 
+``` 
 $ gunzip -c /usr/share/doc/openvpn/examples/sample-config-files/server.conf.gz > /etc/openvpn/server.conf 
 ``` 
  
 Puis on l'édite afin qu'il concorde à notre installation 
  
-``` linenums:1|Edit 
+``` 
 $ vim /etc/openvpn/server.conf 
 ``` 
  
