@@ -9,7 +9,7 @@ d'aider un grand nombre de débutants dans le monde de Linux.
 
 Ce wiki me permet d'apprendre de nombreuses choses mais également de
 vous en faire apprendre. Je reste disponible sur mon mail personnel pour
-toute question wiki\[at\]jdelgado\[dot\]fr
+toute question wiki[at]jdelgado[dot]fr
 
 ## Linux GNU
 
@@ -38,14 +38,14 @@ toute question wiki\[at\]jdelgado\[dot\]fr
 ### Sécuriser son serveur Linux
 
 -   [Désactiver les patchs de sécurité Meltdown & co](/linux/security/disable_patches)
--   [Apprendre à se servir d'IPTables](/linux/security/iptables)\
--   [Apprendre à se servir d'ipset](/linux/security/ipset)\
--   [Installer et configurer Fail2Ban](/linux/security/fail2ban)\
--   [Installer et configurer RKHunter](/linux/security/rkhunter)\
--   [Installer et configurer LogWatch](/linux/security/logwatch)\
--   [Installer et configurer SSH Guard](/linux/security/sshGuard)\
--   [Hardening de son serveur SSH](/linux/security/hardening_sshd) \
--   [Installer et configuer PortSentry](/linux/security/portsentry)\
+-   [Apprendre à se servir d'IPTables](/linux/security/iptables)
+-   [Apprendre à se servir d'ipset](/linux/security/ipset)
+-   [Installer et configurer Fail2Ban](/linux/security/fail2ban)
+-   [Installer et configurer RKHunter](/linux/security/rkhunter)
+-   [Installer et configurer LogWatch](/linux/security/logwatch)
+-   [Installer et configurer SSH Guard](/linux/security/sshGuard)
+-   [Hardening de son serveur SSH](/linux/security/hardening_sshd) 
+-   [Installer et configuer PortSentry](/linux/security/portsentry)
 -   [Bloquer tous les préfixes d'un pays entier](/linux/security/iptables_country)
 -   [Whitelister une série d'IP à l'aide d'IPset et iptables](/linux/security/whitelist_ip)
 -   [Logger les actions SSH utilisateurs simplement](/linux/security/ssh_log_commands)
@@ -147,7 +147,7 @@ toute question wiki\[at\]jdelgado\[dot\]fr
 #### Kubernetes
 
 -   [Commandes utiles pour K8S](/kubernetes/cli/useful_commands)
--   [Manage son \$KUBECONFIG](/kubernetes/cli/kubeconfig)
+-   [Manage son $KUBECONFIG](/kubernetes/cli/kubeconfig)
 -   [Outils pour mieux gérer K8S](/kubernetes/cli/tools)
 
 #### Rancher
@@ -174,7 +174,7 @@ toute question wiki\[at\]jdelgado\[dot\]fr
 
 -   [Télécharger ses sous-titres en ligne de commande](/linux/misc/subs)
 -   [Gagner de la place en supprimant les locales inutiles](/linux/misc/locales)
--   [Enlever les paquets \"rc\" sur dpkg](/linux/misc/rc_package)
+-   [Enlever les paquets "rc" sur dpkg](/linux/misc/rc_package)
 -   [Ajouter de la couleur à la commande man](/linux/misc/mancolor)
 -   [Trouver les options de compilation du kernel](/linux/misc/find_kernel_options)
 -   [Réinitialiser son mot de passe root](/linux/misc/forgot_root_password)
@@ -199,7 +199,7 @@ toute question wiki\[at\]jdelgado\[dot\]fr
 ## Proxmox
 
 -   [Ajouter un ISO depuis une URL](/proxmox/insert_iso_from_url)
--   [Résoudre l'erreur \"VM is locked\"](/proxmox/troubleshooting/vm_locked)
+-   [Résoudre l'erreur "VM is locked"](/proxmox/troubleshooting/vm_locked)
 -   [NAT pour les VMs Debian](/proxmox/networking/nat)
 
 ## Codage
@@ -222,7 +222,7 @@ toute question wiki\[at\]jdelgado\[dot\]fr
 
 ## Networking
 
--   [Tester la bande passante effective de son serveur avec des \"proofs files\"](/networking/proof_files)
+-   [Tester la bande passante effective de son serveur avec des "proofs files"](/networking/proof_files)
 -   [Vérifié l'état du réseau avec la Weathermap](/networking/weathermap)
 -   [Lister les préfixes annoncés par un ASN](/networking/list_prefix_asn)
 
@@ -277,7 +277,7 @@ toute question wiki\[at\]jdelgado\[dot\]fr
 ### Server
 
 -   [Setup de base d'un Windows 2012 R2](/windows_server/powershell/first_setup)
--   [Connexion SSH \"native\" en Powershell](/windows_server/powershell/ssh)
+-   [Connexion SSH "native" en Powershell](/windows_server/powershell/ssh)
 -   [Monter un ISO directement via PowerShell](/windows_server/powershell/mount_iso)
 -   [Installer et configurer un serveur DHCP en PowerShell](/windows_server/powershell/dhcp_server)
 -   [Installer et configurer un serveur AD en PowerShell](/windows_server/powershell/ad_server)
