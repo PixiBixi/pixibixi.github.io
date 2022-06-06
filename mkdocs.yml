@@ -6,6 +6,8 @@ repo_url: https://github.com/PixiBixi/documentation
 remote_branch: docs
 
 theme:
+  features:
+    - header.autohide
   name: material
   language: fr
 
