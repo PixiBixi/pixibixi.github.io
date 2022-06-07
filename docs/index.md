@@ -18,7 +18,7 @@ toute question wiki[at]jdelgado[dot]fr
 -   [Rappel des commandes de base](/linux/fundamentals/base_commands)
 -   [Rappel sur le cron](/linux/fundamentals/cron)
 -   [VIM: L'editeur de texte de la mort](/linux/fundamentals/vim)
--   [cURL: La commande à tout faire](/linux/fundamentals/cURL)
+-   [cURL: La commande à tout faire](/linux/fundamentals/curl)
 -   [La commande find](/linux/cli/find)
 -   [Memo sur la commande ip](/linux/cli/ip)
 -   [Mes fichiers de configuration](/linux/cli/confrc)
