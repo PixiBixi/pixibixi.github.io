@@ -163,6 +163,7 @@ toute question wiki[at]jdelgado[dot]fr
 #### Gitlab
 
 -   [Optimiser sa CI Gitlab](/gitlab/ci/optimize)
+-   [Intégrer un scan d'image à sa CI](/gitlab/ci/scan_image)
 
 #### Docker
 
