@@ -9,7 +9,7 @@ Avoir une CI qui créé une image, c'est bien. Si l'on peut y ajouter des tests 
 
 Voilà le bout de code à ajouter à sa CI pour intégrer un scan à sa CI, générant un rapport détaillé
 
-```yml
+```yaml
 Trivy_container_scanning:
   stage: test
   image:
