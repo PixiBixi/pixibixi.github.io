@@ -60,7 +60,7 @@ Nous verrons par la suite comment le configurer.
 Afin qu'il résolve les requêtes DNS sur votre ordinateur locale, voici 
 la ligne à écrire : 
  
-``` 
+```bash
 apt-get -y install bind9 
 ``` 
  

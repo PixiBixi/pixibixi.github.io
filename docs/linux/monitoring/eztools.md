@@ -132,7 +132,7 @@ server {
  
 N'oubliez pas de générer le fichier **monitor_passwd** à l'aide de la 
 commande *htpasswd* ou encore via des sites internets tels que [HTAccess 
-Tools](/www.htaccesstools.com_htpasswd-generator) 
+Tools](https://hostingcanada.org/htpasswd-generator/)
  
 Et voici le bout de code à ajouter à son block principal si l'on ne 
 veut pas de **eZ Server Monitor Web** en sous-domaine : 

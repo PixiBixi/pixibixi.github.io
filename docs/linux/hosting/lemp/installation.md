@@ -19,7 +19,7 @@ sources de nginx, il faudra remplacer *codename* par sa distribution
 Tout d'abord, avant de vouloir installer le serveur web NGINX, il faut 
 déjà ajouter une source. 
  
-``` shell 
+```bash
 └─# apt-cache policy nginx 
 nginx: 
   Installé : 1.14.2-2+deb10u4 
@@ -416,7 +416,7 @@ recommandations](https://symfony.com/doc/current/performance.html#configure-opca
 pour la configuration de l'OPcache. La variable 
 *opcache.max_accelerated_files* peut être facilement calculée : 
  
-``` shell 
+```bash
 └─# find . -name "*.php" |wc -l 
 5165 
 ``` 
@@ -441,7 +441,7 @@ $ apt-cache policy mariadb-server
  
 Voilà le résultat attendu : 
  
-``` shell 
+```bash
 $ apt-cache policy mariadb-server 
 mariadb-server: 
   Installé : (aucun) 
@@ -454,7 +454,7 @@ mariadb-server:
  
 Si tout se passe comme il faut, on lance l'installation du serveur SQL 
  
-``` bash 
+```bash 
 $ apt-get install mariadb-server 
 ``` 
  
@@ -470,6 +470,6 @@ utiliser un mot de passe relativement puissant pour qu'il ne puisse pas
  
 Et on finit par le script made in MariaDB pour sécuriser le tout 
  
-``` bash 
+```bash 
 $ mysql_secure_installation 
 ``` 

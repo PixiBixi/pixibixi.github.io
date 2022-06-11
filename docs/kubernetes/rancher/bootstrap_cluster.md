@@ -12,7 +12,7 @@ serveur lui même, ou bien en remote. Vous trouverez la dernière version
  
 Voici un exemple de fichier cluster.yml 
  
-``` yaml 
+```yaml 
 #################################### 
 ## CLUBIC Rancher master cluster ## 
 #################################### 

@@ -12,7 +12,7 @@ souhaitez pouvoir switch entre les environnements.
  
 Tout simple. 
  
-``` bash 
+```bash 
 $ apt install rbenv 
 $ rbenv init 
 ``` 
@@ -25,7 +25,7 @@ On check après les versions disponibles avec un **rbenv install
 Installez celle que vous voulez (par ex: 2.7.4) puis définissez là par 
 défaut : 
  
-``` bash 
+```bash 
 $ rbenv install 2.7.4 
 $ rbenv global 2.7.4 
 ``` 
@@ -35,7 +35,7 @@ $ rbenv global 2.7.4
 Si vous n'avez pas la version désirée, n'hésitez pas à installer 
 **ruby-build** en plugin de rbenv : 
  
-``` bash 
+```bash 
 # As an rbenv plugin 
 $ mkdir -p "$(rbenv root)"/plugins 
 $ git clone https://github.com/rbenv/ruby-build.git "$(rbenv root)"/plugins/ruby-build 
@@ -46,7 +46,7 @@ $ git clone https://github.com/rbenv/ruby-build.git "$(rbenv root)"/plugins/ruby
 ruby-build est plus rudimentaire que rbenv mais fait très bien le taff. 
 On commence par l'installer en standalone : 
  
-``` bash 
+```bash 
 # As a standalone program 
 $ git clone https://github.com/rbenv/ruby-build.git 
 $ PREFIX=/usr/local ./ruby-build/install.sh 
@@ -55,7 +55,7 @@ $ PREFIX=/usr/local ./ruby-build/install.sh
 Puis comme rbenv, on liste les versions dispo, et on installe celle 
 qu'on veut : 
  
-``` bash 
+```bash 
 $ ruby-build --definitions 
 $ ruby-build 2.7.4 /usr/local/ruby-2.7.4 
 ``` 
