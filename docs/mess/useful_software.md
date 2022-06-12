@@ -1,2 +1,1 @@
-[MailSpring](http://www.getmailspring.com/) : Client mail (Fork de Nylas 
-N1) 
+[MailSpring](http://www.getmailspring.com/) : Client mail (Fork de Nylas N1)

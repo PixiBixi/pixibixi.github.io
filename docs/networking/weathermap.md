@@ -1,67 +1,67 @@
-![](/franceix-weathermap.png){.align-center} 
- 
-## Vérifié l'état du réseau avec la Weathermap 
- 
-Cet article aura pour but d'aider a vérifié l'état/encombrement du 
-réseau via les différentes Weathermap disponibles 
- 
-## Qu'est ce qu'une Weathermap ? 
- 
-Une Weathermap (Traduction littérale : Carte du temps) est une carte qui 
-permet de vérifié l'État du réseau d'un hébergeur, afin de savoir si 
-nous allons disposer de bonnes conditions de navigation. Bon nombre de 
-Weathermap sont publics, mais il en existe quelques une publiques car 
-les weathermap montrent le réseau Internet d'une entreprise 
-(Evidemment, certains équipements peuvent être cachés) 
- 
-## Liste des Weathermap disponibles 
- 
-|  Service               |  Lien 
+![](/franceix-weathermap.png){.align-center}
+
+## Vérifié l'état du réseau avec la Weathermap
+
+Cet article aura pour but d'aider a vérifié l'état/encombrement du
+réseau via les différentes Weathermap disponibles
+
+## Qu'est ce qu'une Weathermap ?
+
+Une Weathermap (Traduction littérale : Carte du temps) est une carte qui
+permet de vérifié l'État du réseau d'un hébergeur, afin de savoir si
+nous allons disposer de bonnes conditions de navigation. Bon nombre de
+Weathermap sont publics, mais il en existe quelques une publiques car
+les weathermap montrent le réseau Internet d'une entreprise
+(Evidemment, certains équipements peuvent être cachés)
+
+## Liste des Weathermap disponibles
+
+|  Service               |  Lien
 |----------|:-------------:|
 |  IELO| [Ici](http://weathermap.ielo.net/) |
 |  OVH| [Ici](http://weathermap.ovh.net/) |
 |  Online/Scaleway| [Ici](http://netmap.scaleway.com/) |
 | France-IX | [Ici](https://tools.franceix.net/) |
-|  K-Net | [Ici](https://as24904.kwaoo.net/) et [Ici](https://k-net-stats.lafibre.info/) 
-| Renater      |   [Ici IPv4](http://pasillo.renater.fr/weathermap/weathermap_metropole.html), [ici IPv6](https://pasillo.renater.fr/weathermap/weathermap_metropole_ipv6.html) et [Ici](https://pasillo.renater.fr/weathermap/weathermap_idf.html) 
+|  K-Net | [Ici](https://as24904.kwaoo.net/) et [Ici](https://k-net-stats.lafibre.info/)
+| Renater      |   [Ici IPv4](http://pasillo.renater.fr/weathermap/weathermap_metropole.html), [ici IPv6](https://pasillo.renater.fr/weathermap/weathermap_metropole_ipv6.html) et [Ici](https://pasillo.renater.fr/weathermap/weathermap_idf.html)
 |  Nerim| [Ici](http://stats.nerim.net/nav/map) |
 |  WideVOIP - WhichWAN | [Ici](http://www.as42456.com/fr/weathermap) |
-|  Hivane Network | [Ici](http://www.hivane.net/info/weathermap.html) 
-|  Hosteur| [Ici](http://www.hosteur.com/infos/infrastructures-reseaux.php) 
-|  Newsoo **RIP**| [Ici](https://newsoo.fr/cacti/weathermap.png) 
-|  France-IX| [Ici](https://tools.franceix.net/stats/aggregated) 
+|  Hivane Network | [Ici](http://www.hivane.net/info/weathermap.html)
+|  Hosteur| [Ici](http://www.hosteur.com/infos/infrastructures-reseaux.php)
+|  Newsoo **RIP**| [Ici](https://newsoo.fr/cacti/weathermap.png)
+|  France-IX| [Ici](https://tools.franceix.net/stats/aggregated)
 |  Rezopole| [Ici](https://noc.rezopole.net/) |
 |  Sfinx  | [Ici](https://www.sfinx.fr/) |
-|  AMS-IX| [Ici](https://ams-ix.net/technical/statistics) 
-|  DEC-IX| [Ici](https://www.de-cix.net/about/statistics/) 
-|  Linx| [Ici](https://www.linx.net/pubtools/trafficstatshtml) 
- 
-## Connaitre son réseau 
- 
-Pour savoir par quels routeurs passe sa connexion, il suffit de faire un 
-**traceroute** avec l'outil **mtr** sous Linux ou bien 
-**[WinMTR](http://winmtr.net/)** sous Windows. Voici des informations 
-qui nous intéressent : 
- 
-![](/mtr.png){.align-center} 
- 
-Ce screen provient du logiciel **WinMTR**. 
- 
-On peut voir ici que nous passons par un réseau HOPUS pour joindre le 
-réseau d'Online, puis que nous passons par le routeur s45-s103-1 pour 
-accéder à notre serveur. 
- 
-## Diagnostiquer 
- 
-A notre niveau, nous ne pouvons pas vraiment diagnostiquer ce qui se 
-passe chez notre ISP. Cependant, grace à un outil appelé Looking Glass, 
-on peut cependant faire des diagnostics plus poussés. 
- 
-**[Liste complète](http://www.bgplookingglass.com/)** 
- 
-**[Traceroute depuis différents pays + RS'...](http://www.traceroute.org/)** 
- 
-|  Opérateur(s)               |  Lien 
+|  AMS-IX| [Ici](https://ams-ix.net/technical/statistics)
+|  DEC-IX| [Ici](https://www.de-cix.net/about/statistics/)
+|  Linx| [Ici](https://www.linx.net/pubtools/trafficstatshtml)
+
+## Connaitre son réseau
+
+Pour savoir par quels routeurs passe sa connexion, il suffit de faire un
+**traceroute** avec l'outil **mtr** sous Linux ou bien
+**[WinMTR](http://winmtr.net/)** sous Windows. Voici des informations
+qui nous intéressent :
+
+![](/mtr.png){.align-center}
+
+Ce screen provient du logiciel **WinMTR**.
+
+On peut voir ici que nous passons par un réseau HOPUS pour joindre le
+réseau d'Online, puis que nous passons par le routeur s45-s103-1 pour
+accéder à notre serveur.
+
+## Diagnostiquer
+
+A notre niveau, nous ne pouvons pas vraiment diagnostiquer ce qui se
+passe chez notre ISP. Cependant, grace à un outil appelé Looking Glass,
+on peut cependant faire des diagnostics plus poussés.
+
+**[Liste complète](http://www.bgplookingglass.com/)**
+
+**[Traceroute depuis différents pays + RS'...](http://www.traceroute.org/)**
+
+|  Opérateur(s)               |  Lien
 |----------|:-------------:|
 |  3T Systmes                  | [ici](http://lg.3tsystems.net/cgi-bin/bgplg) |
 |  Adeli                       | [ici](https://lg.adeli.biz/) |
@@ -112,10 +112,10 @@ on peut cependant faire des diagnostics plus poussés.
 |  Vienna IX                   | [ici](https://www.vix.at/vix_lookingglass.html) |
 |  WorldStream                 | [ici](/lg.worldstream.nl) |
 |  Zayo                        | [Ici](http://lg.as8218.eu/) |
- 
-Il est également possible de se renseigner via les route-servers 
-(Disponible via telnet) 
- 
+
+Il est également possible de se renseigner via les route-servers
+(Disponible via telnet)
+
 |  Opérateur(s) |  Lien |
 |----------|:-------------:|
 |  OTI     |      telnet route-server.opentransit.net |

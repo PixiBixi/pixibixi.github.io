@@ -163,7 +163,7 @@ paramètres pour un frontend/backend spécifique par la suite
 defaults
     mode http
     log global
-    
+
     option httplog
     option dontlognull
 
@@ -245,10 +245,10 @@ frontend http
    # On définit des ACL qui associe un Host: HTTP à un backend
    acl wiki hdr(host) -i wiki.jdelgado.fr
    acl site hdr(host) -i jdelgado.fr
-   
+
    use_backend wiki if wiki
    use_backend site if site
-   
+
    default_backend undefined
 ```
 

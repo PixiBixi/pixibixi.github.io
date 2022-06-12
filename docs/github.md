@@ -20,11 +20,11 @@ Change l'URL distante
 
 ------------------------------------------------------------------------
 
-    $ git clean -d -fx . 
+    $ git clean -d -fx .
 
 Supprimer les fichiers non trackés inclus dans le gitignore
 
-## .gitconfig 
+## .gitconfig
 
 Afin d'être indépendant de tout environnement (ohmyzsh ou autre), j'ai
 décidé d'utiliser les alias du .gitconfig disponible sur
