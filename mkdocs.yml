@@ -27,9 +27,13 @@ plugins:
   - search
 
 extra:
+  generator: false
   analytics:
     provider: google
     property: G-NHG8VK60NB
+  social:
+    - icon: fontawesome/brands/twitter
+      link: https://twitter.com/Pixel__Art
 
 markdown_extensions:
   - pymdownx.highlight:
