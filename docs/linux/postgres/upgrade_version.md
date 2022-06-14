@@ -28,7 +28,7 @@ appliquer les modifications
 ```
 
 !!! warning "Note"
-Il est important d'utiliserl le fullpath pour la commande pg_ugprade, sous peine que le mauvais pg_upgrade soit sélectionné
+    Il est important d'utiliserl le fullpath pour la commande pg_ugprade, sous peine que le mauvais pg_upgrade soit sélectionné
 
 Si tout est OK, repassez la commande en supprimant **'--check**.
 
