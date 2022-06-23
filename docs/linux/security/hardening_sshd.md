@@ -189,3 +189,30 @@ l'utilisation d'un bastion
 ``` bash
 from="1.2.3.4,10.20.30.40" ecdsa-sha2-nistp521 AAAAE
 ```
+
+## Entrées SSHFP
+
+A outre mesure, il est possible de sécuriser une connexion SSH avec les entrées DNS SSHFP. ssh (s'il est configuré avec VerifyHostKeyDNS=yes) va automatiquement vérifier le record SSHFP et permettre la connexion.
+
+Si SSHFP est correctement configuré, vous aurez cette entrée :
+
+```
+debug1: matching host key fingerprint found in DNS
+```
+
+Et pour générez vos entrées SSHFP :
+
+```bash
+#!/bin/bash
+IFS=$'\n'
+for LINE in $(cat ~/.ssh/known_hosts) ; do
+    WANTED=$(echo "$LINE" | awk -F" " '{print $1}')
+    PORT=$(echo "$WANTED" | awk -F":" '{print $2}'|awk '{ print substr( $0, 0,4 ) }')
+    HOST=$(echo "$WANTED" | ggrep -oP '\[.*?\]'|tr -d "]"|tr -d "["|head -1)
+    [ ! $PORT ] && PORT=22
+    echo "$HOST - $PORT"
+    ssh-keygen -r $HOST
+    # sleep 1
+    # ssh-keyscan -p $PORT -D $HOST
+done
+```
