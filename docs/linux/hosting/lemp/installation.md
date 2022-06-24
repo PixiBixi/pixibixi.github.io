@@ -282,8 +282,6 @@ internet.
 -   **gzip_vary** indique si un ajout va être effectué dans le header si
     le fichier a été '"gzippé'"
 
-'-'-'--
-
 ``` nginx
 ###
 # SSL Settings

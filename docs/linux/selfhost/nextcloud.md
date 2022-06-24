@@ -108,8 +108,6 @@ sudo -u www-data php /var/www/nextcloud/occ app:install files_external
 sudo -u www-data php /var/www/nextcloud/occ app:enable files_external
 ```
 
-'-'-'--
-
 -   '*'*Mise à jour des applications NextCloud '*'*
 
 ``` bash

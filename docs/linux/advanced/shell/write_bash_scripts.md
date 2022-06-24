@@ -112,7 +112,6 @@ Il est également possible de subtituer .txt par .pdf par exemple.
 BASE=${FOO/txt/pdf}
 ```
 
-'-'--
 
 Nous pouvons également effectuer une sous chaine à partir de la chaine
 de base
@@ -125,8 +124,6 @@ ${FOO:2:2}
 
 Par exemple, ici, nous allons afficher la variable à partir de la
 position 2 pour 2 caractères.
-
-'-'--
 
 Dans le code suivant, toujours en se basant sur la variable FOO, nous
 prenons les 3 derniers caractères (le signe - signifie que nous partons
