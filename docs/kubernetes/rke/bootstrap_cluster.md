@@ -100,6 +100,8 @@ ingress:
     use-forwarded-headers: "true"
 ```
 
+Une fois toute l'infrastructure décrite, une simple commande suffit : _rke up_
+
 Ce cluster.yaml est compatible avec Kubernetes 1.22.
 
 Comme vous pouvez le voir, nous spécifions à rancher que nous souhaitons
