@@ -35,6 +35,9 @@ Si tout est OK, repassez la commande en supprimant **'--check**.
 Enfin, on pense à modifier la configuration de la nouvelle version de
 postgresql afin d'écouter sur le bon port :
 
+!!! warning Données
+    Par défaut, les données sont copiées le temps de la transition, il est possible de faire un link avec **–link**. Attention, un rollback ne sera cependant plus possible
+
 ``` bash
 sed -i "s/5433/5432/g" /etc/postgresql/13/main/postgresql.conf
 ```
