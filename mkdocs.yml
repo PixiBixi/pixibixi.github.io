@@ -25,6 +25,10 @@ plugins:
       lang: fr
   - tags
   - search
+  - minify:
+      minify_html: true
+      minify_js: true
+      minify_css: true
 
 extra:
   generator: false
