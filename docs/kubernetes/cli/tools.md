@@ -11,6 +11,8 @@ Voici donc quelques outils pour mieux gérer tout ça :
     ici](https://github.com/wercker/stern).
 -   **kail** permet de tail plusieurs pods rapidement : [a voir
     ici](https://github.com/boz/kail).
+-   **kubepug** permet de vérifier la compatibilité des différentes
+    APIVersion : [a voir ici](https://github.com/rikatz/kubepug).
 
 Evidemment, nous avons l'autocomplétion à activer :
 
