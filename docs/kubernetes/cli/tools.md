@@ -13,6 +13,8 @@ Voici donc quelques outils pour mieux gérer tout ça :
     ici](https://github.com/boz/kail).
 -   **kubepug** permet de vérifier la compatibilité des différentes
     APIVersion : [a voir ici](https://github.com/rikatz/kubepug).
+-   **ketall** permet de (réellement) lister toutes les ressources
+    de son cluster : [a voir ici](https://github.com/corneliusweig/ketall)
 
 Evidemment, nous avons l'autocomplétion à activer :
 
