@@ -18,7 +18,7 @@ et rajouter ceci :
 Si vous disposez d'un kernel inférieur à 5.2, alors voici la ligne à
 mettre
 
-    GRUB_CMDLINE_LINUX_DEFAULT="quiet noibrs noibpb nopti nospectre_v2 nospectre_v1 l1tf=off nospec_store_bypass_disable no_stf_barrier mds=off mitigations=off"
+    GRUB_CMDLINE_LINUX_DEFAULT="quiet noibrs noibpb nopti nospectre_v2 nospectre_v1 l1tf=off nospec_store_bypass_disable no_stf_barrier mds=off tsx_async_abort=off mitigations=off"
 
 Puis il faut lancer une regénération du grub :
 
@@ -52,6 +52,9 @@ récent :
     on affected CPUs
 -   **mds**=off '[X86'] - Control mitigation for the Micro-architectural
     Data Sampling (MDS) vulnerability.
+-   **tsx_async_abort**=off '[X86'] - Control mitigation for the Micro-architectural
+    TSX (MDS) vulnerability.
+
 
 ## Vérification
 
