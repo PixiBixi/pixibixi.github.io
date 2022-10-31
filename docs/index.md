@@ -155,7 +155,7 @@ Cette magnifique documentation a été faites avec MkDocs
 #### Rancher
 
 -   [Reset son password Rancher](/kubernetes/rancher/reset_password)
--   [Bootstrap rapidement son cluster](/kubernetes/rancher/bootstrap_cluster)
+-   [Bootstrap rapidement son cluster](/kubernetes/rke/bootstrap_cluster)
 
 #### Terraform
 
