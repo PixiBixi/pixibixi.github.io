@@ -134,3 +134,21 @@ Par exemple, **brew search vlc** deviendra **brew cask search vlc**
 -   **virtualbox** : Virtualiser vos OS en quelques clics
 -   **vlc** : Le célèbre lecteur multimédia
 -   **vscodium** : Version de VSCode sans bloatware
+
+## Divers
+
+### Bundle
+
+Sous Brew, il existe une sous-commande absolument magique qui s'appelle `bundle`.
+
+Brew nous permet de générer dans un fichier l'ensemble des packages, tap & autres que nous avons. Pour ma part, ils sont disponibles [ici](https://github.com/PixiBixi/dotfiles/blob/master/Brewfile).
+
+Voici les principales commandes à connaitre !
+  * **brew bundle dump** : Permet de générer le fichier Brewfile
+    * --file=my_brewfile : Pour spécifier un nom différent
+  * **brew bundle install** : Permet d'installer tout ce qui est dans le fichier ~/Brewfile
+	* **--file=my_brewfile : Permet de spécifier un nom différent
+
+### cask-upgrade
+
+brew cu permet de mettre à jour facilement toutes ses applications installées avec brew. Je vous invite à aller consulter le [README](https://github.com/buo/homebrew-cask-upgrade) de cask-upgrade, qui est bougrement bien fait
