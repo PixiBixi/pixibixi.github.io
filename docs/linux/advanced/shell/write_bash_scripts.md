@@ -222,6 +222,40 @@ l: ligne 4: firstname : variable sans liaison
 -   **-o pipefail** : Sans cette option, une erreur dans un pipe sera
     masquée, et ne sera pas interceptée par le paramètre **-e**
 
+### Template de script
+
+Il est possible d'écrire de bons scripts Shell, mais il est encore plus facile d'en écrire des mauvais. Voici donc un excellent template :
+
+```bash
+#!/usr/bin/env bash
+
+set -o errexit
+set -o nounset
+set -o pipefail
+if [[ "${TRACE-0}" == "1" ]]; then
+    set -o xtrace
+fi
+
+if [[ "${1-}" =~ ^-*h(elp)?$ ]]; then
+    echo 'Usage: ./script.sh arg-one arg-two
+
+This is an awesome bash script to make your life better.
+
+'
+    exit
+fi
+
+cd "$(dirname "$0")"
+
+main() {
+    echo do awesome stuff
+}
+
+main "$@"
+```
+
+Ce template ne vient pas de moi mais de cet [excllent site](https://sharats.me/posts/shell-script-best-practices/).
+
 ### Misc
 
 Quelques astuces de scripts bash trouvées à gauche ou à droite
