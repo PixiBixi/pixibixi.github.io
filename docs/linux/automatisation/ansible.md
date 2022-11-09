@@ -72,9 +72,7 @@ do
 done
 ```
 
-Plus d'informations sur les commandes ad-hoc sont disponibles sur [le
-site
-officiel](https://docs.ansible.com/ansible/latest/user_guide/intro_adhoc.html#intro-adhoc)
+Plus d'informations sur les commandes ad-hoc sont disponibles sur [le site officiel](https://docs.ansible.com/ansible/latest/user_guide/intro_adhoc.html#intro-adhoc)
 
 '## Playbooks
 
@@ -140,11 +138,48 @@ do
 done
 ```
 
-Pour une documentation plus poussée, je vous recommande d'aller sur
-[l'article de
-Buzut](https://utux.fr/index.php?article100/configuration-et-deploiement-avec-ansible)
-qui décrit simplement l'utilisation de ansible, ou encore l'article de
-[memo-linux](https://memo-linux.com/ansible-mes-premiers-pas).
+Pour une documentation plus poussée, je vous recommande d'aller sur [l'article de Buzut](https://utux.fr/index.php?article100/configuration-et-deploiement-avec-ansible) qui décrit simplement l'utilisation de ansible, ou encore l'article de [memo-linux](https://memo-linux.com/ansible-mes-premiers-pas).
 
-L'excellent xavki a également sorti une [formation
-poussée](https://www.youtube.com/watch?v=kzmvwc2q_z0) sur le sujet
+L'excellent xavki a également sorti une [formation poussée](https://www.youtube.com/watch?v=kzmvwc2q_z0) sur le sujet
+
+## Utilisation des variables
+
+ansible est nativement prévu pour être compatible avec les variables, afin de factoriser le code. Il est possible d'en définir dans des fichiers yaml. Celles-ci peuvent être de plusieurs niveaux (dit dictionnaires):
+
+```bash
+$ cat vars/users.yml
+# Users variable
+users:
+  ## tecteam users
+  jdelgado:
+    my_key: my_value
+```
+
+Dans ce fichiers _vars/users.yml_, nous avons une variable nommée **users** contenant 1 entrée, jdelgado, qui contient elle même une entrée exemple.
+
+Pour utiliser ce fichier dans un role, il faut dans un premier temps inclure le fichier dans notre task:
+
+```bash
+$ cat tasks/main.yml
+- name: "Include users vars"
+  ansible.builtin.include_vars:
+    file: ../../inventory/vars/users.yml
+```
+
+Puis nous pouvons utiliser comme ceci la variable :
+
+```bash
+- name: Update .bashrc for {{ item.key }}
+  ansible.builtin.copy:
+    src: files/.bashrc
+    dest: "/home/{{ item.key }}/.bashrc"
+    mode: 0644
+  loop: "{{ users | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"
+  when: item.value['group_name']  == 'sysadmin'
+```
+
+Dans cet exemple, nous transformons notre variable en item afin d'utiliser plus facilement la clé.
+
+Nous souhaitons boucler  autour du nom d'utilisateur, qui sera dans notre cas la clé.
