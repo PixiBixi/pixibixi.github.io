@@ -40,6 +40,11 @@ mdadm --create --verbose /dev/md0 --level=10 --raid-devices=4 /dev/sda /dev/sdb 
 Ce type de RAID nous permet d'avoir les performances d'un RAID0 avec
 la sécurité d'un RAID1 quid d'un grand nombre de devices à utiliser.
 
+!!! warning "Reboot"
+
+Il est important de ne pas reboot son serveur avec finalisation de création de RAID afin de ne pas perdre son RAID
+
+
 ## Monter son RAID
 
 Si votre RAID est déjà monté, alors il suffira de faire la commande
