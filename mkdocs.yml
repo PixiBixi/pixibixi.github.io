@@ -24,7 +24,6 @@ plugins:
   - search:
       lang: fr
   - tags
-  - search
   - minify:
       minify_html: true
       minify_js: true
