@@ -7,9 +7,9 @@
 Ces derniers temps, j'ai cherché quelques stacks de monitoring simples
 à mettre en place mais également efficaces avec des métriques
 pertinentes. Je suis passé par beaucoup de systèmes de monitoring
-(Check_MK, Sensu, LibreNMS, Shinken'...) sans avoir été satisfait. Soit
+(Check_MK, Sensu, LibreNMS, Shinken...) sans avoir été satisfait. Soit
 les métriques n'étaient pas pertinentes ; soit l'installation était
-trop complexe'... Bref, il y avait toujours quelque chose qui ne me
+trop complexe... Bref, il y avait toujours quelque chose qui ne me
 convenait pas, c'est là que j'ai découvert Netdata, puis peu de temps
 après, Prometheus et Grafana. Pour bien comprendre ce tutoriel, voici un
 lexique avec les notions de base :
@@ -20,10 +20,10 @@ lexique avec les notions de base :
 d'applications qui aident à réaliser une tâche précise.
 
 **Métrique** : Mesure précise d'un composant (logiciel ou matériel), ex
-: Pourcentage de CPU utilisé à l'instant T'...
+: Pourcentage de CPU utilisé à l'instant T...
 
 **Exporter** : Outil qui va récolter les métriques d'un système (CPU
-utilisé, RAM utilisée'...), les traiter et les envoyer à un logiciel.
+utilisé, RAM utilisée...), les traiter et les envoyer à un logiciel.
 
 **Recolter** : Logiciel qui va s'occuper de stocker les métriques
 envoyées par l'exporter
@@ -85,19 +85,18 @@ d'afficher les données récoltées dans Prometheus à notre guise.
 
 #### Netdata
 
-Il existe beaucoup d'exporters (Node-Exporter + cAdvisor, Netdata,
-Telegraf)'...
+Il existe beaucoup d'exporters (Node-Exporter + cAdvisor, Netdata,Telegraf)... pour tout logiciel (HAproxy,NGINX,PHP-FPM)
 
 Cependant, j'ai fait le choix après avoir testé plusieurs exporters
 d'utiliser Netdata. Ce logiciel intégre des milliers de métriques
 matériels mais également de nombreuses logiciels (Plugins MySQL,
-Nginx'...) tout ça sans aucune configuration. De plus, Netdata dispose
+Nginx...) tout ça sans aucune configuration. De plus, Netdata dispose
 nativement d'un système d'alerte pertinent avec de nombreuses
-destinations : Slack, Email, Telegram'...
+destinations : Slack, Email, Telegram...
 
 Enfin, il s'agit d'un logiciel ne consommant que très peu de RAM et de
 CPU. Ses métriques sont exportables en quelques clics vers de nombreuses
-TSDB tels que InfluxDB, Prometheus'... Les métriques exportées à
+TSDB tels que InfluxDB, Prometheus... Les métriques exportées à
 Prometheus sont extrêmement claires.
 
 L'avantage comparativement à d'autres exporter est qu'il intègre
@@ -174,7 +173,7 @@ From scratch, il nous suffira de lancer le script d'installation de
 netdata qui est très bien fait. La commande indiquée dans le GitHub
 Netdata est la suivante :
 
-``` bash
+```bash
 bash <(curl -Ss https://my-netdata.io/kickstart.sh)
 ```
 
@@ -182,7 +181,7 @@ Cette commande installera la base de Netdata sans toutes les dépendances
 tel que celle nécessaire au plugin MySQL. Pour installer toutes les
 dépendances nécessaires :
 
-``` bash
+```bash
 bash <(curl -Ss https://my-netdata.io/kickstart.sh) all
 ```
 
@@ -215,9 +214,10 @@ services:
       - /etc/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
 ```
 
-'*'*Attention : '*'* il faut créer manuellement le fichier
-prometheus.yml sans quoi par défaut Docker considère qu'il s'agit
-d'un dossier.
+!! warning Docker
+	il faut créer manuellement le fichier
+	prometheus.yml sans quoi par défaut Docker considère qu'il s'agit
+	d'un dossier.
 
 ``` bash
 $ mkdir /etc/prometheus && touch /etc/prometheus/prometheus.yml
@@ -227,7 +227,7 @@ $ mkdir /etc/prometheus && touch /etc/prometheus/prometheus.yml
 
 Même sur un système récent, le binaire de Prometheus est dans une
 version archaïque (A l'heure actuelle, version 2.7.1 sur Debian Buster
-datant de début 2019'... soit 1 an et demi de retard). Il conviendra
+datant de début 2019... soit 1 an et demi de retard). Il conviendra
 donc de télécharger manuellement et de créer l'unit systemd adéquate
 pour Prometheus. Sur Ubuntu 20.04, le binaire est récent, cependant, je
 vous conseille tout de même de l'installer manuellement. Il ne faudra
@@ -236,31 +236,31 @@ qu'elles ne seront pas effectuées via votre gestionnaire de packet.
 
 Tout d'abord, rendons-nous sur la [page
 officielle](https://prometheus.io/download/) pour trouver la dernière
-version de Prometheus. A l'heure où j'écris, il s'agit de la 2.17.1.
+version de Prometheus. A l'heure où j'écris, il s'agit de la 2.40.7.
 
-``` bash
-$ cd ~ ; wget https://github.com/prometheus/prometheus/releases/download/v2.17.1/prometheus-2.17.1.linux-amd64.tar.gz
+```bash
+$ cd ~ ; wget https://github.com/prometheus/prometheus/releases/download/v2.40.7/prometheus-2.40.7.linux-amd64.tar.gz
 ```
 
 On extrait les fichiers
 
-``` bash
-$ tar xzvf prometheus-2.17.1.linux-amd64.tar.gz
+```bash
+$ tar xzvf prometheus-2.40.7.linux-amd64.tar.gz
 ```
 
 On crée notre utilisateur Prometheus :
 
-``` bash
+```bash
 $ useradd --no-create-home --shell /bin/false prometheus
 ```
 
 Puis on déplace les fichiers binaires et de configuration aux endroits
 prévus :
 
-``` bash
+```bash
 $ mkdir /etc/prometheus && chown -R prometheus:prometheus /etc/prometheus
-$ mv ~/prometheus-2.17.1.linux-amd64/{console*,prometheus.yml} /etc/prometheus
-$ mv ~/prometheus-2.17.1.linux-amd64/{prom*,tsdb} /usr/bin/
+$ mv ~/prometheus-2-40.7.linux-amd64/{console*,prometheus.yml} /etc/prometheus
+$ mv ~/prometheus-2-40.7.linux-amd64/{prom*,tsdb} /usr/bin/
 ```
 
 Dans nos 2 fichiers exécutables, nous avons bien évidemment Prometheus
@@ -366,7 +366,7 @@ apporter diverses précisions. Voici un exemple :
     netdata_ipv4_tcperrors_packets_persec_average{chart="ipv4.tcperrors",family="tcp",dimension="RetransSegs"} 0.0000000 1586642038000
 
 Il est également possible de récuperer d'autres variables système tel
-que le nombre de sockets TCP supportés'... Il suffira d'ajouter
+que le nombre de sockets TCP supportés... Il suffira d'ajouter
 &variables=yes au metrics_path.
 
 Selon le panel grafana que vous trouvez, vous pouvez trouver des unités
@@ -417,6 +417,8 @@ netdata_system_ram_MiB_average{chart="system.ram",dimension="used",family="ram",
 netdata_system_ram_MiB_average{chart="system.ram",dimension="cached",family="ram",instance="netdata.x.domain.tld:443",job="node"}
 netdata_system_ram_MiB_average{chart="system.ram",dimension="buffers",family="ram",instance="netdata.x.domain.tld:443",job="node"}
 ```
+
+Il existe un [site internet](https://awesome-prometheus-alerts.grep.to/rules) proposant quelques règles Prometheus. Attention, celles-ci ne sont pas forcément optimsiées ou fonctionnelles.
 
 En premier lieu, nous observons que nous avons 4 métriques différentes
 pour le même serveur. Ce qui est contenu dans les accolades est une
@@ -634,11 +636,11 @@ variable d'environnement *DOCKER_USR=root* sur notre container.
 
 ##### Monitoring d'un mountpoint personnalisé
 
-Pour monitorer les I/O, espace disque'... d'un point de montage, il
+Pour monitorer les I/O, espace disque... d'un point de montage, il
 faut bien évidemment l'indiquer en volume sur votre container Netdata.
 
 Prenons un exemple simple. Si vous avez différents utilisateurs dans
-votre /home (jeremy, augustin'...) alors il faudra faudra ajouter le
+votre /home (jeremy, augustin...) alors il faudra faudra ajouter le
 volume /home à votre container.
 
 La base d'une stack de monitoring est désormais acquise.
@@ -654,7 +656,7 @@ nos sites web, l'état des certificats SSL, ou encore aucun alerting.
 Actuellement, nous avons une configuration statique, ce qui implique un
 redémarrage de prometheus à chaque ajout/suppression d'un host. Le
 redémarrage de prometheus peut durer plusieurs minutes avec la reprise
-des WAL'...
+des WAL...
 
 A la place de static_configs, il est donc possible d'utiliser d'autres
 directives, dont *file_sd_configs*. Votre configuration prometheus sera
@@ -801,7 +803,7 @@ spécifier un module correspondant au nom de notre module dans
 *blackbox.yml*. Nous avons besoin de passer la destination de notre test
 à Blackbox. Pour cela, nous utilisons le module relabel_configs de
 Prometheus. Enfin, nous réécrivons la variable address avec la valeur de
-notre exporteur Blackbox, dans notre cas, *localhost:9115*. Voici le
+notre exporter Blackbox, dans notre cas, *localhost:9115*. Voici le
 contenu de notre fichier *http.json*
 
 ``` yaml
@@ -852,7 +854,7 @@ particulièrement 2 plus utiles que les autres :
 
 Grace à ces nouvelles métriques, vous pouvez indiquer l'état de
 services dans vos dashboards Grafana, la date d'expiration de vos
-certificats'... Un autre exporteur s'occupant uniquement de la partie
+certificats... Un autre exporter s'occupant uniquement de la partie
 SSL/TLS, mais fournissant plus de verbosité est disponible. Il se nomme
 [node-cert-exporter](https://github.com/amimof/node-cert-exporter), je
 lui préfère blackbox_exporter car il est plus polyvalent et supervise
@@ -947,7 +949,7 @@ La variable **repeat_interval** est le délai à attendre si les alertes
 que nous avons eu ne sont toujours pas résolues. Ll s'agit encore
 d'une valeur arbitraire que nous définissons à une heure.
 
-De nombreux receivers sont possibles, adresse mail, slack, webhook'...
+De nombreux receivers sont possibles, adresse mail, slack, webhook...
 Dans mon cas, j'ai choisi d'utiliser un Webhook qui va s'occuper
 d'envoyer mes notifications sur Telegram. Ce webhook écoutera donc sur
 le port 8080 et non sur le 5001, il s'agit ici de la dernière valeur à
@@ -984,7 +986,7 @@ la target de type alertmanager disponible sur 127.0.0.1:9093.
 
 #### alert.rules.yml
 
-``` yaml
+```yaml
 groups:
 - name: alert.rules
   rules:
@@ -995,7 +997,7 @@ groups:
       severity: "critical"
     annotations:
       summary: "Endpoint {{ $labels.instance }} has an issue"
-      description: "{{ $labels.instance  }} of job {{ $labels.job  }} has been down for more than 10 seconds."
+      description: "{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 10 seconds."
 ```
 
 La syntaxe est assez compréhensible. Tout d'abord, nous définissons un
@@ -1008,7 +1010,7 @@ définies dans l'annotations sont définies par Prometheus.
 Pour vérifier que notre règle est bien prise en place, nous ferons la
 commande suivante :
 
-``` bash
+```bash
 $ promtool check rules /etc/prometheus/alert.rules.yml
 Checking /etc/prometheus/alert.rules.yml
   SUCCESS: 1 rules found
@@ -1016,7 +1018,7 @@ Checking /etc/prometheus/alert.rules.yml
 
 Voici d'autres exemples de règles Prometheus trouvées sur le web :
 
-``` yaml
+```yaml
 groups:
 - name: alert.rules
 
@@ -1106,6 +1108,8 @@ nouveau langage.
 Il pourra s'agit d'une piste d'enrichissement de ce tutorial dans le
 futur avec l'intégration de VictoriaMetrics.
 
+De plus, VictoriaMetrics n'est pas un système monolithique comme l'est Prometheus, chaque fonctionnalité est un binaire distinct ce qui permet de scale simplement sur un cluster Kubernetes ou autre
+
 ### Exporters
 
 Voici une liste d'exporter pour divers équipements/logiciels.
@@ -1120,6 +1124,8 @@ Cependant, je n'ai pas testé ces derniers :
 |  VMWare | [VMWare](https://github.com/pryorda/vmware_exporter) |
 |  Proxmox | [Promxox](https://github.com/znerol/prometheus-pve-exporter) |
 |  CloudFlare | [CloudFlare](https://github.com/wehkamp/docker-prometheus-cloudflare-exporter) |
+
+Une [liste officielle](https://github.com/prometheus/prometheus/wiki/Default-port-allocations) de tous les exporters Prometheus officielle est disponible, vous permettant de choisir l'exporter qu'il vous faut
 
 ## Conclusion
 
