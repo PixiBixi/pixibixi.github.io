@@ -131,6 +131,7 @@ Cette magnifique documentation a été faites avec MkDocs
 ### PostgreSQL
 
 -   [Upgrade sa version de postgresql](/linux/postgres/upgrade_version)
+-   [Creer sa replication postgresql](/linux/postgres/postgresql_replication)
 
 ### Redis
 
