@@ -12,7 +12,7 @@ Il est également utilisé par de nombreux sites populaires :
 -   Twitter
 -   Github
 -   Reddit
--   Airbnb'...
+-   Airbnb...
 
 Comme tout package, il est simplement installable via un package manager
 tel que *apt* ou autre.
@@ -32,7 +32,7 @@ quelques terminologies spécifiques à HAproxy
     derrière un frontend. Si le frontend gère ce qui est publique (à
     '"l'"avant'" du serveur), le backend gère '"l'arrière'". C'est là
     que vous définirez les serveurs web vers lesquels envoyer les
-    requêtes, les différents checks appliqués'...
+    requêtes, les différents checks appliqués...
 -   **ACL** : une '"Access Control List'" permet de définir des
     conditions dans un bloc, par exemple '"si le domaine contient site1,
     alors faire cela, si la requête est en https, alors faire ceci'". Il
@@ -134,7 +134,7 @@ global
 -   **nbproc/nbthread** sont les paramètres permettant à HAproxy de
     scale. Nous pouvons utiliser *nbproc* indépendamment de *nbthread*.
     Chaque process dispose de ses propres stats, tables de
-    persistances'... Tous les threads disposent cependant des mêmes
+    persistances... Tous les threads disposent cependant des mêmes
     informations.
     -   Il est largement déconseillé d'utiliser plusieurs processus sur
         HAproxy
@@ -145,7 +145,7 @@ global
 -   **daemon** permet de lancer HAproxy en tant que daemon.
 -   **ssl-default-bind-ciphers/ssl-default-bind-options** configure tout
     ce qui est relatif au TLS. La première option configure les ciphers
-    et la seconde configure les versions autorisées de TLS minimum'...
+    et la seconde configure les versions autorisées de TLS minimum...
     -   La fondation Mozilla propose un
         [configurateur](https://ssl-config.mozilla.org/#server=haproxy&version=2.1&config=intermediate&openssl=1.1.1d&guideline=5.6)
         offrant une configuration alliant sécurité & compatibilité des
@@ -185,7 +185,7 @@ defaults
     nous permet une granularité de configuration bien supérieure
     -   N'oubliez pas que HAproxy est également un load-balancer L4. Il
         est donc possible de balancer tout type de traffic (mysql,
-        rabbitmq, mongodb'...)
+        rabbitmq, mongodb...)
 -   **log global** indique à chaque frontend suivant d'utiliser le
     paramètre log contenu dans la section global. Cela nous évite de
     devoir le redéfinir pour chaque frontend.
@@ -200,8 +200,8 @@ defaults
     -   Certaines méthodes (tel qu'un monitoring ou autre) peuvent
         également générer certaines de ces requêtes. Il peut être
         intéressant d'activer cette option dans ce cas
--   **timeout connect'...** spécifie les différents timeout (connect,
-    server)'...
+-   **timeout connect...** spécifie les différents timeout (connect,
+    server)...
     -   Il peut être intéressant de spécifier différentes valeurs de
         timeout afin de faciliter le debug
 -   **http-reuse safe** est l'option par défaut. Nous nous assurons via
@@ -234,7 +234,7 @@ traffic vers le backend *servers*. Nous n'utilisons aucune ACL ici.
 #### Exemple avancé : ACL
 
 Un exemple avancé est l'utilisation d'une ACL. Il existe beaucoup de
-types d'ACL, que ce soir sur l'URI, les paramètres'... Nous allons
+types d'ACL, que ce soir sur l'URI, les paramètres... Nous allons
 voir un exemple simple avec l'utilisation d'une ACL sur le nom de
 domaine.
 

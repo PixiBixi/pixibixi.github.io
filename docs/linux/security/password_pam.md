@@ -5,7 +5,7 @@ par mot de passe. Le système d'authentification **PAM** s'occupe de ce
 processus.
 
 C'est également via ce procédé que nous pouvons effectuer des
-authentifications distantes telles LDAP, AD'...
+authentifications distantes telles LDAP, AD...
 
 Ce qui nous intéresse de notre côté est la sécurisation du mot de passe
 via PAM. Par défaut, tous les mots de passe sont acceptés par défaut, ce
@@ -15,7 +15,7 @@ que nous voulons pas.
 
 C'est donc du côté du packet PAM-Cracklib que nous allons nous tourner.
 PAM-Cracklib va nous permettre d'apporter une sécurité non négligable
-en forcant la présence d'une majuscule, d'un chiffre'... dans le mot
+en forcant la présence d'une majuscule, d'un chiffre... dans le mot
 de passe
 
 ### Installation

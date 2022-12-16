@@ -6,7 +6,7 @@ Nous allons voir comment installer et configurer correctement NGINX,
 PHP-FPM et MariaDB. Pour cela, nous allons ajouter des sources afin
 d'obtenir des versions plus à jour de ces différents logiciels Pour les
 sources de nginx, il faudra remplacer *codename* par sa distribution
-(Wheezy, Jessie'...)
+(Wheezy, Jessie...)
 
   **Sites officiels**               **Liens utiles**
   --------------------------------- -------------------------------------------------------------------

@@ -5,7 +5,7 @@
 A l'instar de Webmin ou encore Vesta, Ajenti est un panel
 d'administration de serveur. Simple et efficace, il vous permettra
 d'effectuer la grande majorité des actions courantes (Reboot du
-serveur, edition des configurations, du firewall'...)
+serveur, edition des configurations, du firewall...)
 
 ## Installation
 

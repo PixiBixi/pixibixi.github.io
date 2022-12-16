@@ -12,7 +12,7 @@ curl -I -v --trace-time https://www.google.com
 
 Nous pouvons personnaliser l'output de cURL pour avoir des détails
 extrêmements intéressants tels que le temps de résolution DNS, de
-négociation TLS'...
+négociation TLS...
 
 Nous utilisons pour cela un fichier qui sera un template :
 

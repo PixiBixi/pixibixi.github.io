@@ -3,7 +3,7 @@
 ## Explication
 
 TMUX est un multiplexeur de shell permettant de lancer une multitude de
-fenêtre dans une seule, de créer plusieurs instances'...
+fenêtre dans une seule, de créer plusieurs instances...
 
 ## Installation
 

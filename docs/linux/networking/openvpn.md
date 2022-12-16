@@ -8,7 +8,7 @@ La connexion via un VPN étant cryptée, nous ne pouvons pas savoir ce
 qu'y passe sur le réseau, nous parlons alors de **tunnel VPN**.
 
 Il est également possible d'utiliser un VPN afin d'éviter les
-géo-restrictions (Netflix, Hulu'...)
+géo-restrictions (Netflix, Hulu...)
 
 Et enfin, nous pouvons utiliser un VPN pour être un petit peu plus
 anonyme sur la toile. **Attention**, les VPN français ont pour
@@ -216,7 +216,7 @@ Et voilà, vous avez votre propre VPN fonctionnel :)
 
 [piVPN](https://github.com/pivpn/pivpn) est un petit script permettant
 d'installer un serveur OVPN en nous permettant de setup port utilisé,
-DNS'...
+DNS...
 
 En plus de cela, pivpn nous fournit un petit script de gestion
 d'utilisateur. Il est compatible Debian et Ubuntu

@@ -5,7 +5,7 @@
 Ce wiki va nous aider à déterminer la bande passante réelle de son
 serveur. Evidemment, plusieurs critères rentrent en jeu, tel que la
 location physique de son serveur, sa bandwidth théorie/garantie, son
-peering'...
+peering...
 
 Par exemple, si l'on a un serveur Gbps chez Online, et que l'on
 effectue un test sur un serveur appartenant à Online, le test ne
@@ -21,7 +21,7 @@ Un *proof file* est un fichier stocké sur un serveur disposant d'une
 importante bande passante (Généralement du Gbps vroi 10Gbps) afin
 d'effectuer des tests de vitesse avec différents hébergeur. Il existe
 des fichier de différente taille selon les différents hébergeurs (1Go,
-2.5Go'...) Cela permet de refléter le débit réel d'un réseau avec un
+2.5Go...) Cela permet de refléter le débit réel d'un réseau avec un
 autre réseau, et donc de tester son peering
 
 ## Liste des proofs files disponibles
@@ -62,7 +62,7 @@ sur Windows, Linux, et même Android et iOS.
 
 Il s'agit de la solution la plus pure pour tester la vitesse d'un
 réseau car une multitude d'options sont disponibles : taille du paquet,
-connections simultanées, port'....
+connections simultanées, port....
 
 Par défaut, le port utilisé par iPerf est le 5001, sur le protocole TCP.
 

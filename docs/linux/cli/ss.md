@@ -99,7 +99,7 @@ $ ss -s
 Si vous ne souhaitez voir que les connexions IPv4 ou IPv6 (voir socket),
 c'est possible avec ss :
 
--   **-f ou '--family='...**
+-   **-f ou '--family=...**
 
 Et voici les types disponibles
 
@@ -122,7 +122,7 @@ résoudre le numéro de port
 ### Filter les états
 
 Dans ss, il est possible de filtrer leur connexion via leur statut
-(ESTABLISHED, CLOSED'...) de manière extrêmement simple :
+(ESTABLISHED, CLOSED...) de manière extrêmement simple :
 
 ``` bash
 $ ss state ESTABLISHED

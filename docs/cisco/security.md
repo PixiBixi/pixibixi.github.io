@@ -27,7 +27,7 @@ Admettons que notre adresse IP soit *192.168.1.20*
 Comme cela, nous limitons la 15eme ligne VTY (telnet) à se connecter
 uniquement via l'adresse IP 192.168.1.20
 
-Nous pouvons également faire ceci pour SSH'...
+Nous pouvons également faire ceci pour SSH...
 
 Nous loggons également les tentatives non-autorisées d'accès
 

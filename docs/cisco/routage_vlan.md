@@ -24,7 +24,7 @@ Pour cela, nous allons donc devoir faire des sous-interfaces sur
 l'interface **GA0/1** du **routeur**
 
 Une sous interface est une interface logique sur un routeur, nous la
-reconnaissons car elle comporte un **.** (Exemple **GA0/1.3**'...)
+reconnaissons car elle comporte un **.** (Exemple **GA0/1.3**...)
 
 Généralement, la sous-interface correspond au numéro du VLAN.
 

@@ -4,7 +4,7 @@ Pour réinitialiser son mot de passe root, une méthode simple existe.
 
 Lors du GRUB, appuyer sur **E** pour passer en **Edit Mode**
 
-Vous allez voir une ligne commençant par *linux /boot'...* et ajouter y
+Vous allez voir une ligne commençant par *linux /boot...* et ajouter y
 à la fin *init=/bin/bash*. Appuyer sur Ctrl+X pour que vos modifications
 soient uniquement appliquées une fois.
 

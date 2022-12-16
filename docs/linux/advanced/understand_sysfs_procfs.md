@@ -3,7 +3,7 @@
 ## Introduction
 
 Beaucoup de répertoires sous Linux sont connus par la majorité des
-administrateurs systèmes (/usr,/etc,/bin)'...
+administrateurs systèmes (/usr,/etc,/bin)...
 
 Cependant, 2 filesystem restent assez méconnus pour bon nombre d'entre
 nous, /sys et /proc. Cet article aura pour but d'en expliquer les
@@ -60,7 +60,7 @@ composants réseaux de votre système.
 
 **/proc/sys** est un répertoire où nous pouvons définir ou visualiser
 beaucoup de comportements du système tel que le nombre maximum de PID du
-système, le comportement à adopter après un kernel-panic'...
+système, le comportement à adopter après un kernel-panic...
 
 **/proc/irq** est un répertoire un peu '"particulier'" où nous pouvons
 définir manuellement les interruptions à un certain core du CPU.
@@ -76,7 +76,7 @@ peuvent également être utiles mais difficilement exploitable par
 l'Homme.
 
 -   **/proc/cpuinfo** nous apportera des précisions sur quel processeur
-    nous utilisons, son modèle, les bugs auquel il est vulnérable'...
+    nous utilisons, son modèle, les bugs auquel il est vulnérable...
 
 ``` bash
 λ jeremy ~ → =cat /proc/cpuinfo
@@ -119,7 +119,7 @@ qu'un tutoriel est disponible
 [ici](/linux/security/disable_patches#application)
 
 -   **/proc/meminfo** nous permet d'obtenir toutes les informations
-    nécessaires à notre RAM (RAM Totale, disponible, free'...)
+    nécessaires à notre RAM (RAM Totale, disponible, free...)
 
 ``` bash
 λ jeremy /proc → head -5 meminfo

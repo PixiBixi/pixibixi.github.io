@@ -4,7 +4,7 @@
 
 youtube-dl est un outil formidable permettant de télécharger ses vidéos
 en ligne de commande à partir d'une foule de providers (Youtube, Arte,
-SoundCloud'...). ([Liste
+SoundCloud...). ([Liste
 complète](https://rg3.github.io/youtube-dl/supportedsites.html)).
 
 Dans cet article, nous allons voir comment télécharger les vidéos à
@@ -12,7 +12,7 @@ d'une interface Web (Youtube-DL-WebUI, ([fork de
 PixiBixi](https://github.com/PixiBixi/Youtube-dl-WebUI)))
 
 Cette interface écrite en PHP permet de télécharger des vidéos,
-musiques'... Le fork de PixiBixi permet également de les écouter en
+musiques... Le fork de PixiBixi permet également de les écouter en
 ligne.
 
 Pour installer cette WebUI, 2 manières sont disponibles. La manière

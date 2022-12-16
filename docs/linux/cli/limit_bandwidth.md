@@ -10,10 +10,10 @@ La méthode barbare consiste à tout simplement jouer avec les iproute
 directement avec la commande **tc**.
 
 **tc** va nous permettre d'ajouter de la latence artificielle, limiter
-le débit'...
+le débit...
 
 D'autres options sont disponibles, mais ne sont que très peu utile
-(packet re-ordering, duplication'...)
+(packet re-ordering, duplication...)
 
 ### Ajout de latence
 

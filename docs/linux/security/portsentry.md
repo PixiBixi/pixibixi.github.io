@@ -4,7 +4,7 @@ portsentry est un programme de détection et de blocage de '"scan de
 ports'" (Généralement programme qui scanne votre machine à le recherche
 de ports ouverts, en général dans le but de préparer une attaque). Via
 ce scan de port, un attaquant peut obtenir de nombreuses informations,
-versions de SSH vulnérables ou autres'... il est donc important de se
+versions de SSH vulnérables ou autres... il est donc important de se
 prémunir de celui-ci
 
 ## Installation et Configuration
@@ -20,7 +20,7 @@ Conrêtement, portsentry s'axe autour de 3 fichiers :
 -   /etc/default/portsentry : Fichier où l'on indique dans quel mode
     portsentry doit démarrer
 -   /etc/portsentry/portsentry.conf : Fichier où l'on indique les
-    actions à effectuer quand au drop d'une connexion'...
+    actions à effectuer quand au drop d'une connexion...
 -   /etc/portsentry/portsentry.ignore.static : Nous y plaçons les IPs
     que nous autorisons (whitelist)
 

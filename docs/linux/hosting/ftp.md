@@ -44,7 +44,7 @@ Par défaut, voici ce que contient répertoire :
     ceci évitant les liens symboliques
 -   **pureftpd.passwd** est le fichier, tel que */etc/passwd* qui va
     contenir diverses informations tel que username, password,
-    chemin'...
+    chemin...
 
 Tout d'abord, nous devons ajouter un utilisateur et un groupe pour nos
 utilisateurs virtuels PureFTPd

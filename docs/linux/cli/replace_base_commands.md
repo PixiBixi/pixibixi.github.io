@@ -15,7 +15,7 @@ un excellent outil pour beaucoup de choses. Par exemple, celui-ci
 intègre la fonctionnalité tree (Visualisation des fichiers sous forme
 d'arbre) via '--tree. Celui-ci intègre également un thème visuel nous
 permettant d'observer au premier coup d'oeil certaines choses comme la
-présence d'un lien symbolique rompus'...
+présence d'un lien symbolique rompus...
 
 ### Remplacant de du
 
@@ -83,4 +83,4 @@ benchmark est [disponible](https://rachaellappan.github.io/pigz/)
 
 Pout git, il existe un autre outil lightweight et très sympa :
 [tig](https://github.com/jonas/tig) permet une visualisation simple de
-son repository'...
+son repository...

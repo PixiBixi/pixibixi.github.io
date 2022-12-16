@@ -46,7 +46,7 @@ globales. Par exemple, si tous vos serveurs de BDD ont leur port SSH en
 
 Dans le cas d'une société, nous avons un dossier **customers** dans le
 dossier */etc/ansible*. Chaque fichier contenu dans ce dossier
-contiendra un client'...
+contiendra un client...
 
 ## Ligne de commande
 

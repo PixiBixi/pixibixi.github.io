@@ -5,7 +5,7 @@
 Depuis quelques années, systemd s'est imposé comme étant l'init de
 beaucoup de distributions, gérant ainsi les démarrages systemd est voué
 à remplacer de nombreux composants systèmes historiques tels que cron,
-network'...
+network...
 
 systemd a été implémenté de différentes manières selon les OS (et
 rarement de la bonne manière) et les mainteneurs de paquets n'ont

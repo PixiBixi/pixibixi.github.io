@@ -1,4 +1,4 @@
-# Commandes HP Smart Array en CLI (Utilisable pour un ESX'...)
+# Commandes HP Smart Array en CLI (Utilisable pour un ESX...)
 
 De nombreuses commandes utiles pour l'utilistaire hpssacli
 

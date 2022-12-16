@@ -6,7 +6,7 @@ Le protocole CDP (**C**isco **D**iscover **P**rotocol) est un protocole
 de découverte de périphériques réseau qui fonctionne au L2. Comme son
 nom l'indique est développé par Cisco dans le but de '"signaler sa
 présence'" à ses voisins, afin d'obtenir différentes informations
-intrinsèque à l'équipement tel que son nom, modèle'...
+intrinsèque à l'équipement tel que son nom, modèle...
 
 ## Utilité
 
@@ -18,9 +18,9 @@ pouvons également en tirer d'autres utilités :
     c'est que l'interface et la couche de liaison est opérationnelle.
     L'interface concernée sera donc en *Up/Up*.
 -   **Obtenir des informations sur son voisin** telle que son adresse
-    IP, numéro de version'...
+    IP, numéro de version...
 -   **Découvrir la topologie du réseau** en passant de machine à
-    machine'...
+    machine...
 
 ## Condition d'utilisation
 

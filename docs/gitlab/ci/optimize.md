@@ -110,6 +110,6 @@ cache:
     - venv/
 ```
 
-D'autres caches sont possibles pour d'autres langages (Go, Ruby'...),
+D'autres caches sont possibles pour d'autres langages (Go, Ruby...),
 je vous laisse consulter la [documentation
 officielle](https://docs.gitlab.com/ee/ci/caching/index.html#cache-nodejs-dependencies)

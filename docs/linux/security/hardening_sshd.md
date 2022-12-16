@@ -135,7 +135,7 @@ Cette syntaxe est également possible pour la directive AllowUsers.
 Les variables d'environnement peuvent être modifiées lors d'une
 connexion SSH depuis une clef, ces derniers peuvent très largement
 altérer le comportement de certains programmes (LD_PRELOAD,
-LD_LIBRARY_PATH'...). Pour cela, une option existe pour désactiver la
+LD_LIBRARY_PATH...). Pour cela, une option existe pour désactiver la
 modification des variables systèmes lors d'une connexion SSH.
 
 ``` bash

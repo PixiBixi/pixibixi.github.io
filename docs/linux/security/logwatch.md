@@ -2,7 +2,7 @@
 
 Logwatch est un petit utilitaire qui permet d'envoyer un rapport sur
 diverses informations tel que les tentatives d'accès infructueuses,
-erreurs kernel'... Etant donner qu'il envoie les rapports par mail, il
+erreurs kernel... Etant donner qu'il envoie les rapports par mail, il
 sera nécessaire d'installer un MTA
 
 Simple installation via APT :

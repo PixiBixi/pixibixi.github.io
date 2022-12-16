@@ -58,7 +58,7 @@ brew d'activé
 Caskroom est un complément à Homebrew, Homebrew dispo d'énormément de
 packages issus de la communauté UNIX (Liste complète disponible
 [ici](https://github.com/Homebrew/homebrew-core/tree/master/Formula)),
-il lui manque énormément de '"vrais'" applications (Chrome, VLC'...)
+il lui manque énormément de '"vrais'" applications (Chrome, VLC...)
 
 C'est là que Caskroom intervient, celui-ci comble le manque en
 application que Homebrew a. Vous pouvez regarder tous les packages

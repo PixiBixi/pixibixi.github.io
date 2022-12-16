@@ -89,7 +89,7 @@ réseau sous Windows
 
 Un serveur autoritaire est un serveur faisant '"autorité'" sur une zone
 donnée. Celui-ci permet de toutes les redirections nécéssaires (MX, A,
-CNAME'...)
+CNAME...)
 
 Généralement, votre registrar fait également serveur DNS, mais il
 s'agit très souvent d'une usine à gaz, lorsqu'un simple BIND fait

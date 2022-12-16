@@ -14,7 +14,7 @@ outils :
     [terraform-docs](https://github.com/terraform-docs/terraform-docs)
 -   **tfsec** nous permettra de vérifier les bonnes pratiques en terme
     de sécurité, il est également possible de créer ses règles
-    custom'... : [tfsec](https://github.com/aquasecurity/tfsec)
+    custom... : [tfsec](https://github.com/aquasecurity/tfsec)
 -   **checkov** est un équivalent à tfsec mais est générique, il peut
-    également scanner les YAML K8S'...
+    également scanner les YAML K8S...
     [checkov](https://github.com/bridgecrewio/checkov)

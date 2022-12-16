@@ -65,7 +65,7 @@ Voici les options disponibles pour eZ Server Monitor SH
 -   **-l** ou **'--load** : Affiche le load et des infos sur les
     processus
 -   **-t** ou **'--temperatures** : Affiche les températures CPU,
-    HDD'...
+    HDD...
 -   **-d** ou **'--disk** : Affiche les différents disques
 
 ------------------------------------------------------------------------

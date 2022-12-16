@@ -2,7 +2,7 @@
 
 Dans certains cas, il peut être utile de whitelister une série d'IP
 comme par exemple lorsque nous souhaitons qu'une API ne soit
-disponibles que pour certains utilisateurs'...
+disponibles que pour certains utilisateurs...
 
 Pour y parvenir, plusieurs méthodes sont disponibles :
 

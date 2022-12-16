@@ -9,7 +9,7 @@ parties :
 
 1.  Munin (master pour les systèmes BSD qui sont plus explicites) qui se
     charge de générer les pages web et de réaliser les graphiques à
-    partir des données'...
+    partir des données...
 2.  fournies par Munin node qui se charge à l'aide de '"sondes'"
     écrites en perl ou en shell script de générer les fichiers RRD qui
     vont bien. Le démon écoute par défaut sur le port TCP 4949.

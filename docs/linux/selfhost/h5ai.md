@@ -5,7 +5,7 @@
 ## Présentation
 
 h5ai est un index amélioré afin de partager facilement tous vos
-fichiers'... Celui-ci remplacera aisément un index fade et sans gout.
+fichiers... Celui-ci remplacera aisément un index fade et sans gout.
 Celui- ci est disponible pour tous les serveurs web, à condition
 d'avoir au minimum la version 5.5 de PHP.
 

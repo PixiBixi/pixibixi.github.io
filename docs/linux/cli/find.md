@@ -2,7 +2,7 @@
 
 La commande **find** sous Linux est une commande extrêmement puissante
 qui a une tonne d'options. Elle nous permet de repérer les fichiers les
-plus gros, les fichiers qui n'ont pas été modifiés depuis 30j'...
+plus gros, les fichiers qui n'ont pas été modifiés depuis 30j...
 
 ## Exemples
 

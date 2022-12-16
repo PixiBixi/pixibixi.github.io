@@ -19,9 +19,9 @@ vim)
 
 ### Texte
 
--   **c i** : Pour remove le contenu d'une parenthèse'... (Change
+-   **c i** : Pour remove le contenu d'une parenthèse... (Change
     Inside)
--   **d s (** : Remove des parenthèse'... :
+-   **d s (** : Remove des parenthèse... :
 -   **%s/search/replace/g** : Pour sed un fichier
 -   **F2, paste normal, puis F2** : Pour coller un texte **sans problème
     de tab**

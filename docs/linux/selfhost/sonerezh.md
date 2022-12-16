@@ -9,7 +9,7 @@ Sonerezh est une application web développée par Guillaume Leduc (Son
 [twitter](https://twitter.com/itomiix).
 
 Tout comme les célébrissimes Deezer ou Spotify, nous pourrons écouter de
-la musique en streaming, faire nos propres playlist'... Mais pour cela,
+la musique en streaming, faire nos propres playlist... Mais pour cela,
 nous devrons auparavant télécharger nos musiques sur nos serveurs.
 
 Il s'agit d'un projet que je suis d'avant sa création via le blog de

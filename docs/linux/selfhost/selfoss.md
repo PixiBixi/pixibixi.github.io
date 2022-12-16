@@ -19,11 +19,11 @@ sur son PC (Reeder sur Mac), chacun trouvera chaussure à son pied.
 
 Pour moi, il s'agit de SelfOss. Ce petit reader RSS disponible sur
 [Github](https://github.com/SSilence/selfoss/) à pour mérite d'être
-libre, facilement configurable, compatible PHP7'...
+libre, facilement configurable, compatible PHP7...
 
 Non seulement il vous permettra d'exploiter au mieux les RSS via un
-système de tags'... mais vous pourrez également importer d'autres flux
-tels que Twitter, deviantArt, Tumblr'...
+système de tags... mais vous pourrez également importer d'autres flux
+tels que Twitter, deviantArt, Tumblr...
 
 Voici donc comment l'installer
 

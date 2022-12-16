@@ -1,7 +1,7 @@
 # Postfix/Dovecot/DKIM/Postgrey et plus encore
 
 Lorsque j'ai écris ce titre, je voulais faire un tutoriel pour
-installer de A à Z son serveur mail avec rspamd, du DKIM'...
+installer de A à Z son serveur mail avec rspamd, du DKIM...
 
 Depuis ce temps, je suis passé à Docker. Mon cher collège Hardware a
 fait une magnifique image Docker qui nous permet d'obtenir un 10/10 à

@@ -2,7 +2,7 @@
 
 Pour rappel, un serveur DHCP vous fournit une IP de manière automatique.
 Il est possible d'exclure certaines IPs en faisant des leases
-statiques'...
+statiques...
 
 Petit schéma pour vous rappeler comment fonctionne un serveur DHCP :
 
@@ -31,7 +31,7 @@ Restart-Service dhcpserver
 ```
 
 Une fois ceci fait, nous pouvons passer à la '"vraie'" configuration
-(Pools d'IP, DNS'...)
+(Pools d'IP, DNS...)
 
 Maintenant, nous pouvons passer à la configuration
 

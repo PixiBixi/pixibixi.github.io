@@ -59,7 +59,7 @@ on peut cependant faire des diagnostics plus poussés.
 
 **[Liste complète](http://www.bgplookingglass.com/)**
 
-**[Traceroute depuis différents pays + RS'...](http://www.traceroute.org/)**
+**[Traceroute depuis différents pays + RS...](http://www.traceroute.org/)**
 
 |  Opérateur(s)               |  Lien
 |----------|:-------------:|

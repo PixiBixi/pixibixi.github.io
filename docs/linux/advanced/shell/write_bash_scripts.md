@@ -55,7 +55,7 @@ d'en connaitres quelques unes.
 -   '$1 contient la valeur du premier argument de votre script bash ou
     de votre fonction. ('$0 représente le script lui même)
 -   '$# contient le nombre d'arguments passés à votre script
--   '$? contient le code retour de votre programme script'...
+-   '$? contient le code retour de votre programme script...
 -   '$PWD contient le chemin du répertoire courant
 
 #### Assignation de variables
