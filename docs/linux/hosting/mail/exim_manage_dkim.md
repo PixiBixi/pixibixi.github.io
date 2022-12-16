@@ -3,7 +3,7 @@
 Pour configurer DKIM avec Exim, on s'emmerde pas, j'ai écris un petit
 script pour faire ça
 
-``` bash
+```bash
 CUSTOMER=ei
 TYPE=prod
 SELECTOR=${TYPE}-${CUSTOMER}
@@ -32,7 +32,7 @@ ${SELECTOR}._domainkey 1 IN TXT '"v=DKIM1; k=rsa; p=${PUBLIC_KEY};'"
 
 Et côté exim, ça se configure comme ça :
 
-``` bash
+```bash
 ### main/02_exim4-config_dkim
 #################################
 

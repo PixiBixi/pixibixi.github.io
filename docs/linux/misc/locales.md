@@ -8,7 +8,7 @@ moyen facile pour gagner de la place.
 
 On commence par installer le binaire, **localepurge**
 
-``` bash
+```bash
 $ apt-get -y install localepurge
 ```
 
@@ -17,7 +17,7 @@ configuration plus tard.
 
 Pour configurer le paquet, voici comment procéder :
 
-``` bash
+```bash
 $ dpkg-reconfigure localepurge
 ```
 

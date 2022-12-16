@@ -3,7 +3,7 @@
 HAproxy est un puissant load-balancer pouvant être controlé via une API,
 je vais noter ici les principales fonctions de son API
 
-``` bash
+```bash
 echo "show stat" | socat stdio /run/haproxy/monitoring.sock | cut -d "," -f 1-2,5-10,34-36 | column -s, -t
 # pxname                svname              scur  smax  slim     stot        bin          bout          rate  rate_lim  rate_max
 cluster_analytics       custfront1        0     6     119151   117985796   1458531881   2             15

@@ -59,13 +59,13 @@ redis1 sera pour nous le master.
 
 Installation des packages nécessaires :
 
-``` bash
+```bash
 $ apt install -y haproxy redis redis-sentinel
 ```
 
 Pour simplifier la configuration, on entre tout dans le fichier hosts
 
-``` bash
+```bash
 $ cat /etc/hosts
 redis1.internal 10.10.10.1
 redis2.internal 10.10.10.2
@@ -89,7 +89,7 @@ pas. Dans ces cas-là, remplacer par la directive **slaveof**
 Exemple pour redis2, à adapter pour redis3. Attention à ne pas
 configurer replicaof pour redis1 :
 
-``` bash
+```bash
 $ cat /etc/redis/redis.conf
 bind 10.10.10.2 127.0.0.1 ::1
 replicaof redis1.internal 6379
@@ -97,13 +97,13 @@ replicaof redis1.internal 6379
 
 On restart
 
-``` bash
+```bash
 $ systemctl restart redis-server
 ```
 
 Et on observe :
 
-``` bash
+```bash
 root@dev redis1:/root$ redis-cli role
 1) "master"
 2) (integer) 0
@@ -124,7 +124,7 @@ Pour debug notre replication & election de master, nous pouvons forcer
 un sleep du '"master'", empêchant ainsi les écritures. Nous devons
 observer un changement de master (côté Redis & HAproxy)
 
-``` bash
+```bash
 root@dev redis1:/root$ redis-cli DEBUG sleep 30
 ```
 
@@ -144,7 +144,7 @@ Pour rappel, nous utilisons une configuration spliited par fichier.
 
 **Backend**
 
-``` bash
+```bash
 root@dev redis2:/root$ cat /etc/haproxy/30-backend.cfg
 backend redis_read
     mode tcp
@@ -213,7 +213,7 @@ chaque noeud (sentinel myid).
 
 La configuration est assez simple :
 
-``` bash
+```bash
 cat /etc/redis/sentinel.conf
 # Default is 30 seconds.
 sentinel monitor mymaster front01.internal 6379 2

@@ -7,7 +7,7 @@ longtemps, voici la solution :
 
 Tout d'abord, nous avons besoin de ce script PowerShell :
 
-``` powershell
+```powershell
 [CmdletBinding()]
 Param(
 [Parameter(Mandatory=$True)]
@@ -116,7 +116,7 @@ Write-Host "The operation completed successfully, reboot is required" -Foregroun
 
 Nous pouvons observer les paramètres du script :
 
-``` powershell
+```powershell
 [CmdletBinding()]
 Param(
 [Parameter(Mandatory=$True)]

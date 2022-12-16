@@ -8,13 +8,13 @@ farfelu en .iso d'une manière extrêmement simpliste
 
 Il faut évidemment commencer par installer iat
 
-``` bash
+```bash
 $ apt install iat
 ```
 
 Puis nous convertissons simplement notre fichier .bin en .iso
 
-``` bash
+```bash
 $ iat source.bin source.iso
 ```
 

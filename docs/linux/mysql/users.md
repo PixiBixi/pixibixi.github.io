@@ -4,7 +4,7 @@ Quelques trucs basiques pour les users MySQL :
 
 ## Créer son user
 
-``` sql
+```sql
 -- Mot de passe en clair dans la requête
 CREATE USER user@localhost IDENTIFIED BY password;
 
@@ -22,13 +22,13 @@ son compte UNIX.
 
 ## Renommer son user
 
-``` sql
+```sql
 RENAME USER user@localhost TO user2@localhost;
 ```
 
 ## Changer de password
 
-``` sql
+```sql
 SET PASSWORD FOR user@localhost = PASSWORD(newpassword);
 ```
 
@@ -37,28 +37,28 @@ SET PASSWORD FOR user@localhost = PASSWORD(newpassword);
 Avant toute opération dattribution de privilèges sur une base de
 données, commençons par créer cette dernière.
 
-``` sql
+```sql
 CREATE DATABASE `database` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 ```
 
 Maintenant, attribuons des privilèges à un utilisateur sur cette base de
 données.
 
-``` sql
+```sql
 GRANT SELECT, INSERT, UPDATE, DELETE ON `database`.* TO user@localhost;
 ```
 
 Si vous voulez attribuer tout les droits sur une base de données à un
 utilisateur, il vous suffit deffectuer la requête suivante :
 
-``` sql
+```sql
 GRANT ALL ON `database`.* TO user@localhost;
 ```
 
 Maintenant, pour que les nouveaux droits attribués soient pris en
 compte, il est nécessaire de lancer la requête FLUSH.
 
-``` sql
+```sql
 FLUSH PRIVILEGES;
 ```
 
@@ -67,13 +67,13 @@ FLUSH PRIVILEGES;
 Après avoir attribuer des privilège, révoquons-les. Vous pouvez révoquer
 lensemble des droits dun utilisateur avec la requêtes suivante.
 
-``` sql
+```sql
 REVOKE ALL PRIVILEGES, GRANT OPTION FROM user@localhost;
 ```
 
 Vous pouvez également supprimer seulement certains privilèges.
 
-``` sql
+```sql
 REVOKE DELETE ON database.* FROM user@localhost;
 ```
 
@@ -83,6 +83,6 @@ La suppression dun utilisateur MySQL dépend de la version de MySQL. A
 partir de la version 5.0.2, la commande suivante suffit à la suppression
 de lutilisateur.
 
-``` sql
+```sql
 DROP USER user@localhost;
 ```

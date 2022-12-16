@@ -18,7 +18,7 @@ Voici donc quelques outils pour mieux gérer tout ça :
 
 Evidemment, nous avons l'autocomplétion à activer :
 
-``` bash
+```bash
 echo alias k=kubectl >>~/.bashrc
 echo complete -F __start_kubectl k >>~/.bashrc/
 ```

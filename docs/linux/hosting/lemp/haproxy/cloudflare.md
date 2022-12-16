@@ -3,7 +3,7 @@
 Assez simple, il faut jouer avec les headers. Concrêtement, ça nous
 donne ça niveau frontend HAproxy :
 
-``` bash
+```bash
 frontend    https
     bind    0.0.0.0:443 ssl crt /etc/haproxy/acme-certs/ alpn h2,http/1.1 allow-0rtt
 
@@ -21,7 +21,7 @@ publique de ses IPs :
 
 A l'heure où j'écris ce petit post, la voici :
 
-``` bash
+```bash
 173.245.48.0/20
 103.21.244.0/22
 103.22.200.0/22

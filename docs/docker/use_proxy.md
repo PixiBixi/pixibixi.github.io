@@ -8,14 +8,14 @@ Voici la procédure à suivre sous un système basé sur Debian :
 
 -   Créer le dossier où se situera le fichier de configuration Docker
 
-``` bash
+```bash
 $ mkdir /etc/systemd/system/docker.service.d
 ```
 
 -   Nous allons créer le fichier *http-proxy.conf* qui contiendra la
     variable HTTP_PROXY qui sera reconnue par Docker
 
-``` bash
+```bash
 cat > /etc/systemd/system/docker.service.d/http-proxy.conf << EOF
 [Service]
 Environment="HTTP_PROXY=http://proxy.example.com:80/"
@@ -25,13 +25,13 @@ EOF
 -   Si vous utilisez un registry interne, il est également possible
     d'ignorer certaines IPs/nom de domaine (A ajouter au même fichier)
 
-``` bash
+```bash
 Environment="NO_PROXY=localhost,127.0.0.0/8,docker-registry.somecorporation.com"
 ```
 
 -   Nous rechargeons le daemond systemd
 
-``` bash
+```bash
 $ systemctl daemon-reload
 ```
 
@@ -39,12 +39,12 @@ $ systemctl daemon-reload
     systemd, si vous n'avez aucun retour, la variable n'a pas été
     appliquée
 
-``` bash
+```bash
 $ systemctl show --property=Environment docker
 ```
 
 -   Si la variable a bien été appliquée, nous pouvons redémarrer Docker
 
-``` bash
+```bash
 $ systemctl restart docker
 ```

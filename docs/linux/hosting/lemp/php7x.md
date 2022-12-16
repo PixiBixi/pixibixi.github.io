@@ -4,7 +4,7 @@
 
 Ajout du repo :
 
-``` bash
+```bash
 $ apt-get install apt-transport-https lsb-release ca-certificates
 $ wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
 $ echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list
@@ -12,7 +12,7 @@ $ echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/s
 
 Puis un petit update/install php7.x, et le tour est joué
 
-``` bash
+```bash
 $ apt update && apt install -y php7.4-fpm
 ```
 

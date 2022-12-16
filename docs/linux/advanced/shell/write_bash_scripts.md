@@ -14,7 +14,7 @@ Un script bash n'est ni plus ni moins qu'un simple fichier texte avec
 certaines commandes et une syntaxe précise, voici notre premier script
 bash :
 
-``` bash
+```bash
 #!/usr/bin/env bash
 echo "Mon premier script bash" # Ma commande
 ```
@@ -63,7 +63,7 @@ d'en connaitres quelques unes.
 Pour assigner une valeur à une variable en bash, qu'une seule façon est
 possible :
 
-``` bash
+```bash
 #!/bin/bash
 VAL="mavaleur"
 ```
@@ -72,7 +72,7 @@ Il est également possible d'assigner dynamiquement une valeur à une
 variable. Notre première bonne pratique ici est d'écrire le nom de la
 variable en majuscule.
 
-``` bash
+```bash
 #!/bin/bash
 HOST=$(hostname)
 ```
@@ -82,7 +82,7 @@ hostname. Enfin, il est possible d'attribuer des valeurs
 par défauts à des variables si l'utilisateur ne la réécrit pas (par
 exemple, via un argument du script).
 
-``` bash
+```bash
 #!/bin/bash
 FOO=${1:-BAR}
 ```
@@ -97,7 +97,7 @@ simplement. Dans les exemples suivant, nous supposons que notre variable
 **FOO** contienne monfichier.txt et que nous souhaitons
 garder que monfichier dans une variable nommée **BASE**.
 
-``` bash
+```bash
 #!/bin/bash
 BASE=${FOO%%.txt}
 ```
@@ -107,7 +107,7 @@ Comme vous pouvez le voir, via %%.txt, nous supprimons
 
 Il est également possible de subtituer .txt par .pdf par exemple.
 
-``` bash
+```bash
 #!/bin/bash
 BASE=${FOO/txt/pdf}
 ```
@@ -116,7 +116,7 @@ BASE=${FOO/txt/pdf}
 Nous pouvons également effectuer une sous chaine à partir de la chaine
 de base
 
-``` bash
+```bash
 #!/bin/bash
 # echo ${FOO:position:taille}
 ${FOO:2:2}
@@ -130,7 +130,7 @@ prenons les 3 derniers caractères (le signe - signifie que nous partons
 de la fin de la variable), ce qui nous permet par exemple de prendre
 juste l'extension du fichier
 
-``` bash
+```bash
 #!/bin/bash
 EXT=${FOO:(-3)}
 ```
@@ -139,7 +139,7 @@ EXT=${FOO:(-3)}
 
 ### Boucles
 
-``` bash
+```bash
 #!/bin/bash
 for i in {1..5}
 do
@@ -147,7 +147,7 @@ do
 done
 ```
 
-``` bash
+```bash
 #!/bin/bash
 for i in {0..10..2}
 do
@@ -155,7 +155,7 @@ do
 done
 ```
 
-``` bash
+```bash
 #!/bin/bash
 for (( c=1; c<=5; c++ ))
 do
@@ -163,7 +163,7 @@ do
 done
 ```
 
-``` bash
+```bash
 #!/bin/bash
 for I in 1 2 3 4 5
 do
@@ -177,7 +177,7 @@ do
 done
 ```
 
-``` bash
+```bash
 #!/bin/bash
 for s in server0{1..8}
 do
@@ -194,7 +194,7 @@ Par défaut, bash est laxiste. Il n'intègre aucun controle d'erreur ou
 autre. En définissant un simple shebang, nous n'avons aucun controle.
 C'est pour ça que je conseille d'utiliser les options bash suivantes :
 
-``` bash
+```bash
 #!/bin/bash
 set -euo pipefail
 ```
@@ -208,7 +208,7 @@ Petite explication de ces options :
     bash va bug ou ne rien afficher dans le cas d'un *echo*. Prenons un
     exemple où nous avons un problème de casse :
 
-``` bash
+```bash
 jeremy@macbook-pro-de-delgado:~ $ cat l
 #!/bin/bash
 set -euo pipefail
@@ -260,7 +260,7 @@ Ce template ne vient pas de moi mais de cet [excllent site](https://sharats.me/p
 
 Quelques astuces de scripts bash trouvées à gauche ou à droite
 
-``` bash
+```bash
 #!/bin/bash
 echo avant && : moi  && echo après
 ```
@@ -269,7 +269,7 @@ Ici, le : moi est en faite un commentaire inline, plutôt ingénieux !
 
 ------------------------------------------------------------------------
 
-``` bash
+```bash
 #!/bin/bash
 if doesnotexist |& grep command not found >/dev/null
 then
@@ -283,7 +283,7 @@ du pipeline, très utile.
 
 ------------------------------------------------------------------------
 
-``` bash
+```bash
 #!/bin/bash
 exec 8<>/dev/tcp/wiki.jdelgado.fr/80
 echo -e "GET / HTTP/1.1'r'nHost: wiki.jdelgado.fr'r'n'r'n" >&8

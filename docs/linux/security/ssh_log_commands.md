@@ -16,20 +16,20 @@ journalctl), ainsi que dans un fichier (que nous allons définir)
 
 Quelque soit le fichier, voici la ligne à rajouter :
 
-``` bash
+```bash
 export PROMPT_COMMAND=RETRN_VAL=$?;logger -p local6.debug "$(whoami) [$$]: $(history 1 | sed "s/^[  ]*[0-9]'+[  ]*//" ) [$RETRN_VAL]"
 ```
 
 Avec cette ligne, nous aurons ce genre de résultats
 
-``` bash
+```bash
 nov. 04 16:27:21 hostname moche[1781]: moche [20803]: cd /incoming/Media [1]
 ```
 
 Nous allons configurer rsyslog pour qu'il envoie les logs dans un
 fichier :
 
-``` bash
+```bash
 local6.*    /var/log/commands.log
 ```
 
@@ -39,7 +39,7 @@ quelque soit le niveau de debug **(.'*)** dans le fichier
 
 Puis nous redémarrons syslog
 
-``` bash
+```bash
 systemctl try-restart rsyslog.service
 ```
 
@@ -51,7 +51,7 @@ Il suffit d'ajouter le chemin de votre fichier de logs (Pour nous
 /var/log/commands.log) dans le fichier de configuration logrotate se
 situant dans /etc/logrotate.d/rsyslog
 
-``` bash
+```bash
 [...]
 /var/log/mail.info
 [...]

@@ -13,19 +13,19 @@ Pour la désactiver, nous allons utiliser l'outil **idle3-tools**
 disponible [ici](http://idle3-tools.sourceforge.net/) ou alors dans les
 repos Debian/Ubuntu :
 
-``` bash
+```bash
 apt install idle3-tools
 ```
 
 Nous commencons par voir l'état du IntelliPark
 
-``` bash
+```bash
 idle3ctl -g /dev/sda
 ```
 
 Si celui-ci est différent de disabled, alors nous le désactivons :
 
-``` bash
+```bash
 idle3ctl -d /dev/sda
 ```
 

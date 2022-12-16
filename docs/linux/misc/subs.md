@@ -9,14 +9,14 @@ sous-titres depuis Addic7ed.
 Pour l'installer, étant donner qu'il s'agit ici un programme écrit en
 Python, nous allons utiliser le gestionnaire de paquet *pip*.
 
-``` bash
+```bash
 $ pip install addic7ed-cli
 ```
 
 Pour télécharger un sous-titre, il nous suffit de faire la commande
 suivante
 
-``` bash
+```bash
 $ addic7ed -l french -l english The.Serie.S02E23.MDR.mkv
 ```
 

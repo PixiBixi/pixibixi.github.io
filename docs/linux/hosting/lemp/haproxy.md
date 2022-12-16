@@ -49,7 +49,7 @@ Heureusement, il est facile de split la configuration. Dans le fichier
 */etc/default/haproxy*, il vous suffit de faire la modification
 suivante:
 
-``` bash
+```bash
 # Change the config file location if needed
 #CONFIG="/etc/haproxy/haproxy.cfg"
 CONFIG="/etc/haproxy"
@@ -79,7 +79,7 @@ ordre alphabétique.
 
 Voici la configuration lancée par défaut via l'unit systemd :
 
-``` bash
+```bash
 ExecStartPre=/usr/sbin/haproxy -f ${CONFIG} -c -q
 ExecStart=/usr/sbin/haproxy-systemd-wrapper -f ${CONFIG} -p /run/haproxy.pid $EXTRAOPTS
 ```
@@ -159,7 +159,7 @@ Votre configuration est évolution, c'est pour cela que la catégorie
 frontend mais également pour les backends. Vous pouvez overwrite vos
 paramètres pour un frontend/backend spécifique par la suite
 
-``` haproxy
+```haproxy
 defaults
     mode http
     log global
@@ -225,7 +225,7 @@ L'exemple suivant est l'exemple le plus simple que nous pouvons faire
 sur HAproxy. HAproxy va écouter sur le port 80 et tout renvoyer le
 traffic vers le backend *servers*. Nous n'utilisons aucune ACL ici.
 
-``` haproxy
+```haproxy
     frontend http-in
         bind *:80
         default_backend servers
@@ -238,7 +238,7 @@ types d'ACL, que ce soir sur l'URI, les paramètres... Nous allons
 voir un exemple simple avec l'utilisation d'une ACL sur le nom de
 domaine.
 
-``` haproxy
+```haproxy
 frontend http
    bind *:80
 
@@ -336,7 +336,7 @@ checks disponibles
 On peut activer la compression gzip directement au niveau de HAproxy.
 Génial si le backend ne le gère pas :
 
-``` bash
+```bash
 compression algo gzip
 compression type text/html text/plain text/xml text/css text/javascript application/javascript application/json text/json
 ```
@@ -348,7 +348,7 @@ l'option tcplog ou autre.
 
 Dans la section defaults, il faut ajouter ceci :
 
-``` bash
+```bash
 option  dontlog-normal
 ```
 
@@ -359,7 +359,7 @@ très intéressant de spécifier le type de balance. **balance uri whole**
 indique à haproxy de toujours envoyer le traffic pour une URI spécifique
 vers le même backend. Ainsi, nous maximisons le hitrate.
 
-``` bash
+```bash
 backend varnish
     timeout     check 3000
     balance uri whole
@@ -387,7 +387,7 @@ méthode. Pour un usage durable dans le temps, nous préférons à cela une
 Si pour quelconques raison vous voulez retournez des URLs custom selon
 des URI précises, la manière la plus facile :
 
-``` bash
+```bash
 
     acl     acl           hdr_beg(host) -i monsite.fr
     acl     acl           hdr_beg(host) -i www.monsite.fr
@@ -396,7 +396,7 @@ des URI précises, la manière la plus facile :
 
 Et le contenu du fichier redirect.map
 
-``` bash
+```bash
 $ cat redirect.map
 uri1.html https://monsite.fr/coucou
 ```

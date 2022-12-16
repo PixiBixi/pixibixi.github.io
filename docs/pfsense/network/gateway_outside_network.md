@@ -11,7 +11,7 @@ dans un premier temps.
 
 Lorsque vous aurez accès au shell, rentrez les commandes suivantes
 
-``` bash
+```bash
 route add -net 62.210.0.1/32 -iface vmx0
 route add default 62.210.0.1
 ```

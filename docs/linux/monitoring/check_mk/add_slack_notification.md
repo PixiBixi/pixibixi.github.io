@@ -26,14 +26,14 @@ Dans le cas d'une installation via le package, il faudra placer le
 plugin dans */omd/sites/**'<monsite'>**/share/check_mk/notifications*
 sans oublier de rendre le script exécutable
 
-``` bash
+```bash
 λ jeremy ~ → wget -O /omd/sites/**<monsite>**/share/check_mk/notifications https://raw.githubusercontent.com/rmblake/check_mk-slack/master/slack && chmod +x /omd/sites/**<monsite>**/share/check_mk/notifications
 ```
 
 Dans ce script, il faudra modifier quelques variables pour que celui-ci
 fonctionne
 
-``` bash
+```bash
 slack_path = "/services/T6AE8D9QU/BE8UA9LUE/2DtDzTQ61UpURxc4kfMK74JF"
 bot_name = "Monitoring"
 proxies = {}
@@ -42,7 +42,7 @@ proxies = {}
 Si tout vous semble correct, il est possible de tester le script en
 ligne de commande :
 
-``` bash
+```bash
 λ jeremy ~ → export NOTIFY_HOSTNAME=TestHost
 λ jeremy ~ → export NOTIFY_WHAT=""
 λ jeremy ~ → export NOTIFY_HOSTACKCOMMENT=false
@@ -60,7 +60,7 @@ configuration est incorrecte
 Pour que notre nouveau '"service de notification'" soit vu par Check_MK,
 il faut redémarrer le site
 
-``` bash
+```bash
 λ jeremy ~ → omd restart <monsite>
 ```
 

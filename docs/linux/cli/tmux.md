@@ -14,26 +14,26 @@ distrib est évidemment votre Distribution
 
 ### Wheezy
 
-``` bash
+```bash
 $ deb http://http.debian.net/debian wheezy-backports main
 ```
 
 ### Jessie
 
-``` bash
+```bash
 $ deb http://http.debian.net/debian jessie-backports main
 ```
 
 Puis on l'update ses dépots :
 
-``` bash
+```bash
 $ apt update
 ```
 
 Et on installe tmux en spécifiant qu'il faut utiliser le dépot
 distrib-backports
 
-``` bash
+```bash
 $ apt-get -t distrib-backports install tmux
 ```
 

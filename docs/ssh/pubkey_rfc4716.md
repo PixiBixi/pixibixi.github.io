@@ -7,7 +7,7 @@ Par exemple, OpenMediaVault n'accepte que ce type de clé.
 
 Voici donc la commande à faire :
 
-``` bash
+```bash
 ssh-keygen -e -f privkey
 ```
 
@@ -15,6 +15,6 @@ Attention à bien mettre la privkey en chmod 400
 
 Il est également possible de faire la même commande pour la clé publique
 
-``` bash
+```bash
 ssh-keygen -e -f pubkey
 ```

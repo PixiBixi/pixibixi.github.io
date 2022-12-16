@@ -20,13 +20,13 @@ l'ajout d'un paquet inutile.
 Pour la 1ère méthode, comme d'habitude, il suffit d'installer
 simplement un paquet
 
-``` bash
+```bash
 apt-get install most
 ```
 
 Puis exporter la commande dans votre '*'*.bashrc '*'*
 
-``` bash
+```bash
 echo "export MANPAGER='"/usr/bin/most -s'"" >> ~/.bashrc
 ```
 
@@ -35,7 +35,7 @@ echo "export MANPAGER='"/usr/bin/most -s'"" >> ~/.bashrc
 Pour la seconde méthode, il faut exporter plusieurs variables dans votre
 **.bashrc** :
 
-``` bash
+```bash
 cat >> ~/.bashrc << EOF
 export LESS_TERMCAP_mb=$'E[01;31m
 export LESS_TERMCAP_md=$'E[01;31m
@@ -54,6 +54,6 @@ export pour chaque utilisateur**
 Et enfin, pour pouvoir admirer votre magnifique man sans quitter et
 ré-ouvrir votre client SSH, voici la commande à effectuer
 
-``` bash
+```bash
 source ~/.bashrc
 ```

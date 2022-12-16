@@ -22,7 +22,7 @@ de passe
 
 Etant donner qu'il s'agit d'un packet, il nous faut l'installer.
 
-``` bash
+```bash
 $ apt-get install libpam-cracklib
 ```
 
@@ -31,14 +31,14 @@ $ apt-get install libpam-cracklib
 Tout se fait dans le fichier */etc/pam.d/common-password*, nous allons
 donc l'éditer
 
-``` bash
+```bash
 $ nano /etc/pam.d/common-password
 ```
 
 Vous allez désormais ajouter cette ligne, juste au dessus de la première
 ligne non commentée :
 
-``` bash
+```bash
 password    requisite           pam_cracklib.so retry=3 minlen=8 difok=3
 ```
 
@@ -66,7 +66,7 @@ Par exemple, la ligne suivant force un mot de passe de 8 caractères
 minimaux, différents des 3 derniers, comportant au moins une minuscule,
 une majuscule, 3 chiffres et un caractères spéciaux.
 
-``` bash
+```bash
 password  required  pam_cracklib.so retry=3 minlen=8 difok=3 lcredit=1 ucredit=1 dcredit=3 ocredit=1
 ```
 

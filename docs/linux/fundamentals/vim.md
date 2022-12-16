@@ -81,7 +81,7 @@ Pour la configuration, tous mes fichiers sont disponibles sur mon GitHub
 Pour installer ma configuration, rien de plus simple, il vous suffit
 d'avoir un environnement UNIX/BSD :
 
-``` bash
+```bash
 $ curl https://raw.githubusercontent.com/PixiBixi/dotfiles/master/init.sh | bash
 ```
 

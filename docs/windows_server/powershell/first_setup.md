@@ -7,7 +7,7 @@ Ces étapes sont disponibles via le binaire **sconfig**
 
 ## Renommage du serveur
 
-``` powershell
+```powershell
 Rename-Computer -Name DHCP1
 ```
 
@@ -15,12 +15,12 @@ Rename-Computer -Name DHCP1
 
 -   **OU par défaut**
 
-``` powershell
+```powershell
 Add-Computer -DomainName "Domain01" -Restart
 ```
 
 -   **OU Prédéfinie**
 
-``` powershell
+```powershell
 Add-Computer -DomainName "Domain02" -OUPath "OU=testOU,DC=domain,DC=Domain,DC=com" -Restart
 ```

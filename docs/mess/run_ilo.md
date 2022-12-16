@@ -7,7 +7,7 @@ Il faut donc passer par la ligne de commande et faire cette commande :
 
 ## iLO
 
-``` bash
+```bash
 javaws iLO-jirc.jnlp
 ```
 
@@ -16,7 +16,7 @@ javaws iLO-jirc.jnlp
 Pour iDRAC, il se peut que l'on doive tout d'abord faire une exception
 de sécurité, pour cela, nous devons modifier la configuration de Java :
 
-``` bash
+```bash
 javaws -viewer
 ```
 

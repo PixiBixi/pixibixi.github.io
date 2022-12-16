@@ -24,7 +24,7 @@ Pour le SFTP, nous devons appliquer des droits spéciaux sur le folder à
 chroot (Généralement, on chroot un user dans son home directory), mais
 nous devons également modifier le sshd_config
 
-``` bash
+```bash
 Subsystem sftp internal-sftp
 Match user jeremy
     ChrootDirectory %h
@@ -33,7 +33,7 @@ Match user jeremy
 Dans notre exemple, l'utilisateur *jeremy* sera chroot dans son home
 directory. Mais si nous faisons que cela, le chroot ne marchera pas.
 
-``` bash
+```bash
 $ chown -R jeremy:jeremy /home/jeremy
 $ chown root:root /home/jeremy
 $ chmod 755 /home/jeremy
@@ -41,6 +41,6 @@ $ chmod 755 /home/jeremy
 
 Et on redémarre OpenSSH
 
-``` bash
+```bash
 $ systemctl try-restart sshd
 ```

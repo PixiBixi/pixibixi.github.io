@@ -17,7 +17,7 @@ D'autres options sont disponibles, mais ne sont que très peu utile
 
 ### Ajout de latence
 
-``` bash
+```bash
 $ tc qdisc add dev eth0 root netem delay 200ms
 ```
 
@@ -26,7 +26,7 @@ latence via le network emulator (netem). Une commande plus précise
 existe afin de simuler un comportement plus réel d'une connexion
 domestique basique
 
-``` bash
+```bash
 $ tc qdisc change dev eth0 root netem delay 100ms 10ms 25%
 ```
 
@@ -38,14 +38,14 @@ Les arguments supplémentaires de cette commande impliquent un delta de
 En 4G, il n'est pas rare d'avoir une connexion instable avec perte de
 paquets, voici donc comment le simuler :
 
-``` bash
+```bash
 tc qdisc change dev eth0 root netem loss 2%
 ```
 
 2% de loss seront appliqués sur tous vos paquets, soit 2 paquets sur 100
 (en flat)
 
-``` bash
+```bash
 tc qdisc change dev eth0 root netem loss 2% 33%
 ```
 
@@ -55,7 +55,7 @@ Toujours 2% de pertes, mais correlés avec les 33% des derniers paquets.
 
 Méthode simple. Il est possible de jouer plus finement avec de la QoS.
 
-``` bash
+```bash
 tc qdisc add dev eth0 root tbf rate 10mbit
 ```
 
@@ -64,7 +64,7 @@ tc qdisc add dev eth0 root tbf rate 10mbit
 Un wrapper a été développé permettant de manipuler (uniquement) la bande
 passante simplement :
 
-``` bash
+```bash
 $ apt-get install wondershaper
 ```
 
@@ -73,7 +73,7 @@ Et la syntaxe est simplement la suivante : wondershaper '[ interface ']
 
 Ce qui nous donne par exemple
 
-``` bash
+```bash
 $ wondershaper eth0 1024 1024
 ```
 

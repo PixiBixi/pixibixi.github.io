@@ -20,7 +20,7 @@ La QOS repose sur différentes opérations :
 Sous Cisco, il est possible d'activer automatiquement la QOS sur les
 routeurs mais également sur les switchs
 
-``` cisco
+```cisco
 Switch(config)# interface gigabitethernet0/1
 Switch(config-if)# auto qos voip trust
 Switch(config-if)# mls qos trust cos

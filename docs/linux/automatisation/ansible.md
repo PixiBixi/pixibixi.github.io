@@ -54,7 +54,7 @@ Comme dis précédemment, l'une des 2 manières de lancer ansible est via
 la ligne de commande. Par exemple, si vous souhaitez faire un *ls* d'un
 répertoire précis dans tous vos *linux*, voici la commande à taper :
 
-``` bash
+```bash
 $ ansible -i /etc/ansible/customers/absix.hosts linux -a "ls /var/www"
 ```
 
@@ -65,7 +65,7 @@ lançons la commande *ls /var/www*
 Si vous souhaitez boucler sur tous les clients, il suffira de faire une
 boucle for
 
-``` bash
+```bash
 for i in /etc/ansible/customers/*
 do
     ansible -i $i linux -a "ls /var/www"
@@ -81,7 +81,7 @@ Un playbook est un fichier de '"description'" des actions à réaliser
 
 Voici un exemple de playbook simple :
 
-``` yaml
+```yaml
 ---
 - hosts: linux
   user: root
@@ -131,7 +131,7 @@ Pour lancer ce playbook sur tous les clients d'un seul coup, la même
 boucle for que toute à l'heure est nécessaire, mais avec une commande
 différente.
 
-``` bash
+```bash
 for i in /etc/ansible/customers/*.hosts
 do
     ansible-playbook -i ${i} deploy_mkmysql.yml

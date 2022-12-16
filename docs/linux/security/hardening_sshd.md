@@ -15,7 +15,7 @@ Le paramètre le plus important lors d'une attaque est le type de
 connexion SSH. Tant que possible, il est **nécessaire** de désactiver
 les connexions par password.
 
-``` bash
+```bash
 AuthenticationMethods publickey
 ```
 
@@ -24,21 +24,21 @@ autorisée en password. Depuis quelques temps, la connexion est autorisée
 par clef uniquement. Il est tout de même conseillé de refuser
 explicitement toute connexion à l'utilisateur root.
 
-``` bash
+```bash
 PermitRootLogin No
 ```
 
 Par défaut, lors d'une connexion SSH. Debian renvoie sa version ainsi
 que la version du serveur OpenSSH utilisée.
 
-``` bash
+```bash
 remote software version OpenSSH_7.9p1 Debian-10+deb10u2
 ```
 
 Pour désactiver ce comportement, il suffit de passer la variable
 **DebianBanner** de son sshd_config à **no**
 
-``` bash
+```bash
 DebianBanner no
 ```
 
@@ -47,7 +47,7 @@ minutes (120s) pour nous login. Cette valeur est inutilement longue.
 Cette valeur est controlée par la directive **LoginGraceTime** et doit
 être définit à 30s.
 
-``` bash
+```bash
 LoginGraceTime 30
 ```
 
@@ -67,7 +67,7 @@ paramètres cohabitent :
 Par exemple, si vous souhaitez une déconnexion automatique au bout de 3
 minutes, voici la configuration à appliquer :
 
-``` bash
+```bash
 ClientAliveInterval 180
 ClientAliveCountMax 0
 ```
@@ -76,7 +76,7 @@ Une fois l'utilisateur authentifié, nous devons nous assurer que le
 canal de communication est correctement chiffré. Pour cela, la fondation
 Mozilla nous fournit des données utiles :
 
-``` bash
+```bash
 KexAlgorithms curve25519-sha256@libssh.org,ecdh-sha2-nistp521,ecdh-sha2-nistp384,ecdh-sha2-nistp256,diffie-hellman-group-exchange-sha256
 Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr
 MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-512,hmac-sha2-256,umac-128@openssh.com
@@ -86,7 +86,7 @@ Si vous souhaitez savoir quels ciphers ou autres sont disponibles dans
 votre version d'OpenSSH, il est possible d'utiliser les commandes
 suivantes
 
-``` bash
+```bash
 ssh -Q cipher
 ssh -Q cipher-auth
 ssh -Q mac
@@ -97,7 +97,7 @@ ssh -Q key
 Utiliser si possible les mécanismes de sandbox du kernel dans les
 processus non privilégiés
 
-``` bash
+```bash
 UsePrivilegeSeparation sandbox
 ```
 
@@ -107,13 +107,13 @@ Par défaut, peu d'informations sont loguées dans les logs, une
 information pouvant être utile est la fingerprint de la clé utilisée,
 nous devons donc passer le LogLevel à verbose.
 
-``` bash
+```bash
 LogLevel VERBOSE
 ```
 
 Il est également possible de log les actions effectuées en SFTP.
 
-``` bash
+```bash
 Subsystem sftp  /usr/lib/ssh/sftp-server -f AUTHPRIV -l INFO
 ```
 
@@ -126,7 +126,7 @@ Dans le cadre où vous utilisez un serveur intermédiaire pour vous
 connecter à vos serveurs (bastion), il est possible d'autoriser le
 login uniquement à partir des IPs de ces derniers :
 
-``` bash
+```bash
 AllowGroups admin@1.2.3.4 admin@10.20.30.40
 ```
 
@@ -138,7 +138,7 @@ altérer le comportement de certains programmes (LD_PRELOAD,
 LD_LIBRARY_PATH...). Pour cela, une option existe pour désactiver la
 modification des variables systèmes lors d'une connexion SSH.
 
-``` bash
+```bash
 PermitUserEnvironment no
 ```
 
@@ -161,21 +161,21 @@ possible. Via le keyword **restrict**, ce qui va implicitement refuser
 toutes les options SSH. Par exemple, si vous souhaitez tout de même
 autoriser l'agent forwarding
 
-``` bash
+```bash
 restrict,agent-forwarding ecdsa-sha2-nistp521 AAAAE
 ```
 
 Il est également possible de forcer une commande lors de la connexion
 avec une clef spécifique :
 
-``` bash
+```bash
 command="/usr/local/bin/backup" ecdsa-sha2-nistp521 AAAAE
 ```
 
 Une option plutôt pratique via ce fichier authorized_keys et qu'il est
 possible de simuler une connexion SFTP pour une clef précise
 
-``` bash
+```bash
 restrict,command="false" ecdsa-sha2-nistp521 AAAAE
 ```
 
@@ -186,7 +186,7 @@ Il est également possible de limiter la connexion via votre clef pour
 différentes machines, option une nouvelle fois utile lors de
 l'utilisation d'un bastion
 
-``` bash
+```bash
 from="1.2.3.4,10.20.30.40" ecdsa-sha2-nistp521 AAAAE
 ```
 

@@ -35,14 +35,14 @@ Installation et configuration du youtube-dl-webui évidemment).
 
 On commence par clone le repository :
 
-``` bash
+```bash
 $ cd /var/www
 $ git clone https://github.com/PixiBixi/Youtube-dl-WebUI youtube
 ```
 
 Et on lui applique les bons droits
 
-``` bash
+```bash
 $ chown -R www-data:www-data youtube
 ```
 
@@ -51,7 +51,7 @@ faire un sha256 de votre passphrase et modifier config.php)
 
 Et le fichier nginx pour activer le site :
 
-``` nginx
+```nginx
 server {
     listen 80;
     listen [::]:80;

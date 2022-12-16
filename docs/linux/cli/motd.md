@@ -6,7 +6,7 @@ message que vous avez au moment où vous vous connectez sur votre shell.
 Ce tutoriel vous permettra d'avoir un '"motd'" qui ressemblera à ça:'
 ![](/linux/cli/motdstat1.png){.align-center}
 
-``` bash
+```bash
 $ apt-get install update-notifier-common
 ```
 
@@ -14,7 +14,7 @@ Supprimer le contenu du motd actuel avec vim /etc/motd
 
 On créer ensuite le script qui affichera les informations choisies
 
-``` bash
+```bash
 $ vim /etc/profile.d/motd.sh
 ```
 
@@ -22,7 +22,7 @@ et on y colle le contenu qui suit (basé sur un script trouvé sur le net
 puis customisé). Ce script n'est pas bien compliqué, juste deux/trois
 commandes et du parsing:
 
-``` bash
+```bash
 let upSeconds="$(/usr/bin/cut -d. -f1 /proc/uptime)"
 let secs=$((${upSeconds}%60))
 let mins=$((${upSeconds}/60%60))
@@ -61,13 +61,13 @@ Update.....: ${PACKAGE} package update / ${SECURITY} security update ${REBOOT}
 On créer ensuite le script qui vérifiera toutes les heures si de
 nouvelles mises à jour sont disponibles
 
-``` bash
+```bash
 $ vim /etc/cron.hourly/checkupdate
 ```
 
 Et on y colle:
 
-``` bash
+```bash
 #!/bin/bash
 if [ -f /var/log/checkupdate.log ]; then
 rm -f /var/log/checkupdate.log

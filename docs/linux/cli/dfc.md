@@ -26,7 +26,7 @@ Comme vous pouvez, le voir, le résultat est quasiment identique, mais
 Sous Wheezy, il n'y a rien à faire, vu que le paquet est dans les
 dépots de base, donc on l'installe comme d'habitude :
 
-``` bash
+```bash
 $ apt-get -y install dfc
 ```
 
@@ -46,31 +46,31 @@ base.
 
 On commence par installer les pré-requis pour compiler **dfc**
 
-``` bash
+```bash
 $ apt-get -y install cmake gettext git-core
 ```
 
 On télécharge les sources
 
-``` bash
+```bash
 $ git clone https://github.com/Rolinh/dfc
 ```
 
 On se rend dans le dossier de téléchargement de dfc
 
-``` bash
+```bash
 $ cd dfc
 ```
 
 On créé un dossier nécéssaire à la compilation
 
-``` bash
+```bash
 $ mkdir build && cd build
 ```
 
 Et enfin, on lance la compilation
 
-``` bash
+```bash
 $ cmake .. && make && make install
 ```
 
@@ -79,7 +79,7 @@ $ cmake .. && make && make install
 A partir de Debian Stretch, dfc est rentré dans les repositories, il
 n'est donc plus nécessaire de le compiler.
 
-``` bash
+```bash
 $ apt update && apt install -y dfc
 ```
 
@@ -88,6 +88,6 @@ $ apt update && apt install -y dfc
 Nous pouvons totalement se passer de **df** en le remplaçant par **dfc**
 via un alias dans le .bashrc
 
-``` bash
+```bash
 $ echo "alias df=dfc" >> ~/.bashrc
 ```

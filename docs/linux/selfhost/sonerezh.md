@@ -36,7 +36,7 @@ PHP7 (Passage à CakePHP 2.8)
 Avant toute chose, nous devrons préparer la BDD à recevoir notre
 Sonerezh :
 
-``` mysql
+```mysql
 mysql> CREATE DATABASE sonerezh;
 mysql> GRANT ALL PRIVILEGES ON sonerezh.* TO sonerezh@localhost IDENTIFIED BY password;
 mysql> FLUSH PRIVILEGES;
@@ -48,7 +48,7 @@ N'oubliez pas de remplacer password par son mot de passe
 Une fois cela fait, nous pourrons cloner le repo de Sonerezh sur notre
 serveur web :
 
-``` bash
+```bash
 $ cd /var/www
 $ sudo git clone https://github.com/Sonerezh/sonerezh.git music
 ```
@@ -56,13 +56,13 @@ $ sudo git clone https://github.com/Sonerezh/sonerezh.git music
 Et nous n'oublions pas de lui appliquer les droits et propriétaires
 appropriés
 
-``` bash
+```bash
 $ sudo chown -R www-data: music/ && sudo chmod -R 775 music/
 ```
 
 Une fois cela, nous passons au server-block de notre nginx
 
-``` nginx
+```nginx
 server {
     listen 80;
     listen [::]:80;

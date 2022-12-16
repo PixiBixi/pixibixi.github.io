@@ -2,7 +2,7 @@
 
 ## Historique bash
 
-``` bash
+```bash
 HISTSIZE=1000
 ```
 
@@ -11,7 +11,7 @@ par défaut)
 
 ------------------------------------------------------------------------
 
-``` bash
+```bash
 HISTFILE = ~/.bash_history
 ```
 
@@ -19,7 +19,7 @@ Permet de définir un fichier où seront stockées l'historique
 
 ------------------------------------------------------------------------
 
-``` bash
+```bash
 HISTIGNORE="ls *:man *:history:clear:GCP_KEY*"
 ```
 
@@ -28,7 +28,7 @@ clear, tous les ls, tous les man, et notre clé GCP.
 
 ## Divers
 
-``` bash
+```bash
 fc
 ```
 
@@ -37,7 +37,7 @@ et de l'éditer plus facilement, puis de la réexécuter dans la foulée
 
 ------------------------------------------------------------------------
 
-``` bash
+```bash
 sleep $[ ( $RANDOM % 10 )  + 1 ]s
 ```
 

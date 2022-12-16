@@ -8,7 +8,7 @@ plus gros, les fichiers qui n'ont pas été modifiés depuis 30j...
 
 ### Filtre sur le nom
 
-``` bash
+```bash
 find . -iname power.log
 ```
 
@@ -17,7 +17,7 @@ fichier se nommant (de manière insensitive) power.log
 
 ------------------------------------------------------------------------
 
-``` bash
+```bash
 find . -name *.log
 ```
 
@@ -26,7 +26,7 @@ Cherche dans tous les dossiers n'importe quel type de document
 
 ------------------------------------------------------------------------
 
-``` bash
+```bash
 find -not -name *log
 ```
 
@@ -35,7 +35,7 @@ quel type de document **ne** contenant **pas** **(-not)** log
 
 ### Filtre sur le type
 
-``` bash
+```bash
 find /home/guest1/proj -type f -name .*
 ```
 
@@ -49,14 +49,14 @@ Recherche **uniquement** les **fichiers** **(-type f)** commençant par .
 
 ------------------------------------------------------------------------
 
-``` bash
+```bash
 find /opt /usr /var -name foo.scala -type f
 ```
 
 Il est également possible de chercher un fichier dans plusieurs
 dossiers. (/opt /usr et /var). Ici, nous cherchons le fichier foo.scala
 
-``` bash
+```bash
 find . -type f '( -name "*.c" -o -name "*.sh" ')
 ```
 
@@ -65,7 +65,7 @@ exemple, nous cherchons à la fois les fichiers en **.c** et en **.sh**
 
 ### Filtrage sur les propriétés des fichiers
 
-``` bash
+```bash
 find -mtime -2
 ```
 
@@ -80,7 +80,7 @@ défaut)**
 
 **L'argument -size fonctionne uniquement sur les fichiers**
 
-``` bash
+```bash
 find -size +10k
 ```
 
@@ -98,7 +98,7 @@ Affiche tous les fichiers de plus de 10KB
 Il est également possible de rediriger la sortie de find automatiquement
 vers les une commande en utilisant **(-exec)**
 
-``` bash
+```bash
 find report -name *log* -exec rm {} ';
 ```
 
@@ -111,13 +111,13 @@ Recherche tous les fichiers comprenant la chaine *log* et les supprime
 Il est également possible de faire cette même commande avec
 **(-delete)**
 
-``` bash
+```bash
 find report -name *log* -delete
 ```
 
 ------------------------------------------------------------------------
 
-``` bash
+```bash
 find -name *.txt -exec wc {} +
 ```
 

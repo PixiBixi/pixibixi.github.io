@@ -4,7 +4,7 @@
 
 Il se peut que vous ayez a debug une replication qui a planté
 
-``` bash
+```bash
 Error: Last_SQL_Errno: 1594 Last_SQL_Error: Relay log read failure: Could not parse relay log event entry.
 ```
 
@@ -14,7 +14,7 @@ Dans cet exemple, nous assumerons que **10.0.0.1** est le **master** et
 Tout d'abord, nous devons d'abord observer nos différents éléments (à
 lancer sur la slave) :
 
-``` bash
+```bash
 MariaDB [(none)]> SHOW SLAVE STATUS 'G;
 *************************** 1. row ***************************
                 Slave_IO_State:
@@ -34,14 +34,14 @@ MariaDB [(none)]> SHOW SLAVE STATUS 'G;
 Premièrement, nous allons vérifier que le log est lisible sur le master.
 Nous parlons ici du '_Master_Log_File'_.
 
-``` bash
+```bash
 mysqlbinlog mysql-bin.000244
 ```
 
 Si cette commande marche, alors nous pouvons rejouer les transactions et
 reset le slave. Action à effectuer sur le master
 
-``` mysql
+```mysql
 mysql> STOP SLAVE;
 Query OK, 0 rows affected (0.14 sec)
 
@@ -63,7 +63,7 @@ fonctionnelle
 Généralement, on est juste pas a la bonne position. Sur le master,
 effectuer
 
-``` bash
+```bash
 SMS=/tmp/show_master_status.txt
 mysql -ANe "SHOW MASTER STATUS" > ${SMS}
 CURRENT_LOG=`cat ${SMS} | awk {print $1}`

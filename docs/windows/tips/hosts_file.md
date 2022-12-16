@@ -3,7 +3,7 @@
 Diverses entrées dans le fichier hosts à mettre pour bloquer des pubs ou
 autre
 
-``` bash
+```bash
 Bloquage des Serveurs Microsoft
 
 127.0.0.1 localhost
@@ -20,7 +20,7 @@ Bloquage des Serveurs Microsoft
 127.0.0.1 spynettest.microsoft.com
 ```
 
-``` bash
+```bash
 0.0.0.0  activate.adobe.com
 0.0.0.0  practivate.adobe.com
 0.0.0.0  ereg.adobe.com
@@ -46,7 +46,7 @@ Bloquage des Serveurs Microsoft
 0.0.0.0 hlrcv.stage.adobe.com
 ```
 
-``` bash
+```bash
 0.0.0.0 secure.tune-up.com
 0.0.0.0 tune-up.com
 0.0.0.0 http://www.order.tune-up.com
@@ -54,7 +54,7 @@ Bloquage des Serveurs Microsoft
 0.0.0.0 http://www.registertuneup.co
 ```
 
-``` bash
+```bash
 0.0.0.0 tonec.com
 0.0.0.0 www.tonec.com
 0.0.0.0 registeridm.com
@@ -68,7 +68,7 @@ Bloquage des Serveurs Microsoft
 0.0.0.0 mirror3.internetdownloadmanager.com
 ```
 
-``` bash
+```bash
 Bloque des MatchWare (MindView..)
 0.0.0.0 activate.matchware.com
 0.0.0.0 activate1.matchware.com

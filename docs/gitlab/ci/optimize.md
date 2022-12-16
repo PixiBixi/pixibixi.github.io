@@ -10,7 +10,7 @@ Pour gagner du temps, il est possible de ne pas utiliser Docker afin de
 ne pas attendre que le daemon Docker soit prêt. Nous pouvons à la place
 utiliser buildah. La syntaxe est identique à celle de Docker :
 
-``` yaml
+```yaml
 Docker Build:
   before_script:
     # to skip default before_script
@@ -33,7 +33,7 @@ partir de la version 13.6, nous avons la feature Fastzip qui nous permet
 de compresser/décompresser bien plus rapidement les potentiels artefacts
 ou fichiers de cache
 
-``` yaml
+```yaml
 variables:
   FF_USE_FASTZIP: "true"
   # These can be specified per job or per pipeline
@@ -43,7 +43,7 @@ variables:
 
 ## Divers
 
-``` yaml
+```yaml
 build-job:
   stage: build
   script:
@@ -80,7 +80,7 @@ Dans le cadre de l'utilisation de composer, il peut être intéressant de
 mettre en cache le résultat d'un composer install. Il faut l'indiquer
 de cette manière dans votre YAML
 
-``` yaml
+```yaml
 # Cache libraries in between jobs
 cache:
   key: $CI_COMMIT_REF_SLUG
@@ -93,7 +93,7 @@ cache:
 De la même manière qu'avec PHP & composer, nous pouvons mettre en cache
 le .pip d'un projet en Python mais également le dossier venv :
 
-``` yaml
+```yaml
 # Change pips cache directory to be inside the project directory since we can
 # only cache local items.
 variables:

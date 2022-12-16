@@ -18,7 +18,7 @@ forme :
 Nous commençons par faire notre fichier qui enverra nos notifications à
 notre Slack : /etc/ssh/notify.sh
 
-``` bash
+```bash
 if [ "$PAM_TYPE" != "close_session" ]; then
  url="WEBHOOK_URL"
  channel="#external-servers"
@@ -31,20 +31,20 @@ fi
 Penser à remplacer le WEBHOOK_URL et le channel par le votre. On rend
 notre script exécutable
 
-``` bash
+```bash
 chmod +x /etc/ssh/notify.sh
 ```
 
 Et on modifie notre service PAM SSH /etc/pam.d/sshd en y ajoutant le
 contenu suivant
 
-``` bash
+```bash
 session optional pam_exec.so seteuid /etc/ssh/notify.sh
 ```
 
 Nous relançons notre service
 
-``` bash
+```bash
 systemctl try-restart ssh.service
 ```
 

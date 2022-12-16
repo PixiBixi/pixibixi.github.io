@@ -24,25 +24,25 @@ adéquate](https://wiki.jdelgado.fr/doku.php?id=linux:hosting:lemp:installation)
 
 Il faut dans un premier temps télécharger nextcloud
 
-``` bash
+```bash
 cd /var/www ; wget https://github.com/nextcloud/server/archive/refs/tags/v23.0.3.zip
 ```
 
 Et on unzip !
 
-``` bash
+```bash
 unzip v23.0.3.zip
 ```
 
 Et on fix les privilèges
 
-``` bash
+```bash
 sudo chown www-data:www-data /var/www/nextcloud/ -R
 ```
 
 On créé la database associée à nextcloud
 
-``` sql
+```sql
 mysql -u root <<-EOF
 CREATE DATABASE nextcloud;
 CREATE USER nextcloud@localhost IDENTIFIED BY mae8WiapaefohLaeb1am;
@@ -67,7 +67,7 @@ tout effectuer via l'interface graphique.
 
 occ dispose désormais d'une auto-completion :
 
-``` bash
+```bash
 source <(/var/www/nextcloud/occ _completion --generate-hook)
 ```
 
@@ -81,7 +81,7 @@ Voici quelques options particulièrement intéressantes :
 
 -   **Numéro de téléphone FR par défaut**
 
-``` bash
+```bash
 sudo -u www-data php /var/www/nextcloud/occ config:system:set '
 default_phone_region --value="FR"
 ```
@@ -90,7 +90,7 @@ default_phone_region --value="FR"
 
 -   '*'*Suppression des fichiers par défaut '*'*
 
-``` bash
+```bash
 rm -r "/var/www/nextcloud/core/skeleton/Documents/"
 rm -r "/var/www/nextcloud/core/skeleton/Photos/"
 rm "/var/www/nextcloud/core/skeleton/Nextcloud intro.mp4"
@@ -103,14 +103,14 @@ rm "/var/www/nextcloud/core/skeleton/Nextcloud.png"
 
 Nous permet de connecter notre NextCloud à des Samba, FTP ou autre
 
-``` bash
+```bash
 sudo -u www-data php /var/www/nextcloud/occ app:install files_external
 sudo -u www-data php /var/www/nextcloud/occ app:enable files_external
 ```
 
 -   '*'*Mise à jour des applications NextCloud '*'*
 
-``` bash
+```bash
 sudo -u www-data php /var/www/nextcloud/occ app:update --all
 ```
 
@@ -124,7 +124,7 @@ timers systemd :
 
 '*'* -'> Service systemd'*'*
 
-``` bash
+```bash
 cat > /etc/systemd/system/nextcloudcron.service << EOF
 [Unit]
 Description=Nextcloud Cron Job
@@ -137,7 +137,7 @@ EOF
 
 **-'> Timer systemd**
 
-``` bash
+```bash
 cat > /etc/systemd/system/nextcloudcron.timer << EOF
 [Unit]
 Description=Run Nextcloud cron.php every minute
@@ -154,14 +154,14 @@ EOF
 
 Petit reload de systemd + activation du timer :
 
-``` bash
+```bash
 systemctl daemon-reload ; systemctl enable --now nextcloudcron.timer
 ```
 
 Une fois l'étape côté serveur effectué, on va indiquer à NextCloud
 d'utiliser cette méthode de cron
 
-``` bash
+```bash
 sudo -u www-data php occ background:cron
 ```
 
@@ -172,7 +172,7 @@ sudo -u www-data php occ background:cron
 Si vous êtes paranos, il est possible d'activer le chiffrement de tous
 vos documents :
 
-``` bash
+```bash
 sudo -u www-data php occ maintenance:mode --on
 sudo -u www-data php occ encryption:enable
 sudo -u www-data php occ occ encryption:encrypt-all
@@ -194,13 +194,13 @@ d'informations](https://docs.nextcloud.com/server/15/admin_manual/configuration_
 
 Tout d'abord, nous allons installer les paquets nécessaires
 
-``` bash
+```bash
 apt install php-redis redis-server
 ```
 
 Puis nous faisons les modifications de configuration de Redis
 
-``` bash
+```bash
 usermod -a -G redis www-data
 sed -i -e "s/^#* *port +*6379$/port 0/g" /etc/redis/redis.conf
 sed -i -e "s/^#* *unixsocket +*.*$/unixsocket '/var'/run'/redis'/redis-server.sock/g" /etc/redis/redis.conf
@@ -211,7 +211,7 @@ Comme nous allons également utiliser redis pour le locking, nous devons
 activer le session locking côté PHP, sans quoi, notre locking n'aura
 aucun intérêt :
 
-``` bash
+```bash
 cat >> /etc/php/7.4/fpm/conf.d/20-redis.ini << EOF
 redis.session.locking_enabled=1
 redis.session.lock_retries=-1
@@ -221,14 +221,14 @@ EOF
 
 On n'oublie pas de restart redis :
 
-``` bash
+```bash
 systemctl restart redis-server
 ```
 
 Enfin, on configure tout ça côté NextCloud avec le fabuleux utilitaire
 qu'est occ
 
-``` bash
+```bash
 # Filelocking
 sudo -u www-data php /var/www/nextcloud/occ config:system:set filelocking.enabled --value="true"
 
@@ -249,7 +249,7 @@ sudo -u www-data php /var/www/nextcloud/occ config:system:set memcache.locking -
 Nous pouvons link NextCloud à OnlyOffice afin de modifier directement
 les documents docx odt ou autre format.
 
-``` bash
+```bash
 sudo -u www-data php /var/www/nextcloud/occ app:install documentserver_community
 sudo -u www-data php /var/www/nextcloud/occ app:install onlyoffice
 ```
@@ -264,14 +264,14 @@ faut modifier des options dans votre pool FPM ainsi que dans NGINX.
 
 Pour les options de votre pool FPM, ajoutez ceci :
 
-``` php
+```php
 php_value upload_max_filesize 16G
 php_value post_max_size 16G
 ```
 
 Côté NGINX, dans votre nginx.conf :
 
-``` nginx
+```nginx
 client_max_body_size 17G;
 ```
 

@@ -23,11 +23,11 @@ dépôt Debian n'étant plus maintenu depuis près de 2 ans. Vous devez
 installer tomcat8 comme décrit dans cette page (ou tomcat7) mais surtout
 pas tomcat6, cela risque de poser problème.
 
-``` bash
+```bash
 $ sudo apt install build-essential tomcat8 libpng12-dev libossp-uuid-dev libpulse-dev libcairo2-dev libssl-dev libvncserver-dev libvorbis-dev libtelnet-dev libssh2-1-dev libpango1.0-dev libfreerdp-dev
 ```
 
-``` bash
+```bash
 $ wget --content-disposition -O - http://apache.org/dyn/closer.cgi?action=download&filename=guacamole/1.1.0/source/guacamole-client-1.1.0.tar.gz | tar xfvz -
 $ wget --content-disposition -O - http://apache.org/dyn/closer.cgi?action=download&filename=guacamole/1.1.0/source/guacamole-server-1.1.0.tar.gz | tar xfvz -
 $ wget --content-disposition http://sourceforge.net/projects/guacamole/files/current/binary/guacamole-1.1.0.war/download
@@ -37,7 +37,7 @@ $ wget --content-disposition http://sourceforge.net/projects/guacamole/files/cur
 
 Prévoir un fix concernant les bibliothèques freerdp (points 7, 8, 9).
 
-``` bash
+```bash
 $ cd guacamole-server*
 $ ./configure --with-init-dir=/etc/init.d
 $ make
@@ -49,7 +49,7 @@ $ sudo ldconfig
 
 -   '_'_ Installation du client'_'_
 
-``` bash
+```bash
 $ sudo cp guacamole-1.1.0.war /var/lib/tomcat8/webapps/guacamole.war
 ```
 
@@ -61,7 +61,7 @@ client pour compiler le fichier war.
 Important, les droits de l'utilisateur tomcat8 sur le fichier
 user-mapping.xml sont indispensables.
 
-``` bash
+```bash
 $ sudo mkdir {/etc/guacamole,/usr/share/tomcat8/.guacamole}
 $ sudo cp guacamole-client-1.1.0/guacamole/doc/example/{guacamole.properties,user-mapping.xml} /etc/guacamole/
 $ sudo ln -s /etc/guacamole/guacamole.properties /usr/share/tomcat8/.guacamole/guacamole.properties
@@ -87,7 +87,7 @@ officielle.](http://guac-dev.org/doc/0.9.1/gug/configuring-guacamole.html)
 
 -   [Démarrage]{.underline}
 
-``` bash
+```bash
 $ sudo systemctl tomcat8.service restart
 $ sudo /etc/init.d/guacd restart
 ```
@@ -101,7 +101,7 @@ n'est sécurisé.
 Le reverse proxy en question, je vous épargne la partie liée à **TLS qui
 est indispensable**.
 
-``` nginx
+```nginx
        location / {
                 proxy_pass http://localhost:8080/guacamole;
                 proxy_buffering off;

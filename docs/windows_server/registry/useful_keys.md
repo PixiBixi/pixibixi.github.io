@@ -12,7 +12,7 @@ d'éteindre directement notre serveur.
 
 Pour la désactiver voici la règle à modifier :
 
-``` powershell
+```powershell
 HKEY_LOCAL_MACHINE'SOFTWARE'Policies'Microsoft'Windows NT'Reliability'ShutdownReasonOn
 ```
 
@@ -27,7 +27,7 @@ repasser en DHCP.
 
 Heureusement, ceci est possible via une simple ligne
 
-``` powershell
+```powershell
 HKEY_LOCAL_MACHINE'SYSTEM'CurrentControlSet'Services'{Adapter}'Parameters'Tcpip'EnableDHCP
 ```
 
@@ -42,7 +42,7 @@ utile dans certains cas**
 
 Pour l'activité, voici la clé à modifier :
 
-``` powershell
+```powershell
 HKLM'Software'Microsoft'Windows NT'CurrentVersion'winlogon'AutoAdminLogon
 ```
 
@@ -54,7 +54,7 @@ maintenant préciser l'username et le password.
 
 Pour cela, nous nous rendons dans le dossier suivant :
 
-``` powershell
+```powershell
 HKLM'Software'Microsoft'Windows NT'CurrentVersion'winlogon
 ```
 

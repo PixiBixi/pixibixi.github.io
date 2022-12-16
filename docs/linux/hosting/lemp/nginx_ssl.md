@@ -3,7 +3,7 @@
 Pour forcer le SSL/TLS sous nginx, rien de plus simple, il suffit
 simplement d'ajouter cette directive dans votre server-block nginx
 
-``` nginx
+```nginx
 server {
 ...
     return 301 https://$host$request_uri;

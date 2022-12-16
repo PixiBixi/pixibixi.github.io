@@ -4,7 +4,7 @@ Pour K8S, les commandes sont assez difficiles de base. De plus, il
 existe certaines commandes assez tricky que je vais essayer de
 répertorier ici
 
-``` bash
+```bash
 $ kubectl delete pods --field-selector=status.phase!=Running -A
 ```
 
@@ -12,7 +12,7 @@ Permet de supprimer les pods de la liste qui ne sont pas running (Dont
 les evicted)
 
 
-``` bash
+```bash
 $ kubectl get Issuers,ClusterIssuers,Certificates,CertificateRequests,Orders,Challenges -A
 ```
 

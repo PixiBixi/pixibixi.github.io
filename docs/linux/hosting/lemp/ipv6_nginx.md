@@ -9,7 +9,7 @@ supporte.
 
 Pour vérifier que nous avons l'IPv6 :
 
-``` bash
+```bash
 $ ping6 google.com
 ```
 
@@ -19,7 +19,7 @@ Si cela ping, nous sommes déjà sûr que votre hôte dispose d'une
 Maintenant, pour être sur que **nginx**, nous affichons les options de
 compilation nginx, et nous devons apercevoir **'--with-ipv6**
 
-``` bash
+```bash
 $ nginx -V | grep --with-ipv6
 ```
 
@@ -28,7 +28,7 @@ afin d'y ajouter l'IPv6
 
 Dans **un seul** block nginx, nous devons y ajouter cette ligne :
 
-``` nginx
+```nginx
 listen [::]:80 ipv6only=on deferred default_server;
 ```
 
@@ -47,13 +47,13 @@ Dans cette ligne, nous pouvons observer plusieurs éléments :
 
 Sur les autres servers blocks, nous devons ajouter
 
-``` nginx
+```nginx
 listen [::]:80;
 ```
 
 Un petit coup de restart
 
-``` bash
+```bash
 $ service nginx restart
 ```
 

@@ -7,13 +7,13 @@
 Pour effectuer simplement un speedtest sur votre serveur, installer
 speedtest-cli
 
-``` bash
+```bash
 $ apt install speedtest-cli
 ```
 
 Puis lancer simplement la commande
 
-``` bash
+```bash
 λ jeremy ~ → speedtest-cli
 Retrieving speedtest.net configuration...
 Testing from LeaseWeb Netherlands B.V. (212.32.243.25)...

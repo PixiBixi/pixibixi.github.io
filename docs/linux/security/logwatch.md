@@ -7,7 +7,7 @@ sera nécessaire d'installer un MTA
 
 Simple installation via APT :
 
-``` bash
+```bash
 $ apt install logwatch
 ```
 
@@ -24,7 +24,7 @@ Il est possible de modifier le comportement en modifiant
 d'overwrite les valeurs par défaut fourni dans
 **/usr/share/logwatch/default.conf/logwatch.conf**
 
-``` bash
+```bash
 echo "MailTo=bla@bla.fr" > /etc/logwatch/conf/logwatch.conf
 ```
 

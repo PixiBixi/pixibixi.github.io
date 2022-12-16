@@ -7,7 +7,7 @@ Depuis ce temps, je suis passé à Docker. Mon cher collège Hardware a
 fait une magnifique image Docker qui nous permet d'obtenir un 10/10 à
 mail-tester, alors pourquoi se priver ?
 
-``` yaml
+```yaml
   mailserver:
     image: hardware/mailserver:1.1-stable
     container_name: mailserver

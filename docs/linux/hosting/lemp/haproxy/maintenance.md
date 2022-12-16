@@ -6,7 +6,7 @@ HAproxy.
 
 Voici les quelques commandes à passer :
 
-``` bash
+```bash
 echo "set server backend_name/svc_name state drain" | socat stdio /var/run/haproxy/admin.sock
 echo "set server backend_name/svc_name state ready" | socat stdio /var/run/haproxy/admin.sock
 ```
@@ -17,7 +17,7 @@ des backends. Vous pouvez utiliser maint pour tout stoper d'un coup.
 Dans le cadre d'un drain, les healthcheck sont toujours envoyés, vous
 pouvez les supprimer de la manière suivante :
 
-``` bash
+```bash
 echo "disable health backend_name/svc_name" | socat stdio /var/run/haproxy/admin.sock
 echo "enable health backend_name/svc_name" | socat stdio /var/run/haproxy/admin.sock
 ```

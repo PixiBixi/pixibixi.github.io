@@ -36,14 +36,14 @@ d'informations.
 
 Une fois ceci fait, nous devons cloner notre repository GitHub
 
-``` bash
+```bash
 $ cd /var/www
 $ git clone https://github.com/SSilence/selfoss rss
 ```
 
 Puis l'on créé le server-block sur nginx
 
-``` nginx
+```nginx
 server {
     server_name rss.domain.tld;
     listen 80;
@@ -105,7 +105,7 @@ server {
 Une fois ceci fait, nous n'oublions pas d'appliquer les bons droits à
 selfoss, ainsi que de redémarrer nginx
 
-``` bash
+```bash
 $ chown -R www-data:www-data rss
 $ systemctl restart nginx
 ```
@@ -120,7 +120,7 @@ Toute la configuration de SelfOss se fait dans le fichier config.ini
 Par défaut, SelfOss est livré avec le fichier defaults.ini, nous allons
 le copier afin de ne pas l'altérer
 
-``` bash
+```bash
 cp defaults.ini config.ini
 ```
 

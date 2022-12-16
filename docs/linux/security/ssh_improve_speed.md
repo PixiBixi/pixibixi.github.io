@@ -19,7 +19,7 @@ qui introduit un gain de temps considérable.
 La configuration se fait d'une manière simpliste dans votre fichier de
 configuration ssh côté client
 
-``` bash
+```bash
 λ MacBook-Pro-de-Delgado ~ → cat ~/.ssh/config
 Host *
     ControlMaster auto
@@ -46,7 +46,7 @@ Evidemment, des explications plus détaillées sont disponibles dans le
 
 Benchmark effectué dans un train avec une connexion mitigée.
 
-``` bash
+```bash
 λ MacBook-Pro-de-Delgado ~ → time ssh backup.x.y.tld ls
 ssh backup.x.y.tld ls  0,03s user 0,02s system 2% cpu 2,149 total
 λ MacBook-Pro-de-Delgado ~ → time ssh backup.x.y.tld ls
@@ -74,7 +74,7 @@ none ponctuellement.
 Pour être sûr qu'un socket est ouvert, nous pouvons utiliser la control
 command (-O dans ssh) **check**.
 
-``` bash
+```bash
 ssh -O check backup.x.y.tld ls
 Control socket connect(/Users/jeremy/.ssh/private/master-y-jd@backup.x.y.tld:6666): No such file or directory
 ```
@@ -83,14 +83,14 @@ Ici, nous voyons que le socket n'est pas créé. Si vous êtes sûr que le
 dossier existe et dispose de bons droits, alors vous pouvez initialiser
 la connexion à la main :
 
-``` bash
+```bash
 ssh -M -S /Users/jeremy/.ssh/private/master-y-jd@backup.x.y.tld:6666 backup.x.y.tld
 ```
 
 Désormais, si vous refaites notre commande de check, vous devrez
 utiliser le socket :
 
-``` bash
+```bash
 ssh -O check backup.x.y.tld
 Master running (pid=87060)
 ```
@@ -98,7 +98,7 @@ Master running (pid=87060)
 Si pour une quelconque raisons vous souhaitez arrêter le master, vous
 pouvez le faire avec la control command **stop**
 
-``` bash
+```bash
 ssh -O stop backup.x.y.tld ls
 Stop listening request sent.
 ```

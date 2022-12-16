@@ -2,13 +2,13 @@
 
 Quelques usages assez sympa de strace :
 
-``` bash
+```bash
 strace echo "Coucou"
 ```
 
 Nous permet de strace la commande qui est indiquée en paramètre.
 
-``` bash
+```bash
 sudo strace --summary -f $(pgrep php-fpm | paste -s | sed -e s/'([0-9]'+')/-p '1/g -e s/'t/ /g)
 ```
 
@@ -17,7 +17,7 @@ processus PHP-FPM. (-f permet un follow des child si le process fork)
 
 On peut également filtrer par type de call avec -e
 
-``` bash
+```bash
 sudo strace -e stat -f $(pgrep php-fpm | paste -s | sed -e s/'([0-9]'+')/-p '1/g -e s/'t/ /g)
 ```
 

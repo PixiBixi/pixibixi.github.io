@@ -3,7 +3,7 @@
 Une nouvelle fois, grace à notre amis Stack Overflow, nous pouvons
 savoir combien de temps a durée une commande :
 
-``` powershell
+```powershell
 .'do_something.ps1
 $command = Get-History -Count 1
 $command.EndExecutionTime - $command.StartExecutionTime
@@ -14,7 +14,7 @@ d'exécution de fin.
 
 Il existe également une function pour ceci
 
-``` powershell
+```powershell
 function time($block) {
     $sw = [Diagnostics.Stopwatch]::StartNew()
     &$block
@@ -25,6 +25,6 @@ function time($block) {
 
 Et voici comment l'exéctuer :
 
-``` powershell
+```powershell
 time { .'some_command }
 ```

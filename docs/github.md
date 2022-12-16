@@ -2,25 +2,33 @@
 
 ## Commandes utiles
 
-    git push origin --delete branch_name
+```
+git push origin --delete branch_name
+```
 
 Delete la branche distante branch_name
 
 ------------------------------------------------------------------------
 
-    $ git diff --name-only HEAD HEAD~1
+```
+$ git diff --name-only HEAD HEAD~1
+```
 
 Retrouver le nom des derniers fichiers commit
 
 ------------------------------------------------------------------------
 
-    $ git remote set-url origin https://github.com/USERNAME/REPOSITORY.git
+```
+$ git remote set-url origin https://github.com/USERNAME/REPOSITORY.git
+```
 
 Change l'URL distante
 
 ------------------------------------------------------------------------
 
-    $ git clean -d -fx .
+```
+$ git clean -d -fx .
+```
 
 Supprimer les fichiers non trackés inclus dans le gitignore
 

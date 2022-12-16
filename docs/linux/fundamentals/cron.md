@@ -12,19 +12,19 @@ certains dossiers '"spéciaux'"
 
 ## La commande crontab
 
-``` bash
+```bash
 crontab -e
 ```
 
 Nous permet d'éditer les tâches cron pour l'user courant
 
-``` bash
+```bash
 crontab -l
 ```
 
 Nous permet de lister les tâches cron pour l'utilisateur courant
 
-``` bash
+```bash
 crontab -l -u www-data
 ```
 

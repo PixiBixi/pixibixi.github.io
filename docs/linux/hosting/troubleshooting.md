@@ -11,7 +11,7 @@ d'effectuer l'OCSP Stapling.
 
 Au niveau du nginx :
 
-``` nginx
+```nginx
 http {
     ...
     resolver 1.1.1.1;
@@ -21,7 +21,7 @@ http {
 
 Et au niveau de notre server-block (par ex: sites-enabled/coucou.fr) :
 
-``` nginx
+```nginx
 server {
     server_name coucou.fr
     ssl_certificate /etc/letsencrypt/live/coucou.fr-0002/fullchain.pem; # managed by Certbot

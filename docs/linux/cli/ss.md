@@ -7,7 +7,7 @@ déprécié depuis des années, voici comment l'utiliser :
 
 Une utilité basique, une commande basique
 
-``` bash
+```bash
 $ ss | less
 ```
 
@@ -36,7 +36,7 @@ permet de lister toutes les connexions d'un protocole
 
 Par exemple, pour lister toutes les connexions TCP :
 
-``` bash
+```bash
 $ ss -t -a | less
 ```
 
@@ -67,7 +67,7 @@ Pour résoudre les adresses IP :
 
 Petit exemple en cumulant les paramètres vu avant
 
-``` bash
+```bash
 $ ss -s -t -a
 ```
 
@@ -79,7 +79,7 @@ tout.
 
 -   **-p ou '--pid** : Permet de lister le processus lié à une connexion
 
-``` bash
+```bash
 $ ss -p
 ```
 
@@ -90,7 +90,7 @@ serveur
 
 '* **-s ou '--summary**
 
-``` bash
+```bash
 $ ss -s
 ```
 
@@ -110,7 +110,7 @@ Et voici les types disponibles
 
 Voici un exemple d'utilisation
 
-``` bash
+```bash
 $ ss -a -f inet6 -t -n
 ```
 
@@ -124,7 +124,7 @@ résoudre le numéro de port
 Dans ss, il est possible de filtrer leur connexion via leur statut
 (ESTABLISHED, CLOSED...) de manière extrêmement simple :
 
-``` bash
+```bash
 $ ss state ESTABLISHED
 ```
 
@@ -160,7 +160,7 @@ Certains de ces états sont également regroupés en '"catégories'" :
 Et enfin, ultime fonctionnalité, le filtrage de port, qui permet de
 sélectionner par port source ou destination, par exemple
 
-``` bash
+```bash
 $ ss -t -n sport eq 1998
 ```
 
@@ -170,7 +170,7 @@ port source est 1998
 Il est également possible de faire la même commande avec le nom du
 service
 
-``` bash
+```bash
 $ ss -nt state ESTABLISHED dst :https
 ```
 
@@ -180,7 +180,7 @@ dont le port destination est HTTPS.
 Et enfin, il est possible de réunir plusieurs conditions avec un **AND**
 ou **OR**
 
-``` bash
+```bash
 $ ss -nt ( dport = :443 or dport = :80 )
 ```
 

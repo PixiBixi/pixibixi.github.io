@@ -8,7 +8,7 @@ Template prédéfinis pour les applications Docker
 
 ## Backend nginx
 
-``` yaml
+```yaml
   nginx-backend:
     restart: always
     image: xataz/nginx-php
@@ -28,7 +28,7 @@ Template prédéfinis pour les applications Docker
 
 ## h5ai
 
-``` yaml
+```yaml
   USER_h5ai:
     image: bixidock/h5ai
     container_name: USER_h5ai
@@ -44,7 +44,7 @@ Template prédéfinis pour les applications Docker
 
 ## ruTorrent
 
-``` yaml
+```yaml
   USER_rutorrent:
     restart: always
     image: xataz/rtorrent-rutorrent:latest-filebot
@@ -67,7 +67,7 @@ Template prédéfinis pour les applications Docker
 
 ## Organizr
 
-``` yaml
+```yaml
   USER_organizr:
     restart: always
     image: lsiocommunity/organizr

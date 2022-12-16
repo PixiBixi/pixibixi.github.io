@@ -3,13 +3,13 @@
 Pour obtenir des infos utiles sur vos PDF, petit trick bien sympa,
 requiert un paquet :
 
-``` bash
+```bash
 [[ $(uname) == Darwin ]] && brew install exiftool || apt install libimage-exiftool-perl
 ```
 
 Puis on utilise simplement la commande :
 
-``` bash
+```bash
 λ yann ~ →  exiftool -a -G1 TCL.pdf
 [ExifTool]      ExifTool Version Number         : 12.00
 [System]        File Name                       : TCL.pdf

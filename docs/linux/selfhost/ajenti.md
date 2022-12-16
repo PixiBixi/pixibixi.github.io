@@ -12,14 +12,14 @@ serveur, edition des configurations, du firewall...)
 Pour l'installer, il vaut mieux utiliser la source officielle. Les
 packages Debian étant assez vieux.
 
-``` bash
+```bash
 $ echo "deb http://repo.ajenti.org/ng/debian main main" >> /etc/apt/sources.list
 $ wget http://repo.ajenti.org/debian/key -O- | apt-key add -
 ```
 
 Puis on installe le package
 
-``` bash
+```bash
 $ apt-get update && apt-get install ajenti
 ```
 

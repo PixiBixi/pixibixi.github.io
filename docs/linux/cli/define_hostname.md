@@ -37,19 +37,19 @@ Tout d'abord, nous devons configurer l'hostname
 Tout au long du tutoriel, nous allons prendre en exemple nos valeurs
 d'exemple
 
-``` bash
+```bash
 $ echo "warrior" > /etc/hostname
 ```
 
 Ou alors, une autre possibilité :
 
-``` bash
+```bash
 hostname warrior
 ```
 
 Puis on edit le fichier **/etc/hosts**
 
-``` bash
+```bash
 $ cat /etc/hosts
 127.0.0.1 warrior.toto.fr warrior
 127.0.0.1 localhost.localdomain localhost
@@ -68,19 +68,19 @@ Tout va se passer avec la commande **hostname** et différentes options
 
 Voici les différentes commande à effectuer :
 
-``` bash
+```bash
 hostname -d
 ```
 
 Doit retourner le nom de domaine
 
-``` bash
+```bash
 hostname -f
 ```
 
 Doit retourner le FQDN
 
-``` bash
+```bash
 hostname -a
 ```
 

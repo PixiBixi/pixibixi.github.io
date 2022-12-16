@@ -1,51 +1,51 @@
 -   Permet de tcpdump uniquement les IPv6 RA
 
-``` bash
+```bash
 tcpdump -vvvv -tttt -i ethX icmp6 and ip6[40] = 134
 ```
 
 -   Pour pinguer une adresse du link-local, ne pas oublier le **%ethX**
 
-``` bash
+```bash
 ping6 fe80::2%eth0
 ```
 
 -   Permet de faire un SMART sur un HDD en RAID (DELL)
 
-``` bash
+```bash
 smartctl -T permissive -a /dev/sgX
 ```
 
 -   Permet d'enregistrer les trames en format pcap puis de les décoder
 
-``` bash
+```bash
 tshark -w data.pcap
 tshark -nr data.pcap -V
 ```
 
 -   Si un volume ne peut pas s'unmount (Comme un NFS par exemple)
 
-``` bash
+```bash
 umount -f -l /mnt/
 ```
 
 -   Permet de supprimer un LV quand on a un problème
 
-``` bash
+```bash
 lvchange -an -v /dev/mapper/grp-jojo
 lvremove -vf /dev/mapper/grp-jojo
 ```
 
 -   Rename lvold en lvnew dans le VG vg02
 
-``` bash
+```bash
 lvrename vg02 lvold lvnew
 ```
 
 -   Lancer une tâche de fond avec la priorité CPU et disque minimale
     (afin qu'elle ralentisse le moins possible les autres programmes)
 
-``` bash
+```bash
 alias ni=nice -n 19 ionice -c3 >> ~/.zshrc
 ni tar cvfz monarchive.tgz monrepertoire/
 ```
@@ -54,95 +54,95 @@ ni tar cvfz monarchive.tgz monrepertoire/
     précisant un port **(A faire sur le serveur où les données sont
     situées de base)**
 
-``` bash
+```bash
 rsync --progress -avhe ssh -p 1998 . barracudaxt@$IP:$PATH
 ```
 
 -   Installe tous les packages 7.2 existants par les 7.3
 
-``` bash
+```bash
 dpkg -l|grep php7.2|awk {print $2}|sed s/7.2/7.3/g|xargs apt install -y
 ```
 
 -   N'utilise pas l'alias de ls
 
-``` bash
+```bash
 'ls
 ```
 
 -   Génère un fichier de 10G rapidement
 
-``` bash
+```bash
 fallocate -l 10G test.img
 ```
 
 -   Récuperer le modèle de serveur
 
-``` bash
+```bash
 dmidecode | grep -A3 ^System Information
 ```
 
 -   Test le nouveau nom de l'interface
 
-``` bash
+```bash
 udevadm test-builtin net_id /sys/class/net/eth0
 ```
 
 -   Créer un RAID5 en assumant que le RAID est fonctionnel. (Utile si le
     RAID n'est pas du tout détecté)
 
-``` bash
+```bash
 mdadm --create /dev/md0 --level=5 --raid-devices=3 /dev/mapper/sdb1 /dev/mapper/sdc1 /dev/mapper/sdd1 --assume-clean
 ```
 
 -   Se reendre dans le BIOS directement au reboot
 
-``` bash
+```bash
 systemctl reboot --firmware-setup
 ```
 
 -   Lister les crontabs des utilisateurs
 
-``` bash
+```bash
 cat /var/spool/cron/crontabs/
 ```
 
 -   Backup & Restore des ACL (Fortement utile pour une modification de
     masse)
 
-``` bash
+```bash
 getfacl -R . >permissions.facl
 setfacl --restore=permissions.facl
 ```
 
 -   Extract la pubkey SSH de la privkey
 
-``` bash
+```bash
 ssh-keygen -y -f privatekey > pubkey
 ```
 
 -   Check IO détaillé
 
-``` bash
+```bash
 iostat -N 10 -kx -h
 ```
 
 -   Top 10 des commandes qu'on utilise le plus
 
-``` bash
+```bash
 history | awk {CMD[$2]++;count++;}END { for (a in CMD)print CMD[a] " " CMD[a]/count*100 "% " a;} | grep -v "./" | column -c3 -s " " -t | sort -nr | nl |  head -n10
 ```
 
 -   Test compression des fichiers selon différents algos
 
-``` bash
+```bash
 for NB in 4 16 64 256 1024 4096 ; do echo "::: $NB" ; head -n $NB mysql-slow.log > foo.$NB ; cat foo.$NB | zstd -c > foo.$NB.zstd ; done
 for NB in 4 16 64 256 1024 4096 ; do head -n $NB mysql-slow.log > foo.$NB ; cat foo.$NB | lzop -c > foo.$NB.lzo ; done
 ```
 
 -   Avoir les droits effectifs pour chaque folder d'un path
 
-``` bash
+```bash
 root@prod g262:/home/pierre/home/http/www/shop/modules/appagebuilder/translations$ namei -o -m  /home/pierre/home/http/www/shop/modules/appagebuilder/translations/fr.php
 f: /home/pierre/home/http/www/shop/modules/appagebuilder/translations/fr.php
  drwxr-xr-x root      root          /
@@ -160,31 +160,31 @@ f: /home/pierre/home/http/www/shop/modules/appagebuilder/translations/fr.php
 
 -   Lister les ciphers proposés par un site web
 
-``` bash
+```bash
 nmap --script ssl-enum-ciphers -p 443 clubic.com
 ```
 
 -   Remove PCS node
 
-``` bash
+```bash
 crm_node --force -R $node
 ```
 
 -   varnishlog des requêtes non cachées
 
-``` bash
+```bash
 varnishlog -i Begin,ReqUrl,Link,BereqURL
 ```
 
 -   Remove un LV inexistant (PV ou VG mort)
 
-``` bash
+```bash
 dmsetup remove vgname-lvname
 ```
 
 -   Trouver depuis quel paquet provient un binaire
 
-``` bash
+```bash
 [17:41] ✔ X@hostname.tld:~
 └─$ dpkg-query -S "*/dig"
 dnsutils: /usr/bin/dig
@@ -192,31 +192,31 @@ dnsutils: /usr/bin/dig
 
 -   Analyser le fichier mysql-slow
 
-``` bash
+```bash
 mysqldumpslow -s c -r
 ```
 
 -   Timestamp compréhensible dans dmesg
 
-``` bash
+```bash
 dmesg -T
 ```
 
 -   Clean la queue exim
 
-``` bash
+```bash
 exim -bp | exiqgrep -i | xargs exim -Mrm
 ```
 
 -   Check le 0-RTT
 
-``` bash
+```bash
 sslyze --early_data cloudflare.com
 ```
 
 -   Upgrade Debian full non-interactive
 
-``` bash
+```bash
 export DEBIAN_FRONTEND=noninteractive
 export DEBIAN_PRIORITY=critical
 sudo -E apt-get -qy update
@@ -225,7 +225,7 @@ sudo -E apt-get -qy -o "Dpkg::Options::=--force-confold" -o "Dpkg::Options::=--f
 
 -   Check l'historique des resize & co LVM
 
-``` bash
+```bash
 [20:27] ✔ x-y@hostname.fdn:~
 └─$ sudo bash -c "cat /etc/lvm/archive/*" | '
    awk -F= $0 ~ /^creation_time =|^description =/ { print $2 } | '

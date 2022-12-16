@@ -9,7 +9,7 @@ rattacher un processus a un nouveau TTY,
 Premièrement, il faut passer un processus en background. Une fois que
 c'est effectué, il faut dissocier le processus du TTY.
 
-``` bash
+```bash
 └─$ jobs -l
 [1]+ 25644 Signal darrêt         php
 └─$ disown 25644
@@ -22,7 +22,7 @@ c'est effectué, il faut dissocier le processus du TTY.
 Une fois que c'est OK, on ouvre un tmux, et on attach le processus au
 nouveau TTY avec reptyr
 
-``` bash
+```bash
 └─$ reptyr 25644
 ```
 

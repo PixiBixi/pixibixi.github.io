@@ -13,7 +13,7 @@ root sans connaitre le password.
 
 Une fois l'accès au prompt, il faut remonter la partition en RW
 
-``` bash
+```bash
 $ mount -rw -o remount /
 ```
 

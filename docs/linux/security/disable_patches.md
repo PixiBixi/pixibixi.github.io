@@ -61,7 +61,7 @@ récent :
 Pour vérifier que les vulnérabilités ne sont plus mitigées, il faut se
 pencher du côté du dossier **/sys/devices/system/cpu/vulnerabilities/**
 
-``` bash
+```bash
 λ yann ~ → ls /sys/devices/system/cpu/vulnerabilities/
 itlb_multihit  l1tf  mds  meltdown  spec_store_bypass  spectre_v1  spectre_v2  tsx_async_abort
 ```
@@ -69,7 +69,7 @@ itlb_multihit  l1tf  mds  meltdown  spec_store_bypass  spectre_v1  spectre_v2  t
 Si nous regardons le contenu du fichier spectre_v1 par exemple **avant**
 correction du kernel :
 
-``` bash
+```bash
 λ yann ~ → cat /sys/devices/system/cpu/vulnerabilities/spectre_v1
 Mitigation: usercopy/swapgs barriers and __user pointer sanitization
 ```
@@ -77,7 +77,7 @@ Mitigation: usercopy/swapgs barriers and __user pointer sanitization
 Nous voyons ici que la vulnérabilité est mitigée. Sur un serveur
 non-mitigé, voici le message que nous auront :
 
-``` bash
+```bash
 λ yann ~ → cat /sys/devices/system/cpu/vulnerabilities/spectre_v1
 Vulnerable: __user pointer sanitization and usercopy barriers only; no swapgs barriers
 ```

@@ -3,7 +3,7 @@
 Bonne config trouvée de Git que je reposte ici si jamais :
 <https://gist.github.com/davidthingsaker/6b0997b641fdd370a395>
 
-``` bash
+```bash
 #########################################################################
 # This is an example VCL file for Varnish 4.0.              #
 # From: https://gist.github.com/davidthingsaker/6b0997b641fdd370a395    #
@@ -127,7 +127,7 @@ Cette autre config orientée pour WordPress est également bien
 (<https://gist.github.com/dz0ny/1570859/05fa3a96b45ceb6a78e424be420bafdb9f072a7e>)
 :
 
-``` bash
+```bash
 
 # Set the default backend (Nginx server for me)
 backend default {

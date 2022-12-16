@@ -3,7 +3,7 @@
 Il peut être utile pour scripter ou autre de lister tous les préfixes
 annoncés par un ASN
 
-``` bash
+```bash
 AS=3215
 whois -h asn.shadowserver.org "prefix $AS"
 ```

@@ -73,7 +73,7 @@ Par défaut, le port utilisé par iPerf est le 5001, sur le protocole TCP.
 
 Voici l'exemple typique de la commande à lancer côté client :
 
-``` bash
+```bash
 $ iperf -c ping.online.net -i 2 -t 2 -r
 ```
 

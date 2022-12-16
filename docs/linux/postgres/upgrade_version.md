@@ -6,14 +6,14 @@ comment faire.
 Il faut installer les 2 versions de postgresql et stop les 2, puis
 passer sur l'utilisateur postgres
 
-``` bash
+```bash
 su - postgres
 ```
 
 Puis on exporte les variables d'environnement qui vont bien. Par
 exemple pour une upgrade de 11 à 13 :
 
-``` bash
+```bash
 export PGDATAOLD=/var/lib/postgresql/11/main
 export PGDATANEW=/var/lib/postgresql/13/main
 export PGBINOLD=/usr/lib/postgresql/11/bin/
@@ -23,7 +23,7 @@ export PGBINNEW=/usr/lib/postgresql/13/bin/
 Puis on passe pg_upgrade avec l'option **'--check** afin de ne pas
 appliquer les modifications
 
-``` bash
+```bash
 /usr/lib/postgresql/13/bin/pg_upgrade --check --old-options -config_file=/etc/postgresql/11/main/postgresql.conf --new-options -config_file=/etc/postgresql/13/main/postgresql.conf
 ```
 
@@ -38,14 +38,14 @@ postgresql afin d'écouter sur le bon port :
 !!! warning Données
     Par défaut, les données sont copiées le temps de la transition, il est possible de faire un link avec **–link**. Attention, un rollback ne sera cependant plus possible
 
-``` bash
+```bash
 sed -i "s/5433/5432/g" /etc/postgresql/13/main/postgresql.conf
 ```
 
 Enfin, on clean l'ancienne configuration, toujours en tant que postgres
 :
 
-``` bash
+```bash
 cd ; ./analyze_new_cluster.sh ; ./delete_old_cluster.sh
 ```
 

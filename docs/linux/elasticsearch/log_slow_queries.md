@@ -8,7 +8,7 @@ Les options sont propres à chaque index.
 
 Il faut d'abord lister les index :
 
-``` bash
+```bash
 curl 127.0.0.1:9200/_cat/indices
 green open insee_and_postal_codes                      qA2bya4sRpu4WHlK3W5jgA 5 0   35856      0  21.9mb  21.9mb
 green open x_images_20210402185809                     oAY_xCe0QjqMhpKg6WTcCg 5 0  103208     97  52.3mb  52.3mb
@@ -17,7 +17,7 @@ green open x_search_results_20210402185209             ouWAT_bBQKOPVNqXhumCGA 5 
 
 Puis on applique les seuils que l'on veut :
 
-``` bash
+```bash
 curl -X PUT "localhost:9200/x_search_results_20210402185209/_settings?pretty" -H Content-Type: application/json -d
 {
   "index.search.slowlog.threshold.query.warn": "3s",

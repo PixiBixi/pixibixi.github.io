@@ -129,7 +129,7 @@ une fois, j'utilise compose pour une question de cohérence. Tous mes
 containers sont ordonnancés dans un fichier docker-compose.yml, les 2
 méthodes seront présentées :
 
-``` bash
+```bash
 $ docker run -d --name=netdata '
    -p 19999:19999 '
    -v /proc:/host/proc:ro '
@@ -140,7 +140,7 @@ $ docker run -d --name=netdata '
    netdata/netdata
 ```
 
-``` yaml
+```yaml
 version: 3
 services:
   netdata:
@@ -194,14 +194,14 @@ permet de s'abstraire de toutes les questions posées à l'utilisateur.
 
 Toujours selon les 2 méthodes, via docker run ou docker-compose :
 
-``` bash
+```bash
 $ docker run -d --name prometheus '
    -p 9090:9090 '
    -v /etc/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml '
    prom/prometheus --config.file=/etc/prometheus/prometheus.yml
 ```
 
-``` yaml
+```yaml
 version: 3
 services:
   prometheus:
@@ -219,7 +219,7 @@ services:
 	prometheus.yml sans quoi par défaut Docker considère qu'il s'agit
 	d'un dossier.
 
-``` bash
+```bash
 $ mkdir /etc/prometheus && touch /etc/prometheus/prometheus.yml
 ```
 
@@ -271,7 +271,7 @@ Et enfin, nous devons faire le fichier de démarrage systemd via le
 [tutoriel](/linux/advanced/systemd/create_unit) disponible. Une fois le
 fichier créé, il faut l'activer :
 
-``` bash
+```bash
 $ systemctl daemon-reload && systemctl enable --now prometheus
 ```
 
@@ -281,7 +281,7 @@ Toute la configuration Prometheus se fait via le fichier
 /etc/prometheus/prometheus.yml en syntaxe YAML. Voici la configuration à
 appliquer :
 
-``` yaml
+```yaml
 # my global config
 global:
   scrape_interval:     5s # Set the scrape interval to every 15 seconds. Default is every 1 minute.
@@ -411,7 +411,7 @@ monitorons).
 
 Décortiquons une réponse type pour un serveur :
 
-``` bash
+```bash
 netdata_system_ram_MiB_average{chart="system.ram",dimension="free",family="ram",instance="netdata.x.domain.tld:443",job="node"}
 netdata_system_ram_MiB_average{chart="system.ram",dimension="used",family="ram",instance="netdata.x.domain.tld:443",job="node"}
 netdata_system_ram_MiB_average{chart="system.ram",dimension="cached",family="ram",instance="netdata.x.domain.tld:443",job="node"}
@@ -436,13 +436,13 @@ Grafana.
 
 #### Docker
 
-``` bash
+```bash
 $ docker run -d --name prometheus '
    -p 3000:3000 '
    grafana/grafana
 ```
 
-``` yaml
+```yaml
 version: "3"
 
 services:
@@ -460,7 +460,7 @@ Grafana n'étant toujours pas disponible dans les dépôts de Debian 10,
 nous devons donc ajouter ses propres dépôts avant de pouvoir
 l'installer :
 
-``` bash
+```bash
 $ sudo apt-get install -y apt-transport-https
 $ echo "deb https://packages.grafana.com/oss/deb stable main" | sudo tee -a /etc/apt/sources.list.d/grafana.list
 $ wget -q -O - https://packages.grafana.com/gpg.key | sudo apt-key add -
@@ -470,7 +470,7 @@ $ apt update && apt install -y grafana
 Une fois installé, Grafana n'est pas démarré et n'est pas lancé au
 démarrage de votre serveur. Pour cela voici les commandes :
 
-``` bash
+```bash
 $ systemctl daemon-reload
 $ systemctl enable --now grafana-server.service
 ```
@@ -582,7 +582,7 @@ Comme dit précédemment, Netdata permet nativement d'exporter de
 nombreuses métriques. Cependant, pour certaines d'entre elles, dont
 MySQL, il est nécessaire de faire une manipulation :
 
-``` sql
+```sql
 mysql> create user netdata@localhost;
 mysql> grant usage on *.* to netdata@localhost;
 mysql> flush privileges;
@@ -602,7 +602,7 @@ s'offrent à nous.
 Tout d'abord, nous pouvons exposer l'API Docker via un autre container
 afin de contrôler complètement son comportement :
 
-``` yaml
+```yaml
 version: 3
 services:
   netdata:
@@ -665,7 +665,7 @@ modification, qu'il s'agisse d'une suppression ou d'un ajout.
 
 Remplacer le bloc node de votre fichier prometheus.yml par le suivant :
 
-``` yaml
+```yaml
   - job_name: node
     scheme: https
     metrics_path: /api/v1/allmetrics?format=prometheus&source=average
@@ -687,7 +687,7 @@ les différents nodes à monitorer. Si vous souhaitez ajouter/supprimer un
 fichier ou un job, il vous faudra évidemment redémarrer Prometheus.
 Voici le contenu dudit fichier :
 
-``` json
+```json
 [
   {
     "labels": {
@@ -729,20 +729,20 @@ configuration dans le répertoire de Prometheus.
 Il faut toujours se rendre sur la page Github afin de s'assurer que
 nous disposons de la dernière version de notre logiciel :
 
-``` bash
+```bash
 $ cd ~ ; wget https://github.com/prometheus/blackbox_exporter/releases/download/v0.16.0/blackbox_exporter-0.16.0.linux-amd64.tar.gz
 ```
 
 Et on extrait toujours les fichiers :
 
-``` bash
+```bash
 $ tar xzvf blackbox_exporter-0.16.0.linux-amd64.tar.gz
 ```
 
 Et on les déplace dans le dossier adéquate. Attention à bien mettre le
 bon username (prometheus ou celui que vous aurez décidés)
 
-``` bash
+```bash
 $ mkdir /etc/blackbox && chown -R prometheus:prometheus /etc/blackbox
 $ mv ~/blackbox_exporter-0.16.0.linux-amd64/blackbox_exporter /usr/bin
 $ mv ~/blackbox_exporter-0.16.0.linux-amd64/blackbox.yml /etc/blackbox
@@ -752,7 +752,7 @@ Si nous souhaitons utiliser le test ICMP de blackbox et que nous avons
 lancé blackbox en tant que non-root, alors il nous faudra ajouter une
 Capability à notre unit.
 
-``` bash
+```bash
 $ systemctl edit --full blackbox_exporter
 [Service]
 ...
@@ -763,7 +763,7 @@ AmbientCapabilities=CAP_NET_RAW
 Nous n'oublions également pas que le paquet puisse effectuer les
 opérations dont il a besoin :
 
-``` bash
+```bash
 $ getcap /usr/bin/prometheus-blackbox-exporter
 /usr/bin/prometheus-blackbox-exporter cap_net_raw=ep
 ```
@@ -780,7 +780,7 @@ que d'ICMP, nous ne toucherons donc pas à ce fichier.
 Maintenant que Blackbox est correctement installé, nous devons indiquer
 à Prometheus d'aller récupérer les métriques de Blackbox :
 
-``` yaml
+```yaml
 - job_name: HTTP
   scheme: http
   params:
@@ -806,7 +806,7 @@ Prometheus. Enfin, nous réécrivons la variable address avec la valeur de
 notre exporter Blackbox, dans notre cas, *localhost:9115*. Voici le
 contenu de notre fichier *http.json*
 
-``` yaml
+```yaml
 [
   {
     "labels": {
@@ -874,13 +874,13 @@ Rendons-nous sur la [page officielle](https://prometheus.io/download/)
 pour trouver la dernière version de alermanager . A l'heure où
 j'écris, il s'agit de la 0.20.0.
 
-``` bash
+```bash
 $ cd ~ ; wget https://github.com/prometheus/alertmanager/releases/download/v0.20.0/alertmanager-0.20.0.linux-amd64.tar.gz
 ```
 
 On extrait les fichiers
 
-``` bash
+```bash
 $ tar xzvf alertmanager-0.20.0.linux-amd64.tar.gz
 ```
 
@@ -890,7 +890,7 @@ une fois, si nous avons déjà Prometheus, nous mettrons le fichier de
 configuration dans ce répertoire, sinon, nous créerons le répertoire
 **/etc/alertmanager**
 
-``` bash
+```bash
 $ mv ~/alertmanager-0.20.0.linux-amd64/{amtool,alertmanager} /usr/bin/
 $ mv ~/alertmanager-0.20.0.linux-amd64/alertmanager.yml /etc/alertmanager
 $ chown -R prometheus:prometheus /etc/alertmanager
@@ -904,7 +904,7 @@ permettant d'interagir directement avec l'API de AlertManager.
 
 Voici le contenu par défaut du fichier alertmanager.yml :
 
-``` yaml
+```yaml
 global:
   resolve_timeout: 5m
 
@@ -967,7 +967,7 @@ mais nous n'y avons pas touché. Nous allons donc charger notre première
 règle. De plus, il faudra indiquer à Prometheus de renvoyer ses alertes
 à alertmanager.
 
-``` yaml
+```yaml
 [...]
 rule_files:
   - "alert.rules.yml"
@@ -1063,7 +1063,7 @@ Pour avoir nos alertes sur Telegram, j'utilise le bot de
 juste à nos besoins. Dernière version au jour de l'écriture de cet
 article : 0.4.2
 
-``` bash
+```bash
 $ cd ~ ; wget https://github.com/metalmatze/alertmanager-bot/releases/download/0.4.2/alertmanager-bot-0.4.2-linux-amd64
 $ mv alertmanager-bot-0.4.2-linux-amd64 /usr/bin/alertmanager-bot && chmod +x /usr/bin/alertmanager-bot
 ```
@@ -1075,14 +1075,14 @@ et relever notre ChatID.
 
 Notre directive *ExecStart* de notre unit sera la suivante :
 
-``` bash
+```bash
 ExecStart=alertmanager-bot --store=bolt --telegram.token=BOT_TOKEN --telegram.admin=USER_ID --template.paths=default.tmpl
 ```
 
 Penser bien à remplacer BOT_TOKEN et USER_ID par les bonnes variables.
 Quand au template default.tpl, voici celui que j'utilise :
 
-``` toml
+```toml
 {{ define "telegram.default" }}
 {{ range .Alerts }}
 {{ if eq .Status "firing"}}⚠️ <b>{{ .Status | toUpper }}</b> ⚠️{{ else }}✅<b>{{ .Status | toUpper }}</b>✅{{ end }}

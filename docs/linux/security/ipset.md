@@ -3,7 +3,7 @@
 ipset est un produit magique qui va vous permettre de build des hashmap
 d'IP. Bien plus efficace que des multiples entrées sur iptables.
 
-``` bash
+```bash
 ipset create drop hash:net
 ```
 
@@ -15,7 +15,7 @@ Il existe 2 types de tables, à adapter selon son usage :
 On commence par créer une map où l'on va ajouter les différents ranges
 d'IPs
 
-``` bash
+```bash
 ipset add drop 14.144.0.0/12
 ipset add drop 27.8.0.0/13
 ipset add drop 58.16.0.0/15
@@ -24,7 +24,7 @@ ipset add drop 1.1.1.0/24
 
 Enfin, nous pouvons ajouter notre règle iptables correspondante :
 
-``` bash
+```bash
 iptables -I INPUT -m set --match-set drop src -j DROP
 ```
 
@@ -32,7 +32,7 @@ Nous allons drop tous les subnets inclus dans la table drop.
 
 Différentes commandes existent autour de ipset.
 
-``` bash
+```bash
 ipset -L # Lister les tables
 ipset destroy drop # Drop la table drop
 ```
@@ -57,12 +57,12 @@ d'ipset. La notion de liste est directement gérée dans nftables.
 
 Pour l'import dans nftables, une seule commande suffit :
 
-``` bash
+```bash
 ipset-translate restore < sets.ipset
 ```
 
 Si vous voulez regarder le résultat nft :
 
-``` bash
+```bash
 nft list ruleset
 ```

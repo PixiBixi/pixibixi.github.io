@@ -6,7 +6,7 @@ différents.
 
 Par exemple
 
-``` bash
+```bash
 export KUBECONFIG=/Users/jeremy/.kube/A:/Users/jeremy/.kube/B
 ```
 
@@ -14,7 +14,7 @@ Via ce KUBECONFIG, nous avons la configuration du fichier A et B
 chargés. Nous pouvons faire plus dynamique via un script à mettre dans
 son bashrc par exemple
 
-``` bash
+```bash
 #!/usr/bin/env bash
 DEFAULT_KUBECONFIG_FILE="$HOME/.kube/config"
 if test -f "${DEFAULT_KUBECONFIG_FILE}"

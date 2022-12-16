@@ -25,7 +25,7 @@ trouvaient dans /etc/init.d.
 
 Concrètement, voici un exemple type d'unit :
 
-``` bash
+```bash
 [Unit]
 Description=Prometheus
 Documentation=https://prometheus.io/docs/guides/
@@ -122,7 +122,7 @@ toujours utiliser cette target.
 Un service template est appelé ainsi car il s'agit d'un service
 pouvant être utilisé :
 
-``` bash
+```bash
 $ cat /etc/systemd/system/openvpn@.service
 
 [Unit]

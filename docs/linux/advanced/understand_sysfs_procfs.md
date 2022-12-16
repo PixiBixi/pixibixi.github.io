@@ -22,14 +22,14 @@ UNIX. Toutes les commandes tels que ps,top,vmstat et free parsent
 différents fichiers de /proc afin d'obtenir leur résultats. Voici par
 exemple le résultat de free et son équivalent dans /proc
 
-``` bash
+```bash
 λ jeremy /proc → free
               total        used        free      shared  buff/cache   available
 Mem:       16379504     1948272     3373296        6112    11057936    14094688
 Swap:       4189180     2077184     2111996
 ```
 
-``` bash
+```bash
 λ jeremy / → cat /proc/meminfo
 MemTotal:       16379504 kB
 MemFree:         2793060 kB
@@ -78,7 +78,7 @@ l'Homme.
 -   **/proc/cpuinfo** nous apportera des précisions sur quel processeur
     nous utilisons, son modèle, les bugs auquel il est vulnérable...
 
-``` bash
+```bash
 λ jeremy ~ → =cat /proc/cpuinfo
 processor   : 0
 vendor_id   : GenuineIntel
@@ -121,7 +121,7 @@ qu'un tutoriel est disponible
 -   **/proc/meminfo** nous permet d'obtenir toutes les informations
     nécessaires à notre RAM (RAM Totale, disponible, free...)
 
-``` bash
+```bash
 λ jeremy /proc → head -5 meminfo
 MemTotal:       16379496 kB
 MemFree:         1008852 kB
@@ -140,7 +140,7 @@ Cached:         12093768 kB
     indique avec quels paramètres est lancé notre kernel Linux mais
     également dans quelle version
 
-``` bash
+```bash
 λ jeremy /proc → cat cmdline
 BOOT_IMAGE=/vmlinuz-4.19.0-8-amd64 root=UUID=ccedef42-f296-4e01-ad9e-4327f847b728 ro debian-installer=en_US.UTF-8 quiet noibrs noibpb nopti nospectre_v2 nospectre_v1 l1tf=off nospec_store_bypass_disable no_stf_barrier mds=off mitigations=off
 ```
@@ -196,7 +196,7 @@ d'obtenir un résultat un peu plus digeste via la commande dstat. *dstat
 -tif '--int24 60* nous permet de lister toutes les interruptions système
 pour une durée donnée (Ici 60 secondes)
 
-``` bash
+```bash
 λ jeremy ~ → dstat -tif --int24 60
 ----system---- -------------------interrupts------------------ -------------interrupts------------
      time     |  20    21    25    26    27    28    29    30 | LOC   PMI   RES   CAL   TLB   MCP
@@ -211,7 +211,7 @@ la commande.
 -   **loadavg** qui nous fournit le load-average que nous connaissons
     tous
 
-``` bash
+```bash
 λ jeremy /proc → cat loadavg
 0.24 0.10 0.09 1/546 5181
 ```

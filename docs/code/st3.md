@@ -149,7 +149,7 @@ facilement compréhensible.
 
 Voici mon fichier de configuration Sublime Text :
 
-``` javascript
+```javascript
 {
     "always_show_minimap_viewport": true,
     "bold_folder_labels": true,
@@ -267,21 +267,21 @@ Voici les différents paramètres pour les différents thèmes :
 
 -   **Sublime Material Lighter**
 
-``` javascript
+```javascript
 "theme": "Material-Theme-Lighter.sublime-theme",
 "color_scheme": "Packages/Material Theme/schemes/Material-Theme-Lighter.tmTheme",
 ```
 
 -   **Sublime Material**
 
-``` javascript
+```javascript
 "theme": "Material-Theme.sublime-theme",
 "color_scheme": "Packages/Material Theme/schemes/Material-Theme.tmTheme",
 ```
 
 -   **Sublime Material Darker**
 
-``` javascript
+```javascript
 "theme": "Material-Theme-Darker.sublime-theme",
 "color_scheme": "Packages/Material Theme/schemes/Material-Theme-Darker.tmTheme",
 ```

@@ -5,7 +5,7 @@ est possible de monter nativement des ISO sous Windows
 
 ## Monter un ISO
 
-``` powershell
+```powershell
 Mount-DiskImage -ImagePath C:'Visio.iso -StorageType ISO -PassThru
 ```
 
@@ -14,6 +14,6 @@ lettre dans l'explorateur Windows, ou via la commande ***Get-Volume***
 
 ## Demonter un ISO
 
-``` powershell
+```powershell
 Dismount-DiskImage -ImagePath C:'Visio.iso
 ```

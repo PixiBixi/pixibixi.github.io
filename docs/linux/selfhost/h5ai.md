@@ -17,7 +17,7 @@ le folder que nous souhaitons rendre accessible publiquement.
 Pour moi, je souhaite rendre ///home/boobs/torrents/ //accessible
 publiquement
 
-``` bash
+```bash
 ln -s /home/boobs/torrents/ /var/www/downloads
 ```
 
@@ -26,7 +26,7 @@ destination
 
 Puis dans ce dossier, nous allons télécharger h5ai
 
-``` bash
+```bash
 cd /var/www/downloads/
 wget https://release.larsjung.de/h5ai/h5ai-0.28.1.zip
 ```
@@ -37,21 +37,21 @@ afin de consulter les dernières versions de h5ai disponibles
 Enfin, nous extrayons l'archive, puis nous renommons **'_h5ai** en
 **.h5ai** afin de ne pas le voir dans l'explorateur.
 
-``` bash
+```bash
 unzip h5ai-0.28.1.zip
 mv _h5ai .h5ai
 ```
 
 On n'oublie pas de donner les droits adéquats
 
-``` bash
+```bash
 chown -R www-data:www-data .h5ai
 ```
 
 Et enfin, on créer le server-block nGinx adéquat, sans oublier de faire
 le bon CNAME
 
-``` nginx
+```nginx
 server {
     server_name downloads.titi.ovh;
     listen 80;

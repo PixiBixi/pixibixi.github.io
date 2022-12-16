@@ -25,7 +25,7 @@ Dans celui-ci, il faudra faire 2 fichiers :
 
 Et voici des exemples de templates :
 
-``` markdown
+```markdown
 **Description:**
 
 - A-Frame Version:
@@ -35,7 +35,7 @@ Et voici des exemples de templates :
 <!-- If you have a support question, please ask at https://stackoverflow.com/questions/ask/?tags=aframe rather than filing an issue. -->
 ```
 
-``` markdown
+```markdown
 **Description:**
 
 **Changes proposed:**

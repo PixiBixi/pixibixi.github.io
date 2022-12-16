@@ -9,7 +9,7 @@ ancêtre **ifconfig**, mais les habitudes sont durs à changer.
 
 ## Principe de base
 
-``` bash
+```bash
 $ ip OBJECT COMMAND
 $ ip [options] OBJECT COMMAND
 $ ip OBJECT help
@@ -19,25 +19,25 @@ $ ip OBJECT help
 
 Pour **activer** une interface :
 
-``` bash
+```bash
 $ ip link set wlan0 up
 ```
 
 Pour **désactiver** une interface
 
-``` bash
+```bash
 $ ip link set wlan0 down
 ```
 
 ## Parametrer une adresse IP
 
-``` bash
+```bash
 $ ip addr add 192.168.1.8/24 dev wlan0
 ```
 
 Afin de vérifier que l'adresse IP a bien été prise en compte
 
-``` bash
+```bash
 $ ip addr show wlan0
 ```
 
@@ -51,7 +51,7 @@ Et voici l'output que nous devons obtenir :
 Si nous souhaitons supprimer une adresse IP, il suffit de remplacer
 **add** par **del**
 
-``` bash
+```bash
 $ ip addr del 192.168.1.8/24 dev wlan0
 ```
 
@@ -62,19 +62,19 @@ via la commande ip
 
 ### Montrer les routes
 
-``` bash
+```bash
 $ ip route show
 ```
 
 ### Ajoute une route
 
-``` bash
+```bash
 $ ip route add default via 192.168.1.1
 ```
 
 ### Supprime une route
 
-``` bash
+```bash
 $ ip route del default via 192.168.1.1
 ```
 
@@ -85,7 +85,7 @@ interfaces
 
 ### Toutes interfaces
 
-``` bash
+```bash
 $ ip -statistics link
 ```
 
@@ -118,7 +118,7 @@ Output :
 
 ### Interface spécifique
 
-``` bash
+```bash
 $ ip -statistics link show eth0
 ```
 
@@ -139,12 +139,12 @@ local.
 
 ### Ajout Statique
 
-``` bash
+```bash
 ip neigh add 192.168.0.1 lladdr 00:11:22:33:44:55 nud permanent dev eth0
 ```
 
 ### Désactiver la résolution ARP
 
-``` bash
+```bash
 ip link set dev eth0 arp off
 ```

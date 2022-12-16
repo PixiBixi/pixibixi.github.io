@@ -56,7 +56,7 @@ cluster depuis le serveur qui sera primaire.
 Une fois l'initialisation passée, on vérife sur MySQL la variable
 qu'il faut
 
-``` sql
+```sql
 SHOW STATUS LIKE wsrep_cluster_size;
 
 +--------------------+-------+
@@ -68,7 +68,7 @@ SHOW STATUS LIKE wsrep_cluster_size;
 
 Et on ajoute les autres nodes
 
-``` bash
+```bash
 node2$ systemctl start mariadb
 ```
 
@@ -89,7 +89,7 @@ les logs Galera et vérifier que les entrées FW soit OK.
 
 Pour reset un node d'un cluster Galera :
 
-``` bash
+```bash
 λ yann ~ →  rm -rf /var/lib/mysql && service mysql start
 ```
 

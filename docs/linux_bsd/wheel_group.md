@@ -7,7 +7,7 @@ faire la commande '"su'" par défaut. Nous devons l'ajouter au groupe
 *wheel*. Il s'agit d'une différence minuscule mais qui a une grande
 importance.
 
-``` bash
+```bash
 $ pw groupmod wheel -m username
 ```
 

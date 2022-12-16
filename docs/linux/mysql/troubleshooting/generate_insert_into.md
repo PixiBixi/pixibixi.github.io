@@ -3,7 +3,7 @@
 Une commande est vraiment magique avec mysqldump et permet de générer
 des INSERT INTO depuis un WHERE assez simple
 
-``` bash
+```bash
 mysqldump -t DB Table --where="champ in (280, 172);" > ~/Req.sql
 ```
 

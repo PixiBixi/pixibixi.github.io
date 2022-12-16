@@ -10,19 +10,19 @@ bonnes options.
 Avant de compiler, nous devons être sûr que nous avons bien toutes les
 dépendances :
 
-``` bash
+```bash
 apt build-dep mktorrent && apt install git
 ```
 
 Nous téléchargons les sources de *mktorrent*
 
-``` bash
+```bash
 git clone https://github.com/Rudde/mktorrent && cd mktorrent
 ```
 
 Et on edit les variables qui vont bien :
 
-``` bash
+```bash
 sed -i -e "s/#USE_PTHREADS/USE_PTHREADS/g;" '
        -e "s/#USE_OPENSSL/USE_OPENSSL/g;" '
        -e "s/#USE_LONG_OPTIONS/USE_LONG_OPTIONS/g;" '
@@ -32,7 +32,7 @@ sed -i -e "s/#USE_PTHREADS/USE_PTHREADS/g;" '
 
 Et enfin on compile :
 
-``` bash
+```bash
 make && make install
 ```
 

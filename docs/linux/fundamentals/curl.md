@@ -2,7 +2,7 @@
 
 -   cURL détaillé
 
-``` bash
+```bash
 curl -I -v --trace-time https://www.google.com
 ```
 
@@ -16,7 +16,7 @@ négociation TLS...
 
 Nous utilisons pour cela un fichier qui sera un template :
 
-``` bash
+```bash
 Fichier:
     time_namelookup:  %{time_namelookup}'n
        time_connect:  %{time_connect}'n
@@ -30,7 +30,7 @@ Fichier:
 
 Et enfin, nous l'appelons :
 
-``` bash
+```bash
 curl -w "@curl-format.txt" -o /dev/null -s "https://wiki.jdelgado.fr"
     time_namelookup:  0,015000
        time_connect:  0,057639
@@ -45,7 +45,7 @@ curl -w "@curl-format.txt" -o /dev/null -s "https://wiki.jdelgado.fr"
 Il est également possible d'avoir le retour de la commande cURL en
 JSON, très facile à parser
 
-``` bash
+```bash
 curl --write-out %{json} https://google.com -o saved
 ```
 
@@ -57,7 +57,7 @@ Toutes les options de '--write-out sont disponibles
 On peut avoir quelques détails sur le CRT en utilisant cURL et un peu de
 magie :
 
-``` bash
+```bash
 λ Jeremy ~ → curl -vvI https://wiki.jdelgado.fr 2>&1 | awk BEGIN { cert=0 } /^'* Server certificate:/ { cert=1 } /^'*/ { if (cert) print }
 * Server certificate:
 *  subject: CN=*.jdelgado.fr

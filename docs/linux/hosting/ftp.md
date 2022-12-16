@@ -15,14 +15,14 @@ c'est pour cela que nous avons choisit de l'installer.
 Pour l'installer, rien de plus simple. Il suffit de l'installer via
 son gestionnaire de paquet.
 
-``` bash
+```bash
 $ apt install pure-ftpd
 ```
 
 Ne pas oublier de vérifier que nous disposons bien du paquet dans les
 sources
 
-``` bash
+```bash
 $ apt show pure-ftpd
 ```
 
@@ -49,23 +49,23 @@ Par défaut, voici ce que contient répertoire :
 Tout d'abord, nous devons ajouter un utilisateur et un groupe pour nos
 utilisateurs virtuels PureFTPd
 
-``` bash
+```bash
 $ groupadd ftpgroup
 ```
 
-``` bash
+```bash
 $ useradd -g ftpgroup -d /dev/null -s /usr/sbin/nologin ftpuser
 ```
 
 Maintenant, il faut donc créer un user afin de se connecter au FTP
 
-``` bash
+```bash
 $ pure-pw useradd test -u ftpuser -g ftpgroup -d /home/www/test
 ```
 
 Puis on génère la DB
 
-``` bash
+```bash
 $ pure-pw mkdb
 ```
 
@@ -74,7 +74,7 @@ oublier de régénérer la base de donnée**
 
 On active la reconnaissance des virtuals users par PureFTPd
 
-``` bash
+```bash
 $ ln -s /etc/pure-ftpd/conf/PureDB /etc/pure-ftpd/auth/50pure
 ```
 
@@ -85,7 +85,7 @@ champ **VIRTUALCHROOT** et le passer à true dans le fichier
 Si vous êtes derrière un NAT, il peut être bon de forcer les
 PassivePorts afin de les NAT correctement
 
-``` bash
+```bash
 echo "40110 40210" > /etc/pure-ftpd/conf/PassivePortRange
 service pure-ftpd restart
 ```
@@ -107,13 +107,13 @@ Voici les valeurs qu'il peut avoir:
 Qui dit TLS, dit également certificat. Nous devons donc créer les
 certificats
 
-``` bash
+```bash
 $ mkdir -p /etc/ssl/private/
 ```
 
 Puis nous créons notre certificat:
 
-``` bash
+```bash
 $ openssl req -x509 -nodes -days 7300 -newkey rsa:4096 -keyout /etc/ssl/private/pure-ftpd.pem -out /etc/ssl/private/pure-ftpd.pem
 ```
 
@@ -131,13 +131,13 @@ ceux Wiki Mozilla disponible
 Il suffit donc de copier la Ciphers Listdans un fichier que nous allons
 créer dans le **dossier conf**
 
-``` bash
+```bash
 $ touch /etc/pure-ftpd/conf/TLSCipherSuite
 ```
 
 Puis l'on '"insère'" les ciphers
 
-``` bash
+```bash
 $ echo "ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256" > /etc/pure-ftpd/conf/TLSCipherSuite
 ```
 
@@ -149,7 +149,7 @@ Comme d'habitude, pour activer le FXP (**F**ile e**X**change
 
 Voici la commande à taper afin d'activer le FXP
 
-``` bash
+```bash
 $ echo yes > /etc/pure-ftpd/conf/AllowUserFXP
 ```
 
@@ -162,7 +162,7 @@ Si vous ne souhaitez utilisez uniquement une auth' par users
 virtuelles, alors il faut désactiver l'authentification UNIX mais
 également l'authentification PAM
 
-``` bash
+```bash
 $ echo no > /etc/pure-ftpd/conf/PAMAuthentication
 $ echo no > /etc/pure-ftpd/conf/UnixAuthentication
 ```
@@ -176,7 +176,7 @@ controler l'utilisateur
 
 Afin de restreindre à une IP/range un compte utilisateur :
 
-``` bash
+```bash
 $ pure-pw usermod <username> -R 192.168.2.0/24 -m
 $ pure-pw usermod <username> -R 192.168.0.8 -m
 ```
@@ -187,7 +187,7 @@ Il est possible de séparer plusieurs IP par une virgule.
 
 Vous pouvez affecter un débit maximum à vos utiliateurs :
 
-``` bash
+```bash
 $ pure-pw usermod <username> -t 10 -T 10 -m
 ```
 
@@ -200,6 +200,6 @@ Il est possible d'utiliser -t et -T indépendament l'un de l'autre:
 
 Tout simple !
 
-``` bash
+```bash
 $ pure-pw usermod <username> -N  -m
 ```

@@ -41,7 +41,7 @@ profiter de toutes les dernières nouveautés.
 
 Tout d'abord, on commence par ajouter le depot NGINX à Debian
 
-``` bash
+```bash
 $ echo "deb [signed-by=/usr/share/keyrings/nginx-archive-keyring.gpg] '
 http://nginx.org/packages/mainline/debian `lsb_release -cs` nginx" '
     | sudo tee /etc/apt/sources.list.d/nginx.list
@@ -50,7 +50,7 @@ http://nginx.org/packages/mainline/debian `lsb_release -cs` nginx" '
 Il faut également ajouter la **GPG Key** à son Debian, sans quoi il nous
 affichera que la source n'est pas certifiée
 
-``` bash
+```bash
 $ curl https://nginx.org/keys/nginx_signing.key | gpg --dearmor '
     | sudo tee /usr/share/keyrings/nginx-archive-keyring.gpg >/dev/null
 ```
@@ -58,7 +58,7 @@ $ curl https://nginx.org/keys/nginx_signing.key | gpg --dearmor '
 Afin d'être sûr que nous allons utiliser les repository Debian, on
 ajoute un Pinning :
 
-``` bash
+```bash
 echo -e "Package: *'nPin: origin nginx.org'nPin: release o=nginx'nPin-Priority: 900'n" '
     | sudo tee /etc/apt/preferences.d/99nginx
 ```
@@ -76,13 +76,13 @@ fait la commande **apt-cache policy nginx**
 
 Si tout se passe comme il faut, on peut lancer l'installation
 
-``` bash
+```bash
 └─# apt-get -y install nginx nginx-extras nginx-doc
 ```
 
 Voici les options de compilations du paquet **nginx**
 
-``` bash
+```bash
 --prefix=/etc/nginx
 --sbin-path=/usr/sbin/nginx
 --conf-path=/etc/nginx/nginx.conf
@@ -113,7 +113,7 @@ qu'à le configurer.
 
 Voici ma configuration personnel que j'utilise
 
-``` nginx
+```nginx
 user www-data;
 worker_processes auto;
 worker_rlimit_nofile 65536;
@@ -224,7 +224,7 @@ web, et n'est disponible que via le package **nginx-extras**
 Comme vous pouvez le voir, on inclut également différents fichiers, les
 voici :
 
-``` nginx
+```nginx
 ##
 # File Cache
 ##
@@ -234,7 +234,7 @@ open_file_cache_min_uses 2;
 open_file_cache_errors   on;
 ```
 
-``` nginx
+```nginx
 ###
 # GZip Settings
 ###
@@ -282,7 +282,7 @@ internet.
 -   **gzip_vary** indique si un ajout va être effectué dans le header si
     le fichier a été '"gzippé'"
 
-``` nginx
+```nginx
 ###
 # SSL Settings
 ###
@@ -335,7 +335,7 @@ préférence](https://content-security-policy.com/) '###
 
 Voici désormais des snippets utiles pour ses différents blocks nginx :
 
-``` nginx
+```nginx
 ###
 # Basic File Protect
 ###
@@ -363,7 +363,7 @@ cas-là, il faut les ajouter manuellement.
 
 Snippets utiles pour vos vhosts (snippets/letsencrypt.conf)
 
-``` nginx
+```nginx
 location ^~ /.well-known/acme-challenge/ {
     satisfy any;
     allow all;
@@ -379,7 +379,7 @@ location ^~ /.well-known/acme-challenge/ {
 Commande à adapter selon les modules que vous souhaitez. Généralement,
 ces derniers sont suffisant pour 99% des installations.
 
-``` bash
+```bash
 $ apt-get -y install php-common php7.4 php7.4-bz2 php7.4-cli php7.4-common php7.4-curl php7.4-fpm php7.4-gd php7.4-geoip php7.4-gmp php7.4-igbinary php7.4-imagick php7.4-intl php7.4-json php7.4-mbstring php7.4-mcrypt php7.4-memcached php7.4-msgpack php7.4-mysql php7.4-opcache php7.4-readline php7.4-sqlite3 php7.4-xml php7.4-xmlrpc php7.4-zip
 ```
 
@@ -402,7 +402,7 @@ Petit customisation de la. configuration afin d'optimiser les
 performances. Il faut pour la plupart des CMS/Framework adapter les
 valeurs de l'OPcache. Pour WordPress, voici des valeurs adéquates :
 
-``` bash
+```bash
 opcache.memory_consumption = 128M
 opcache.interned_strings_buffer=16
 opcache.max_accelerated_files=100000
@@ -427,13 +427,13 @@ surveiller votre monitoring.
 
 On met à jour les paquets disponibles :
 
-``` bash
+```bash
 $ apt-get update
 ```
 
 Et enfin, on vérifie que la *Candidate Version* est la bonne :
 
-``` bash
+```bash
 $ apt-cache policy mariadb-server
 ```
 

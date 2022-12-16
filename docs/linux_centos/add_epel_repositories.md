@@ -15,7 +15,7 @@ repositories EPEL peuvent être utilisés dans les projets suivants :
 
 Pour installer le package, rien de plus simple :
 
-``` bash
+```bash
 yum install epel-release
 ```
 

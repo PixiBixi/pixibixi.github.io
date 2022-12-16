@@ -26,13 +26,13 @@ de 128/256GB)
 
 Tout d'abord, nous devons installer les outils CLI de XCode
 
-``` bash
+```bash
 xcode-select --install
 ```
 
 Puis on installe Homebrew
 
-``` bash
+```bash
 ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 ```
 

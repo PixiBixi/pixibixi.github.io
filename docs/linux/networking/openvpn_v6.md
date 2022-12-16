@@ -13,7 +13,7 @@ Pour faire ce tutoriel, il faut déjà avoir un serveur avec une IPv6 en
 
 Tout d'abord, comme pour IPv4, il faut activer l'ip_forwarding
 
-``` bash
+```bash
 $ sed -i 0,/ipv6.conf.all/s/^#//g /etc/sysctl.conf
 $ sysctl -p
 ```
@@ -21,7 +21,7 @@ $ sysctl -p
 Pour être sur que la modification soit appliquée, nous pouvons aller
 voir ce fichier (Qui doit retourner 1)
 
-``` bash
+```bash
 $ cat /proc/sys/net/ipv6/conf/all/forwarding
 ```
 
@@ -44,7 +44,7 @@ Vous l'avez donc comprit, il nous faut donc un accept_ra à 2
 Et une nouvelle fois, nous vérifions que la valeur ait bien été
 appliquée :
 
-``` bash
+```bash
 $ cat /proc/sys/net/ipv6/conf/all/accept_ra
 ```
 
@@ -66,7 +66,7 @@ dual-stack :
 Une fois cette configuration faite, un restart de openvpn, et vous
 devriez avoir une connectivité v6 sur votre hôte :
 
-``` bash
+```bash
 $ systemctl restart openvpn@server.service
 ```
 

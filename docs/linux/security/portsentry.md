@@ -11,7 +11,7 @@ prémunir de celui-ci
 
 Une installation de base de portsentry se fera toujours via apt :
 
-``` bash
+```bash
 $ apt update && apt install portsentry
 ```
 
@@ -57,7 +57,7 @@ selon votre OS, il n'y a pas besoin d'y toucher.
 
 Cependant, **KILL_RUN_CMD** demeure vide, voici une bonne valeur :
 
-``` bash
+```bash
 KILL_RUN_CMD="/sbin/iptables -I INPUT -s $TARGET$ -j DROP && /sbin/iptables -I INPUT -s $TARGET$ -m limit --limit 3/minute --limit-burst 5 -j LOG --log-level debug --log-prefix Portsentry: dropping: "
 ```
 
@@ -74,21 +74,21 @@ seule entrée.
 Il faut installer ipset comme n'importe quel paquet (Mais également
 iptables-persistent afin de rendre la config persistent):
 
-``` bash
+```bash
 $ apt install ipset iptables-persistent
 ```
 
 **Si vous êtes sous Debian 10, Ubuntu 19.04 ou supérieur**, alors il
 existe un paquet permettant de rendre ipset persistent également :
 
-``` bash
+```bash
 $ apt install ipset-persistent
 ```
 
 Sinon, il vous faudra créer l'unit systemd manuellement (Fichier
 /etc/systemd/system/ipset-persistent.service)
 
-``` bash
+```bash
 [Unit]
 Description=ipset persistent configuration
 #
@@ -119,7 +119,7 @@ RequiredBy=ufw.service
 
 Et on reload systemd + activation du service au démarrage
 
-``` bash
+```bash
 $ systemctl daemon-reload
 $ systemctl enable --now ipset-persistent.service
 ```
@@ -128,13 +128,13 @@ Il nous faut d'abord créer notre set ipset avec un timeout de 180s. Il
 est inutile de bannir à vie ces IPs, un timeout de 3 minutes suffit
 amplement à stopper l'attaquant.
 
-``` bash
+```bash
 $ ipset create portsentry hash:ip timeout 180
 ```
 
 Puis créer notre règle correspondante dans iptables
 
-``` bash
+```bash
 $ iptables -I INPUT -m set --match-set portsentry src -j DROP
 ```
 
@@ -147,6 +147,6 @@ fichier '_/etc/portsentry/portsentry.conf'_, pour utiliser
 
 Voici la KILL_RUN_CMD à définir (autour de la ligne 269) :
 
-``` bash
+```bash
 KILL_RUN_CMD="/sbin/ipset add portsentry $TARGET$"
 ```

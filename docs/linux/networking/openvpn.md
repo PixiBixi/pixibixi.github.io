@@ -32,7 +32,7 @@ staff facilement accessible).
 
 Pour installer OpenVPN, rien de plus simple:
 
-``` bash
+```bash
 $ apt install openvpn
 ```
 
@@ -42,7 +42,7 @@ il nous reste de nombreuses étapes avant d'avoir un VPN fonctionnel.
 Nous allons copier les fichiers utiles à la création des futures
 certificats :
 
-``` bash
+```bash
 $ cp -a /usr/share/easy-rsa /etc/openvpn/ && cd /etc/openvpn/easy-rsa
 $ source vars
 $ ./clean-all
@@ -53,7 +53,7 @@ $ ./clean-all
 Afin d'être sécuriser, un VPN a besoin de certificats SSL. Ceux-ci sont
 très facile à build via easy-rsa
 
-``` bash
+```bash
 $ cd /etc/openvpn/easy-rsa
 $ ./build-ca
 ```
@@ -148,7 +148,7 @@ notre serveur VPN
 
 Tout d'abord, on active l'IP Forwarding
 
-``` bash
+```bash
 $ echo net.ipv4.ip_forward=1 >> /etc/sysctl.conf
 $ sysctl -p
 ```
@@ -168,7 +168,7 @@ nous devons nous occuper de la partie client.
 Tout d'abord, il faut génerer les certificats pour notre client (Votre
 PC).
 
-``` bash
+```bash
 $ cd /etc/openvpn/easy-rsa/
 $ source vars
 $ ./build-key jeremy
@@ -176,7 +176,7 @@ $ ./build-key jeremy
 
 Et on créer le fichier de conf :
 
-``` bash
+```bash
 # Client
 client
 dev tun

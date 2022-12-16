@@ -2,7 +2,7 @@
 
 Quelques requêtes pour migrer son WordPress d'URL :
 
-``` sql
+```sql
 UPDATE wp_posts SET guid = REPLACE(guid, http://old_url, https://new_url) WHERE guid LIKE %http://old_url%;
 UPDATE wp_postmeta SET meta_value = REPLACE(meta_value, http://old_url, https://new_url) WHERE meta_value LIKE %http://old_url%;
 UPDATE wp_options SET option_value = REPLACE(option_value, http://old_url, https://new_url) WHERE option_value LIKE %http://old_url%;

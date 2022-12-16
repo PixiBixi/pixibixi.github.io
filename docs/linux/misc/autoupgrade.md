@@ -17,14 +17,14 @@ ce qui va nous éviter d'y penser, ou de le faire.
 Tout ce que nous avons à faire est d'installer le paquage
 **unattended-upgrades**
 
-``` bash
+```bash
 $ apt-get -y install unattended-upgrades
 ```
 
 Cependant, les mises à jour automatiques ne sont pas activées par
 défaut, nous devons donc reconfigurer le paquet
 
-``` bash
+```bash
 $ dpkg-reconfigure unattended-upgrades
 ```
 

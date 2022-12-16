@@ -3,7 +3,7 @@
 Pour importer une lister d'utilisateur dans un Active Directory, nous
 utilisons une liste CSV ainsi qu'un script PowerShell.
 
-``` csv
+```csv
 lastName;firstName;ou
 Golay;Jerry;OU=_Users,DC=test,DC=com
 ```
@@ -13,7 +13,7 @@ dans l'OU **'_Users** de **test.com**
 
 Concernant le script PS1 :
 
-``` powershell
+```powershell
 Import-Module ActiveDirectory
 Import-Module Microsoft.PowerShell.Security
 

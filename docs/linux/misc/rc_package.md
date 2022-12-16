@@ -7,7 +7,7 @@ Généralement, il reste des fichiers de configuration
 
 Pour les enlever à 100%, voici la commande à exécuter
 
-``` bash
+```bash
 $ dpkg --list |grep "^rc" | cut -d " " -f 3 | xargs dpkg --purge
 ```
 

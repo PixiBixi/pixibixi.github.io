@@ -110,7 +110,7 @@ Repassons désormais à notre BIND9, et regardons les fichiers à éditer
 Dans ce fichier, nous allons ajouter la zone à gérer par BIND9. Voici un
 exemple de zone à rajouter au fichier
 
-``` bash
+```bash
 zone "jdelgado.fr" IN {
 
         # Zone de type maître
@@ -144,7 +144,7 @@ chacunes d'entrent-elles
 Nous ajoutons un include dans ce fichier, afin de pouvoir faire des logs
 corrects, au lieu de tout log dans syslog par défaut
 
-``` bash
+```bash
 include "/etc/bind/named.conf.logging";
 ```
 
@@ -153,7 +153,7 @@ include "/etc/bind/named.conf.logging";
 Et voici le fichier de logging :
 [named.conf.logging](http://pastebin.com/raw/Xt2KVVL8)
 
-``` bash
+```bash
 logging {
     channel security_file {
         file "/var/log/bind/security.log" versions 3 size 30m;
@@ -181,7 +181,7 @@ logging {
 
 Le fichier de base étant totalement inutile, en voici un plus utile
 
-``` bash
+```bash
 acl allowQueried {
     188.166.95.206;
 };

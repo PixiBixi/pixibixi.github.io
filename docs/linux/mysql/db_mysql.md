@@ -4,7 +4,7 @@ Si par très grosse inadvertance, vous effectuez un *rm -Rf
 /var/lib/mysql*, nous pouvons recréer la DB initiale MySQL afin de le
 faire démarrer :
 
-``` bash
+```bash
 mkdir /var/lib/mysql
 mkdir /var/lib/mysql/mysql
 chown -R mysql:mysql /var/lib/mysql

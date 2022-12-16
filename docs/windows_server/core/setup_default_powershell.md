@@ -7,7 +7,7 @@ fois que nous voulons faire la moindre opération sur le serveur.
 Heureusement pour nous, nous pouvons définir **PowerShell** en temps que
 shell par défaut :
 
-``` powershell
+```powershell
 Set-ItemProperty -Path HKLM:'SOFTWARE'Microsoft'Windows NT'CurrentVersion'Winlogon -Name Shell -Value PowerShell.exe -NoExit
 ```
 

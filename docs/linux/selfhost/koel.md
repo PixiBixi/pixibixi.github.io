@@ -36,7 +36,7 @@ machine, étant donner que Koel dispose de son propre serveur web*
 Composer vous permet de gérer simplement les dépendances de votre
 application PHP
 
-``` bash
+```bash
 curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
 ```
 
@@ -45,14 +45,14 @@ curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --fil
 NodeJS n'est pas utile directement ici, mais il vous sera indispensable
 à l'installation de NPM
 
-``` bash
+```bash
 wget -qO- https://deb.nodesource.com/setup_5.x | bash -
 ```
 
 Ce script sert just à ajouter les bonnes sources à notre fichier
 sources. Nous l'installons comme d'habitude
 
-``` bash
+```bash
 apt update && apt install nodejs
 ```
 
@@ -61,7 +61,7 @@ apt update && apt install nodejs
 NPM va vous permettre d'installer toutes les librairies JS nécéssaires
 au bon fonctionnement de Koel
 
-``` bash
+```bash
 curl -L https://www.npmjs.com/install.sh | sh
 ```
 
@@ -69,7 +69,7 @@ curl -L https://www.npmjs.com/install.sh | sh
 
 Gulp va vous permettre de compiler les fichiers JS et SASS
 
-``` bash
+```bash
 npm install --global gulp
 ```
 
@@ -78,7 +78,7 @@ npm install --global gulp
 Tout comme Composer, Bower est un gestionnaire de paquet, destiné aux
 dépendances de vos diverses applications Web.
 
-``` bash
+```bash
 npm install -g bower
 ```
 
@@ -90,7 +90,7 @@ passer à son installation en elle même.
 Nous devons tout d'abord préparer la base de donnée qui recevra les
 données de notre Koel
 
-``` bash
+```bash
 CREATE DATABASE koel DEFAULT CHAR SET utf8 DEFAULT COLLATE utf8_general_ci;
 CREATE USER koel-user@localhost IDENTIFIED BY koel-pass;
 GRANT ALL PRIVILEGES ON koel.* TO koel-user@localhost WITH GRANT OPTION;
@@ -102,7 +102,7 @@ identifiants que vous souhaitez.
 Maintenant, nous allons cloner le projet Koel dans notre répertoire Web
 (Généralement, /var/www). N'oubliez pas d'installer **git** pour cela.
 
-``` bash
+```bash
 git clone https://github.com/phanan/koel.git
 ```
 
@@ -110,18 +110,18 @@ Il est maintenant nécéssaire de télécharges les dépendances nécéssaires
 au bon fonctionnement de Koel (Ne pas oublier de se placer dans le
 répertoire de Koel)
 
-``` bash
+```bash
 npm install
 ```
 
-``` bash
+```bash
 composer install
 ```
 
 A ce stade de progression, il est désormais nécéssaire d'éditer le
 fichier de configuration de Laravel (Le framework utilisé par Koel)
 
-``` bash
+```bash
 cp .env.example .env
 ```
 
@@ -177,37 +177,37 @@ et **ADMIN_PASSWORD**.
 Une fois cela fait, nous allons utiliser une nouvelle fois artisan afin
 de les générer en base de données :
 
-``` bash
+```bash
 php artisan db:seed
 ```
 
 Nous allons générer les JS & CSS de notre Koel
 
-``` bash
+```bash
 bower install --allow-root
 ```
 
-``` bash
+```bash
 gulp --production
 ```
 
 Et enfin, toujours en étant dans le dossier Koel, nous initialisons le
 premier lancement de Koel
 
-``` bash
+```bash
 php artisan koel:init
 ```
 
 Puis, nous pouvons lancer un serveur Web (Qui tournera sur le port 8000)
 
-``` bash
+```bash
 php artisan koel:serve --host 0.0.0.0
 ```
 
 Pour que ce serveur intégrer puisse fonctionner, nous avons besoin de
 quelques librairies:
 
-``` bash
+```bash
 apt-get install libcrystalhd-dev libvdpau1
 ```
 
@@ -223,7 +223,7 @@ une simple ligne cron.
 
 Pour cela, ajoutez cette ligne
 
-``` bash
+```bash
 0 0 * * * cd /var/www/koel/ && /usr/bin/php artisan koel:sync >/dev/null 2>&1
 ```
 
@@ -244,13 +244,13 @@ je ne comprendrais pas), vous devrez l'exécuter en tâche de fond
 
 Créer l'instance screen
 
-``` bash
+```bash
 screen -S Koel
 ```
 
 Puis on lance la commande habituelle
 
-``` bash
+```bash
 php artisan koel:serve --host 0.0.0.0
 ```
 

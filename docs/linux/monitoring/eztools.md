@@ -17,7 +17,7 @@ Ceux-ci ont été développés par un jeune français du pseudo de
 
 Pour l'installer, rien de plus simple, on télécharge la paquet
 
-``` bash
+```bash
 $ wget -O ezservercli.zip http://www.ezservermonitor.com/esm-sh/downloads/version/2.3
 ```
 
@@ -28,13 +28,13 @@ les mises à jour ainsi que le
 
 On extrait le fichier de l'archive
 
-``` bash
+```bash
 $ unzip ezservermonitor-sh_v2.3.zip
 ```
 
 On le rend exécutable
 
-``` bash
+```bash
 $ chmod +x eZServerMonitor.sh
 ```
 
@@ -42,7 +42,7 @@ Et enfin, une chose qui n'est pas obligée mais je déplace le fichier
 dans un répertoire de mon '$PATH, et je le renomme en quelque chose de
 simple comme monitor pour y accéder simplement
 
-``` bash
+```bash
 $ mv eZServerMonitor.sh monitor.sh && move monitor.sh /usr/bin
 ```
 
@@ -107,7 +107,7 @@ Pour l'installer, rien de plus simple, il suffit d'avoir son serveur
 web avec PHP de configurer. Voilà le block à faire pour son serveur
 **nginx** si l'on veut un sous-domaine
 
-``` nginx
+```nginx
 server {
     listen 80;
     return 301 https://$host$request_uri;
@@ -137,7 +137,7 @@ Tools](https://hostingcanada.org/htpasswd-generator/)
 Et voici le bout de code à ajouter à son block principal si l'on ne
 veut pas de **eZ Server Monitor Web** en sous-domaine :
 
-``` nginx
+```nginx
         location ^~ /monitor/ {
             include /etc/nginx/conf.d/php;
             include /etc/nginx/conf.d/cache;

@@ -1,13 +1,13 @@
 # Requêtes SQL afin d'optimiser son site
 
-``` sql
+```sql
 CREATE INDEX post_id_meta_key ON wp_postmeta (post_id, meta_key(191));
 ```
 
 Certaines requêtes sont lentes à cause de la manière dont WordPress
 construit ses queries. (Par exemple plugin Yoast)
 
-``` sql
+```sql
 UPDATE wp_options SET autoload = no WHERE LENGTH(option_value) > 4096 AND autoload = yes;
 ```
 

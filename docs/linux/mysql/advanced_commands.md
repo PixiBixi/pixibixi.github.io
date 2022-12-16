@@ -4,7 +4,7 @@ La plupart de ces commandes sont disponibles pour MySQL ou MariaDB.
 
 ## InnoDB
 
-``` sql
+```sql
 SELECT  ENGINE,
         ROUND(SUM(data_length) /1024/1024, 1) AS "Data MB",
         ROUND(SUM(index_length)/1024/1024, 1) AS "Index MB",
@@ -21,7 +21,7 @@ Nous permet de déterminer la taille de chaque moteur de stockage. Ainsi,
 nous pouvons dimensionner **innodb_buffer_pool_size** au plus juste (20%
 en plus de la valeur retournée)
 
-``` sql
+```sql
 MariaDB [(none)]> ...
 +--------+---------+----------+----------+------------+
 | ENGINE | Data MB | Index MB | Total MB | Num Tables |
@@ -36,7 +36,7 @@ MariaDB [(none)]> ...
 Nous savons que dans notre exemple nous avons un moteur InnoDB utilisant
 1.6G. Nous pouvons donc définir le pool à 2G.
 
-``` bash
+```bash
 Q=` ; mysql --skip-column-names -Be "select concat(alter table ${Q}, table_schema,${Q}.${Q}, table_name, ${Q} engine=innodb;)
 from information_schema.tables where engine = MyISAM and table_schema not in (mysql)" | mysql
 ```
@@ -46,21 +46,21 @@ Un use case parmis tant d'autres, une cluster Galera.
 
 ## Misc
 
-``` sql
+```sql
 MariaDB [(none)]> SHOW (FULL) PROCESSLIST 'G;
 ```
 
 Permet de lister les process SQL tournant d'une manière '"propre'"
 (''G), on peut également aller plus loin en détail en ajoutant FULL
 
-``` sql
+```sql
 MariaDB [(none)]>  KILL xxxx
 ```
 
 Permet de kill le process MySQL xxxx (Attention, rollback de la
 transaction, peut également être long)
 
-``` sql
+```sql
 pt-show-grants
 mysql --silent --skip-column-names --execute "select concat(',User,'@',Host,') as User from mysql.user" | sort | '
 while read u
@@ -71,7 +71,7 @@ done
 -   Permet de dump la liste des users SQL (commande mysql si
     pt-show-grants pas dispo)
 
-``` sql
+```sql
 SELECT ENGINE,
        concat(TABLE_SCHEMA, ., TABLE_NAME) AS TABLE_NAME,
        round(DATA_LENGTH/1024/1024, 2) AS data_length,
@@ -86,7 +86,7 @@ ORDER BY data_free DESC LIMIT 10;
 -   Permet de voir la fragmentation des tables MySQL. Il est possible de
     récuperer l'espace en faisant un **OPTIMIZE TABLE**
 
-``` sql
+```sql
 SELECT information_schema.system_variables.variable_name,
        information_schema.system_variables.default_value,
        global_variables.variable_value

@@ -15,7 +15,7 @@ n'oublions pas de récupérer les tokens importants.
 Nous commençons par faire notre fichier qui enverra nos notifications à
 notre Telegram : /etc/ssh/notify.sh
 
-``` bash
+```bash
 #!/usr/bin/env bash
 
 # Import credentials form config file
@@ -47,20 +47,20 @@ Nous utilisons un autre fichier afin de contenir les credentials :
 Penser à remplacer le WEBHOOK_URL et le channel par le votre. On rend
 notre script exécutable
 
-``` bash
+```bash
 chmod +x /etc/ssh/notify.sh
 ```
 
 Et on modifie notre service PAM SSH /etc/pam.d/sshd en y ajoutant le
 contenu suivant
 
-``` bash
+```bash
 session optional pam_exec.so seteuid /etc/ssh/notify.sh
 ```
 
 Nous relançons notre service
 
-``` bash
+```bash
 systemctl try-restart ssh.service
 ```
 
