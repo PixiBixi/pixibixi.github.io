@@ -63,6 +63,10 @@ Cette magnifique documentation a été faites avec MkDocs
 -   [Netdata, Prometheus et Grafana : Une stack de monitoring simple et puissante](/linux/monitoring/simple_monitoring_stack)
 -   [Configurer des notifications Slack pour check_mk](/linux/monitoring/check_mk/add_slack_notification)
 
+### Hardware
+
+-   [Upgrade son firmware Mellanox](/docs/hardware/nic/identify_and_upgrade_mellanox.md)
+
 ### Hébergement
 
 -   [Postfix/Dovecot/DKIM/Postgrey et plus encore](/linux/hosting/mail)
