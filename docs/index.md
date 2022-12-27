@@ -65,7 +65,7 @@ Cette magnifique documentation a été faites avec MkDocs
 
 ### Hardware
 
--   [Upgrade son firmware Mellanox](/docs/hardware/nic/identify_and_upgrade_mellanox.md)
+-   [Upgrade son firmware Mellanox](/hardware/nic/identify_and_upgrade_mellanox)
 
 ### Hébergement
 

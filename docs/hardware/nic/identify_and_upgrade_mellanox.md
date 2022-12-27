@@ -64,4 +64,3 @@ root@hostname:/home/user# flint -d <device_name> -i <binary image> burn
 ```
 
 Un petit restart, un recommence la commande mstflint, et hop, firmware upgraded :)
-```
