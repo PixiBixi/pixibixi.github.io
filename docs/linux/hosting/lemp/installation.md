@@ -63,16 +63,18 @@ echo -e "Package: *'nPin: origin nginx.org'nPin: release o=nginx'nPin-Priority: 
     | sudo tee /etc/apt/preferences.d/99nginx
 ```
 
-Et enfin, on effectue un **apt-get update** pour mettre à jour nos
+Et enfin, on effectue un `apt-get update` pour mettre à jour nos
 packets disponibles.
 
 Si tout marche bien, voici ce que nous devrions obtenir lorsque l'on
-fait la commande **apt-cache policy nginx**
+fait la commande `apt-cache policy nginx`
 
+```
     └─# apt-cache policy nginx
     nginx:
       Installé : (aucun)
       Candidat : 1.21.1-1~buster
+```
 
 Si tout se passe comme il faut, on peut lancer l'installation
 
@@ -195,25 +197,25 @@ de même certains points importants à conserver :
 
 ------------------------------------------------------------------------
 
--   **user** qui sera l'utilisateur qui exécutera les instances nginx
--   **worker_processes** qui définira combien d'instances seront
+  * `user` qui sera l'utilisateur qui exécutera les instances nginx
+  * `worker_processes` qui définira combien d'instances seront
     exécutées en simultanées (Ce nombre doit correspondre au nombre de
-    coeurs **logiques** dont dispose votre CPU). Vous pouvez disposez de
-    cette information via la commande *nproc*. La valeur **auto** est
+    coeurs `logiques` dont dispose votre CPU). Vous pouvez disposez de
+    cette information via la commande *nproc*. La valeur `auto` est
     censée définir le bon nombre de workers automatiquement
--   **include** qui permet d'inclure différents éléments de
-    configuration à votre **nginx.conf** afin de rendre celui-ci plus
+  * `include` qui permet d'inclure différents éléments de
+    configuration à votre `nginx.conf` afin de rendre celui-ci plus
     clair. Nous pouvons voir dans notre exemple que nos sites se
     trouvent dans le répertoire *sites-enabled* et que certains éléments
     de configuration se trouvent dans le répertoire //conf.d/static/ //
--   **server_tokens** une valeur très importante, celle-ci doit être
-    mise à **off**. Cette valeur évite à nginx de montrer des éléments
+  * `server_tokens` une valeur très importante, celle-ci doit être
+    mise à `off`. Cette valeur évite à nginx de montrer des éléments
     importants tel que son numéro de version. Ces éléments peuvent être
     utilisés pour exploiter des failles sur nginx
--   **ignore_invalid_headers** est également une directive assez
+  * `ignore_invalid_headers` est également une directive assez
     intéréssante. Si des bots tentent de se connecter avec un header
     incorrect, nginx leur retourne une erreur 404.
--   **resolver** nous permet de spécifier les DNS qui vont être utilisés
+  * `resolver` nous permet de spécifier les DNS qui vont être utilisés
     dans les logs pour résoudre les différents noms de domaines
 
 ------------------------------------------------------------------------
@@ -262,24 +264,24 @@ internet.
 
 ------------------------------------------------------------------------
 
--   **gzip** permet d'activer la compression gzip
--   **gzip_buffers** permet de spécifier le nombre de buffers qui vont
+  * `gzip` permet d'activer la compression gzip
+  * `gzip_buffers` permet de spécifier le nombre de buffers qui vont
     être utilisés, ainsi que leur taille
--   **gzip_comp_level** spécifie lagressivité de la compression gzip.
-    **Attention** plus la compression gzip sera forte (9), plus le CPU
+  * `gzip_comp_level` spécifie lagressivité de la compression gzip.
+    `Attention` plus la compression gzip sera forte (9), plus le CPU
     va être sollicité.
--   **gzip_disable** permet de désactiver la compression GZip selon
+  * `gzip_disable` permet de désactiver la compression GZip selon
     l'User-Agent (Par exemple, ici, nous désactivons la compression
-    gzip pour **IE4 à IE6**)
--   **gzip_min_length** spécifie quelle est la longueur minimale d'un
+    gzip pour `IE4 à IE6`)
+  * `gzip_min_length` spécifie quelle est la longueur minimale d'un
     élément qui doit être '"gzippé'". Il dépend du header
     *Content-Length*
--   **gzip_proxied** spécifie les éléments qui doivent être '"gzippé'"
+  * `gzip_proxied` spécifie les éléments qui doivent être '"gzippé'"
     lorsque nginx agit comme reverse-proxy
--   **gzip_types** est également une autre ligne importante. C'est ici
-    que l'on doit spécifié les **MIME-Types** des différents éléments
+  * `gzip_types` est également une autre ligne importante. C'est ici
+    que l'on doit spécifié les `MIME-Types` des différents éléments
     qui vont être '"gzippés'"
--   **gzip_vary** indique si un ajout va être effectué dans le header si
+  * `gzip_vary` indique si un ajout va être effectué dans le header si
     le fichier a été '"gzippé'"
 
 ```nginx
@@ -330,8 +332,7 @@ Mozilla](https://wiki.mozilla.org/Security/Server_Side_TLS)
 
 Je n'ai volontairement pas mis une configuration CSP (Content Security
 Protocol) car il s'agit d'un protocole délicat à mettre en place, et
-je vous renvoie vers l'[article de
-préférence](https://content-security-policy.com/) '###
+je vous renvoie vers l'[article de préférence](https://content-security-policy.com/)
 
 Voici désormais des snippets utiles pour ses différents blocks nginx :
 
@@ -389,13 +390,13 @@ sous-répertoires. (7.4 a remplacer par votre numéro de version)
 
 Nous allons éditer le fichier php.ini :
 
--   **expose_php** : Désactivation afin de ne pas exposer la version de
+  * `expose_php` : Désactivation afin de ne pas exposer la version de
     PH
--   **upload_max_filesize** : Modification de la taille maximale des
+  * `upload_max_filesize` : Modification de la taille maximale des
     fichiers qu'on peut upload avec PHP
--   **post_max_size** : Va avec la directive *upload_max_filesize* et
+  * `post_max_size` : Va avec la directive *upload_max_filesize* et
     doit être supérieur à cette dernière
--   **max_file_uploads** : Nombre de fichiers qu'on peut upload en
+  * `max_file_uploads` : Nombre de fichiers qu'on peut upload en
     parallèle. Par défaut à 20, peut suffir dans une majorité des cas
 
 Petit customisation de la. configuration afin d'optimiser les

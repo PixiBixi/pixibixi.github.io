@@ -29,8 +29,8 @@ actions sur un type de serveur donné, par exemple
     foo.myserver.com
     bar.myserver.com
 
-Dans cet exemple, nous avons le groupe **webservers**. L'argument
-*ansible* pour spécifier un groupe est **-l webservers**. Il est
+Dans cet exemple, nous avons le groupe ``webservers``. L'argument
+`ansible` pour spécifier un groupe est ``-l webservers``. Il est
 également possible de ne cibler qu'un serveur via cet argument.
 
 De plus, il est possible de définir des variables de groupes ou
@@ -45,7 +45,7 @@ globales. Par exemple, si tous vos serveurs de BDD ont leur port SSH en
     ansible_port=8237
 
 Dans le cas d'une société, nous avons un dossier **customers** dans le
-dossier */etc/ansible*. Chaque fichier contenu dans ce dossier
+dossier `/etc/ansible`. Chaque fichier contenu dans ce dossier
 contiendra un client...
 
 ## Ligne de commande
@@ -59,16 +59,16 @@ $ ansible -i /etc/ansible/customers/absix.hosts linux -a "ls /var/www"
 ```
 
 Via cette commande, nous utilisons comme fichier hosts
-*/etc/ansible/customers/lol.absix* sur le groupe '*linux'* et nous
-lançons la commande *ls /var/www*
+`/etc/ansible/customers/lol.absix` sur le groupe 'linux' et nous
+lançons la commande `ls /var/www`
 
 Si vous souhaitez boucler sur tous les clients, il suffira de faire une
 boucle for
 
 ```bash
-for i in /etc/ansible/customers/*
+for HOST in /etc/ansible/customers/*
 do
-    ansible -i $i linux -a "ls /var/www"
+    ansible -i $HOST linux -a "ls /var/www"
 done
 ```
 
@@ -113,15 +113,15 @@ l'utilisateur root.
 
 4 taches seront exécutées via ce script :
 
--   Tout d'abord, il via copier le fichier contenu dans la machine
-    ansible */root/mk_mysql/files_script/mk_mysql* vers
-    */usr/lib/check_mk_agent/plugins/mk_mysql* dans la machine distante
--   Secondement, le fichier de la machine distante
-    */etc/mysql/debian.cnf* sera copié dans le répertoire
-    */etc/check_mk*
--   Par la suite, il renomme le fichier contenu dans */etc/check_mk* de
-    *debian.cnf* à *mysql.cfg*
--   Et enfin, il supprime tous les whitespace du fichier
+  * Tout d'abord, il via copier le fichier contenu dans la machine
+    ansible `/root/mk_mysql/files_script/mk_mysql` vers
+    `/usr/lib/check_mk_agent/plugins/mk_mysql` dans la machine distante
+  * Secondement, le fichier de la machine distante
+    `/etc/mysql/debian.cnf` sera copié dans le répertoire
+    `/etc/check_mk`
+  * Par la suite, il renomme le fichier contenu dans `/etc/check_mk` de
+    `debian.cnf` à `mysql.cfg`
+  * Et enfin, il supprime tous les whitespace du fichier
 
 Dans ce playbook, seul le module *copy* est utilisé, mais une liste
 exhaustive des modules existants est disponible sur le [site
@@ -132,9 +132,9 @@ boucle for que toute à l'heure est nécessaire, mais avec une commande
 différente.
 
 ```bash
-for i in /etc/ansible/customers/*.hosts
+for HOST in /etc/ansible/customers/*.hosts
 do
-    ansible-playbook -i ${i} deploy_mkmysql.yml
+    ansible-playbook -i ${HOST} deploy_mkmysql.yml
 done
 ```
 

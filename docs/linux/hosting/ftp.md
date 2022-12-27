@@ -33,16 +33,16 @@ Lorsque nous installons **Pure-FTPd**, son exécutable se place dans
 
 Par défaut, voici ce que contient répertoire :
 
--   **auth** : Dossier contenant les différents moyens de se connecter à
+  * **auth** : Dossier contenant les différents moyens de se connecter à
     notre serveur FTP (Unix, PAM, PureDB)
--   **conf** est un dossier contenant les fichiers que nous pourrons
+  * **conf** est un dossier contenant les fichiers que nous pourrons
     configurer. Nous pouvons également ajouter d'autres fichiers afin
     de configurer des éléments supplémentaires
--   **db** est un dossier vide qui va contenir la BDD des Virtual User
+  * **db** est un dossier vide qui va contenir la BDD des Virtual User
     de PureFTPd
--   **pureftpd-dir-aliases** est un fichier pouvant contenir des alias,
+  * **pureftpd-dir-aliases** est un fichier pouvant contenir des alias,
     ceci évitant les liens symboliques
--   **pureftpd.passwd** est le fichier, tel que */etc/passwd* qui va
+  * **pureftpd.passwd** est le fichier, tel que */etc/passwd* qui va
     contenir diverses informations tel que username, password,
     chemin...
 
@@ -100,9 +100,9 @@ se trouve dans le **dossier conf**
 
 Voici les valeurs qu'il peut avoir:
 
--   **0** : N'autorise pas les connexions SSL
--   **1** : Autorise les connexions SSL **et** les connexions non-SSL
--   **2** : Autorise **seulement** les connexions SSL
+  * **0** : N'autorise pas les connexions SSL
+  * **1** : Autorise les connexions SSL **et** les connexions non-SSL
+  * **2** : Autorise **seulement** les connexions SSL
 
 Qui dit TLS, dit également certificat. Nous devons donc créer les
 certificats
@@ -193,8 +193,8 @@ $ pure-pw usermod <username> -t 10 -T 10 -m
 
 Il est possible d'utiliser -t et -T indépendament l'un de l'autre:
 
--   **-t** signifie downloads
--   **-T** signifie upload
+  * `-t` signifie downloads
+  * `-T` signifie upload
 
 #### Reset Bridage
 

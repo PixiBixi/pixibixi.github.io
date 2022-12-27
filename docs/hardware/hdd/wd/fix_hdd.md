@@ -2,8 +2,7 @@
 
 # WD Green HDD, Comment prémunir le old_age prématuré
 
-**Attention, ce problème concerne également d'autres HDD de la marque
-WD**
+**Attention, ce problème concerne également d'autres HDD de la marque WD**
 
 Ce problème est du à la technologie **IntelliPark** qui a été introduite
 dans les WD Green ainsi que les RED. Cette technologie défaillante

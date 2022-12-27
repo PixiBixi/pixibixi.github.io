@@ -17,21 +17,21 @@ $ apt update && apt install portsentry
 
 Conrêtement, portsentry s'axe autour de 3 fichiers :
 
--   /etc/default/portsentry : Fichier où l'on indique dans quel mode
+  * `/etc/default/portsentry` : Fichier où l'on indique dans quel mode
     portsentry doit démarrer
--   /etc/portsentry/portsentry.conf : Fichier où l'on indique les
+  * `/etc/portsentry/portsentry.conf` : Fichier où l'on indique les
     actions à effectuer quand au drop d'une connexion...
--   /etc/portsentry/portsentry.ignore.static : Nous y plaçons les IPs
+  * `/etc/portsentry/portsentry.ignore.static` : Nous y plaçons les IPs
     que nous autorisons (whitelist)
 
 De sorti d'installation, portsentry est inefficace, des réglages
 s'imposent donc immédiatement.
 
 Dans le fichier /etc/default/portsentry, il y a 2 variables :
-**TCP_MODE** et **UDP_MODE**. Par défaut, celles-ci sont respectivement
-en mode **tcp** et **udp**. Cela signifie que vous devez spécifier à la
-main les ports à '"surveiller'". Nous préférons donc le mode **atcp** et
-**audp** (**a** pour avancé).
+`TCP_MODE` et `UDP_MODE`. Par défaut, celles-ci sont respectivement
+en mode `tcp` et `udp`. Cela signifie que vous devez spécifier à la
+main les ports à '"surveiller'". Nous préférons donc le mode `atcp` et
+`audp` (`a` pour avancé).
 
 Maintenant, nous allons configurer portsentry via le fichier
 /etc/portsentry/portsentry.conf
@@ -39,23 +39,23 @@ Maintenant, nous allons configurer portsentry via le fichier
 La première directive à configurer est BLOCK_TCP (et son homologue UDP),
 3 valeurs sont possibles :
 
--   **0** : Je détecte les scans de port mais je ne fais rien
--   **1** : Je bloque les scans UDP/TCP
--   **2** : Je lance uniquement la directive **KILL_RUN_CMD**
+  * `0` : Je détecte les scans de port mais je ne fais rien
+  * `1` : Je bloque les scans UDP/TCP
+  * `2` : Je lance uniquement la directive `KILL_RUN_CMD`
 
 Dans cette partie du tutoriel, pour couvrir le plus de cas possible,
 nous allons choisir l'option 1.
 
 La valeur 1 de BLOCK_TCP nous indique 3 modes de bannissements :
 
--   Bloquage via route linux (Directive KILL_ROUTE)
--   Bloquage via fichier hosts.deny (Directive KILL_HOSTS_DENY)
--   Bloquage via règle custom (Directive KILL_RUN_CMD)
+  * Bloquage via route linux (Directive KILL_ROUTE)
+  * Bloquage via fichier hosts.deny (Directive KILL_HOSTS_DENY)
+  * Bloquage via règle custom (Directive KILL_RUN_CMD)
 
 Les valeurs par défaut de KILL_ROUTE et KILL_HOSTS_DENY sont correctes
 selon votre OS, il n'y a pas besoin d'y toucher.
 
-Cependant, **KILL_RUN_CMD** demeure vide, voici une bonne valeur :
+Cependant, `KILL_RUN_CMD` demeure vide, voici une bonne valeur :
 
 ```bash
 KILL_RUN_CMD="/sbin/iptables -I INPUT -s $TARGET$ -j DROP && /sbin/iptables -I INPUT -s $TARGET$ -m limit --limit 3/minute --limit-burst 5 -j LOG --log-level debug --log-prefix Portsentry: dropping: "

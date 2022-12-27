@@ -16,13 +16,13 @@ cela, il faut faire une nouvelle règle de Registre (Computer
 Configuration '> Preferences '> Windows Preferences '> Registry) et y
 rentrer les valeurs suivantes
 
--   **Action:** Update
--   **Hive:** HKEY_LOCAL_MACHINE
--   **Key Path:** SOFTWARE''Microsoft''Windows
+  * `Action:` Update
+  * `Hive:` HKEY_LOCAL_MACHINE
+  * `Key Path:` SOFTWARE''Microsoft''Windows
     NT''CurrentVersion''Winlogon
--   **Value Name:** Shell
--   **Value Type:** REG_SZ
--   **Value Data:** PowerShell.exe -NoExit
+  * `Value Name:` Shell
+  * `Value Type:` REG_SZ
+  * `Value Data:` PowerShell.exe -NoExit
 
 Et voilà, plus d'arrachage de cheveux, vous avez désormais PowerShell
 au démarrage de votre Windows Server Core

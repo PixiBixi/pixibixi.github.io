@@ -18,11 +18,11 @@ compte, mais également d'une interface mobile de qualité.
 Koel a besoin d'un grand nombre de pré-requis, autre que PHP et MySQL
 afin de fonctionner correctement. Les prérequis sont
 
--   Composer
--   NodeJS
--   NPM
--   Gulp
--   Bower
+  * Composer
+  * NodeJS
+  * NPM
+  * Gulp
+  * Bower
 
 Si l'un de ces pré-requis n'est pas installé, nous ne pourrons pas
 continuer l'installation de Koel. Soyez donc sur que ceux-ci sont
@@ -131,48 +131,48 @@ le télécharger.
 
 A l'intérieur de ce fichier, il y a plusieurs lignes à editer :
 
--   **DB_CONNECTION** : Moteur de base de donnée à employer
+  * `DB_CONNECTION` : Moteur de base de donnée à employer
     (Généralement, MySQL)
--   **DB_HOST** : Host sur lequel est hébergée votre base de donnée
+  * `DB_HOST` : Host sur lequel est hébergée votre base de donnée
     (Généralement, localhost)
--   **DB_DATABASE** : Nom de la base de donnée (Selon notre tutoriel,
+  * `DB_DATABASE` : Nom de la base de donnée (Selon notre tutoriel,
     Koel)
--   **DB_USERNAME** : Nom d'utilisateur pour vous connecter à votre
+  * `DB_USERNAME` : Nom d'utilisateur pour vous connecter à votre
     base de donnée (Définis précédemment)
--   **DB_PASSWORD** : Password pour vous connecter à votre base de
+  * `DB_PASSWORD` : Password pour vous connecter à votre base de
     donnée (Définis précédemment)
 
 Nous modifions premièrement les identifiants de connexion à SQL. Nous
 devons maintenant les informations de connexion à Koel
 
--   **ADMIN_EMAIL** : Identifiant de connexion à Koel (Peut être fake)
--   **ADMIN_NAME** : Nom de l'utilisateur
--   **ADMIN_PASSWORD** : Mot de passe de connexion à Koel
+  * `ADMIN_EMAIL` : Identifiant de connexion à Koel (Peut être fake)
+  * `ADMIN_NAME` : Nom de l'utilisateur
+  * `ADMIN_PASSWORD` : Mot de passe de connexion à Koel
 
 Accessoirement, voici quelques valeurs qu'il peut être possible
 d'éditer, selon ses besoins :
 
--   **APP_MAX_SCAN_TIME** : Temps maximum passé durant le scan d'une
+  * `APP_MAX_SCAN_TIME` : Temps maximum passé durant le scan d'une
     bibliothèque. Peut être utile d'augmenter si vous disposez d'une
     large bibliothèque
--   **STREAMING_METHOD** : Méthode utilisée pour envoyer les musiques
+  * `STREAMING_METHOD` : Méthode utilisée pour envoyer les musiques
 
--   **LASTFM_API_SECRET** : Identifiant secret pour activer
+  * `LASTFM_API_SECRET` : Identifiant secret pour activer
     l'utilisation de Last.FM dans Koel
--   **LASTFM_API_KEY** : Clé secrète pour activer l'utilisation de
+  * `LASTFM_API_KEY` : Clé secrète pour activer l'utilisation de
     Last.FM dans Koel
 
 Pour obtenir ces identifiants LastFM, rendez-vous
 [ici](http://www.last.fm/api/account/create)
 
--   **FFMPEG_PATH** : Chemin absolu vers le bin de ffmpeg, afin de
+  * `FFMPEG_PATH` : Chemin absolu vers le bin de ffmpeg, afin de
     pouvoir transcoder
--   **OUTPUT_BIT_RATE** : Bitrate utilisée pour le transcodage (128 par
+  * `OUTPUT_BIT_RATE` : Bitrate utilisée pour le transcodage (128 par
     défaut, 256 recommandé)
 
 Afin de créer le premier compte, qui sera l'admin, il est nécéssaire de
-rentrer des valeurs dans les variables **ADMIN_EMAIL**, **ADMIN_NAME**
-et **ADMIN_PASSWORD**.
+rentrer des valeurs dans les variables `ADMIN_EMAIL`, `ADMIN_NAME`
+et `ADMIN_PASSWORD`.
 
 Une fois cela fait, nous allons utiliser une nouvelle fois artisan afin
 de les générer en base de données :

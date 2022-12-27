@@ -15,7 +15,6 @@ SELECT  ENGINE,
     GROUP BY  ENGINE;
 ```
 
-de
 
 Nous permet de déterminer la taille de chaque moteur de stockage. Ainsi,
 nous pouvons dimensionner **innodb_buffer_pool_size** au plus juste (20%
@@ -68,7 +67,7 @@ while read u
 done
 ```
 
--   Permet de dump la liste des users SQL (commande mysql si
+  * Permet de dump la liste des users SQL (commande mysql si
     pt-show-grants pas dispo)
 
 ```sql
@@ -83,7 +82,7 @@ WHERE DATA_FREE > 0
 ORDER BY data_free DESC LIMIT 10;
 ```
 
--   Permet de voir la fragmentation des tables MySQL. Il est possible de
+  * Permet de voir la fragmentation des tables MySQL. Il est possible de
     récuperer l'espace en faisant un **OPTIMIZE TABLE**
 
 ```sql
@@ -97,4 +96,4 @@ WHERE system_variables.variable_name=global_variables.variable_name
   AND system_variables.default_value <> 0
 ```
 
--   Permet de lister les variables qui n'ont pas les valeurs par défaut
+  * Permet de lister les variables qui n'ont pas les valeurs par défaut

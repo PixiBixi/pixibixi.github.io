@@ -31,9 +31,9 @@ Mais pour l'IPv6, nous avons un paramètre en plus à modifier,
 L'accept_ra nous permet de configurer automatiquement IPv6, il existe 3
 modes :
 
--   **0** : Ne pas accepter de RA
--   **1** : Accepter les RA
--   **2** : Accepter les RA même si nous avons l'IPv6 forwarding
+  * **0** : Ne pas accepter de RA
+  * **1** : Accepter les RA
+  * **2** : Accepter les RA même si nous avons l'IPv6 forwarding
     d'activé
 
 Vous l'avez donc comprit, il nous faut donc un accept_ra à 2
@@ -59,9 +59,9 @@ disponible, soit 2001:bc8:31d7:6e01:/64
 Voici les modifications à appliquer à notre serveur pour qu'il soit
 dual-stack :
 
--   proto udp en proto udp6
--   server-ipv6 2001:bc8:31d7:6e01:/64
--   push '"route-ipv6 2000::/3'"
+  * proto udp en proto udp6
+  * server-ipv6 2001:bc8:31d7:6e01:/64
+  * push '"route-ipv6 2000::/3'"
 
 Une fois cette configuration faite, un restart de openvpn, et vous
 devriez avoir une connectivité v6 sur votre hôte :

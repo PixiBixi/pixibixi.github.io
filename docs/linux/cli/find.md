@@ -43,9 +43,9 @@ Recherche **uniquement** les **fichiers** **(-type f)** commençant par .
 (Concrêtement, les fichiers cachés de Linux) dans le dossier
 /home/guest1/proj
 
--   f : File
--   d : Directory
--   l : Symlink
+  * f : File
+  * d : Directory
+  * l : Symlink
 
 ------------------------------------------------------------------------
 
@@ -72,9 +72,9 @@ find -mtime -2
 Affiche tout ce qui a été modifié il y a moins de 2 jours **(Unité par
 défaut)**
 
--   '- = Moins de
--   '+ = Plus de
--   Ø = Exactement
+  * '- = Moins de
+  * '+ = Plus de
+  * Ø = Exactement
 
 ------------------------------------------------------------------------
 
@@ -86,17 +86,17 @@ find -size +10k
 
 Affiche tous les fichiers de plus de 10KB
 
--   k = Kilo-octets
--   M = Mega-octets
--   G = Giga-octets
--   '+ = Plus de
--   '- = Moins de
--   Ø = Taille exacte
+  * k = Kilo-octets
+  * M = Mega-octets
+  * G = Giga-octets
+  * '+ = Plus de
+  * '- = Moins de
+  * Ø = Taille exacte
 
 ### Exécution
 
 Il est également possible de rediriger la sortie de find automatiquement
-vers les une commande en utilisant **(-exec)**
+vers les une commande en utilisant `-exec`
 
 ```bash
 find report -name *log* -exec rm {} ';
@@ -109,7 +109,7 @@ Recherche tous les fichiers comprenant la chaine *log* et les supprime
 ------------------------------------------------------------------------
 
 Il est également possible de faire cette même commande avec
-**(-delete)**
+`-delete`
 
 ```bash
 find report -name *log* -delete

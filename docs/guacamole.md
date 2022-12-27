@@ -2,7 +2,7 @@
 
 ## Installation sous Debian 8.0 Jessie
 
-      *__ Explications__
+### Explications
 
 [L'application Guacamole](http://guac-dev.org/) se compose de 3 parties
 :
@@ -16,7 +16,7 @@
 
 Si vous être réfractaire au Java, passez votre chemin.
 
-      *__ Prérequis__
+## Prérequis
 
 Il faut posséder une Debian Jessie à jour ; les paquets binaires du
 dépôt Debian n'étant plus maintenu depuis près de 2 ans. Vous devez
@@ -33,7 +33,7 @@ $ wget --content-disposition -O - http://apache.org/dyn/closer.cgi?action=downlo
 $ wget --content-disposition http://sourceforge.net/projects/guacamole/files/current/binary/guacamole-1.1.0.war/download
 ```
 
--   '_'_ Compilation et installation du serveur'_'_
+## Compilation et installation du serveur
 
 Prévoir un fix concernant les bibliothèques freerdp (points 7, 8, 9).
 
@@ -47,7 +47,7 @@ $ sudo ln -s /usr/local/lib/freerdp/*.so /usr/lib/x86_64-linux-gnu/freerdp/
 $ sudo ldconfig
 ```
 
--   '_'_ Installation du client'_'_
+## Installation du client
 
 ```bash
 $ sudo cp guacamole-1.1.0.war /var/lib/tomcat8/webapps/guacamole.war
@@ -56,10 +56,9 @@ $ sudo cp guacamole-1.1.0.war /var/lib/tomcat8/webapps/guacamole.war
 Vous pouvez en lieu et place utiliser maven à partir des sources du
 client pour compiler le fichier war.
 
--   '_'_ Installation des fichiers de configuration'_'_
+## Installation des fichiers de configuration
 
-Important, les droits de l'utilisateur tomcat8 sur le fichier
-user-mapping.xml sont indispensables.
+Important, les droits de l'utilisateur tomcat8 sur le fichier `user-mapping.xml` sont indispensables.
 
 ```bash
 $ sudo mkdir {/etc/guacamole,/usr/share/tomcat8/.guacamole}
@@ -69,10 +68,9 @@ $ sudo chown tomcat8 /etc/guacamole/user-mapping.xml
 $ sudo chmod 600 /etc/guacamole/user-mapping.xml
 ```
 
--   '_'_ Configuration'_'_
+## Configuration
 
-Le fichier guacamole.properties à **éditer ou vérifier avant de
-redémarrer les services** :
+Le fichier `guacamole.properties` à **éditer ou vérifier avant de redémarrer les services** :
 
          # Hostname and port of guacamole proxy
          guacd-hostname: localhost
@@ -85,7 +83,7 @@ redémarrer les services** :
 Pour le fichier user-mapping.xml, référez-vous à la [documentation
 officielle.](http://guac-dev.org/doc/0.9.1/gug/configuring-guacamole.html)
 
--   [Démarrage]{.underline}
+  * [Démarrage]{.underline}
 
 ```bash
 $ sudo systemctl tomcat8.service restart
@@ -96,7 +94,7 @@ L'url <http://fqdn:8080/guacamole> doit vous permettre d'accéder à
 l'application. Toutefois, tout transite en clair sur le réseau et rien
 n'est sécurisé.
 
--   [Reverse proxy avec nginx]{.underline}
+  * [Reverse proxy avec nginx]{.underline}
 
 Le reverse proxy en question, je vous épargne la partie liée à **TLS qui
 est indispensable**.

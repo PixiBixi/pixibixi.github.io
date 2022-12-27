@@ -52,11 +52,11 @@ aider à comprendre la ligne précédée.
 De nombreuses variables sont incluses dans un script bash, il est utile
 d'en connaitres quelques unes.
 
--   '$1 contient la valeur du premier argument de votre script bash ou
+  * `$1` contient la valeur du premier argument de votre script bash ou
     de votre fonction. ('$0 représente le script lui même)
--   '$# contient le nombre d'arguments passés à votre script
--   '$? contient le code retour de votre programme script...
--   '$PWD contient le chemin du répertoire courant
+  * `$#` contient le nombre d'arguments passés à votre script
+  * `$?` contient le code retour de votre programme script...
+  * `$PWD` contient le chemin du répertoire courant
 
 #### Assignation de variables
 
@@ -201,10 +201,10 @@ set -euo pipefail
 
 Petite explication de ces options :
 
--   **-e** : Interrompt le script à la moindre commande ne retournant
+  * **-e** : Interrompt le script à la moindre commande ne retournant
     pas 0. Implique une manière d'écrire ses scripts afin qu'aucune
     commande ne retourne d'erreur par défaut
--   **-u** : Indique qu'une variable n'a pas été définit. Par défaut,
+  * **-u** : Indique qu'une variable n'a pas été définit. Par défaut,
     bash va bug ou ne rien afficher dans le cas d'un *echo*. Prenons un
     exemple où nous avons un problème de casse :
 
@@ -219,7 +219,7 @@ jeremy@macbook-pro-de-delgado:~ $ bash l
 l: ligne 4: firstname : variable sans liaison
 ```
 
--   **-o pipefail** : Sans cette option, une erreur dans un pipe sera
+  * `-o pipefail` : Sans cette option, une erreur dans un pipe sera
     masquée, et ne sera pas interceptée par le paramètre **-e**
 
 ### Template de script

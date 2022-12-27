@@ -6,10 +6,10 @@ package, celui-ci ajoute simplement une liste de repository.
 Initialement, l'EPEL est un groupe au sein du Projet Fedora. Les
 repositories EPEL peuvent être utilisés dans les projets suivants :
 
--   Red Hat Enterprise Linux
--   CentOS
--   Scientific Linux
--   Oracle Linux
+  * Red Hat Enterprise Linux
+  * CentOS
+  * Scientific Linux
+  * Oracle Linux
 
 ## Installation
 

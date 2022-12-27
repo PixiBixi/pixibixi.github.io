@@ -1,6 +1,6 @@
 # cURL: La commande à tout faire
 
--   cURL détaillé
+  * cURL détaillé
 
 ```bash
 curl -I -v --trace-time https://www.google.com

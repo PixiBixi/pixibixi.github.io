@@ -79,7 +79,7 @@ officielle](https://docs.nextcloud.com/server/latest/admin_manual/configuration_
 
 Voici quelques options particulièrement intéressantes :
 
--   **Numéro de téléphone FR par défaut**
+  * **Numéro de téléphone FR par défaut**
 
 ```bash
 sudo -u www-data php /var/www/nextcloud/occ config:system:set '
@@ -88,7 +88,7 @@ default_phone_region --value="FR"
 
 ------------------------------------------------------------------------
 
--   '*'*Suppression des fichiers par défaut '*'*
+  * '*'*Suppression des fichiers par défaut '*'*
 
 ```bash
 rm -r "/var/www/nextcloud/core/skeleton/Documents/"
@@ -99,7 +99,7 @@ rm "/var/www/nextcloud/core/skeleton/Nextcloud.png"
 
 ------------------------------------------------------------------------
 
--   '*'*Gestion du stockage externe '*'*
+  * '*'*Gestion du stockage externe '*'*
 
 Nous permet de connecter notre NextCloud à des Samba, FTP ou autre
 
@@ -108,7 +108,7 @@ sudo -u www-data php /var/www/nextcloud/occ app:install files_external
 sudo -u www-data php /var/www/nextcloud/occ app:enable files_external
 ```
 
--   '*'*Mise à jour des applications NextCloud '*'*
+  * '*'*Mise à jour des applications NextCloud '*'*
 
 ```bash
 sudo -u www-data php /var/www/nextcloud/occ app:update --all
@@ -116,7 +116,7 @@ sudo -u www-data php /var/www/nextcloud/occ app:update --all
 
 ------------------------------------------------------------------------
 
--   '*'*Gestion des tâches de fond '*'*
+  * '*'*Gestion des tâches de fond '*'*
 
 Sur serveur dédié, il est préférable d'utiliser le system de cron ou de
 timers systemd. Comme nous sommes en 2022, nous allons utiliser les
@@ -167,7 +167,7 @@ sudo -u www-data php occ background:cron
 
 ------------------------------------------------------------------------
 
--   **Chiffrer ses documents**
+  * **Chiffrer ses documents**
 
 Si vous êtes paranos, il est possible d'activer le chiffrement de tous
 vos documents :

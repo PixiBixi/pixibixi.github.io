@@ -6,10 +6,10 @@ disponibles que pour certains utilisateurs...
 
 Pour y parvenir, plusieurs méthodes sont disponibles :
 
--   Ajout d'une règle par IP à whitelist au niveau d'IPTables
--   Filtre IP au sein de l'API
--   Filtre IP sur le reverse-proxy
--   Ajout d'une règle IPTables et création d'une liste ipset
+  * Ajout d'une règle par IP à whitelist au niveau d'IPTables
+  * Filtre IP au sein de l'API
+  * Filtre IP sur le reverse-proxy
+  * Ajout d'une règle IPTables et création d'une liste ipset
 
 Dans ce tutoriel, nous allons appliquer la dernière règle qui est la
 plus optimisée. iptables charge un module appelé *xt_conntrack* qui

@@ -94,22 +94,22 @@ $ vim /etc/openvpn/server.conf
 
 Voici les valeurs que nous devons avoir dans server.conf :
 
--   user nobody
--   group nogroup
--   ca /etc/openvpn/easy-rsa/keys/ca.crt
--   cert /etc/openvpn/easy-rsa/keys/srvcert.crt
--   key /etc/openvpn/easy-rsa/keys/srvcert.key '# This file should be
+  * user nobody
+  * group nogroup
+  * ca /etc/openvpn/easy-rsa/keys/ca.crt
+  * cert /etc/openvpn/easy-rsa/keys/srvcert.crt
+  * key /etc/openvpn/easy-rsa/keys/srvcert.key '# This file should be
     kept secret
--   dh /etc/openvpn/easy-rsa/keys/dh2048.pem
--   cipher AES-256-CBC
+  * dh /etc/openvpn/easy-rsa/keys/dh2048.pem
+  * cipher AES-256-CBC
 
 Et on ajoute en bas du fichier ces lignes:
 
--   push '"redirect-gateway def1 bypass-dhcp'"
--   push '"dhcp-option DNS 4.2.2.1'"
--   push '"dhcp-option DNS 4.2.2.2'"
--   sndbuf 0
--   rcvbuf 0
+  * push '"redirect-gateway def1 bypass-dhcp'"
+  * push '"dhcp-option DNS 4.2.2.1'"
+  * push '"dhcp-option DNS 4.2.2.2'"
+  * sndbuf 0
+  * rcvbuf 0
 
 Voici à quoi doit ressembler le fichier final
 
@@ -204,11 +204,11 @@ rcvbuf 0
 
 N'oubliez pas de télécharger les fichiers suivants sur votre PC :
 
--   ca.crt
--   ta.key
--   jeremy.crt
--   jeremy.key
--   client.ovpn
+  * ca.crt
+  * ta.key
+  * jeremy.crt
+  * jeremy.key
+  * client.ovpn
 
 Et voilà, vous avez votre propre VPN fonctionnel :)
 

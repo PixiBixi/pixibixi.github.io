@@ -205,7 +205,7 @@ pour une durée donnée (Ici 60 secondes)
 Plus d'informations dans le [man](https://linux.die.net/man/1/dstat) de
 la commande.
 
--   **loadavg** qui nous fournit le load-average que nous connaissons
+  * **loadavg** qui nous fournit le load-average que nous connaissons
     tous
 
 ```bash

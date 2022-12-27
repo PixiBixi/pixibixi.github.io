@@ -51,9 +51,9 @@ IPV4/IPV6 sans log et qui supporte le DNSSEC.
 ### Résolveur DNS
 
 De base, BIND9 est correctement configuré afin de résoudre les noms de
-domaine sur vos interfaces locales, soit 127.0.0.1, ::1 si vous disposez
+domaine sur vos interfaces locales, soit `127.0.0.1, ::1` si vous disposez
 d'IPv6, et enfin, votre IP locale fournie par le DHCP de votre, soit
-192.168.1.2 par exemple.
+`192.168.1.2` par exemple.
 
 Nous verrons par la suite comment le configurer.
 
@@ -64,30 +64,30 @@ la ligne à écrire :
 apt-get -y install bind9
 ```
 
-Pour être certain que votre BIND9 soit bien installé, **dig +short
-google.fr** doit vous renvoyez une IP appartenant à Google.
+Pour être certain que votre BIND9 soit bien installé, `dig +short
+google.fr` doit vous renvoyez une IP appartenant à Google.
 
 Dans le dossier de configuration BIND9, vous y retrouverez 4 fichiers de
 configuration :
 
--   **named.conf** recense tous les fichiers de configuration. Au lieu
+  * `named.conf` recense tous les fichiers de configuration. Au lieu
     d'écrire la configuration dans un seul fichier, celle-ci est
     partagée en plusieurs fichiers.
--   **named.conf.default-zones** est un fichier contenant toutes les
+  * `named.conf.default-zones` est un fichier contenant toutes les
     zones par défaut, comme son nom l'indique.
--   **named.conf.local** est vide par défaut, et c'est normal, il
+  * `named.conf.local` est vide par défaut, et c'est normal, il
     s'agit du fichier où l'on effectuera toutes nos modifications
--   **named.conf.options** est le configuration de base par défaut, il
+  * `named.conf.options` est le configuration de base par défaut, il
     contient toutes les options nécéssaires pour bien paramétrer notre
     BIND9
 
-N'oubliez pas d'editer votre **resolv.conf** sous un système UNIX afin
+N'oubliez pas d'editer votre `resolv.conf` sous un système UNIX afin
 d'utiliser votre resolveur, ou bien vos paramètres de votre carte
 réseau sous Windows
 
 ### Serveur autoritaire
 
-Un serveur autoritaire est un serveur faisant '"autorité'" sur une zone
+Un serveur autoritaire est un serveur faisant "autorité" sur une zone
 donnée. Celui-ci permet de toutes les redirections nécéssaires (MX, A,
 CNAME...)
 
@@ -101,7 +101,7 @@ registrar, par exemple, pour mon cas :
 ![](/internetbs_ns_list.jpg){.align-center}
 
 Ici, nous disons à notre registrar que notre serveur autoritaire sera
-**ns1.jdelgado.fr** soit **195.154.226.173**
+`ns1.jdelgado.fr` soit `195.154.226.173`
 
 Repassons désormais à notre BIND9, et regardons les fichiers à éditer
 

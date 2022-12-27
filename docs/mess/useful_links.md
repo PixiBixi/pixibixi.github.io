@@ -8,35 +8,26 @@ une place particulière dans le wiki
 [CRT](https://crt.sh/) : Liste tous les certificats générés
 
 [Docker Lets
-Encrypt](https://tech.acseo.co/sites-https-docker-nginx-lets-encrypt/) :
-Docker & Let's Encrypt
+Encrypt](https://tech.acseo.co/sites-https-docker-nginx-lets-encrypt/) : Docker & Let's Encrypt
 
 [Rate Limits Let's Encrypt](https://letsencrypt.org/docs/rate-limits/)
 
-[Wiki Mozilla TLS](https://wiki.mozilla.org/Security/Server_Side_TLS) :
-Informations de configuration TLS
+[Wiki Mozilla TLS](https://wiki.mozilla.org/Security/Server_Side_TLS) : Informations de configuration TLS
 
-[PKGs](https://pkgs.org/) : Regarder les packages dispo dans les dépo de
-toutes les distributions Linux
+[PKGs](https://pkgs.org/) : Regarder les packages dispo dans les dépo de toutes les distributions Linux
 
-[OpenNic](https://www.opennicproject.org/) permet de recenser les DNS
-opens les plus proches de chez nous
+[OpenNic](https://www.opennicproject.org/) permet de recenser les DNS opens les plus proches de chez nous
 
-[HTOP
-Expliqué](https://codeahoy.com/2017/01/20/hhtop-explained-visually/)
-Explication visuelle d'HTOP
+[HTOP Expliqué](https://codeahoy.com/2017/01/20/hhtop-explained-visually/) Explication visuelle d'HTOP
 
-[Bash FAQ](http://mywiki.wooledge.org/BashFAQ) Explication du bash de A
-à Z
+[Bash FAQ](http://mywiki.wooledge.org/BashFAQ) Explication du bash de A à Z
 
 [Pi-Hole](https://pi-hole.net/) résolver DNS avec GUI
 
 [PreHook
-Git](https://scotch.io/tutorials/using-git-hooks-in-your-development-workflow)
-: Utiliser Git dans son Workflow
+Git](https://scotch.io/tutorials/using-git-hooks-in-your-development-workflow) : Utiliser Git dans son Workflow
 
-[SELinux](https://learntemail.sam.today/blog/stop-disabling-selinux:-a-real-world-guide/)
-: Intégrer SELinux correctement
+[SELinux](https://learntemail.sam.today/blog/stop-disabling-selinux:-a-real-world-guide/) : Intégrer SELinux correctement
 
 [2FA](https://twofactorauth.org/) Liste tous les websites compatibles
 2FA
@@ -47,18 +38,15 @@ de DL les musiques de Deezer en MP3 320
 [Spotizr](http://spotizr.com/) : Convertisseur playlist Spotify to
 Deezer
 
-[Gixy](https://github.com/yandex/gixy) : Permet de tester sa
-configuration nginx
+[Gixy](https://github.com/yandex/gixy) : Permet de tester sa configuration nginx
 
 [mtr](https://mtr.sh/) : Permet de faire des mtr à travers le monde
 
 [Talos Intelligence](https://www.talosintelligence.com/) : Blacklist IP
 
-[Test XMLRPC](https://xmlrpc.devzing.com/) : Tester les calls RPC (Utile
-pour ruTorrent par exemple)
+[Test XMLRPC](https://xmlrpc.devzing.com/) : Tester les calls RPC (Utile pour ruTorrent par exemple)
 
-[Tableau périodique des
-DevOps](https://xebialabs.com/periodic-table-of-devops-tools/)
+[Tableau périodique des DevOps](https://xebialabs.com/periodic-table-of-devops-tools/)
 
 ## Docker
 
@@ -162,8 +150,6 @@ CSS](https://www.minimamente.com/example/magic_animations/)
 
 [Syntax
 list](https://highlightjs.readthedocs.io/en/latest/css-classes-reference.html#language-names-and-aliases)
-
-[Connaitre le CPU via le cpuinfo Linux](http://www.speedtraq.com/?s=1)
 
 ## Windows
 

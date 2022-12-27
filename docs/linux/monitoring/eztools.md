@@ -50,23 +50,23 @@ Voici les options disponibles pour eZ Server Monitor SH
 
 ------------------------------------------------------------------------
 
--   **-h**, **-u**, **'--help** ou **'--usage** : Affiche le message
+  * **-h**, **-u**, **'--help** ou **'--usage** : Affiche le message
     d'aide
--   **-v** ou **'--version** : Affiche le numéro de version du script
--   **-C** ou **'--clear** : Clear la console
--   **-a** ou **'--all** : Affiche toutes les informations
--   **-s** ou **'--system** : Affiche des informations système de base
--   **-e** ou **'--services** : Vérifie si les services sont ups ou pas
--   **-n** ou **'--network** : Affiche les informations sur le réseau
--   **-p** ou **'--ping** : Pings différents hosts selon la
+  * **-v** ou **'--version** : Affiche le numéro de version du script
+  * **-C** ou **'--clear** : Clear la console
+  * **-a** ou **'--all** : Affiche toutes les informations
+  * **-s** ou **'--system** : Affiche des informations système de base
+  * **-e** ou **'--services** : Vérifie si les services sont ups ou pas
+  * **-n** ou **'--network** : Affiche les informations sur le réseau
+  * **-p** ou **'--ping** : Pings différents hosts selon la
     configuration
--   **-c** ou **'--cpu** : Information sur le processeur
--   **-m** ou **'--memory** : Informations sur la RAM
--   **-l** ou **'--load** : Affiche le load et des infos sur les
+  * **-c** ou **'--cpu** : Information sur le processeur
+  * **-m** ou **'--memory** : Informations sur la RAM
+  * **-l** ou **'--load** : Affiche le load et des infos sur les
     processus
--   **-t** ou **'--temperatures** : Affiche les températures CPU,
+  * **-t** ou **'--temperatures** : Affiche les températures CPU,
     HDD...
--   **-d** ou **'--disk** : Affiche les différents disques
+  * **-d** ou **'--disk** : Affiche les différents disques
 
 ------------------------------------------------------------------------
 
@@ -84,21 +84,21 @@ Dans cette page, nous pouvons y observer différents éléments :
 
 ------------------------------------------------------------------------
 
--   **System** où l'on y retrouve nos informations de base (OS,
+  * **System** où l'on y retrouve nos informations de base (OS,
     Kernel..)
--   **Load Average** où l'on peut observer notre occupation globale de
+  * **Load Average** où l'on peut observer notre occupation globale de
     notre système
--   **Network Usage** qui affiche les différentes interfaces, ainsi que
+  * **Network Usage** qui affiche les différentes interfaces, ainsi que
     les données transmit
--   **CPU** qui montre les caractéristiques de son CPU
--   **Disk Usage** nous indique l'occupation de notre/nos disque(s) dur
--   **Memory** qui montre notre RAM totale, utilisée et disponible
--   **SWAP** qui fonctionne comme la RAM (Attention, montre 100% si le
+  * **CPU** qui montre les caractéristiques de son CPU
+  * **Disk Usage** nous indique l'occupation de notre/nos disque(s) dur
+  * **Memory** qui montre notre RAM totale, utilisée et disponible
+  * **SWAP** qui fonctionne comme la RAM (Attention, montre 100% si le
     SWAP est désactivé)
--   **Last Login** montre les 5 dernières connexion
--   **Ping** montre la latence sur différents hosts (Attention, si un
+  * **Last Login** montre les 5 dernières connexion
+  * **Ping** montre la latence sur différents hosts (Attention, si un
     host répond pas, le module plante)
--   **Service Status** montre si différents services sont disponibles ou
+  * **Service Status** montre si différents services sont disponibles ou
     pas
 
 ------------------------------------------------------------------------
@@ -153,10 +153,10 @@ contient divers éléments de configuration
 
 ------------------------------------------------------------------------
 
--   **disk** qui permet de montrer la partition *tmpfs* ou pas
--   **hosts** qui permet de configurer les différents sites à ping
--   **last_login** pour paramétrer combien de login seront affichés sur
+  * **disk** qui permet de montrer la partition *tmpfs* ou pas
+  * **hosts** qui permet de configurer les différents sites à ping
+  * **last_login** pour paramétrer combien de login seront affichés sur
     le site
--   **services** pour paramétrer différents services à monitorer
+  * **services** pour paramétrer différents services à monitorer
 
 ------------------------------------------------------------------------

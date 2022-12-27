@@ -35,5 +35,5 @@
       - LETSENCRYPT_EMAIL=admin@domain.tld
 ```
 
--   Modifier **USER** par le nom de l'user, **'$UID** par le dernier
-    chiffre de son UID et **domain.tld** par le domaine
+  * Modifier `USER` par le nom de l'user, `$UID` par le dernier
+    chiffre de son UID et `domain.tld` par le domaine

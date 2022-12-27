@@ -16,8 +16,8 @@ frontend    https
 Pour le fichier cloudflare_ips.lst, CloudFlare maintient une liste
 publique de ses IPs :
 
--   [IPv4](https://www.cloudflare.com/ips-v4)
--   [IPv6](https://www.cloudflare.com/ips-v6)
+  * [IPv4](https://www.cloudflare.com/ips-v4)
+  * [IPv6](https://www.cloudflare.com/ips-v6)
 
 A l'heure où j'écris ce petit post, la voici :
 

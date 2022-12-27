@@ -40,9 +40,8 @@ décidé d'utiliser les alias du .gitconfig disponible sur
 
 3 binaires sont nécessaires :
 
--   **diff-so-fancy** afin d'avoir un meilleur diff
--   **giturl** qui est une Gem Ruby afin d'ouvrir dans le navigateur
+  * `diff-so-fancy` afin d'avoir un meilleur diff
+  * `giturl` qui est une Gem Ruby afin d'ouvrir dans le navigateur
     l'URL du repository Git
--   **git-quick-stats** pour extraire les stats simplement d'un
-    repository
+  * `git-quick-stats` pour extraire les stats simplement d'un repository
 

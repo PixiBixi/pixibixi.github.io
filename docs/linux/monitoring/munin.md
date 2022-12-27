@@ -118,7 +118,7 @@ accord avec la dernière ligne.
 N'oubliez pas d'activer le ou les scripts et rendre persistant leur
 démarrage.
 
--   '_'_ Configuration du vhost nginx'_'_
+  * __Configuration du vhost nginx__
 
 Je suppose que vous accéderez à l'adresse suivante :
 <http://munin.fqdn.grd>

@@ -21,17 +21,17 @@ généralement pas voir les connexions à des sockets UNIX)
 Rentrons un peu plus en profondeur dans la commande ss avec les filtres
 par type de connexion
 
--   **-t** ou **'--tcp** : Socket TCP
--   **-u ou '--udp** : Socket UDP
--   **-x ou '--unix** : Sockets UNIX
+  * `-t` ou `--tcp` : Socket TCP
+  * `-u` ou `--udp` : Socket UDP
+  * `-x` ou `--unix` : Sockets UNIX
 
 Les filtres sont assez explicites. Il existe également 2 autres types de
 filtres, mais ceux-ci ne sont jamais utilisés dans un usage normal :
 
--   **-d ou '--dccp** : Sockets DCCP
--   **-w ou '--raw** : Sockets RAW
+  * `-d` ou `--dccp` : Sockets DCCP
+  * `-w` ou `--raw` : Sockets RAW
 
-Cette option est particulièrement utilisée avec **-a ou '--all** qui
+Cette option est particulièrement utilisée avec `-a` ou `--all` qui
 permet de lister toutes les connexions d'un protocole
 
 Par exemple, pour lister toutes les connexions TCP :
@@ -41,8 +41,8 @@ $ ss -t -a | less
 ```
 
 Par défaut (sans l'option -a), seuls les connexions ESTABLISHED sont
-listées (ou CONNECTED pour UDP). (Il s'agit de l'option '*'*-l ou
-'*'*'--listening)
+listées (ou CONNECTED pour UDP). (Il s'agit de l'option `-l` ou
+`--listening`)
 
 ## Afficher les numéros de port / ne pas résoudre les IPs
 
@@ -55,7 +55,7 @@ port, plutôt que le rDNS et le service associé au port.
 
 Pour cela, voici l'option :
 
--   **-n ou '--numeric** : Permet de ne pas résoudre les IP et les ports
+  * `-n` ou `--numeric` : Permet de ne pas résoudre les IP et les ports
     associés aux services
 
 A noter qu'il n'est pas possible de ne pas résoudre les adresses IPs
@@ -63,7 +63,7 @@ ou les numéros de ports uniquement, les deux sont liés.
 
 Pour résoudre les adresses IP :
 
--   **-r ou '--resolve** : Permet de résoudre les adresse IPs
+  * `-r` ou `--resolve` : Permet de résoudre les adresse IPs
 
 Petit exemple en cumulant les paramètres vu avant
 
@@ -77,7 +77,7 @@ Lister précisément les connexions n'est pas très utile si on ne connait
 pas le pid du programme associé. Heureusement, la commande ss à pensé à
 tout.
 
--   **-p ou '--pid** : Permet de lister le processus lié à une connexion
+  * `-p` ou `--pid` : Permet de lister le processus lié à une connexion
 
 ```bash
 $ ss -p
@@ -88,7 +88,7 @@ $ ss -p
 ss sait aussi faire des statistiques des connexions actives sur votre
 serveur
 
-'* **-s ou '--summary**
+  * `-s` ou `--summary`
 
 ```bash
 $ ss -s
@@ -99,14 +99,14 @@ $ ss -s
 Si vous ne souhaitez voir que les connexions IPv4 ou IPv6 (voir socket),
 c'est possible avec ss :
 
--   **-f ou '--family=...**
+  * `-f` ou `--family=...`
 
 Et voici les types disponibles
 
--   **inet**
--   **inet6**
--   **link**
--   **netlink**
+  * **inet**
+  * **inet6**
+  * **link**
+  * **netlink**
 
 Voici un exemple d'utilisation
 
@@ -133,27 +133,24 @@ Dans cet exemple, j'affiche toutes les connexions ayant ESTABLISHED en
 
 Voici tous les états supportés par ss
 
--   established
--   syn-sent
--   syn-recv
--   fin-wait-2
--   fin-wait-1
--   time-wait
--   closed
--   close-wait
--   last-ack
--   listen
--   closing
+  * established
+  * syn-sent
+  * syn-recv
+  * fin-wait-2
+  * fin-wait-1
+  * time-wait
+  * closed
+  * close-wait
+  * last-ack
+  * listen
+  * closing
 
 Certains de ces états sont également regroupés en '"catégories'" :
 
--   **connected** =
-    {established'|syn-sent'|syn-recv'|fin-wait-{1,2}'|time-wait'|close-wait'|last-ack'|closing}
--   **synchronized** =
-    {established'|syn-recv'|fin-wait-{1,2}'|time-wait'|close-wait'|last-ack'|closing}
--   **bucket** = {syn-recv'|time-wait}
--   **big** =
-    {established'|syn-sent'|fin-wait-{1,2}'|closed'|close-wait'|last-ack'|listen'|closing}
+  * `connected` = {established'|syn-sent'|syn-recv'|fin-wait-{1,2}'|time-wait'|close-wait'|last-ack'|closing}
+  * `synchronized` = {established'|syn-recv'|fin-wait-{1,2}'|time-wait'|close-wait'|last-ack'|closing}
+  * `bucket` = {syn-recv'|time-wait}
+  * `big` = {established'|syn-sent'|fin-wait-{1,2}'|closed'|close-wait'|last-ack'|listen'|closing}
 
 ### Filter les ports
 
@@ -177,8 +174,8 @@ $ ss -nt state ESTABLISHED dst :https
 Ici, nous voulons toutes les connexions TCP ayant l'état ESTABLISHED
 dont le port destination est HTTPS.
 
-Et enfin, il est possible de réunir plusieurs conditions avec un **AND**
-ou **OR**
+Et enfin, il est possible de réunir plusieurs conditions avec un `AND`
+ou `OR`
 
 ```bash
 $ ss -nt ( dport = :443 or dport = :80 )

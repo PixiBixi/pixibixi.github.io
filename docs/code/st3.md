@@ -191,37 +191,37 @@ Voici mon fichier de configuration Sublime Text :
 
 Nous allons décrire chaque ligne :
 
--   **always_show_minimap_viewport** : Converse une vue sur la minimap
+  * `always_show_minimap_viewport` : Converse une vue sur la minimap
     d'où l'on se situe dans le fichier, utile selon moi
--   **bold_folder_labels** : Permet de mettre en gras les dossiers dans
+  * `bold_folder_labels` : Permet de mettre en gras les dossiers dans
     la sidebar lors d'un projet
--   **indent_guide_options** : Permet une indentation plus aisée, en
+  * `indent_guide_options` : Permet une indentation plus aisée, en
     affichant une grille d'indentation, indispensable
--   **ignored_packages** : Désactive des packages (Il est impératif de
+  * `ignored_packages` : Désactive des packages (Il est impératif de
     désactiver le package Vintage pour ne pas se retrouver avec un mode
     vi)
--   **line_padding_bottom** et **line_padding_bottom** : Permet une mise
+  * `line_padding_bottom` et `line_padding_bottom` : Permet une mise
     en forme plus aisée de SublimeText, nos yeux nous disent merci. La
-    valeur **4** est également agréable, mais le padding est trop
+    valeur `4` est également agréable, mais le padding est trop
     important
--   **overlay_scroll_bars** : Désactive l'affichage automatique des
+  * `overlay_scroll_bars` : Désactive l'affichage automatique des
     bars de scroll (Qui ne sont pas utiles)
--   **save_on_focus_lost** : L'option la plus utile de SublimeText,
+  * `save_on_focus_lost` : L'option la plus utile de SublimeText,
     elle permet de sauvegarder automatiquement les onglets lorsque
     SublimeText n'est plus la fenêtre active, indispensable
--   **highlight_line** : Surligne la ligne où l'on se trouve, assez
+  * `highlight_line` : Surligne la ligne où l'on se trouve, assez
     pratique pour ne pas être perdu
--   **default_line_ending** : Afin de suivre le standard, nous devons
+  * `default_line_ending` : Afin de suivre le standard, nous devons
     passer à un Line Ending format UNIX
--   **shift_tab_unindent** : Autre option assez pratique, elle nous
+  * `shift_tab_unindent` : Autre option assez pratique, elle nous
     permet de se situer n'importe où dans la ligne pour défaire
     l'indentation, et non plus seulement au début de la ligne
--   **show_encoding** : Affiche l'encodage actuel du fichier, pratique
+  * `show_encoding` : Affiche l'encodage actuel du fichier, pratique
     pour vérifier si l'on est en UTF-8
--   **translate_tabs_to_spaces** : Convertit les tabs en espace. Peut
+  * `translate_tabs_to_spaces` : Convertit les tabs en espace. Peut
     être utile afin de s'assurer que notre tabsize sera identique de
     partout
--   **file_exclude_patterns** et **folder_exclude_patterns** : Permet
+  * `file_exclude_patterns` et `folder_exclude_patterns` : Permet
     d'exclure des fichiers de la sidebar. Un grand nombre d'éléments
     sont ignorés par défaut, mais cependant, il en manque certains
 
@@ -230,8 +230,8 @@ post de [ce
 monsieur](http://joshfrankel.me/blog/2014/how%20to/How-to-configure-sublime-text-for-psr-standards/),
 ainsi que les liens officiels des PSR :
 
--   [PSR-2](http://www.php-fig.org/psr/psr-2/)
--   [PSR-1](http://www.php-fig.org/psr/psr-1/)
+  * [PSR-2](http://www.php-fig.org/psr/psr-2/)
+  * [PSR-1](http://www.php-fig.org/psr/psr-1/)
 
 ## Thèmes
 
@@ -245,15 +245,15 @@ un thème se basant sur le Material Design, règles développées par Google
 et très à la vogue en ce moment. Le **Material Theme** se décompose en
 plusieurs teintes :
 
--   **Normal** qui est le thème de base
--   **Darker** le thème plus foncé
--   **Lighter** le thème plus clair
+  * **Normal** qui est le thème de base
+  * **Darker** le thème plus foncé
+  * **Lighter** le thème plus clair
 
 Le dépot Github inclut également des colorations syntaxiques
 additionnelles :
 
--   **OceanicNext**
--   **OceanicNext Darker**
+  * **OceanicNext**
+  * **OceanicNext Darker**
 
 Voici le thème :
 
@@ -265,21 +265,21 @@ Theme Darker* sont agréables et reposant, contrairement au thème
 
 Voici les différents paramètres pour les différents thèmes :
 
--   **Sublime Material Lighter**
+  * **Sublime Material Lighter**
 
 ```javascript
 "theme": "Material-Theme-Lighter.sublime-theme",
 "color_scheme": "Packages/Material Theme/schemes/Material-Theme-Lighter.tmTheme",
 ```
 
--   **Sublime Material**
+  * **Sublime Material**
 
 ```javascript
 "theme": "Material-Theme.sublime-theme",
 "color_scheme": "Packages/Material Theme/schemes/Material-Theme.tmTheme",
 ```
 
--   **Sublime Material Darker**
+  * **Sublime Material Darker**
 
 ```javascript
 "theme": "Material-Theme-Darker.sublime-theme",

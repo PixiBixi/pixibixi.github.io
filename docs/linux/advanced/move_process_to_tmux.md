@@ -15,8 +15,6 @@ c'est effectué, il faut dissocier le processus du TTY.
 └─$ disown 25644
 -bash: avertissement :suppression de la tâche stoppée 1 avec le groupe de processus 25644
 └─$ jobs -l
-
-
 ```
 
 Une fois que c'est OK, on ouvre un tmux, et on attach le processus au

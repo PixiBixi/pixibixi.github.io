@@ -36,7 +36,7 @@ remote software version OpenSSH_7.9p1 Debian-10+deb10u2
 ```
 
 Pour désactiver ce comportement, il suffit de passer la variable
-**DebianBanner** de son sshd_config à **no**
+`DebianBanner` de son sshd_config à `no`
 
 ```bash
 DebianBanner no
@@ -44,7 +44,7 @@ DebianBanner no
 
 Par défaut, lorsque nous nous connectons à un serveur SSH, nous avons 2
 minutes (120s) pour nous login. Cette valeur est inutilement longue.
-Cette valeur est controlée par la directive **LoginGraceTime** et doit
+Cette valeur est controlée par la directive `LoginGraceTime` et doit
 être définit à 30s.
 
 ```bash
@@ -56,10 +56,10 @@ connexions SSH ouvertes, il peut être intéressant de configurer une
 valeur pour laquelle votre sesssion SSH sera automatiquement terminée. 2
 paramètres cohabitent :
 
--   **ClientAliveCountMax** - Indique le nombre total de messages de
+  * `ClientAliveCountMax` - Indique le nombre total de messages de
     vérification envoyés par le serveur SSH sans obtenir de réponse du
     client SSH. La valeur par défaut est 3.
--   **ClientAliveInterval** - Indique le délai d'attente en secondes.
+  * `ClientAliveInterval` - Indique le délai d'attente en secondes.
     Après x secondes, le serveur SSH envoie un message au client pour
     lui demander une réponse. Deafult est égal à 0 (le serveur
     n'enverra pas de message au client pour vérifier.).
@@ -142,7 +142,7 @@ modification des variables systèmes lors d'une connexion SSH.
 PermitUserEnvironment no
 ```
 
-Toutefois, les variables listées dans la directives **AcceptEnv**
+Toutefois, les variables listées dans la directives `AcceptEnv`
 restent modifiables.
 
 ## authorized_keys
@@ -150,14 +150,14 @@ restent modifiables.
 Beaucoup d'options sont également possibles au niveau du fichier
 *authorized_keys*
 
--   **no-agent-forwarding**: Désactivation du SSH agent forwarding
--   **no-port-forwarding**: Désactivation du SSH port forwarding.
--   **no-X11-forwarding**: Désactivation du X11 display forwarding.
--   **no-pty**: Désactive la possibilité de démarrer un shell
--   **no-user-rc**: Empêche l'interprétation du fichier '~/.ssh/rc.
+  * `no-agent-forwarding`: Désactivation du SSH agent forwarding
+  * `no-port-forwarding`: Désactivation du SSH port forwarding.
+  * `no-X11-forwarding`: Désactivation du X11 display forwarding.
+  * `no-pty`: Désactive la possibilité de démarrer un shell
+  * `no-user-rc`: Empêche l'interprétation du fichier '~/.ssh/rc.
 
 Par défaut, tout est autorisé. Cependant, une autre approche est
-possible. Via le keyword **restrict**, ce qui va implicitement refuser
+possible. Via le keyword `restrict`, ce qui va implicitement refuser
 toutes les options SSH. Par exemple, si vous souhaitez tout de même
 autoriser l'agent forwarding
 

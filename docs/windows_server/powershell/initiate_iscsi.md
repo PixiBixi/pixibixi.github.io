@@ -42,4 +42,4 @@ Ou alors on connecte le node que l'on veut :
 Connect-IscsiTarget -NodeAddress iqn.2000-01.com.synology:NASCL.WITNESS.44034fd745 -IsPersistent $true
 ```
 
-On peut vérifier que le disque est bien monté avec **Get-Disk**
+On peut vérifier que le disque est bien monté avec `Get-Disk`

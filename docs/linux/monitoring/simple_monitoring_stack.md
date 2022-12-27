@@ -497,12 +497,12 @@ Ici, les choses se corsent un tout petit peu.
 
 Tout d'abord, en URL, 3 cas sont possibles :
 
--   Si vous avez installé Prometheus et Grafana sur le même serveur,
+  * Si vous avez installé Prometheus et Grafana sur le même serveur,
     alors vous pouvez pointer directement vers Prometheus :
     <http://localhost:9090>
--   Si votre Prometheus n'est pas sur le serveur de Grafana, alors il
+  * Si votre Prometheus n'est pas sur le serveur de Grafana, alors il
     vous faudra y accéder via son IP : [http://ip:port](http://ip:port)
--   S'il est derrière un reverse-proxy (la solution optimale), alors il
+  * S'il est derrière un reverse-proxy (la solution optimale), alors il
     faudra y accéder de la manière suivante : <https://domain.tld>
 
 Une fois ceci fait, **Save & Test**
@@ -846,10 +846,10 @@ s'agit ici des métriques pour le module http_2xx) :
 Comme vous pouvez le voir, nous avons de nombreuses métriques,
 particulièrement 2 plus utiles que les autres :
 
--   **probe_success** nous indique si le test s'est effectué
+  * **probe_success** nous indique si le test s'est effectué
     correctement
--   **probe_http_status_code** nous renvoie le code de retour de la page
--   **probe_ssl_earliest_cert_expiry** nous renvoie la date
+  * **probe_http_status_code** nous renvoie le code de retour de la page
+  * **probe_ssl_earliest_cert_expiry** nous renvoie la date
     d'expiration (sous forme de timestamp)
 
 Grace à ces nouvelles métriques, vous pouvez indiquer l'état de

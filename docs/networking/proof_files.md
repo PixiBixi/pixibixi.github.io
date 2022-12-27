@@ -68,8 +68,8 @@ Par défaut, le port utilisé par iPerf est le 5001, sur le protocole TCP.
 
 2 options sont toutefois indispensables à l'utilisation de iperf :
 
--   **-s** pour exécuter iperf en mode **serveur**
--   **-c** pour exécuter iperf en mode **client**
+  * `-s` pour exécuter iperf en mode `serveur`
+  * `-c` pour exécuter iperf en mode `client`
 
 Voici l'exemple typique de la commande à lancer côté client :
 
@@ -88,7 +88,7 @@ documentation officielle](https://iperf.fr/iperf-doc.php) du logiciel.
 
 Voici le résultat que nous devrions obtenir :
 
-![](/iperf_client.jpg){.align-center}
+![](/iperf_client.jpg)
 
 Nous pouvons clairement apercevoir plusieurs parties sur le screen.
 

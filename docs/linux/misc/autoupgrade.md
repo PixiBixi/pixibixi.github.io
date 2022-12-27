@@ -38,9 +38,9 @@ les mises à jour quotidiennement
 Ce logiciel va générer des logs sauvegardés dans
 **/var/log/unattended-upgrades**
 
--   unattended-upgrades.log qui est un fichier généralisé qui va
+  * unattended-upgrades.log qui est un fichier généralisé qui va
     récapituler toutes les actions du logiciel
--   unattended-upgrades-dpkg'_**date**'_**heure**.log qui va indiquer ce
+  * unattended-upgrades-dpkg'_**date**'_**heure**.log qui va indiquer ce
     qui a été fait un tel jour
 
 Toutes les options de configurations sont disponibles dans le fichier
@@ -48,10 +48,10 @@ Toutes les options de configurations sont disponibles dans le fichier
 
 ## Plus d'informations :
 
--   [Wiki Debian](https://wiki.debian.org/UnattendedUpgrades)
--   [How To
+  * [Wiki Debian](https://wiki.debian.org/UnattendedUpgrades)
+  * [How To
     Forge](https://www.howtoforge.com/how-to-configure-automatic-updates-on-debian-squeeze)
--   [Debian
+  * [Debian
     Handbook](https://debian-handbook.info/browse/fr-FR/stable/sect.regular-upgrades.html)
--   [Guide
+  * [Guide
     Ubuntu](https://guide.ubuntu-fr.org/server/automatic-updates.html)

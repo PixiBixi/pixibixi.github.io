@@ -10,10 +10,10 @@ chacun.
 
 La QOS repose sur différentes opérations :
 
--   Classification et marquage des trames
--   Gestion des trafics
--   Classification des trafics par priorité
--   Reordonnancement des trames
+  * Classification et marquage des trames
+  * Gestion des trafics
+  * Classification des trafics par priorité
+  * Reordonnancement des trames
 
 ## Application QOS Automatique
 
