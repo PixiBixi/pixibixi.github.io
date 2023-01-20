@@ -15,7 +15,7 @@ Tout d'abord, nous devons d'abord observer nos différents éléments (à
 lancer sur la slave) :
 
 ```bash
-MariaDB [(none)]> SHOW SLAVE STATUS 'G;
+MariaDB [(none)]> SHOW SLAVE STATUS \G;
 *************************** 1. row ***************************
                 Slave_IO_State:
                    Master_Host: 192.168.0.11
@@ -32,7 +32,7 @@ MariaDB [(none)]> SHOW SLAVE STATUS 'G;
 ```
 
 Premièrement, nous allons vérifier que le log est lisible sur le master.
-Nous parlons ici du '_Master_Log_File'_.
+Nous parlons ici du _Master_Log_File_.
 
 ```bash
 mysqlbinlog mysql-bin.000244
