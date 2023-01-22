@@ -55,6 +55,7 @@ Cette magnifique documentation a été faites avec MkDocs
   * [Améliorer la vitesse de connexion à votre serveur SSH](/linux/security/ssh_improve_speed)
   * [Améliorer la sécurité des mots de passe par défaut avec PAM](/linux/security/password_pam)
   * [Configurer des notifications SSH Slack](/linux/security/slack_notifications_ssh)
+  * [Lister tous les certificats émis](./linux/security/issued_crt.md)
 
 ### Supervision
 
