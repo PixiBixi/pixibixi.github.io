@@ -7,12 +7,14 @@ remote_branch: docs
 
 theme:
   features:
+    - toc.integrate
     - header.autohide
     - navigation.tracking
     - navigation.instant
     - navigation.tabs
     - navigation.sections
     - navigation.expand
+    - navigation.top
   name: material
   language: fr
 
