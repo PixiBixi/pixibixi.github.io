@@ -150,9 +150,9 @@ backend redis_read
     mode tcp
     option tcp-check
     tcp-check connect
-    tcp-check send PING'r'n
+    tcp-check send PING\r\n
     tcp-check expect string +PONG
-    tcp-check send QUIT'r'n
+    tcp-check send QUIT\r\n
     tcp-check expect string +OK
 
     server redis1 redis1.internal:6379 check inter 1s fall 1 rise 1
@@ -163,11 +163,11 @@ backend redis_write
     mode tcp
     option tcp-check
     tcp-check connect
-    tcp-check send PING'r'n
+    tcp-check send PING\r\n
     tcp-check expect string +PONG
-    tcp-check send info' replication'r'n
+    tcp-check send info\ replication\r\n
     tcp-check expect string role:master
-    tcp-check send QUIT'r'n
+    tcp-check send QUIT\r\n
     tcp-check expect string +OK
 
     server redis1 redis1.internal:6379 check inter 1s fall 1 rise 1
