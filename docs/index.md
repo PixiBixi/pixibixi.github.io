@@ -33,7 +33,6 @@ Cette magnifique documentation a été faites avec MkDocs
   * [Apprendre à se servir de git](github)
   * [TMUX Multiplexeur de Shell](/linux/cli/tmux)
   * [Générer une clé publique au format RFC 4716 depuis la clef privée](/ssh/pubkey_rfc4716)
-  * [Automatiser les taches avec Ansible](/linux/automatisation/ansible)
   * [Création de RAID logiciels avec mdadm](/linux/misc/create_raid)
   * [Remplacer les commandes de base Linux par des versions plus performantes](/linux/cli/replace_base_commands)
 
@@ -151,6 +150,11 @@ Cette magnifique documentation a été faites avec MkDocs
   * [Log des slow queries de ElasticSearch](/linux/elasticsearch/log_slow_queries)
 
 ### DevOps
+
+#### Ansible
+
+  * [Automatiser les taches avec Ansible](./linux/automatisation/ansible/ansible.md)
+  * [Réutilisation de variables ansible entre différentes tâches ](./linux/automatisation/ansible/reuse_variable.md)
 
 #### Kubernetes
 
