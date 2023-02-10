@@ -75,35 +75,35 @@ l'Homme.
 
   * `/proc/cpuinfo` nous apportera des précisions sur quel processeur nous utilisons, son modèle, les bugs auxquels il est vulnérable...
 
-```bash
-λ jeremy ~ → cat /proc/cpuinfo
-processor   : 0
-vendor_id   : GenuineIntel
-cpu family  : 6
-model       : 42
-model name  : Intel(R) Xeon(R) CPU E31230 @ 3.20GHz
-stepping    : 7
-microcode   : 0x2f
-cpu MHz     : 3559.874
-cache size  : 8192 KB
-physical id : 0
-siblings    : 8
-core id     : 0
-cpu cores   : 4
-apicid      : 0
-initial apicid  : 0
-fpu     : yes
-fpu_exception   : yes
-cpuid level : 13
-wp      : yes
-flags       : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic popcnt tsc_deadline_timer aes xsave avx lahf_lm pti ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid xsaveopt dtherm ida arat pln pts md_clear flush_l1d
-bugs        : cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs itlb_multihit
-bogomips    : 6385.39
-clflush size    : 64
-cache_alignment : 64
-address sizes   : 36 bits physical, 48 bits virtual
-power management:
-```
+??? note "/proc/cpuinfo"
+	```bash
+	processor   : 0
+	vendor_id   : GenuineIntel
+	cpu family  : 6
+	model       : 42
+	model name  : Intel(R) Xeon(R) CPU E31230 @ 3.20GHz
+	stepping    : 7
+	microcode   : 0x2f
+	cpu MHz     : 3559.874
+	cache size  : 8192 KB
+	physical id : 0
+	siblings    : 8
+	core id     : 0
+	cpu cores   : 4
+	apicid      : 0
+	initial apicid  : 0
+	fpu     : yes
+	fpu_exception   : yes
+	cpuid level : 13
+	wp      : yes
+	flags       : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic popcnt tsc_deadline_timer aes xsave avx lahf_lm pti ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid xsaveopt dtherm ida arat pln pts md_clear flush_l1d
+	bugs        : cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs itlb_multihit
+	bogomips    : 6385.39
+	clflush size    : 64
+	cache_alignment : 64
+	address sizes   : 36 bits physical, 48 bits virtual
+	power management:
+	```
 
 Un petit extrait de notre fichier **/proc/cpuinfo**. Nous pouvons
 rapidement voir qu'il s'agit d'un modèle E3-1230 propulsé à 3.20GHz
@@ -118,14 +118,14 @@ qu'un tutoriel est disponible
   * `/proc/meminfo` nous permet d'obtenir toutes les informations
     nécessaires à notre RAM (RAM Totale, disponible, free...)
 
-```bash
-λ jeremy /proc → head -5 meminfo
-MemTotal:       16379496 kB
-MemFree:         1008852 kB
-MemAvailable:   14001640 kB
-Buffers:           87848 kB
-Cached:         12093768 kB
-```
+??? note "Sample of /proc/meminfo"
+	```bash
+	MemTotal:       16379496 kB
+	MemFree:         1008852 kB
+	MemAvailable:   14001640 kB
+	Buffers:           87848 kB
+	Cached:         12093768 kB
+	```
 
   * `/proc/cgroup` est un mécanisme de linux (Control Group) est un
     ensemble de processus liés à un ensemble de limites ou paramètres
@@ -152,24 +152,24 @@ sécurité du CPU
     interruptions et celles qui sont utilisées. Pour expliquer un petit
     peu le fichier :
 
-```bash
-    λ jeremy /proc →  head -n15 interrupts
-               CPU0       CPU1       CPU2       CPU3
-      0:          6          0          0          0  IR-IO-APIC   2-edge      timer
-      1:          0          0          0          9  IR-IO-APIC   1-edge      i8042
-      8:          0          1          0          0  IR-IO-APIC   8-edge      rtc0
-      9:          0          0          0          0  IR-IO-APIC   9-fasteoi   acpi
-     12:          0          0          5          0  IR-IO-APIC  12-edge      i8042
-     16:          0          0          0        453  IR-IO-APIC  16-fasteoi   uhci_hcd:usb2, hpilo
-     20:         29          0          0          0  IR-IO-APIC  20-fasteoi   ehci_hcd:usb3
-     21:          0          0         30          0  IR-IO-APIC  21-fasteoi   ehci_hcd:usb1
-     24:          0          0          0          0  DMAR-MSI   0-edge      dmar0
-     25:  158604567  960976068  268830823  527035126  IR-PCI-MSI 1048576-edge      eno0-rx-0
-     26:  475449447  461628402  354301051  453787807  IR-PCI-MSI 1048577-edge      eno0-tx-0
-     27:      66007      20504      41564      25490  IR-PCI-MSI 1048578-edge      eno0
-     28:   76098051          0          0          0  IR-PCI-MSI 2097152-edge      hpsa0-msix0
-     29:          0   79605111          0          0  IR-PCI-MSI 2097153-edge      hpsa0-msix1
-```
+??? note "Sample of /proc/interrupts"
+	```bash
+				   CPU0       CPU1       CPU2       CPU3
+		  0:          6          0          0          0  IR-IO-APIC   2-edge      timer
+		  1:          0          0          0          9  IR-IO-APIC   1-edge      i8042
+		  8:          0          1          0          0  IR-IO-APIC   8-edge      rtc0
+		  9:          0          0          0          0  IR-IO-APIC   9-fasteoi   acpi
+		 12:          0          0          5          0  IR-IO-APIC  12-edge      i8042
+		 16:          0          0          0        453  IR-IO-APIC  16-fasteoi   uhci_hcd:usb2, hpilo
+		 20:         29          0          0          0  IR-IO-APIC  20-fasteoi   ehci_hcd:usb3
+		 21:          0          0         30          0  IR-IO-APIC  21-fasteoi   ehci_hcd:usb1
+		 24:          0          0          0          0  DMAR-MSI   0-edge      dmar0
+		 25:  158604567  960976068  268830823  527035126  IR-PCI-MSI 1048576-edge      eno0-rx-0
+		 26:  475449447  461628402  354301051  453787807  IR-PCI-MSI 1048577-edge      eno0-tx-0
+		 27:      66007      20504      41564      25490  IR-PCI-MSI 1048578-edge      eno0
+		 28:   76098051          0          0          0  IR-PCI-MSI 2097152-edge      hpsa0-msix0
+		 29:          0   79605111          0          0  IR-PCI-MSI 2097153-edge      hpsa0-msix1
+	```
 
 La première colonne correspond à l'IRQ, les CPUs aux différents cores
 de notre machine, et la dernière au nom de l'interruption. Il s'agit
@@ -241,6 +241,7 @@ proc    /proc        proc        defaults,hidepid=2,gid=1500    0 0
 ```
 
 Dans ce notre exemple ci-dessus :
+
   * Comme toujours, notre utilisateur `root` verra tous les PID.
   * Notre utilisateur `monitoring` verra tous les PID, grace à son appartenance au groupe 1500
   * Notre user générique `pierre` ne verra quant à lui que les PID dont il est propriétaire, n'appartenant pas au GID 1500

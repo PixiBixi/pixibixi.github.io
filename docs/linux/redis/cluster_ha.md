@@ -144,40 +144,41 @@ Pour rappel, nous utilisons une configuration spliited par fichier.
 
 **Backend**
 
-```bash
-root@dev redis2:/root$ cat /etc/haproxy/30-backend.cfg
-backend redis_read
-    mode tcp
-    option tcp-check
-    tcp-check connect
-    tcp-check send PING\r\n
-    tcp-check expect string +PONG
-    tcp-check send QUIT\r\n
-    tcp-check expect string +OK
+??? example "/etc/haproxy/30-backend.cfg"
+	```bash
+	backend redis_read
+		mode tcp
+		option tcp-check
+		tcp-check connect
+		tcp-check send PING\r\n
+		tcp-check expect string +PONG
+		tcp-check send QUIT\r\n
+		tcp-check expect string +OK
 
-    server redis1 redis1.internal:6379 check inter 1s fall 1 rise 1
-    server redis2 redis2.internal:6379 check inter 1s fall 1 rise 1
-    server redis3 redis3.internal:6379 check inter 1s fall 1 rise 1
+		server redis1 redis1.internal:6379 check inter 1s fall 1 rise 1
+		server redis2 redis2.internal:6379 check inter 1s fall 1 rise 1
+		server redis3 redis3.internal:6379 check inter 1s fall 1 rise 1
 
-backend redis_write
-    mode tcp
-    option tcp-check
-    tcp-check connect
-    tcp-check send PING\r\n
-    tcp-check expect string +PONG
-    tcp-check send info\ replication\r\n
-    tcp-check expect string role:master
-    tcp-check send QUIT\r\n
-    tcp-check expect string +OK
+	backend redis_write
+		mode tcp
+		option tcp-check
+		tcp-check connect
+		tcp-check send PING\r\n
+		tcp-check expect string +PONG
+		tcp-check send info\ replication\r\n
+		tcp-check expect string role:master
+		tcp-check send QUIT\r\n
+		tcp-check expect string +OK
 
-    server redis1 redis1.internal:6379 check inter 1s fall 1 rise 1
-    server redis2 redis2.internal:6379 check inter 1s fall 1 rise 1
-    server redis3 redis3.internal:6379 check inter 1s fall 1 rise 1
-```
+		server redis1 redis1.internal:6379 check inter 1s fall 1 rise 1
+		server redis2 redis2.internal:6379 check inter 1s fall 1 rise 1
+		server redis3 redis3.internal:6379 check inter 1s fall 1 rise 1
+	```
 
 **Frontend**
 
-    root@dev redis2:/root$ cat /etc/haproxy/40-frontend.cfg
+??? example "/etc/haproxy/40-backend.cfg"
+	```bash
     frontend redis-write
         bind *:6380
         mode tcp
@@ -197,6 +198,7 @@ backend redis_write
         option  logasap
 
         default_backend redis_read
+	```
 
 Côté backend, nous voyons que la différence est uniquement côté
 détection du master. Nous avons également réduit le fall et le rise à 1

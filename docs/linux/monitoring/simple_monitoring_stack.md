@@ -129,36 +129,38 @@ une fois, j'utilise compose pour une question de cohérence. Tous mes
 containers sont ordonnancés dans un fichier docker-compose.yml, les 2
 méthodes seront présentées :
 
-```bash
-$ docker run -d --name=netdata '
-   -p 19999:19999 '
-   -v /proc:/host/proc:ro '
-   -v /sys:/host/sys:ro '
-   -v /etc/os-release:/host/etc/os-release:ro '
-   --cap-add SYS_PTRACE '
-   --security-opt apparmor=unconfined '
-   netdata/netdata
-```
+??? note "Netdata : Running with docker"
+	```bash
+	$ docker run -d --name=netdata '
+	   -p 19999:19999 '
+	   -v /proc:/host/proc:ro '
+	   -v /sys:/host/sys:ro '
+	   -v /etc/os-release:/host/etc/os-release:ro '
+	   --cap-add SYS_PTRACE '
+	   --security-opt apparmor=unconfined '
+	   netdata/netdata
+	```
 
-```yaml
-version: 3
-services:
-  netdata:
-    image: netdata/netdata
-    container_name: netdata
-    hostname: $FQDN
-    ports:
-      - 19999:19999
-    cap_add:
-      - SYS_PTRACE
-    security_opt:
-      - apparmor:unconfined
-    volumes:
-      - /proc:/host/proc:ro
-      - /sys:/host/sys:ro
-```
+??? abstract "docker-compose.yml"
+	```yaml
+	version: 3
+	services:
+	  netdata:
+		image: netdata/netdata
+		container_name: netdata
+		hostname: $FQDN
+		ports:
+		  - 19999:19999
+		cap_add:
+		  - SYS_PTRACE
+		security_opt:
+		  - apparmor:unconfined
+		volumes:
+		  - /proc:/host/proc:ro
+		  - /sys:/host/sys:ro
+	```
 
-Et pour le lancer : **docker-compose up -d**
+Et pour le lancer : `docker-compose up -d`
 
 Dans les 2 cas, il est possible de mettre Netdata derrière un
 reverse-proxy pour plus de sécurité. Lorsque Netdata est lancé, il sera
@@ -194,28 +196,30 @@ permet de s'abstraire de toutes les questions posées à l'utilisateur.
 
 Toujours selon les 2 méthodes, via docker run ou docker-compose :
 
-```bash
-$ docker run -d --name prometheus '
-   -p 9090:9090 '
-   -v /etc/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml '
-   prom/prometheus --config.file=/etc/prometheus/prometheus.yml
-```
+??? note "Prometheus : Running with docker"
+	```bash
+	$ docker run -d --name prometheus '
+	   -p 9090:9090 '
+	   -v /etc/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml '
+	   prom/prometheus --config.file=/etc/prometheus/prometheus.yml
+	```
 
-```yaml
-version: 3
-services:
-  prometheus:
-    image: prom/prometheus
-    container_name: prometheus
-    hostname: prometheus
-    ports:
-      - 9090:9090
-    volumes:
-      - /etc/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-```
+??? abstract "docker-compose.yml"
+	```yaml
+	version: 3
+	services:
+	  prometheus:
+		image: prom/prometheus
+		container_name: prometheus
+		hostname: prometheus
+		ports:
+		  - 9090:9090
+		volumes:
+		  - /etc/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+	```
 
 !! warning Docker
-	il faut créer manuellement le fichier
+	Il faut créer manuellement le fichier
 	prometheus.yml sans quoi par défaut Docker considère qu'il s'agit
 	d'un dossier.
 
@@ -278,43 +282,44 @@ $ systemctl daemon-reload && systemctl enable --now prometheus
 #### Configuration de Prometheus
 
 Toute la configuration Prometheus se fait via le fichier
-/etc/prometheus/prometheus.yml en syntaxe YAML. Voici la configuration à
+`/etc/prometheus/prometheus.yml` en syntaxe YAML. Voici la configuration à
 appliquer :
 
-```yaml
-# my global config
-global:
-  scrape_interval:     5s # Set the scrape interval to every 15 seconds. Default is every 1 minute.
-  evaluation_interval: 5s # Evaluate rules every 15 seconds. The default is every 1 minute.
-  # scrape_timeout is set to the global default (10s).
+??? abstract "/etc/prometheus/prometheus.yml"
+	```yaml
+	# my global config
+	global:
+	  scrape_interval:     5s # Set the scrape interval to every 15 seconds. Default is every 1 minute.
+	  evaluation_interval: 5s # Evaluate rules every 15 seconds. The default is every 1 minute.
+	  # scrape_timeout is set to the global default (10s).
 
-# Load rules once and periodically evaluate them according to the global evaluation_interval.
-rule_files:
-  # - "first_rules.yml"
-  # - "second_rules.yml"
+	# Load rules once and periodically evaluate them according to the global evaluation_interval.
+	rule_files:
+	  # - "first_rules.yml"
+	  # - "second_rules.yml"
 
 
-scrape_configs:
-  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+	scrape_configs:
+	  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
 
-  - job_name: node SSL
-    scheme: https
-    metrics_path: /api/v1/allmetrics?format=prometheus&source=average
-    honor_labels: true
-    # If prometheus-node-exporter is installed, grab stats about the local
-    # machine by default.
-    static_configs:
-    - targets: [netdata:443]
-    - targets: [netdata2:443]
+	  - job_name: node SSL
+		scheme: https
+		metrics_path: /api/v1/allmetrics?format=prometheus&source=average
+		honor_labels: true
+		# If prometheus-node-exporter is installed, grab stats about the local
+		# machine by default.
+		static_configs:
+		- targets: [netdata:443]
+		- targets: [netdata2:443]
 
-  - job_name: node
-    metrics_path: /api/v1/allmetrics?format=prometheus&source=average
-    honor_labels: true
-    # If prometheus-node-exporter is installed, grab stats about the local
-    # machine by default.
-    static_configs:
-    - targets: [netdata:19999]
-```
+	  - job_name: node
+		metrics_path: /api/v1/allmetrics?format=prometheus&source=average
+		honor_labels: true
+		# If prometheus-node-exporter is installed, grab stats about the local
+		# machine by default.
+		static_configs:
+		- targets: [netdata:19999]
+	```
 
 Afin de ne pas copier coller bêtement la configuration, voici une
 explication succincte du fichier de configuration :
@@ -325,7 +330,7 @@ définissions un temps de scrape toutes les 5 secondes (une minute par
 défaut) et un reload des règles d'alerting toutes les 5 secondes
 également.
 
-Deuxièmement, nous avons la directive **rule_files** qui s'occupe de
+Deuxièmement, nous avons la directive `rule_files` qui s'occupe de
 charger des fichiers YAML où nous pouvons définir des règles
 d'alerting. Cependant, notre alerting de base est géré via netdata.
 Nous verrons par la suite comment configurer alertmanager
@@ -338,15 +343,15 @@ au '"groupe'" au niveau de Prometheus.
 Nous avons 2 jobs : Un concernant les noeuds netdata SSL appelé *Node
 SSL* et un autre avec les node normaux appelés *Node*.
 
-Le premier node contient la directive **scheme** qui nous permet de
+Le premier node contient la directive `scheme` qui nous permet de
 spécifier que nous souhaitons utiliser une connexion sécurisée TLS pour
 récupérer les données émises par Netdata. Le second ne contient pas ce
 keyword car la connexion par défaut est en plain text (http).
 
 Ensuite, nous avons une ligne **extrêmement** importante,
-**metrics_path**. Celle-ci va de paire avec les targets. En targets de
+`metrics_path`. Celle-ci va de paire avec les targets. En targets de
 static config, nous définissons chaque hôte dont Prometheus doit
-récupérer les métriques. **metrics_path** indique donc sur quelle URI
+récupérer les métriques. `metrics_path` indique donc sur quelle URI
 Prometheus doit aller récupérer ses métriques. L'URI est propre à
 chaque exporter. Ainsi, celle-ci est propre à Netdata et nous indique
 que nous souhaitons des valeurs moyenne au format Prometheus. Toute la
@@ -357,13 +362,16 @@ Concernant netdata, il est possible d'afficher directement les valeurs
 bruts récupérées par prometheus à l'adresse suivante :
 <https://netdata.user.domain.tld/api/v1/allmetrics%3Fformat=prometheus&average=yes>
 
-Deux helpers netdata sont également disponibles. &types=yes permettant
-d'afficher le type de métrique renvoyé et &help=yes pouvant vous
+Deux helpers netdata sont également disponibles. `&types=yes` permettant
+d'afficher le type de métrique renvoyé et `&help=yes` pouvant vous
 apporter diverses précisions. Voici un exemple :
 
+??? note "Example output of prometheus exporter"
+	```
     # COMMENT netdata_ipv4_tcperrors_packets_persec_average: dimension "RetransSegs", value is packets/s, gauge, dt 1586642036 to 1586642038 inclusive
     # COMMENT TYPE netdata_ipv4_tcperrors_packets_persec_average gauge
     netdata_ipv4_tcperrors_packets_persec_average{chart="ipv4.tcperrors",family="tcp",dimension="RetransSegs"} 0.0000000 1586642038000
+	```
 
 Il est également possible de récuperer d'autres variables système tel
 que le nombre de sockets TCP supportés... Il suffira d'ajouter
@@ -411,12 +419,13 @@ monitorons).
 
 Décortiquons une réponse type pour un serveur :
 
-```bash
-netdata_system_ram_MiB_average{chart="system.ram",dimension="free",family="ram",instance="netdata.x.domain.tld:443",job="node"}
-netdata_system_ram_MiB_average{chart="system.ram",dimension="used",family="ram",instance="netdata.x.domain.tld:443",job="node"}
-netdata_system_ram_MiB_average{chart="system.ram",dimension="cached",family="ram",instance="netdata.x.domain.tld:443",job="node"}
-netdata_system_ram_MiB_average{chart="system.ram",dimension="buffers",family="ram",instance="netdata.x.domain.tld:443",job="node"}
-```
+??? note "Example output of netdata exporter"
+	```bash
+	netdata_system_ram_MiB_average{chart="system.ram",dimension="free",family="ram",instance="netdata.x.domain.tld:443",job="node"}
+	netdata_system_ram_MiB_average{chart="system.ram",dimension="used",family="ram",instance="netdata.x.domain.tld:443",job="node"}
+	netdata_system_ram_MiB_average{chart="system.ram",dimension="cached",family="ram",instance="netdata.x.domain.tld:443",job="node"}
+	netdata_system_ram_MiB_average{chart="system.ram",dimension="buffers",family="ram",instance="netdata.x.domain.tld:443",job="node"}
+	```
 
 Il existe un [site internet](https://awesome-prometheus-alerts.grep.to/rules) proposant quelques règles Prometheus. Attention, celles-ci ne sont pas forcément optimsiées ou fonctionnelles.
 
@@ -436,23 +445,25 @@ Grafana.
 
 #### Docker
 
-```bash
-$ docker run -d --name prometheus '
-   -p 3000:3000 '
-   grafana/grafana
-```
+??? note "Grafana : Running with docker"
+	```bash
+	$ docker run -d --name prometheus '
+	   -p 3000:3000 '
+	   grafana/grafana
+	```
 
-```yaml
-version: "3"
+??? abstract "docker-compose.yml"
+	```yaml
+	version: "3"
 
-services:
-  grafana:
-    hostname: grafana
-    container_name: grafana
-    image: grafana/grafana
-    ports:
-      - 3000:3000
-```
+	services:
+	  grafana:
+		hostname: grafana
+		container_name: grafana
+		image: grafana/grafana
+		ports:
+		  - 3000:3000
+	```
 
 #### From scratch
 
@@ -542,6 +553,8 @@ je vais vous partager mes panels.
 *Lien de téléchargement :
 [ici](https://files.jdelgado.fr/r/U4KCGryY#JDkX10832wvNJvRMOh/C3nPJ+dwDT/pD67XwbofHSuc=)*
 
+La communauté Grafana met à votre disposition énormement de [dashboards](https://grafana.com/grafana/dashboards/)
+
 ## Trucs & Astuces
 
 ### Grafana
@@ -583,9 +596,9 @@ nombreuses métriques. Cependant, pour certaines d'entre elles, dont
 MySQL, il est nécessaire de faire une manipulation :
 
 ```sql
-mysql> create user netdata@localhost;
-mysql> grant usage on *.* to netdata@localhost;
-mysql> flush privileges;
+mysql> CREATE USER netdata@localhost;
+mysql> GRANT USAGE ON *.* TO netdata@localhost;
+mysql> FLUSH PRIVILEGES;
 ```
 
 Il faut également avoir installé netdata avec **toutes** ses dépendances
@@ -602,21 +615,22 @@ s'offrent à nous.
 Tout d'abord, nous pouvons exposer l'API Docker via un autre container
 afin de contrôler complètement son comportement :
 
-```yaml
-version: 3
-services:
-  netdata:
-    image: netdata/netdata
-    # ... votre config ... #
-    environment:
-      - DOCKER_HOST=proxy:2375
-  proxy:
-    image: tecnativa/docker-socket-proxy
-    volumes:
-     - /var/run/docker.sock:/var/run/docker.sock:ro
-    environment:
-      - CONTAINERS=1
-```
+??? abstract "docker-compose.yml"
+	```yaml
+	version: 3
+	services:
+	  netdata:
+		image: netdata/netdata
+		# ... votre config ... #
+		environment:
+		  - DOCKER_HOST=proxy:2375
+	  proxy:
+		image: tecnativa/docker-socket-proxy
+		volumes:
+		 - /var/run/docker.sock:/var/run/docker.sock:ro
+		environment:
+		  - CONTAINERS=1
+	```
 
 La variable d'environnement *CONTAINERS=1* nous permet d'indiquer à
 Netdata qu'il n'a accès qu'à la partie de l'API concernant les
@@ -624,8 +638,8 @@ containers, ce qui peut être très utile en cas de compromission du
 container.
 
 La seconde manière de faire est d'indiquer à Netdata de s'exécuter en
-tant que groupe Docker, pour cela, un simple *grep docker /etc/group '|
-cut -d ':' -f 3* nous permet de récupérer le groupe docker
+tant que groupe Docker, pour cela, un simple `grep docker /etc/group '|
+cut -d ':' -f 3` nous permet de récupérer le groupe docker
 (généralement 999 avant Debian 10 et 998 avec Debian 10) et nous
 ajoutons la variable d'environnement PGID=998 à notre container
 netdata.
@@ -665,17 +679,18 @@ modification, qu'il s'agisse d'une suppression ou d'un ajout.
 
 Remplacer le bloc node de votre fichier prometheus.yml par le suivant :
 
-```yaml
-  - job_name: node
-    scheme: https
-    metrics_path: /api/v1/allmetrics?format=prometheus&source=average
-    honor_labels: true
-    # If prometheus-node-exporter is installed, grab stats about the local
-    # machine by default.
-    file_sd_configs:
-      - files:
-        - "/etc/prometheus/netdata.json"
-```
+??? abstract "/etc/prometheus/prometheus.yml"
+	```yaml
+	  - job_name: node
+		scheme: https
+		metrics_path: /api/v1/allmetrics?format=prometheus&source=average
+		honor_labels: true
+		# If prometheus-node-exporter is installed, grab stats about the local
+		# machine by default.
+		file_sd_configs:
+		  - files:
+			- "/etc/prometheus/netdata.json"
+	```
 
 Si vous avez bien suivi notre tutoriel sur la création d'une unit
 systemd, vous avez compris que nous n'avons pas besoin de spécifier un
@@ -687,19 +702,20 @@ les différents nodes à monitorer. Si vous souhaitez ajouter/supprimer un
 fichier ou un job, il vous faudra évidemment redémarrer Prometheus.
 Voici le contenu dudit fichier :
 
-```json
-[
-  {
-    "labels": {
-      "jobs": "node"
-    },
-    "targets": [
-      "netdata.x.domain.tld:443",
-      "netdata.y.domain.tld:443"
-    ]
-  }
-]
-```
+??? abstract "/etc/prometheus/netdata.json"
+	```json
+	[
+	  {
+		"labels": {
+		  "jobs": "node"
+		},
+		"targets": [
+		  "netdata.x.domain.tld:443",
+		  "netdata.y.domain.tld:443"
+		]
+	  }
+	]
+	```
 
 Ce fichier est simplissime. Nous avons les labels dans un premier bloc
 puis nos différentes targets. **Attention** à penser aux virgules entre
@@ -780,23 +796,24 @@ que d'ICMP, nous ne toucherons donc pas à ce fichier.
 Maintenant que Blackbox est correctement installé, nous devons indiquer
 à Prometheus d'aller récupérer les métriques de Blackbox :
 
-```yaml
-- job_name: HTTP
-  scheme: http
-  params:
-    module: [http_2xx]
-  metrics_path: /probe
-  file_sd_configs:
-  - files:
-    - http.json
-  relabel_configs:
-  - source_labels: [__address__]
-    target_label: __param_target
-  - source_labels: [__param_target]
-    target_label: instance
-  - target_label: __address__
-    replacement: localhost:9115 # Blackbox exporter.
-```
+??? abstract "Target for prometheus.yml"
+	```yaml
+	- job_name: HTTP
+	  scheme: http
+	  params:
+		module: [http_2xx]
+	  metrics_path: /probe
+	  file_sd_configs:
+	  - files:
+		- http.json
+	  relabel_configs:
+	  - source_labels: [__address__]
+		target_label: __param_target
+	  - source_labels: [__param_target]
+		target_label: instance
+	  - target_label: __address__
+		replacement: localhost:9115 # Blackbox exporter.
+	```
 
 Ce job diffère un tout petit peu des anciens, tout d'abord, nous devons
 spécifier un module correspondant au nom de notre module dans
@@ -806,24 +823,27 @@ Prometheus. Enfin, nous réécrivons la variable address avec la valeur de
 notre exporter Blackbox, dans notre cas, *localhost:9115*. Voici le
 contenu de notre fichier *http.json*
 
-```yaml
-[
-  {
-    "labels": {
-      "job": "blackbox"
-    },
-    "targets": [
-      "https://netdata.jean.domain.tld:443",
-      "https://netdata.peuplu.domain.tld:443"
-    ]
-  }
-]
-```
+??? abstract "/etc/prometheus/http.json"
+	```yaml
+	[
+	  {
+		"labels": {
+		  "job": "blackbox"
+		},
+		"targets": [
+		  "https://netdata.jean.domain.tld:443",
+		  "https://netdata.peuplu.domain.tld:443"
+		]
+	  }
+	]
+	```
 
 Une fois cette étape faite et Prometheus redémarré, nous avons accès de
 nouvelles métriques sur Prometheus (en fonction du module choisi, il
 s'agit ici des métriques pour le module http_2xx) :
 
+??? note "Output of blackbox_exporter / http_2xx"
+	```yaml
     probe_dns_lookup_time_seconds 0.001002382
     probe_duration_seconds 0.102398015
     probe_failed_due_to_regex 0
@@ -842,14 +862,15 @@ s'agit ici des métriques pour le module http_2xx) :
     probe_ssl_earliest_cert_expiry 1.59282791e+09
     probe_success 1
     probe_tls_version_info{version="TLS 1.3"} 1
+	```
 
 Comme vous pouvez le voir, nous avons de nombreuses métriques,
 particulièrement 2 plus utiles que les autres :
 
-  * **probe_success** nous indique si le test s'est effectué
+  * `probe_success` nous indique si le test s'est effectué
     correctement
-  * **probe_http_status_code** nous renvoie le code de retour de la page
-  * **probe_ssl_earliest_cert_expiry** nous renvoie la date
+  * `probe_http_status_code` nous renvoie le code de retour de la page
+  * `probe_ssl_earliest_cert_expiry` nous renvoie la date
     d'expiration (sous forme de timestamp)
 
 Grace à ces nouvelles métriques, vous pouvez indiquer l'état de
@@ -904,35 +925,36 @@ permettant d'interagir directement avec l'API de AlertManager.
 
 Voici le contenu par défaut du fichier alertmanager.yml :
 
-```yaml
-global:
-  resolve_timeout: 5m
+??? abstract "/etc/prometheus/alertmanager.yml"
+	```yaml
+	global:
+	  resolve_timeout: 5m
 
-route:
-  group_by: [alertname]
-  group_wait: 10s
-  group_interval: 10s
-  repeat_interval: 1h
-  receiver: web.hook
-receivers:
-- name: web.hook
-  webhook_configs:
-  - url: http://127.0.0.1:5001/
-inhibit_rules:
-  - source_match:
-      severity: critical
-    target_match:
-      severity: warning
-    equal: [alertname, dev, instance]
-```
+	route:
+	  group_by: [alertname]
+	  group_wait: 10s
+	  group_interval: 10s
+	  repeat_interval: 1h
+	  receiver: web.hook
+	receivers:
+	- name: web.hook
+	  webhook_configs:
+	  - url: http://127.0.0.1:5001/
+	inhibit_rules:
+	  - source_match:
+		  severity: critical
+		target_match:
+		  severity: warning
+		equal: [alertname, dev, instance]
+	```
 
-Nous voyons ici une directive route qui nous indique comment chaque
+Nous voyons ici une directive `route` qui nous indique comment chaque
 alerte sera traitée par alertmanager, nous pouvons faire plusieurs
 directives route si nous souhaitons des traitements spécifiques. Chaque
 route est définie par un receiver unique.
 
-Tout d'abord, la directive *group_by*. Celle-ci prend un tableau en
-paramètre. Par défaut, il contient *alert* et *instance* ce qui nous
+Tout d'abord, la directive `group_by`. Celle-ci prend un tableau en
+paramètre. Par défaut, il contient `alert` et `instance` ce qui nous
 indique que les alertes contenant ces tags seront traitées de la même
 manière. Nous n'utilisons qu'une route et souhaitons obtenir toutes
 les alertes, nous utilisons donc le tag *alertname*.
@@ -942,10 +964,10 @@ de secondes avant qu'une alerte d'un nouveau groupe soit envoyé si
 vous disposez de plusieurs groupes. Comme nous ne disposons que d'un
 seul groupe, il s'agit d'une valeur arbitraire ici définie à 10s.
 
-*group_interval* est défini à 10s ce qui signifie que les autres
+`group_interval` est défini à 10s ce qui signifie que les autres
 notifications concernant le même groupe arriverons toutes les 10s.
 
-La variable **repeat_interval** est le délai à attendre si les alertes
+La variable `repeat_interval` est le délai à attendre si les alertes
 que nous avons eu ne sont toujours pas résolues. Ll s'agit encore
 d'une valeur arbitraire que nous définissons à une heure.
 
@@ -967,38 +989,40 @@ mais nous n'y avons pas touché. Nous allons donc charger notre première
 règle. De plus, il faudra indiquer à Prometheus de renvoyer ses alertes
 à alertmanager.
 
-```yaml
-[...]
-rule_files:
-  - "alert.rules.yml"
-[...]
-alerting:
-  alertmanagers:
-  - static_configs:
-    - targets:
-      - 127.0.0.1:9093
-[...]
-```
+??? abstract "/etc/prometheus/prometheus.yml"
+	```yaml
+	[...]
+	rule_files:
+	  - "alert.rules.yml"
+	[...]
+	alerting:
+	  alertmanagers:
+	  - static_configs:
+		- targets:
+		  - 127.0.0.1:9093
+	[...]
+	```
 
 Nous indiquons ici à Prometheus d'utiliser comme règles le contenu du
-fichier **alert.rules.yml** mais également d'envoyer les alertes vers
+fichier `alert.rules.yml` mais également d'envoyer les alertes vers
 la target de type alertmanager disponible sur 127.0.0.1:9093.
 
 #### alert.rules.yml
 
-```yaml
-groups:
-- name: alert.rules
-  rules:
-  - alert: EndpointDown
-    expr: probe_success == 0
-    for: 10s
-    labels:
-      severity: "critical"
-    annotations:
-      summary: "Endpoint {{ $labels.instance }} has an issue"
-      description: "{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 10 seconds."
-```
+??? abstract "/etc/prometheus/alert.rules.json"
+	```yaml
+	groups:
+	- name: alert.rules
+	  rules:
+	  - alert: EndpointDown
+		expr: probe_success == 0
+		for: 10s
+		labels:
+		  severity: "critical"
+		annotations:
+		  summary: "Endpoint {{ $labels.instance }} has an issue"
+		  description: "{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 10 seconds."
+	```
 
 La syntaxe est assez compréhensible. Tout d'abord, nous définissons un
 nom au groupe de règles puis nous définissons la règle. Celle-ci va se
@@ -1018,43 +1042,46 @@ Checking /etc/prometheus/alert.rules.yml
 
 Voici d'autres exemples de règles Prometheus trouvées sur le web :
 
-```yaml
-groups:
-- name: alert.rules
+??? abstract "/etc/prometheus/alert.rules.yml"
+	```yaml
+	groups:
+	- name: alert.rules
 
-  rules:
-  - alert: node_high_cpu_usage_70
-    expr: avg(rate(netdata_cpu_cpu_percentage_average{dimension="idle"}[1m])) by (job) > 70
-    for: 1m
-    annotations:
-      description: {{ $labels.job }} on {{ $labels.job }} CPU usage is at {{ humanize $value }}%.
-      summary: CPU alert for container node {{ $labels.job }}
+	  rules:
+	  - alert: node_high_cpu_usage_70
+		expr: avg(rate(netdata_cpu_cpu_percentage_average{dimension="idle"}[1m])) by (job) > 70
+		for: 1m
+		annotations:
+		  description: {{ $labels.job }} on {{ $labels.job }} CPU usage is at {{ humanize $value }}%.
+		  summary: CPU alert for container node {{ $labels.job }}
 
-  - alert: node_high_memory_usage_70
-    expr: 100 / sum(netdata_system_ram_MB_average) by (job)
-      * sum(netdata_system_ram_MiB_average{dimension=~"free|cached"}) by (job) < 30
-    for: 1m
-    annotations:
-      description: {{ $labels.job }} memory usage is {{ humanize $value}}%.
-      summary: Memory alert for container node {{ $labels.job }}
+	  - alert: node_high_memory_usage_70
+		expr: 100 / sum(netdata_system_ram_MB_average) by (job)
+		  * sum(netdata_system_ram_MiB_average{dimension=~"free|cached"}) by (job) < 30
+		for: 1m
+		annotations:
+		  description: {{ $labels.job }} memory usage is {{ humanize $value}}%.
+		  summary: Memory alert for container node {{ $labels.job }}
 
-  - alert: node_low_root_filesystem_space_20
-    expr: 100 / sum(netdata_disk_space_GiB_average{family="/"}) by (job)
-      * sum(netdata_disk_space_GB_average{family="/",dimension=~"avail|cached"}) by (job) < 20
-    for: 1m
-    annotations:
-      description: {{ $labels.job }} root filesystem space is {{ humanize $value}}%.
-      summary: Root filesystem alert for container node {{ $labels.job }}
+	  - alert: node_low_root_filesystem_space_20
+		expr: 100 / sum(netdata_disk_space_GiB_average{family="/"}) by (job)
+		  * sum(netdata_disk_space_GB_average{family="/",dimension=~"avail|cached"}) by (job) < 20
+		for: 1m
+		annotations:
+		  description: {{ $labels.job }} root filesystem space is {{ humanize $value}}%.
+		  summary: Root filesystem alert for container node {{ $labels.job }}
 
-  - alert: node_root_filesystem_fill_rate_6h
-    expr: predict_linear(netdata_disk_space_GiB_average{family="/",dimension=~"avail|cached"}[1h], 6 * 3600) < 0
-    for: 1h
-    labels:
-      severity: critical
-    annotations:
-      description: Container node {{ $labels.job }} root filesystem is going to fill up in 6h.
-      summary: Disk fill alert for node {{ $labels.job }}
-```
+	  - alert: node_root_filesystem_fill_rate_6h
+		expr: predict_linear(netdata_disk_space_GiB_average{family="/",dimension=~"avail|cached"}[1h], 6 * 3600) < 0
+		for: 1h
+		labels:
+		  severity: critical
+		annotations:
+		  description: Container node {{ $labels.job }} root filesystem is going to fill up in 6h.
+		  summary: Disk fill alert for node {{ $labels.job }}
+	```
+
+Enormement d'exemples sont disponibles [ici](https://awesome-prometheus-alerts.grep.to/rules.html)
 
 ### Bot Telegram Alertmanager
 
@@ -1073,7 +1100,7 @@ nous avons l'habitude désormais. Il nous faudra [créer un bot
 telegram](https://www.teleme.io/articles/create_your_own_telegram_bot?hl=fr)
 et relever notre ChatID.
 
-Notre directive *ExecStart* de notre unit sera la suivante :
+Notre directive `ExecStart` de notre unit sera la suivante :
 
 ```bash
 ExecStart=alertmanager-bot --store=bolt --telegram.token=BOT_TOKEN --telegram.admin=USER_ID --template.paths=default.tmpl
@@ -1116,13 +1143,13 @@ Voici une liste d'exporter pour divers équipements/logiciels.
 Cependant, je n'ai pas testé ces derniers :
 
 |  **Matériel/Logiciel** |   **Lien** |
-|----------|:-------------:|
-|  JunOS | [JunOS](https://github.com/czerwonk/junos_exporter) |
-|  Cisco | [Cisco](https://github.com/lwlcom/cisco_exporter) |
-|  Mikrotik | [Mikrotik](https://github.com/nshttpd/mikrotik-exporter) |
-|  Windows | [WMI](https://github.com/martinlindhe/wmi_exporter) |
-|  VMWare | [VMWare](https://github.com/pryorda/vmware_exporter) |
-|  Proxmox | [Promxox](https://github.com/znerol/prometheus-pve-exporter) |
+|-------------|:-------------:|
+|  JunOS      | [JunOS](https://github.com/czerwonk/junos_exporter) |
+|  Cisco      | [Cisco](https://github.com/lwlcom/cisco_exporter) |
+|  Mikrotik   | [Mikrotik](https://github.com/nshttpd/mikrotik-exporter) |
+|  Windows    | [WMI](https://github.com/martinlindhe/wmi_exporter) |
+|  VMWare     | [VMWare](https://github.com/pryorda/vmware_exporter) |
+|  Proxmox    | [Promxox](https://github.com/znerol/prometheus-pve-exporter) |
 |  CloudFlare | [CloudFlare](https://github.com/wehkamp/docker-prometheus-cloudflare-exporter) |
 
 Une [liste officielle](https://github.com/prometheus/prometheus/wiki/Default-port-allocations) de tous les exporters Prometheus officielle est disponible, vous permettant de choisir l'exporter qu'il vous faut

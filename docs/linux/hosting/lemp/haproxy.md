@@ -55,10 +55,12 @@ suivante:
 CONFIG="/etc/haproxy"
 ```
 
-La variable CONFIG est utilisée pour le paramètre '`-F '$CONFIG'` de
-l'unit systemd. Voici ce que nous dit la [documentation
-haproxy](https://cbonte.github.io/haproxy-dconv/2.6/management.html) :
+La variable CONFIG est utilisée pour le paramètre `-F $CONFIG` de
+l'unit systemd.
+Voici ce que nous dit la [documentation haproxy](https://cbonte.github.io/haproxy-dconv/2.6/management.html) :
 
+??? note "HAproxy : Official Documentation"
+	```
       -f <cfgfile|cfgdir> : adds <cfgfile> to the list of configuration files to be
         loaded. If <cfgdir> is a directory, all the files (and only files) it
         contains are added in lexical order (using LC_COLLATE=C) to the list of
@@ -73,6 +75,7 @@ haproxy](https://cbonte.github.io/haproxy-dconv/2.6/management.html) :
         section boundary, so the first keyword of each file must be one of
         "global", "defaults", "peers", "listen", "frontend", "backend", and so on.
         A file cannot contain just a server list for example.
+	```
 
 Tous les fichiers se terminant par .cfg seront chargés par HAproxy par
 ordre alphabétique.
@@ -98,20 +101,21 @@ directives propres au fonctionnement interne de HAproxy. Voici un
 exemple simple, que nous allons retrouver dans un grand nombre de
 configuration HAproxy
 
-```haproxy
-global
-    maxconn 50000
-    log /dev/log local0
-    user haproxy
-    group haproxy
-    stats socket /run/haproxy/admin.sock user haproxy group haproxy mode 660 level admin
-    nbproc 2
-    nbthread 4
-    cpu-map auto:1/1-4 0-3
-    daemon
-    ssl-default-bind-ciphers ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256
-    ssl-default-bind-options ssl-min-ver TLSv1.2 no-tls-tickets
-```
+??? example "HAproxy: Global section"
+	```haproxy
+	global
+		maxconn 50000
+		log /dev/log local0
+		user haproxy
+		group haproxy
+		stats socket /run/haproxy/admin.sock user haproxy group haproxy mode 660 level admin
+		nbproc 2
+		nbthread 4
+		cpu-map auto:1/1-4 0-3
+		daemon
+		ssl-default-bind-ciphers ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256
+		ssl-default-bind-options ssl-min-ver TLSv1.2 no-tls-tickets
+	```
 
   * `maxconn` nous permet de limiter le nombre de connexions acceptées
     par HAproxy pour prémunir un manque de mémoire. Attention à ne pas
@@ -159,26 +163,27 @@ Votre configuration est évolution, c'est pour cela que la catégorie
 frontend mais également pour les backends. Vous pouvez overwrite vos
 paramètres pour un frontend/backend spécifique par la suite
 
-```haproxy
-defaults
-    mode http
-    log global
+??? example "HAproxy: Default section"
+	```haproxy
+	defaults
+		mode http
+		log global
 
-    option httplog
-    option dontlognull
+		option httplog
+		option dontlognull
 
-    timeout connect 10s
-    timeout client 30s
-    timeout server 30s
+		timeout connect 10s
+		timeout client 30s
+		timeout server 30s
 
-    timeout http-request 5s
-    timeout http-keep-alive 125s
+		timeout http-request 5s
+		timeout http-keep-alive 125s
 
-    timeout client-fin 30s
-    timeout tunnel 1h
+		timeout client-fin 30s
+		timeout tunnel 1h
 
-    http-reuse safe
-```
+		http-reuse safe
+	```
 
   * `mode http` indique à HAproxy de fonctionner en tant que balancer
     HTTP et non simplement TCP. Légèrement plus lent que le TCP mais
@@ -225,11 +230,12 @@ L'exemple suivant est l'exemple le plus simple que nous pouvons faire
 sur HAproxy. HAproxy va écouter sur le port 80 et tout renvoyer le
 traffic vers le backend *servers*. Nous n'utilisons aucune ACL ici.
 
-```haproxy
-    frontend http-in
-        bind *:80
-        default_backend servers
-```
+??? example "HAproxy : Simple frontend"
+	```haproxy
+		frontend http-in
+			bind *:80
+			default_backend servers
+	```
 
 #### Exemple avancé : ACL
 
@@ -238,19 +244,20 @@ types d'ACL, que ce soir sur l'URI, les paramètres... Nous allons
 voir un exemple simple avec l'utilisation d'une ACL sur le nom de
 domaine.
 
-```haproxy
-frontend http
-   bind *:80
+??? example "HAproxy : Simple frontend w/ ACL"
+	```haproxy
+	frontend http
+	   bind *:80
 
-   # On définit des ACL qui associe un Host: HTTP à un backend
-   acl wiki hdr(host) -i wiki.jdelgado.fr
-   acl site hdr(host) -i jdelgado.fr
+	   # On définit des ACL qui associe un Host: HTTP à un backend
+	   acl wiki hdr(host) -i wiki.jdelgado.fr
+	   acl site hdr(host) -i jdelgado.fr
 
-   use_backend wiki if wiki
-   use_backend site if site
+	   use_backend wiki if wiki
+	   use_backend site if site
 
-   default_backend undefined
-```
+	   default_backend undefined
+	```
 
 Nous définissons ici un backend par défaut. Il est possible de ne pas en
 définir et HAproxy renverra une erreur 421 de lui même.
@@ -263,11 +270,12 @@ exemple simple :
 
 #### Multiples servers
 
-```
-    backend web_servers
-        server server1 10.0.1.3:80
-        server server2 10.0.1.4:80
-```
+??? example "HAproxy : Multiple backends"
+	```bash
+		backend web_servers
+			server server1 10.0.1.3:80
+			server server2 10.0.1.4:80
+	```
 
 Nous avons ici 2 server dénommé respectivement server1 et server2 sur
 les IPs 10.0.1.3 et 10.0.1.4 écoutant sur le port 80. Nous n'avons ici
@@ -279,14 +287,15 @@ autre, chacun recevra 50% du traffic
 Nous pouvons demander à HAproxy de déposer un cookie sur le client pour
 effectuer un équilibrage de charge :
 
-```
-    backend web_servers
-        balance roundrobin
-        cookie srvid insert indirect nocache
-        option httpchk HEAD /
-        server server1 10.0.1.3:80 cookie server1
-        server server2 10.0.1.4:80 cookie server2
-```
+??? example "HAproxy : Multiple backends with persistance"
+	```bash
+		backend web_servers
+			balance roundrobin
+			cookie srvid insert indirect nocache
+			option httpchk HEAD /
+			server server1 10.0.1.3:80 cookie server1
+			server server2 10.0.1.4:80 cookie server2
+	```
 
 Le client recevra un cookie dénommé srvid qui sera utilisé par haproxy
 pour balancer le traffic en round-robin.
@@ -297,20 +306,22 @@ Il est possible d'avoir plusieurs servers sur le même backend mais
 n'en utiliser qu'un '"primaire'". Il suffit d'ajouter le mot clef
 `backup` au serveur secondaire :
 
-```
-    backend web_servers
-        server server1 10.0.1.3:80
-        server server2 10.0.1.4:80 backup
-```
+??? example "HAproxy : Multiple backends with backup"
+	```bash
+		backend web_servers
+			server server1 10.0.1.3:80
+			server server2 10.0.1.4:80 backup
+	```
 
 #### Check HTTP
 
-```
-    backend web_servers
-        option httpchk HEAD /
-        server server1 10.0.1.3:80
-        server server2 10.0.1.4:80
-```
+??? example "HAproxy : Multiple backends with HTTP check"
+	```bash
+		backend web_servers
+			option httpchk HEAD /
+			server server1 10.0.1.3:80
+			server server2 10.0.1.4:80
+	```
 
 Il s'agit ici du même backend qu'au préalable mais avec une différence
 importante, la présence de **httpchk**. Nous avons ici la présence d'un
@@ -368,15 +379,16 @@ très intéressant de spécifier le type de balance. **balance uri whole**
 indique à haproxy de toujours envoyer le traffic pour une URI spécifique
 vers le même backend. Ainsi, nous maximisons le hitrate.
 
-```bash
-backend varnish
-    timeout     check 3000
-    balance uri whole
-    hash-type consistent
+??? example "HAproxy : Backend Varnish"
+	```bash
+	backend varnish
+		timeout     check 3000
+		balance uri whole
+		hash-type consistent
 
-    server      varnish01  varnish01.vlan:82  check
-    server      varnish02  varnish02.vlan:82  check
-```
+		server      varnish01  varnish01.vlan:82  check
+		server      varnish02  varnish02.vlan:82  check
+	```
 
 ### HTTP to HTTPS
 
@@ -400,11 +412,12 @@ méthode. Pour un usage durable dans le temps, nous préférons à cela une
 Si pour quelconques raison vous voulez retournez des URLs custom selon
 des URI précises, la manière la plus facile :
 
-```bash
-    acl     acl           hdr_beg(host) -i monsite.fr
-    acl     acl           hdr_beg(host) -i www.monsite.fr
-    http-request redirect location %[capture.req.uri,map(/etc/haproxy/redirect.map)] code 301 if { capture.req.uri,map(/etc/haproxy/redirect.map) -i -m found } acl
-```
+??? example "HAproxy : Using map"
+	```bash
+		acl     acl           hdr_beg(host) -i monsite.fr
+		acl     acl           hdr_beg(host) -i www.monsite.fr
+		http-request redirect location %[capture.req.uri,map(/etc/haproxy/redirect.map)] code 301 if { capture.req.uri,map(/etc/haproxy/redirect.map) -i -m found } acl
+	```
 
 Et le contenu du fichier redirect.map
 

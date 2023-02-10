@@ -84,113 +84,115 @@ Si tout se passe comme il faut, on peut lancer l'installation
 
 Voici les options de compilations du paquet **nginx**
 
-```bash
---prefix=/etc/nginx
---sbin-path=/usr/sbin/nginx
---conf-path=/etc/nginx/nginx.conf
---error-log-path=/var/log/nginx/error.log
---http-log-path=/var/log/nginx/access.log
---pid-path=/var/run/nginx.pid
---lock-path=/var/run/nginx.lock
---http-client-body-temp-path=/var/cache/nginx/client_temp
---http-proxy-temp-path=/var/cache/nginx/proxy_temp
---http-fastcgi-temp-path=/var/cache/nginx/fastcgi_temp
---http-uwsgi-temp-path=/var/cache/nginx/uwsgi_temp
---http-scgi-temp-path=/var/cache/nginx/scgi_temp
---user=nginx
---group=nginx
---with-http_ssl_module --with-http_realip_module --with-http_addition_module --with-http_sub_module
---with-http_dav_module --with-http_flv_module --with-http_mp4_module --with-http_gunzip_module
---with-http_gzip_static_module --with-http_random_index_module --with-http_secure_link_module --with-http_stub_status_module
---with-http_auth_request_module
---with-mail
---with-mail_ssl_module
---with-file-aio
---with-http_v2_module
---with-ipv6
-```
+??? note "NGINX Default Compilation Options"
+	```bash
+	--prefix=/etc/nginx
+	--sbin-path=/usr/sbin/nginx
+	--conf-path=/etc/nginx/nginx.conf
+	--error-log-path=/var/log/nginx/error.log
+	--http-log-path=/var/log/nginx/access.log
+	--pid-path=/var/run/nginx.pid
+	--lock-path=/var/run/nginx.lock
+	--http-client-body-temp-path=/var/cache/nginx/client_temp
+	--http-proxy-temp-path=/var/cache/nginx/proxy_temp
+	--http-fastcgi-temp-path=/var/cache/nginx/fastcgi_temp
+	--http-uwsgi-temp-path=/var/cache/nginx/uwsgi_temp
+	--http-scgi-temp-path=/var/cache/nginx/scgi_temp
+	--user=nginx
+	--group=nginx
+	--with-http_ssl_module --with-http_realip_module --with-http_addition_module --with-http_sub_module
+	--with-http_dav_module --with-http_flv_module --with-http_mp4_module --with-http_gunzip_module
+	--with-http_gzip_static_module --with-http_random_index_module --with-http_secure_link_module --with-http_stub_status_module
+	--with-http_auth_request_module
+	--with-mail
+	--with-mail_ssl_module
+	--with-file-aio
+	--with-http_v2_module
+	--with-ipv6
+	```
 
 Désormais, nginx est quasiment prêt à être utilisé, il nous reste plus
 qu'à le configurer.
 
 Voici ma configuration personnel que j'utilise
 
-```nginx
-user www-data;
-worker_processes auto;
-worker_rlimit_nofile 65536;
-#worker_cpu_affinity 00000010 00000100 00001000 00010000;
-pid /run/nginx.pid;
+??? example "File: /etc/nginx/nginx.conf"
+	```nginx
+	user www-data;
+	worker_processes auto;
+	worker_rlimit_nofile 65536;
+	#worker_cpu_affinity 00000010 00000100 00001000 00010000;
+	pid /run/nginx.pid;
 
-include /etc/nginx/modules-enabled/*.conf;
+	include /etc/nginx/modules-enabled/*.conf;
 
-events {
-    worker_connections 16384;
-    # multi_accept on;
-}
+	events {
+		worker_connections 16384;
+		# multi_accept on;
+	}
 
-http {
+	http {
 
-    ##
-    # Basic Settings
-    ##
+		##
+		# Basic Settings
+		##
 
-    sendfile on;
-    tcp_nopush on;
-    tcp_nodelay on;
+		sendfile on;
+		tcp_nopush on;
+		tcp_nodelay on;
 
-    resolver 127.0.0.1 1.1.1.1;
-    ignore_invalid_headers on;
+		resolver 127.0.0.1 1.1.1.1;
+		ignore_invalid_headers on;
 
-    keepalive_timeout 65;
-    types_hash_max_size 2048;
+		keepalive_timeout 65;
+		types_hash_max_size 2048;
 
-    server_tokens off;
-    more_set_headers Server: Jeremy Server;
-    more_set_headers Contact: wiki[at]jdelgado[dot]fr;
+		server_tokens off;
+		more_set_headers Server: Jeremy Server;
+		more_set_headers Contact: wiki[at]jdelgado[dot]fr;
 
-    # server_names_hash_bucket_size 64;
-    # server_name_in_redirect off;
+		# server_names_hash_bucket_size 64;
+		# server_name_in_redirect off;
 
-    include /etc/nginx/mime.types;
-    default_type application/octet-stream;
+		include /etc/nginx/mime.types;
+		default_type application/octet-stream;
 
-    ##
-    # SSL Settings
-    ##
+		##
+		# SSL Settings
+		##
 
-    ssl_protocols TLSv1 TLSv1.1 TLSv1.2 TLSv1.3; # Dropping SSLv3, ref: POODLE
-    ssl_prefer_server_ciphers on;
+		ssl_protocols TLSv1 TLSv1.1 TLSv1.2 TLSv1.3; # Dropping SSLv3, ref: POODLE
+		ssl_prefer_server_ciphers on;
 
-    ##
-    # Logging Settings
-    ##
+		##
+		# Logging Settings
+		##
 
-    access_log /var/log/nginx/access.log;
-    error_log /var/log/nginx/error.log;
+		access_log /var/log/nginx/access.log;
+		error_log /var/log/nginx/error.log;
 
-    ##
-    # Gzip Settings
-    ##
+		##
+		# Gzip Settings
+		##
 
-    gzip on;
+		gzip on;
 
-    gzip_vary on;
-    gzip_proxied any;
-    gzip_comp_level 4;
-    # gzip_buffers 16 8k;
-    # gzip_http_version 1.1;
-    # gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
-    gzip_types text/plain text/css application/json application/ld+json application/x-javascript text/xml application/xml application/xml+rss text/javascript application/xml+xhtml application/javascript application/vnd.ms-fontobject font/ttf font/opentype image/svg+xml image/x-icon;
+		gzip_vary on;
+		gzip_proxied any;
+		gzip_comp_level 4;
+		# gzip_buffers 16 8k;
+		# gzip_http_version 1.1;
+		# gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
+		gzip_types text/plain text/css application/json application/ld+json application/x-javascript text/xml application/xml application/xml+rss text/javascript application/xml+xhtml application/javascript application/vnd.ms-fontobject font/ttf font/opentype image/svg+xml image/x-icon;
 
-    ##
-    # Virtual Host Configs
-    ##
+		##
+		# Virtual Host Configs
+		##
 
-    include /etc/nginx/conf.d/*.conf;
-    include /etc/nginx/sites-enabled/*;
-}
-```
+		include /etc/nginx/conf.d/*.conf;
+		include /etc/nginx/sites-enabled/*;
+	}
+	```
 
 Évidemment, ce fichier n'est pas à recopier tel quel, mais il y a tout
 de même certains points importants à conserver :
@@ -226,37 +228,41 @@ web, et n'est disponible que via le package **nginx-extras**
 Comme vous pouvez le voir, on inclut également différents fichiers, les
 voici :
 
-```nginx
-##
-# File Cache
-##
-open_file_cache          max=10000 inactive=20s;
-open_file_cache_valid    60s;
-open_file_cache_min_uses 2;
-open_file_cache_errors   on;
-```
 
-```nginx
-###
-# GZip Settings
-###
-gzip on;
-gzip_buffers 16 8k;
-gzip_comp_level 9;
-gzip_disable "msie6";
-gzip_min_length 20;
-gzip_proxied any;
-gzip_types text/plain
-           text/css
-           text/xml
-           text/javascript
-           application/json
-           application/x-javascript
-           application/javascript
-           application/xml
-           application/xml+rss
-gzip_vary on;
-```
+??? example "File: /etc/nginx/conf.d/filecache.conf"
+	```nginx
+	##
+	# File Cache
+	##
+	open_file_cache          max=10000 inactive=20s;
+	open_file_cache_valid    60s;
+	open_file_cache_min_uses 2;
+	open_file_cache_errors   on;
+	```
+
+
+??? example "File: /etc/nginx/conf.d/gzip.conf"
+	```nginx
+	###
+	# GZip Settings
+	###
+	gzip on;
+	gzip_buffers 16 8k;
+	gzip_comp_level 9;
+	gzip_disable "msie6";
+	gzip_min_length 20;
+	gzip_proxied any;
+	gzip_types text/plain
+			   text/css
+			   text/xml
+			   text/javascript
+			   application/json
+			   application/x-javascript
+			   application/javascript
+			   application/xml
+			   application/xml+rss
+	gzip_vary on;
+	```
 
 Ce fichier est assez important, il permet d'activer la compression
 **gzip**, ce qui signifie concrètement un gain de vitesse sur votre site
@@ -284,32 +290,33 @@ internet.
   * `gzip_vary` indique si un ajout va être effectué dans le header si
     le fichier a été '"gzippé'"
 
-```nginx
-###
-# SSL Settings
-###
+??? example "File: /etc/nginx/snippets/ssl.conf"
+	```nginx
+	###
+	# SSL Settings
+	###
 
-# Ciphers for OpenSSL 1.1.1d (Bullseye)
-ssl_ciphers ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDH+AESGCM:DH+AESGCM:ECDH+AES256:DH+AES256:ECDH+AES128:DHE-RSA-CHACHA20-POLY1305:DH+AES:RSA+AESGCM:RSA+AES:!aNULL:!MD5:!DSS;
+	# Ciphers for OpenSSL 1.1.1d (Bullseye)
+	ssl_ciphers ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDH+AESGCM:DH+AESGCM:ECDH+AES256:DH+AES256:ECDH+AES128:DHE-RSA-CHACHA20-POLY1305:DH+AES:RSA+AESGCM:RSA+AES:!aNULL:!MD5:!DSS;
 
-ssl_prefer_server_ciphers off;
-ssl_dhparam /etc/nginx/ssl/dhparam.pem;
+	ssl_prefer_server_ciphers off;
+	ssl_dhparam /etc/nginx/ssl/dhparam.pem;
 
-ssl_prefer_server_ciphers  on;
-ssl_session_cache    shared:SSL:64m; # a 1mb cache can hold about 4000 sessions, so we can hold 40000 sessions
-ssl_session_timeout  12h;
-ssl_session_tickets  off;
+	ssl_prefer_server_ciphers  on;
+	ssl_session_cache    shared:SSL:64m; # a 1mb cache can hold about 4000 sessions, so we can hold 40000 sessions
+	ssl_session_timeout  12h;
+	ssl_session_tickets  off;
 
-add_header Strict-Transport-Security "max-age=15768000;";
-add_header X-Frame-Options SAMEORIGIN;
-add_header X-Content-Type-Options nosniff;
-add_header X-XSS-Protection "1; mode=block";
-add_header Referrer-Policy "no-referrer";
+	add_header Strict-Transport-Security "max-age=15768000;";
+	add_header X-Frame-Options SAMEORIGIN;
+	add_header X-Content-Type-Options nosniff;
+	add_header X-XSS-Protection "1; mode=block";
+	add_header Referrer-Policy "no-referrer";
 
-ssl_certificate /etc/nginx/ssl/server.crt;
-ssl_certificate_key /etc/nginx/ssl/server.key;
+	ssl_certificate /etc/nginx/ssl/server.crt;
+	ssl_certificate_key /etc/nginx/ssl/server.key;
 
-```
+	```
 
 Le fichier **ssl.conf** est à inclure seulement si l'on souhaite du SSL
 sur ses sites web
@@ -336,23 +343,24 @@ je vous renvoie vers l'[article de préférence](https://content-security-policy
 
 Voici désormais des snippets utiles pour ses différents blocks nginx :
 
-```nginx
-###
-# Basic File Protect
-###
+??? example "File: /etc/nginx/snippets/protect.conf"
+	```nginx
+	###
+	# Basic File Protect
+	###
 
-# Disallow download of hidden files
-location ~* (?:^|/)'. {
-    deny all;
-}
+	# Disallow download of hidden files
+	location ~* (?:^|/)'. {
+		deny all;
+	}
 
-# Disallow download of these extensions
-location ~* (?:'.(?:bak|conf.*|sql|fla|psd|ini|log|sh|inc|swp|dist)|~)$ {
-    deny all;
-}
+	# Disallow download of these extensions
+	location ~* (?:'.(?:bak|conf.*|sql|fla|psd|ini|log|sh|inc|swp|dist)|~)$ {
+		deny all;
+	}
 
 
-```
+	```
 
 Ce fichier nous permet d'éviter que des fichiers de configuration ou
 autres soient accessible par tout le monde. Il s'agit d'un fichier
@@ -364,16 +372,17 @@ cas-là, il faut les ajouter manuellement.
 
 Snippets utiles pour vos vhosts (snippets/letsencrypt.conf)
 
-```nginx
-location ^~ /.well-known/acme-challenge/ {
-    satisfy any;
-    allow all;
+??? example "File: /etc/nginx/snippets/letsencrypt.conf"
+	```nginx
+	location ^~ /.well-known/acme-challenge/ {
+		satisfy any;
+		allow all;
 
-    access_log /var/log/nginx/certbot.log;
+		access_log /var/log/nginx/certbot.log;
 
-    root /var/www/letsencrypt;
-}
-```
+		root /var/www/letsencrypt;
+	}
+	```
 
 ## Installer et configurer PHP7-FPM
 

@@ -4,7 +4,7 @@ L'utilisation des variables dans ansible est parfois une plaie.
 
 Imaginons un cas simple, nous souhaitons faire un check sur un serveur précis, puis déployé sur une flotte de serveur identiques. Dans ce cas simple, il semblerait trivial d'executer la tache A sur le serveur A, puis d'appliquer aux serveurs B, C et D, ce qui nous donnerait ce playbook :
 
-??? example "File : wrong_playbook.yml"
+??? failure "File : wrong_playbook.yml"
 	```yaml
 	- name: Task A
 	  hosts: host_a
@@ -32,7 +32,7 @@ Malheureusement, cet exemple ne peut pas marcher. Pour rappel, les variables ans
 
 Heureusement, ansible a tout prévu avec le keyword `hostvars` qui permet d'accéder a une variable d'un host spécifique
 
-??? example "File : correct_playbook.yml"
+??? success "File : correct_playbook.yml"
 	```yaml
 	- name: Task A
 	  hosts: host_a
