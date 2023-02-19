@@ -131,7 +131,7 @@ qu'un tutoriel est disponible
     ensemble de processus liés à un ensemble de limites ou paramètres
     définis via un filesystem cgroup. Ce mécanisme est par exemple
     utilisé par Docker afin de limiter les ressources si vous le
-    souhaité. Nous explorerons certainement les cgroups dans un prochain
+    souhaitez. Nous explorerons certainement les cgroups dans un prochain
     articl.
   * `/proc/cmdline` est également un fichier très intéressant. il nous
     indique avec quels paramètres est lancé notre kernel Linux mais
