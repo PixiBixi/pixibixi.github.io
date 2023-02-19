@@ -219,6 +219,23 @@ distinctes séparées par un /, la première corresond au nombre de
 processus s'exécutant en ce moment et le nombre total de processus.
 Enfin la dernière valeur correspond au PID le plus récent du système.
 
+Il est possible d'avoir un load détaillé, pour cela, on s'intéresse au dossier `/proc/pressure`
+
+```bash
+λ jeremy ~ → ls /proc/pressure
+cpu  io  memory
+```
+
+Ici, le format est légèrement différent du fichier `/proc/loadavg`
+
+```bash
+λ jeremy ~ → cat /proc/pressure/cpu
+some avg10=3.58 avg60=4.12 avg300=3.72 total=603533453516
+```
+
+Dans notre exemple, il s'agit du % de process attendant le CPU pendant les 10, 60 et 300 dernières secondes. Il s'agit donc d'une valeur plus intéressante en cas d'un troubleshooting fin qu'un simple load-average
+
+
 ## Hardening de /proc
 
 2 options sont particulièrement intéressantes dans le montage de `/proc`pour renforcer de la sécurité sous Linux : `hidepid` et `gid`
