@@ -324,14 +324,14 @@ n'en utiliser qu'un '"primaire'". Il suffit d'ajouter le mot clef
 	```
 
 Il s'agit ici du même backend qu'au préalable mais avec une différence
-importante, la présence de **httpchk**. Nous avons ici la présence d'un
+importante, la présence de `httpchk`. Nous avons ici la présence d'un
 véritable check L7 au lieu d'un check TCP L4. HAproxy sera ici capable
 de distinguer un serveur HTTP down au niveau L7 (tel qu'une erreur
 50x). Il est possible d'affiner le check, nous avons ici une simple
 requête HEAD sur /
 
 ```
-     option httpchk GET / HTTP/1.1'r'nHost:' www.jdelgado.fr'r'nUser-Agent:' haproxy_check
+     option httpchk GET / HTTP/1.1\r\nHost:\ www.jdelgado.fr\r\nUser-Agent:\ haproxy_check
      http-check expect status 200
 ```
 
@@ -425,4 +425,3 @@ Et le contenu du fichier redirect.map
 $ cat redirect.map
 uri1.html https://monsite.fr/coucou
 ```
-
