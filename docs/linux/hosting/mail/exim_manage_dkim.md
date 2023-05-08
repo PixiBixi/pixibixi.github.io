@@ -19,7 +19,7 @@ dkim_domain = ${if match_domain{$sender_address_domain}{+local_domains} {$sender
 .endif /etc/exim4/conf.d/transport/30_exim4-config_remote_smtp
 
 
-PUBLIC_KEY="$(command cat "${SELECTOR}.dkim.pem"|grep -v ''-|tr -d 'n)"
+PUBLIC_KEY="$(command cat "${SELECTOR}.dkim.pem"|grep -v ''-|tr -d \n)"
 command echo "# Dkim configuration for server with selector {$SELECTOR}.
 
 _asp._domainkey IN TXT '"dkim=all'"

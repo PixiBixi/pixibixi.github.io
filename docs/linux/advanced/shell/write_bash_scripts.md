@@ -286,7 +286,7 @@ du pipeline, très utile.
 ```bash
 #!/bin/bash
 exec 8<>/dev/tcp/wiki.jdelgado.fr/80
-echo -e "GET / HTTP/1.1'r'nHost: wiki.jdelgado.fr'r'n'r'n" >&8
+echo -e "GET / HTTP/1.1\r\nHost: wiki.jdelgado.fr\r\n\r\n" >&8
 cat <&8
 ```
 

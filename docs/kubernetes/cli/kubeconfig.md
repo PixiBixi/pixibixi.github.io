@@ -26,7 +26,7 @@ fi
 ADD_KUBECONFIG_FILES="$HOME/.kube/config-files"
 [ ! -d $ADD_KUBECONFIG_FILES ] && mkdir -p "${ADD_KUBECONFIG_FILES}"
 OIFS="$IFS"
-IFS=$'n
+IFS=$\n
 for kubeconfigFile in `find "${ADD_KUBECONFIG_FILES}" -type f -name "*.yml" -o -name "*.yaml"`
 do
     export KUBECONFIG="$kubeconfigFile:$KUBECONFIG"

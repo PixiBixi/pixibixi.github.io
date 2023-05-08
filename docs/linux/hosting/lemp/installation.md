@@ -59,8 +59,7 @@ Afin d'être sûr que nous allons utiliser les repository Debian, on
 ajoute un Pinning :
 
 ```bash
-echo -e "Package: *'nPin: origin nginx.org'nPin: release o=nginx'nPin-Priority: 900'n" '
-    | sudo tee /etc/apt/preferences.d/99nginx
+echo -e "Package: *\nPin: origin nginx.org\nPin: release o=nginx\nPin-Priority: 900\n" | sudo tee /etc/apt/preferences.d/99nginx
 ```
 
 Et enfin, on effectue un `apt-get update` pour mettre à jour nos
