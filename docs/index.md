@@ -184,6 +184,9 @@ Cette magnifique documentation a été faites avec MkDocs
   * [Utiliser un proxy pour pull les images Docker](/docker/use_proxy)
   * [Templates docker-compose](/docker/compose/templates)
 
+#### Troubleshooting
+  * [Debug son ServiceAccount](./kubernetes/troubleshooting/troubleshooting_sa.md)
+
 ### Divers
 
   * [Télécharger ses sous-titres en ligne de commande](/linux/misc/subs)
