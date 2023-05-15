@@ -187,6 +187,9 @@ Cette magnifique documentation a été faites avec MkDocs
 #### Troubleshooting
   * [Debug son ServiceAccount](./kubernetes/troubleshooting/troubleshooting_sa.md)
 
+#### Misc
+  * [Commandes Avancées](./kubernetes/advanced_commands.md)
+
 ### Divers
 
   * [Télécharger ses sous-titres en ligne de commande](/linux/misc/subs)
