@@ -34,5 +34,5 @@ done
 IFS="$OIFS"
 ```
 
-Tous les fichiers dans '~/.kube/config-files et finissant en yml seront
+Tous les fichiers dans ~/.kube/config-files et finissant en yml seront
 chargés automatiquement ! Free to use avec kubectx o/

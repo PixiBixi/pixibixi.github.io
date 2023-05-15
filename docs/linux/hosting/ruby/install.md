@@ -17,7 +17,7 @@ $ apt install rbenv
 $ rbenv init
 ```
 
-Attention, ruby sera installé dans '~/.rbenv/xxx.
+Attention, ruby sera installé dans ~/.rbenv/xxx.
 
 On check après les versions disponibles avec un **rbenv install
 '--list-all**. Il y en a une tonne.

@@ -154,7 +154,7 @@ Beaucoup d'options sont également possibles au niveau du fichier
   * `no-port-forwarding`: Désactivation du SSH port forwarding.
   * `no-X11-forwarding`: Désactivation du X11 display forwarding.
   * `no-pty`: Désactive la possibilité de démarrer un shell
-  * `no-user-rc`: Empêche l'interprétation du fichier '~/.ssh/rc.
+  * `no-user-rc`: Empêche l'interprétation du fichier ~/.ssh/rc.
 
 Par défaut, tout est autorisé. Cependant, une autre approche est
 possible. Via le keyword `restrict`, ce qui va implicitement refuser
