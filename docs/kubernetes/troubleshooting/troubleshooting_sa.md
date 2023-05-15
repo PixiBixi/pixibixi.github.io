@@ -73,3 +73,9 @@ my-pod my-aws-cli An error occurred (AccessDenied) when calling the ListObjectsV
 ```
 
 Bingo, notre pod a un problème pour accéder au Bucket, probablement la politique à modifier :)
+
+Par ailleurs, la bonne pratique est de ne pas utiliser le ServiceAccount par défaut, voici une petite commande pour être sur qu'aucun Pod ne tourne avec :
+
+```
+kubectl get pods --all-namespaces -o jsonpath='{range .items[?(@.spec.serviceAccountName == "default")]}{.metadata.namespace} {.metadata.name}{"\n"}{end}' 2>/dev/null
+```
