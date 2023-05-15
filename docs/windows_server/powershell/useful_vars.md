@@ -1,3 +1,3 @@
 # Variables built-in utiles
 
-**'$env:COMPUTERNAME** : Hostname de la machine
+`$env:COMPUTERNAME` : Hostname de la machine

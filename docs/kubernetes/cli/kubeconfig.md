@@ -1,4 +1,4 @@
-# Manage son '$KUBECONFIG
+# Manage son $KUBECONFIG
 
 De base, kubectl va chercher sa configuration dans '~/.kube/config. Il
 est possible de modifier KUBECONFIG pour gérer plusieurs clusters
