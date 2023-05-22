@@ -149,46 +149,48 @@ Cette magnifique documentation a été faites avec MkDocs
 
   * [Log des slow queries de ElasticSearch](/linux/elasticsearch/log_slow_queries)
 
-### DevOps
+## DevOps
 
-#### Ansible
+### Ansible
 
   * [Automatiser les taches avec Ansible](./linux/automatisation/ansible/ansible.md)
   * [Tips ansible](./linux/automatisation/ansible/ansible_tips.md)
   * [Réutilisation de variables ansible entre différentes tâches ](./linux/automatisation/ansible/ansible_reuse_variable.md)
 
-#### Kubernetes
+### Kubernetes
 
   * [Commandes utiles pour K8S](/kubernetes/cli/useful_commands)
   * [Manage son $KUBECONFIG](/kubernetes/cli/kubeconfig)
   * [Outils pour mieux gérer K8S](/kubernetes/cli/tools)
-
-#### Rancher
-
-  * [Reset son password Rancher](/kubernetes/rancher/reset_password)
-  * [Bootstrap rapidement son cluster](/kubernetes/rke/bootstrap_cluster)
-
-#### Terraform
-
-  * [Cheatsheet terraform](/terraform/cheatsheet)
-  * [Tools Terraform indispensables](/terraform/tools)
-
-#### Gitlab
-
-  * [Optimiser sa CI Gitlab](/gitlab/ci/optimize)
-  * [Intégrer un scan d'image à sa CI](/gitlab/ci/scan_image)
-
-#### Docker
-
-  * [Docker: l'indispensable](docker)
-  * [Utiliser un proxy pour pull les images Docker](/docker/use_proxy)
-  * [Templates docker-compose](/docker/compose/templates)
 
 #### Troubleshooting
   * [Debug son ServiceAccount](./kubernetes/troubleshooting/troubleshooting_sa.md)
 
 #### Misc
   * [Commandes Avancées](./kubernetes/advanced_commands.md)
+
+#### Rancher
+
+  * [Reset son password Rancher](/kubernetes/rancher/reset_password)
+  * [Bootstrap rapidement son cluster](/kubernetes/rke/bootstrap_cluster)
+
+### Terraform
+
+  * [Cheatsheet terraform](/terraform/cheatsheet)
+  * [Tools Terraform indispensables](/terraform/tools)
+
+### Gitlab
+
+  * [Optimiser sa CI Gitlab](/gitlab/ci/optimize)
+  * [Intégrer un scan d'image à sa CI](/gitlab/ci/scan_image)
+
+### Docker
+
+  * [Docker: l'indispensable](docker)
+  * [Utiliser un proxy pour pull les images Docker](/docker/use_proxy)
+  * [Templates docker-compose](/docker/compose/templates)
+
+
 
 ### Divers
 
