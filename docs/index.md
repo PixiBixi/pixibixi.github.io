@@ -149,6 +149,12 @@ Cette magnifique documentation a été faites avec MkDocs
 
   * [Log des slow queries de ElasticSearch](/linux/elasticsearch/log_slow_queries)
 
+## Cloud
+
+### AWS
+
+  * [Glossaire du vocabulaire AWS](./cloud/aws/glossaire.md)
+
 ## DevOps
 
 ### Ansible
