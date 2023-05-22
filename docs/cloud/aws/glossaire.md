@@ -20,13 +20,6 @@ AWS c'est beaucoup de vocabulaire à maitriser pour au final des fonctionnalité
 | EBS              | Block Storage                  | [ici](https://docs.aws.amazon.com/fr_fr/AWSEC2/latest/UserGuide/AmazonEBS.html) |
 
 
-## Conteneurs
-
-| Nomenclature AWS | Utilité                        | Doc AWS |
-| :--------------: | :----------------------------: | :-----: |
-| EKS              | Kubernetes Managé              | [ici](https://docs.aws.amazon.com/fr_fr/AmazonS3/latest/userguide/Welcome.html) |
-
-
 ## Service Managé
 
 | Nomenclature AWS | Utilité                        | Doc AWS |
