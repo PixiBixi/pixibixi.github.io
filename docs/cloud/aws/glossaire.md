@@ -31,15 +31,16 @@ AWS c'est beaucoup de vocabulaire à maitriser pour au final des fonctionnalité
 
 | Nomenclature AWS | Utilité                        | Doc AWS |
 | :--------------: | :----------------------------: | :-----: |
+| AuroraDB         | MySQL / PostgreSQL             | [ici](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html) |
 | CloudSearch      | Elastic Search                 | [ici](https://docs.aws.amazon.com/fr_fr/AmazonS3/latest/userguide/Welcome.html) |
 | DynamoDB         | NoSQL                          | [ici](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Introduction.html) |
-| AuroraDB         | MySQL / PostgreSQL             | [ici](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html) |
-| RDS              | MySQL / PostgreSQL             | [ici](https://docs.aws.amazon.com/rds/index.html) |
+| EKS              | Kubernetes                     | [ici](https://docs.aws.amazon.com/whitepapers/latest/overview-deployment-options/amazon-elastic-kubernetes-service.html)
 | ElastiCache      | Redis / Memcached              | [ici](https://docs.aws.amazon.com/fr_fr/AmazonElastiCache/latest/red-ug/elasticache-use-cases.html) |
+| RDS              | MySQL / PostgreSQL             | [ici](https://docs.aws.amazon.com/rds/index.html) |
 | Route53          | Serveur DNS autoritaire        | [ici](https://docs.aws.amazon.com/route53/index.html) |
 | SQS              | RabbitMQ                       | [ici](https://docs.aws.amazon.com/sqs/index.html) |
 
-## Network 
+## Network
 
 | Nomenclature AWS | Utilité                        | Doc AWS |
 | :--------------: | :----------------------------: | :-----: |
