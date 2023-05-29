@@ -95,6 +95,10 @@ udevadm test-builtin net_id /sys/class/net/eth0
 mdadm --create /dev/md0 --level=5 --raid-devices=3 /dev/mapper/sdb1 /dev/mapper/sdc1 /dev/mapper/sdd1 --assume-clean
 ```
 
+!!! Warning
+    La reconstruction du raid est "bridé" par des paramètres sysctl, `dev.raid.speed_limit_min` et `dev.raid.speed_limit_max`
+
+
   * Se reendre dans le BIOS directement au reboot
 
 ```bash
