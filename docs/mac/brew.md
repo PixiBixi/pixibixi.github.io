@@ -1,7 +1,5 @@
 # Brew, l'APT-GET du Mac
 
-![](/mac/3ohzqov.png){.align-center width="1000"}
-
 ## Présentation
 
 Mac OS est un OS absolument génial, il est d'une simplicité incroyable,
@@ -139,8 +137,9 @@ Sous Brew, il existe une sous-commande absolument magique qui s'appelle `bundle`
 Brew nous permet de générer dans un fichier l'ensemble des packages, tap & autres que nous avons. Pour ma part, ils sont disponibles [ici](https://github.com/PixiBixi/dotfiles/blob/master/Brewfile).
 
 Voici les principales commandes à connaitre !
+
   * `brew bundle dump` : Permet de générer le fichier Brewfile
-    * --file=my_brewfile : Pour spécifier un nom différent
+    * `--file=my_brewfile` : Pour spécifier un nom différent
   * `brew bundle install` : Permet d'installer tout ce qui est dans le fichier ~/Brewfile
 	* `--file=my_brewfile` : Permet de spécifier un nom différent
 
