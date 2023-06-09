@@ -88,7 +88,7 @@ Cette magnifique documentation a été faites avec MkDocs
 
 #### HAproxy
 
-  * [HAproxy : Sa configuration](/linux/hosting/lemp/haproxy)
+  * [HAproxy : Sa configuration](/linux/hosting/lemp/haproxy/overview.md)
   * [HAproxy : Mettre un node en maintenance](/linux/hosting/lemp/haproxy/maintenance)
   * [HAproxy : Obtenir les vraies IPs depuis CloudFlare](/linux/hosting/lemp/haproxy/cloudflare)
   * [HAproxy : Utiliser son API](/linux/hosting/lemp/haproxy/api)
