@@ -10,11 +10,11 @@ Comme des images sont plus représentatives, voilà les deux commandes :
 
 **df :**
 
-![](/df.png){.align-center}
+![](/df.png)
 
 **dfc :**
 
-![](/dfc.png){.align-center}
+![](/dfc.png)
 
 Comme vous pouvez, le voir, le résultat est quasiment identique, mais
 **dfc** est bien plus clair.

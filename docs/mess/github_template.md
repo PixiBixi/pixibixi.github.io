@@ -10,7 +10,7 @@ templates afin d'avoir une structure.
 Voici un exemple de Pull Request et d'Issue pour le repo
 [aframe](https://github.com/aframevr/aframe/issues/new) :
 
-![](https://i.imgur.com/LGpNbZt.png){.align-center}
+![](https://i.imgur.com/LGpNbZt.png)
 
 Pour se faire, c'est très simple
 

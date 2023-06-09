@@ -1,4 +1,4 @@
-![](/mess/cover-wd-green.png){.align-center}
+![](/mess/cover-wd-green.png)
 
 # WD Green HDD, Comment prémunir le old_age prématuré
 

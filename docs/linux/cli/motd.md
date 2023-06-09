@@ -4,7 +4,7 @@ Voici un petit tutoriel qui permet de personnaliser le '"Message Of The
 Day'" sur Debian (adaptable à toute distribution) Le '"motd'" c'est le
 message que vous avez au moment où vous vous connectez sur votre shell.
 Ce tutoriel vous permettra d'avoir un '"motd'" qui ressemblera à ça:'
-![](/linux/cli/motdstat1.png){.align-center}
+![](/linux/cli/motdstat1.png)
 
 ```bash
 $ apt-get install update-notifier-common

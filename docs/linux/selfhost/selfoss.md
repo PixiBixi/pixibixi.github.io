@@ -1,6 +1,6 @@
 # Selfoss, son Reader RSS self-hosted
 
-![](/screenshot1.png){.align-center}
+![](/screenshot1.png)
 
 ## Introduction
 

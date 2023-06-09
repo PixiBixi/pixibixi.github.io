@@ -52,7 +52,7 @@ de location, le script est disponible sur Dropbox.
 
 Voici le rendu du script :
 
-![](/lbw9ftu.jpg){.align-center}
+![](/lbw9ftu.jpg)
 
 ## Iperf, kezako ?
 

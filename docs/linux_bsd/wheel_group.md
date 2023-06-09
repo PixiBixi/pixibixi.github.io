@@ -1,6 +1,6 @@
 # Ajouter un utilisateur au groupe wheel
 
-![](/linux_bsd/bsd-logo-full.png){.align-center}
+![](/linux_bsd/bsd-logo-full.png)
 
 Sous BSD, notre utilisateur créé lors de l'installation ne peut pas
 faire la commande '"su'" par défaut. Nous devons l'ajouter au groupe

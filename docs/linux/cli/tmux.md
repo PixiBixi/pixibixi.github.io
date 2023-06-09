@@ -36,7 +36,7 @@ En n'oubliant pas de remplacer distrib soit par Wheezy, soit par Jessie
 De base, lorsque nous lançons tmux, nous avons une simple fenêtre, avec
 une bar de statut en bas :
 
-![](/tmux-standard.jpg){.align-center}
+![](/tmux-standard.jpg)
 
 Puis nous pouvons faire une multitude de choses sur cette simple fenêtre
 

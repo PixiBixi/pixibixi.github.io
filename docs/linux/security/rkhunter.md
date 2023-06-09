@@ -1,6 +1,6 @@
 # Installer et configurer RKHunter
 
-![](/rkhunter.png){.align-center}
+![](/rkhunter.png)
 
 rkhunter (pour Rootkit Hunter) est un petit programme UNIX permettant de
 détecter les rootkits. Pour se faire, il compare les hash SHA-256,

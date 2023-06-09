@@ -1,6 +1,6 @@
 # Sonerezh
 
-![](/sonerezh.png){.align-center}
+![](/sonerezh.png)
 
 ## Introduction
 

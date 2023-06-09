@@ -1,4 +1,4 @@
-![](/speed-test.jpg){.align-center width="600"}
+![](/speed-test.jpg)
 
 # Effectuer un Speedtest depuis son serveur
 

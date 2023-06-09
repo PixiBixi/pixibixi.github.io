@@ -6,7 +6,7 @@ statiques...
 
 Petit schéma pour vous rappeler comment fonctionne un serveur DHCP :
 
-![](/windows_server/powershell/trames_dhcp.jpg){.align-center}
+![](/windows_server/powershell/trames_dhcp.jpg)
 
 ## Installation
 

@@ -11,7 +11,7 @@ Ceux-ci ont été développés par un jeune français du pseudo de
 ['@shevabam](https://twitter.com/shevabam) '### [Voici le rendu
 :]{.underline}
 
-![](/esm-sh_dashboard-complete.png){.align-center width="300"}
+![](/esm-sh_dashboard-complete.png)
 
 ## Installation eZ Server Monitor SH
 
@@ -78,7 +78,7 @@ eZ Server Monitor est une suite extrêmement pratique pour monitorer son
 serveur depuis une page Web, où l'on peut y retrouver toutes les
 informations essentielles :
 
-![](/ez_serv.jpg){.align-center width="600"}
+![](/ez_serv.jpg)
 
 Dans cette page, nous pouvons y observer différents éléments :
 

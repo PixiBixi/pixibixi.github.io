@@ -1,6 +1,6 @@
 # Partager ses fichiers avec H5ai
 
-![](/h5ai.jpg){.align-center}
+![](/h5ai.jpg)
 
 ## Présentation
 

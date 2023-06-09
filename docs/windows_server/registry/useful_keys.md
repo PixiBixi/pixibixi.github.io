@@ -5,7 +5,7 @@ Voici donc quelques clés de registre bien utiles :
 
 ## Désactiver le Shutdown Event Tracker
 
-![](https://techan.fr/images/2017/06/Windows_Shutdown_Event_Tracker.png){.align-center}
+![](https://techan.fr/images/2017/06/Windows_Shutdown_Event_Tracker.png)
 
 Le Shutdown Event Tracker est la fameuse page qui nous empêche
 d'éteindre directement notre serveur.

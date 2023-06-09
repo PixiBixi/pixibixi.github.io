@@ -1,4 +1,4 @@
-![](/code/st3header.jpg){.align-center}
+![](/code/st3header.jpg)
 
 # SublimeText : Le codage Efficace
 
@@ -132,7 +132,7 @@ opposée. Par exemple, **Tab** indente la ligne, alors que **MAJ + Tab**
 De base, comme toute application, sublime texte dispose d'**une seule
 fenêtre principale**, puis nous pouvons faire différents découpages :
 
-![](/windows_sublimetext.gif){.align-center}
+![](/windows_sublimetext.gif)
 
 ## Configuraton
 
@@ -257,7 +257,7 @@ additionnelles :
 
 Voici le thème :
 
-![](/code/presentation_material_design.gif){.align-center}
+![](/code/presentation_material_design.gif)
 
 Comme vous pouvez le voir, le thème *Material Theme* ainsi que *Material
 Theme Darker* sont agréables et reposant, contrairement au thème

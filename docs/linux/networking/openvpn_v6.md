@@ -1,6 +1,6 @@
 # Configurer son serveur OpenVPN pour de l'IPv6
 
-![](/rsz_openvpn-ipv6.jpg){.align-center}
+![](/rsz_openvpn-ipv6.jpg)
 
 OpenVPN est un VPN dual-stack. Dans ce tutoriel, nous allons voir
 comment apporter une connectivité v6 à vos clients, ce qui peut être

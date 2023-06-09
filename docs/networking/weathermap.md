@@ -1,4 +1,4 @@
-![](/franceix-weathermap.png){.align-center}
+![](/franceix-weathermap.png)
 
 ## Vérifié l'état du réseau avec la Weathermap
 
@@ -43,7 +43,7 @@ Pour savoir par quels routeurs passe sa connexion, il suffit de faire un
 **[WinMTR](http://winmtr.net/)** sous Windows. Voici des informations
 qui nous intéressent :
 
-![](/mtr.png){.align-center}
+![](/mtr.png)
 
 Ce screen provient du logiciel **WinMTR**.
 

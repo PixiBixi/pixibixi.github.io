@@ -90,7 +90,7 @@ On peut limiter le nombre d'adresse MAC utilisable par port
 
 Il existe différents mode de violation de droits
 
-![](/cisco/port-security-violations.png){.align-center}
+![](/cisco/port-security-violations.png)
 
 Par défaut, les ports sont en protect, pas très utile donc.
 

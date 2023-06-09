@@ -1,6 +1,6 @@
 # Streamer sa musique depuis Koel
 
-![](/koel.png){.align-center width="800"}
+![](/koel.png)
 
 ## Présentation
 

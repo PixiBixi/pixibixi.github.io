@@ -1,6 +1,6 @@
 # Sauvegarder ses vidéos avec YoutubeDL et sa GUI
 
-![](/youtubedlwebui_main.png){.align-center}
+![](/youtubedlwebui_main.png)
 
 youtube-dl est un outil formidable permettant de télécharger ses vidéos
 en ligne de commande à partir d'une foule de providers (Youtube, Arte,
