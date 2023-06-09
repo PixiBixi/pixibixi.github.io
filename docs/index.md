@@ -92,6 +92,7 @@ Cette magnifique documentation a été faites avec MkDocs
   * [HAproxy : Mettre un node en maintenance](/linux/hosting/lemp/haproxy/maintenance)
   * [HAproxy : Obtenir les vraies IPs depuis CloudFlare](/linux/hosting/lemp/haproxy/cloudflare)
   * [HAproxy : Utiliser son API](/linux/hosting/lemp/haproxy/api)
+  * [HAproxy : Conserver l'IP de son utilisateur](./linux/hosting/lemp/haproxy/keep_real_ip.md)
 
 #### FTP
 
