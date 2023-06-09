@@ -40,7 +40,7 @@ pour un usage domestique et plus visuel, deux outils sont disponibles.
 find est un outil très puissant que nous utilisons tous. Cependant, il
 existe encore un outil plus puissant se nommant
 [fd](https://github.com/sharkdp/fd). fd nous permet simplement de
-simples recherches. Par exemple, [fd -e md]{.underline} nous permettra
+simples recherches. Par exemple, `fd -e md` nous permettra
 de rechercher tous les fichiers du répertoire (et sous-répertoire)
 courant. De nombreux exemples sont disponibles dans le Github
 
@@ -61,7 +61,7 @@ ripgrep est un remplacant extrêmement efficace à grep. Il est en moyenne
 2x plus rapide pour une recherche que grep.
 [ripgrep](https://github.com/BurntSushi/ripgrep) ignore par défaut les
 fichiers contenu dans le .gitignore. Un [tutoriel
-détaillé](/[[https///blog.burntsushi.net/ripgrep/) est disponible sur le
+détaillé](https://blog.burntsushi.net/ripgrep/) est disponible sur le
 blog de Burntsushi
 
 ## Bonus
