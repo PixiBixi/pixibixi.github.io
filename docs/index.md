@@ -80,7 +80,7 @@ Cette magnifique documentation a été faites avec MkDocs
   * [HAproxy : Sa configuration](/linux/hosting/lemp/haproxy)
   * [HAproxy : Mettre un node en maintenance](/linux/hosting/lemp/haproxy/maintenance)
   * [HAproxy : Obtenir les vraies IPs depuis CloudFlare](/linux/hosting/lemp/haproxy/cloudflare)
-  * [HAproxy : Utiliser son API](/linux/hosting/lemp/api)
+  * [HAproxy : Utiliser son API](/linux/hosting/lemp/haproxy/api)
   * [Installer un serveur FTP avec Pure-ftp](/linux/hosting/ftp)
   * [Héberger les NS de son serveur avec BIND (+ Resolveur DNS)](/linux/hosting/dns)
   * [MOZILLA_PKIX_ERROR_REQUIRED_TLS_FEATURE_MISSING](/linux/hosting/troubleshooting)
