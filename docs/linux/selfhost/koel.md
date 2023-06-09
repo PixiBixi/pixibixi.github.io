@@ -1,6 +1,6 @@
 # Streamer sa musique depuis Koel
 
-![](/koel.png)
+![](https://user-images.githubusercontent.com/8056274/115028055-bc02a280-9ec4-11eb-991c-69cd2a45b69c.png)
 
 ## Présentation
 
