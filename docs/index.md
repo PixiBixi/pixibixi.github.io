@@ -69,21 +69,44 @@ Cette magnifique documentation a été faites avec MkDocs
 
 ### Hébergement
 
+#### Mail Stack
+
   * [Postfix/Dovecot/DKIM/Postgrey et plus encore](/linux/hosting/mail)
   * [Configurer DKIM avec Exim](/linux/hosting/mail/exim_manage_dkim)
-  * [Installer NGINX, PHP et MariaDB](/linux/hosting/lemp/installation)
-  * [Installer PHP7 et supérieur](/linux/hosting/lemp/php7x)
+
+#### NGINX/PHP
+
   * [Configurer NGINX avec le support IPv6](/linux/hosting/lemp/ipv6_nginx)
   * [Faites une redirection permanente vers la version SSL de votre site avec NGINX](/linux/hosting/lemp/nginx_ssl)
+  * [Installer NGINX, PHP et MariaDB](/linux/hosting/lemp/installation)
+  * [Installer PHP7 et supérieur](/linux/hosting/lemp/php7x)
   * [Être encore plus safe en customisant son header Server NGINX](/linux/hosting/lemp/custom_server_header)
+
+#### Apache
+
   * [Obtenir les bonnes IP sur apache derrière un reverse proxy](/linux/hosting/lemp/fetch_good_ips)
+
+#### HAproxy
+
   * [HAproxy : Sa configuration](/linux/hosting/lemp/haproxy)
   * [HAproxy : Mettre un node en maintenance](/linux/hosting/lemp/haproxy/maintenance)
   * [HAproxy : Obtenir les vraies IPs depuis CloudFlare](/linux/hosting/lemp/haproxy/cloudflare)
   * [HAproxy : Utiliser son API](/linux/hosting/lemp/haproxy/api)
+
+#### FTP
+
   * [Installer un serveur FTP avec Pure-ftp](/linux/hosting/ftp)
+
+#### DNS
+
   * [Héberger les NS de son serveur avec BIND (+ Resolveur DNS)](/linux/hosting/dns)
+
+#### Troubleshooting
+
   * [MOZILLA_PKIX_ERROR_REQUIRED_TLS_FEATURE_MISSING](/linux/hosting/troubleshooting)
+
+#### Misc
+
   * [Installer Ruby](/linux/hosting/ruby/install)
 
 ### Services web auto-hébergés
