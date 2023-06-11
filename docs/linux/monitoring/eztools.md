@@ -11,8 +11,6 @@ Ceux-ci ont été développés par un jeune français du pseudo de
 ['@shevabam](https://twitter.com/shevabam) '### [Voici le rendu
 :]{.underline}
 
-![](/esm-sh_dashboard-complete.png)
-
 ## Installation eZ Server Monitor SH
 
 Pour l'installer, rien de plus simple, on télécharge la paquet

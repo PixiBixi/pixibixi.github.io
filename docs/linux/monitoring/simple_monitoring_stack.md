@@ -1,6 +1,6 @@
 # Netdata, Prometheus et Grafana : une stack de monitoring simple et puissante
 
-![](/linux/monitoring/monitoring_stack.jpeg)
+![](/linux/monitoring/_screens/monitoring_stack.jpeg)
 
 ## Introduction
 
@@ -385,11 +385,11 @@ metrics_path.
 Pour vérifier que tout est conforme, rendez-vous dans l'interface de
 Prometheus (Par défaut, port 9090), vous devriez tomber sur cette page :
 
-![prometheus_1.jpg](/linux/monitoring/prometheus_1.jpg)
+![prometheus_1.jpg](/linux/monitoring/_screens/prometheus_1.jpg)
 
 On se rend ensuite sur **Status** puis **Target**
 
-![prometheus_2.jpg](/linux/monitoring/prometheus_2.jpg)
+![prometheus_2.jpg](/linux/monitoring/_screens/prometheus_2.jpg)
 
 Si tout est bon, vous devriez apercevoir vos différentes targets avec
 l'état UP.
@@ -493,16 +493,16 @@ qu'il utilise Prometheus comme source de données. Par défaut, Grafana
 écoute sur le port **3030** et ses identifiants par défauts sont
 **admin** / **admin**.
 
-![grafana_datasources_1.jpeg](/linux/monitoring/grafana_datasources_1.jpeg)
+![grafana_datasources_1.jpeg](/linux/monitoring/_screens/grafana_datasources_1.jpeg)
 
 Il faut alors cliquer sur *Add Data Sources* :
 
-![grafana_datasources_2.jpeg](/linux/monitoring/grafana_datasources_2.jpeg)
+![grafana_datasources_2.jpeg](/linux/monitoring/_screens/grafana_datasources_2.jpeg)
 
 Dans le choix de la Data Source, nous choisissons bien évidemment
 **Prometheus** :
 
-![grafana_datasources_3.jpeg](/linux/monitoring/grafana_datasources_3.jpeg)
+![grafana_datasources_3.jpeg](/linux/monitoring/_screens/grafana_datasources_3.jpeg)
 
 Ici, les choses se corsent un tout petit peu.
 
@@ -520,7 +520,7 @@ Une fois ceci fait, **Save & Test**
 
 Si tout est correct, voici le message que vous obtiendrez :
 
-![grafana_datasources_4.jpeg](/linux/monitoring/grafana_datasources_4.jpeg)
+![grafana_datasources_4.jpeg](/linux/monitoring/_screens/grafana_datasources_4.jpeg)
 
 Félicitations, une étape fastidieuse est passée, cependant, le plus dur
 reste à faire, la création de votre premier panel !
@@ -538,17 +538,17 @@ je vais vous partager mes panels.
 
 #### Mes panels Grafana
 
-![](/linux/monitoring/simple_netdata.png)
+![](/linux/monitoring/_screens/simple_netdata.png)
 
 *Lien de téléchargement :
 [ici](https://files.jdelgado.fr/r/7JCI5fpv#nprlBuA4F3Dnt9qbXbrFBjMtQNuoQNPixGDr8SCjvcc=)*
 
-![](/linux/monitoring/docker_dashboard.png )
+![](/linux/monitoring/_screens/docker_dashboard.png )
 
 *Lien de téléchargement :
 [ici](https://files.jdelgado.fr/r/UEeLrP_8#9BJttU2EqJZa9aNXrrHzGTKi4UPooRnvu6VuzzsDQA0=)*
 
-![](/linux/monitoring/full_dashboard.png )
+![](/linux/monitoring/_screens/full_dashboard.png )
 
 *Lien de téléchargement :
 [ici](https://files.jdelgado.fr/r/U4KCGryY#JDkX10832wvNJvRMOh/C3nPJ+dwDT/pD67XwbofHSuc=)*
