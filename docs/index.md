@@ -236,6 +236,12 @@ Cette magnifique documentation a été faites avec MkDocs
   * [Mémo sur la commande sed](/linux/cli/sed)
   * [Obtenir des informations sur vos PDF](/linux/misc/info_about_pdf)
 
+
+## Web
+
+### Benchmark
+  * [Benchmark avec une random query string](./web/benchmark/benchmark_random_querystring.md)
+
 ### WordPress
 
   * [Requêtes SQL pour migrer son WordPress](/web/wordpress/migrate_wordpress_sql)
