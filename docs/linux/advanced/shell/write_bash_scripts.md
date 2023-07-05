@@ -295,3 +295,11 @@ premier temps, nous ouvrons le file descriptor 8. Via cette première
 commande, nous ouvrons ainsi un socket TCP sur notre wiki. Secondement,
 nous envoyons un header HTTP classique, enfin, nous lisons le contenu du
 file descriptor 8
+
+------------------------------------------------------------------------
+
+shellcheck est un petit outil regroupant énormément de bonnes pratiques. Il est possible d'appliquer automatiquement les fix avec la commande suivante :
+
+```bash
+shellcheck -f diff <files> | git apply
+```
