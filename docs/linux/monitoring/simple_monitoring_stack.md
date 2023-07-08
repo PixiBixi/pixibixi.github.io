@@ -218,7 +218,7 @@ Toujours selon les 2 méthodes, via docker run ou docker-compose :
 		  - /etc/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
 	```
 
-!! warning Docker
+!!! Warning Docker
 	Il faut créer manuellement le fichier
 	prometheus.yml sans quoi par défaut Docker considère qu'il s'agit
 	d'un dossier.
