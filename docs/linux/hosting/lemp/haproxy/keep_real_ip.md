@@ -1,6 +1,6 @@
 # Conserver l'IP de son visiteur sur un reverse-proxy
 
-Tout d'abord, si vous n'avez aucune notion sur HAproxy, je vous invite à aller consulter mon [guide HAproxy](../overview.md)
+Tout d'abord, si vous n'avez aucune notion sur HAproxy, je vous invite à aller consulter mon [guide HAproxy](./overview.md)
 
 Comme vous pouvez vous en douter, dans le cadre de l'utilisation d'un reverse-proxy, il est (malheureusement) très facile de log la mauvaise IP.
 
