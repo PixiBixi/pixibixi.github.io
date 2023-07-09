@@ -43,3 +43,6 @@ markdown_extensions:
   - pymdownx.superfences
   - admonition
   - pymdownx.details
+
+extra_javascript:
+  - nodoc_custom/js/matomo.js
