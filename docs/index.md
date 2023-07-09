@@ -79,7 +79,7 @@ Cette magnifique documentation a été faites avec MkDocs
   * [Configurer NGINX avec le support IPv6](/linux/hosting/lemp/ipv6_nginx)
   * [Faites une redirection permanente vers la version SSL de votre site avec NGINX](/linux/hosting/lemp/nginx_ssl)
   * [Installer NGINX, PHP et MariaDB](/linux/hosting/lemp/installation)
-  * [Installer PHP7 et supérieur](/linux/hosting/lemp/php7x)
+  * [Installer la version de PHP que vous désirez](./linux/hosting/lemp/php_custom_version.md)
   * [Être encore plus safe en customisant son header Server NGINX](/linux/hosting/lemp/custom_server_header)
 
 #### Apache
