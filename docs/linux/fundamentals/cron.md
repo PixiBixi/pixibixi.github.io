@@ -1,9 +1,10 @@
 # Rappel sur le cron
 
+!!! warning Systemd Equivalent
+    SystemD a introduit un nouveau type de cron dénommés les "timers", ils permettent un meilleur suivi ainsi qu'une granularité plus fine. Il en va donc de bonne pratique de préferer les timers aux crons
+
 La fonctionnalité cron a été développée afin de pouvoir automatiser
-certaines tâches. En 2020, il est de bon usage d'abandonner les cron
-afin d'utiliser les timers, cependant, beaucoup de sysadmin restent
-attachés au système cron.
+certaines tâches.
 
 Les tâches planifiées peuvent être lancées en tant qu'utilisateur
 standard. Nous gérons la plupart des tâche cron via la commande
