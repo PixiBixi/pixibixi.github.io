@@ -1,4 +1,4 @@
-# Installer PHP7.4
+# Installer une version custom de PHP
 
 !!! warning Article Déprécié
     Aujourd'hui, nous sommes en PHP 8.x, la méthode reste toujours valable, mais renseignez-vous sur la [version de PHP](https://www.php.net/supported-versions.php)
