@@ -1,7 +1,6 @@
 # Config varnish
 
-Bonne config trouvée de Git que je reposte ici si jamais :
-<https://gist.github.com/davidthingsaker/6b0997b641fdd370a395>
+Bonne config trouvée de Git que je reposte ici si jamais : [Gist](https://gist.github.com/davidthingsaker/6b0997b641fdd370a395)
 
 ??? example "Example : /etc/varnish/default.vcl"
 	```bash
@@ -124,8 +123,7 @@ Bonne config trouvée de Git que je reposte ici si jamais :
 	}
 	```
 
-Cette autre config orientée pour WordPress est également bien
-(<https://gist.github.com/dz0ny/1570859/05fa3a96b45ceb6a78e424be420bafdb9f072a7e>)
+Cette autre config orientée pour WordPress est également bien [Gist](https://gist.github.com/dz0ny/1570859/05fa3a96b45ceb6a78e424be420bafdb9f072a7e)
 :
 
 ??? example "Example 2 : /etc/varnish/default.vcl"
