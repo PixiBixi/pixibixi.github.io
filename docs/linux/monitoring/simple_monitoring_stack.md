@@ -4,6 +4,9 @@
 
 ## Introduction
 
+!!! info Versions des logiciels
+    Cette documentation contient utilise des versions des logiciels qui peuvent ne pas être les dernières sur le marché. N'oubliez pas de vérifier
+
 Ces derniers temps, j'ai cherché quelques stacks de monitoring simples
 à mettre en place mais également efficaces avec des métriques
 pertinentes. Je suis passé par beaucoup de systèmes de monitoring
@@ -16,24 +19,24 @@ lexique avec les notions de base :
 
 ## Lexique
 
-**Stack** : Une stack d'applications est une suite ou un ensemble
+  * **Stack** : Une stack d'applications est une suite ou un ensemble
 d'applications qui aident à réaliser une tâche précise.
 
-**Métrique** : Mesure précise d'un composant (logiciel ou matériel), ex
+  * **Métrique** : Mesure précise d'un composant (logiciel ou matériel), ex
 : Pourcentage de CPU utilisé à l'instant T...
 
-**Exporter** : Outil qui va récolter les métriques d'un système (CPU
+  * **Exporter** : Outil qui va récolter les métriques d'un système (CPU
 utilisé, RAM utilisée...), les traiter et les envoyer à un logiciel.
 
-**Recolter** : Logiciel qui va s'occuper de stocker les métriques
+  * **Recolter** : Logiciel qui va s'occuper de stocker les métriques
 envoyées par l'exporter
 
-**TSDB** : Une Time Series Database (TSDB) est une base de données
+  * **TSDB** : Une Time Series Database (TSDB) est une base de données
 optimisée pour les données horodatées ou les séries chronologiques. Une
 '"time serie'" est seulement une suite de mesures ou évènements qui sont
 monitorées, downsampled et agrégées dans le temps.
 
-**Downsampling** : Le downsampling (sous-échantillonnage) est une
+  * **Downsampling** : Le downsampling (sous-échantillonnage) est une
 opération mathématique extrêmement simple permettant de créer un
 échantillon. Par exemple, si nous avons 60 échantillons de
 l'utilisation du CPU sur une minute, cela fait 1 par seconde et
@@ -142,7 +145,7 @@ méthodes seront présentées :
 	```
 
 ??? abstract "docker-compose.yml"
-	```yaml
+	```yaml title="docker-compose.yml"
 	version: 3
 	services:
 	  netdata:
@@ -205,7 +208,7 @@ Toujours selon les 2 méthodes, via docker run ou docker-compose :
 	```
 
 ??? abstract "docker-compose.yml"
-	```yaml
+	```yaml title="docker-compose.yml"
 	version: 3
 	services:
 	  prometheus:
@@ -286,7 +289,7 @@ Toute la configuration Prometheus se fait via le fichier
 appliquer :
 
 ??? abstract "/etc/prometheus/prometheus.yml"
-	```yaml
+	```yaml title="prometheus.yml"
 	# my global config
 	global:
 	  scrape_interval:     5s # Set the scrape interval to every 15 seconds. Default is every 1 minute.
@@ -453,7 +456,7 @@ Grafana.
 	```
 
 ??? abstract "docker-compose.yml"
-	```yaml
+	```yaml title="docker-compose.yml"
 	version: "3"
 
 	services:
@@ -616,7 +619,7 @@ Tout d'abord, nous pouvons exposer l'API Docker via un autre container
 afin de contrôler complètement son comportement :
 
 ??? abstract "docker-compose.yml"
-	```yaml
+	```yaml title="docker-compose.yml"
 	version: 3
 	services:
 	  netdata:
@@ -680,7 +683,7 @@ modification, qu'il s'agisse d'une suppression ou d'un ajout.
 Remplacer le bloc node de votre fichier prometheus.yml par le suivant :
 
 ??? abstract "/etc/prometheus/prometheus.yml"
-	```yaml
+	```yaml title="prometheus.yml"
 	  - job_name: node
 		scheme: https
 		metrics_path: /api/v1/allmetrics?format=prometheus&source=average
@@ -703,7 +706,7 @@ fichier ou un job, il vous faudra évidemment redémarrer Prometheus.
 Voici le contenu dudit fichier :
 
 ??? abstract "/etc/prometheus/netdata.json"
-	```json
+	```json title="netdata.json"
 	[
 	  {
 		"labels": {
@@ -746,13 +749,13 @@ Il faut toujours se rendre sur la page Github afin de s'assurer que
 nous disposons de la dernière version de notre logiciel :
 
 ```bash
-$ cd ~ ; wget https://github.com/prometheus/blackbox_exporter/releases/download/v0.16.0/blackbox_exporter-0.16.0.linux-amd64.tar.gz
+$ cd ~ ; wget https://github.com/prometheus/blackbox_exporter/releases/download/v0.24.0/blackbox_exporter-0.24.0.linux-amd64.tar.gz
 ```
 
 Et on extrait toujours les fichiers :
 
 ```bash
-$ tar xzvf blackbox_exporter-0.16.0.linux-amd64.tar.gz
+$ tar xzvf blackbox_exporter-0.24.0.linux-amd64.tar.gz
 ```
 
 Et on les déplace dans le dossier adéquate. Attention à bien mettre le
@@ -760,8 +763,8 @@ bon username (prometheus ou celui que vous aurez décidés)
 
 ```bash
 $ mkdir /etc/blackbox && chown -R prometheus:prometheus /etc/blackbox
-$ mv ~/blackbox_exporter-0.16.0.linux-amd64/blackbox_exporter /usr/bin
-$ mv ~/blackbox_exporter-0.16.0.linux-amd64/blackbox.yml /etc/blackbox
+$ mv ~/blackbox_exporter-0.24.0.linux-amd64/blackbox_exporter /usr/bin
+$ mv ~/blackbox_exporter-0.24.0.linux-amd64/blackbox.yml /etc/blackbox
 ```
 
 Si nous souhaitons utiliser le test ICMP de blackbox et que nous avons
@@ -797,7 +800,7 @@ Maintenant que Blackbox est correctement installé, nous devons indiquer
 à Prometheus d'aller récupérer les métriques de Blackbox :
 
 ??? abstract "Target for prometheus.yml"
-	```yaml
+	```yaml title="prometheus.yml"
 	- job_name: HTTP
 	  scheme: http
 	  params:
@@ -824,7 +827,7 @@ notre exporter Blackbox, dans notre cas, *localhost:9115*. Voici le
 contenu de notre fichier *http.json*
 
 ??? abstract "/etc/prometheus/http.json"
-	```yaml
+	```json title="http.json"
 	[
 	  {
 		"labels": {
@@ -896,13 +899,13 @@ pour trouver la dernière version de alermanager . A l'heure où
 j'écris, il s'agit de la 0.20.0.
 
 ```bash
-$ cd ~ ; wget https://github.com/prometheus/alertmanager/releases/download/v0.20.0/alertmanager-0.20.0.linux-amd64.tar.gz
+$ cd ~ ; wget https://github.com/prometheus/alertmanager/releases/download/v0.25.0/alertmanager-0.25.0.linux-amd64.tar.gz
 ```
 
 On extrait les fichiers
 
 ```bash
-$ tar xzvf alertmanager-0.20.0.linux-amd64.tar.gz
+$ tar xzvf alertmanager-0.25.0.linux-amd64.tar.gz
 ```
 
 cette archive contient, comme les autres, des exécutables et un fichier
@@ -912,8 +915,8 @@ configuration dans ce répertoire, sinon, nous créerons le répertoire
 **/etc/alertmanager**
 
 ```bash
-$ mv ~/alertmanager-0.20.0.linux-amd64/{amtool,alertmanager} /usr/bin/
-$ mv ~/alertmanager-0.20.0.linux-amd64/alertmanager.yml /etc/alertmanager
+$ mv ~/alertmanager-0.25.0.linux-amd64/{amtool,alertmanager} /usr/bin/
+$ mv ~/alertmanager-0.25.0.linux-amd64/alertmanager.yml /etc/alertmanager
 $ chown -R prometheus:prometheus /etc/alertmanager
 ```
 
@@ -990,7 +993,7 @@ règle. De plus, il faudra indiquer à Prometheus de renvoyer ses alertes
 à alertmanager.
 
 ??? abstract "/etc/prometheus/prometheus.yml"
-	```yaml
+	```yaml title="prometheus.yml"
 	[...]
 	rule_files:
 	  - "alert.rules.yml"
@@ -1010,7 +1013,7 @@ la target de type alertmanager disponible sur 127.0.0.1:9093.
 #### alert.rules.yml
 
 ??? abstract "/etc/prometheus/alert.rules.json"
-	```yaml
+	```yaml title="alert.rules.json"
 	groups:
 	- name: alert.rules
 	  rules:
@@ -1043,7 +1046,7 @@ Checking /etc/prometheus/alert.rules.yml
 Voici d'autres exemples de règles Prometheus trouvées sur le web :
 
 ??? abstract "/etc/prometheus/alert.rules.yml"
-	```yaml
+	```yaml title="alert.rules.yml"
 	groups:
 	- name: alert.rules
 
@@ -1088,11 +1091,11 @@ Enormement d'exemples sont disponibles [ici](https://awesome-prometheus-alerts.g
 Pour avoir nos alertes sur Telegram, j'utilise le bot de
 [metalmatze](https://github.com/metalmatze/alertmanager-bot) qui répond
 juste à nos besoins. Dernière version au jour de l'écriture de cet
-article : 0.4.2
+article : 0.4.3
 
 ```bash
-$ cd ~ ; wget https://github.com/metalmatze/alertmanager-bot/releases/download/0.4.2/alertmanager-bot-0.4.2-linux-amd64
-$ mv alertmanager-bot-0.4.2-linux-amd64 /usr/bin/alertmanager-bot && chmod +x /usr/bin/alertmanager-bot
+$ cd ~ ; wget https://github.com/metalmatze/alertmanager-bot/releases/download/0.4.3/alertmanager-bot-0.4.3-linux-amd64
+$ mv alertmanager-bot-0.4.3-linux-amd64 /usr/bin/alertmanager-bot && chmod +x /usr/bin/alertmanager-bot
 ```
 
 Encore une fois, on n'oublie pas d'écrire l'unit file qui va bien,
