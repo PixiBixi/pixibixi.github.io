@@ -182,11 +182,17 @@ Cette magnifique documentation a été faites avec MkDocs
 
 ## DevOps
 
-### Ansible
+### Automatisation
+
+#### Ansible
 
   * [Automatiser les taches avec Ansible](./linux/automatisation/ansible/ansible.md)
   * [Tips ansible](./linux/automatisation/ansible/ansible_tips.md)
   * [Réutilisation de variables ansible entre différentes tâches ](./linux/automatisation/ansible/ansible_reuse_variable.md)
+
+#### Divers
+
+  * [Makefile : à quoi ça sert ?](./linux/automatisation/misc/Makefile.md)
 
 ### Kubernetes
 
