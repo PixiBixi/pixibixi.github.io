@@ -1,5 +1,8 @@
 # docker-compose.yml
 
+!!! error "Deprecated"
+    **Article plus mis à jour, images potentiellement dead également**
+
 Template prédéfinis pour les applications Docker
 
 ## Plex
