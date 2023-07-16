@@ -30,7 +30,7 @@ Cette magnifique documentation a été faites avec MkDocs
   * [Configurer correctement son hostname](/linux/cli/define_hostname)
   * [Personnaliser son motd](/linux/cli/motd)
   * [Simuler des conditions réseau sur Linux](/linux/cli/limit_bandwidth)
-  * [Apprendre à se servir de git](github)
+  * [Apprendre à se servir de git](./linux/cli/git)
   * [TMUX Multiplexeur de Shell](/linux/cli/tmux)
   * [Générer une clé publique au format RFC 4716 depuis la clef privée](/ssh/pubkey_rfc4716)
   * [Création de RAID logiciels avec mdadm](/linux/misc/create_raid)
@@ -213,8 +213,8 @@ Cette magnifique documentation a été faites avec MkDocs
 
 ### Terraform
 
-  * [Cheatsheet terraform](/terraform/cheatsheet)
-  * [Tools Terraform indispensables](/terraform/tools)
+  * [Cheatsheet terraform](./linux/automatisation/terraform/cheatsheet)
+  * [Tools Terraform indispensables](./linux/automatisation/terraform/tools)
 
 ### Gitlab
 
@@ -255,17 +255,17 @@ Cette magnifique documentation a été faites avec MkDocs
 
 ## Linux BSD
 
-  * [Ajouter un utilisateur au groupe wheel](/linux_bsd/wheel_group)
+  * [Ajouter un utilisateur au groupe wheel](./linux/bsd/wheel_group)
 
 ## Linux CentOS
 
-  * [Ajouter les repositories EPEL](/linux_centos/add_epel_repositories)
+  * [Ajouter les repositories EPEL](./linux/linux_centos/add_epel_repositories)
 
 ## Proxmox
 
-  * [Ajouter un ISO depuis une URL](/proxmox/insert_iso_from_url)
-  * [Résoudre l'erreur "VM is locked"](/proxmox/troubleshooting/vm_locked)
-  * [NAT pour les VMs Debian](/proxmox/networking/nat)
+  * [Ajouter un ISO depuis une URL](./hypervisor/proxmox/insert_iso_from_url)
+  * [Résoudre l'erreur "VM is locked"](./hypervisor/proxmox/troubleshooting/vm_locked)
+  * [NAT pour les VMs Debian](./hypervisor/proxmox/networking/nat)
 
 ## Codage
 
@@ -273,11 +273,11 @@ Cette magnifique documentation a été faites avec MkDocs
 
 ## Torrent
 
-  * [ruTorrent le polyvalent](/rtorrent/rutorrent)
+  * [ruTorrent le polyvalent](./linux/selfhost/torrent/rutorrent)
   * [Flood le sublime](/rtorrent/flood)
   * [Transmission, le client torrent facile](transmission)
   * [Deluge, l'agressif](deluge)
-  * [Creer ses torrents avec mktorrent](/torrent/mktorrent)
+  * [Creer ses torrents avec mktorrent](./linux/selfhost/torrent/mktorrent)
 
 ## Accès à distance
 
@@ -298,21 +298,21 @@ Cette magnifique documentation a été faites avec MkDocs
 
 ## Cisco
 
-  * [Commandes de base Cisco](/cisco/commandes_base)
-  * [Création de VLAN Cisco](/cisco/vlan)
-  * [QOS Cisco](/cisco/qos)
-  * [Désactiver la recherche DNS sur du matériel Cisco](/cisco/dns)
-  * [Informations utiles sur le STP](/cisco/stp)
-  * [Serveur SSH](/cisco/ssh)
-  * [Installer un serveur DHCP sur un routeur Cisco](/cisco/serveur_dhcp)
-  * [Accroître la sécurité](/cisco/security)
-  * [Routage inter-VLAN](/cisco/routage_vlan)
-  * [Protocole CDP](/cisco/cdp)
-  * [Protocole LLDP](/cisco/lldp)
-  * [Désactiver la propagation du TTL en MPLS](/cisco/mpls/ttl_propagation)
-  * [Tunnel Automatic 6to4](/cisco/ipv6/6to4_tunnel)
-  * [OSPF en IPv6](/cisco/ipv6/ospf_ipv6)
-  * [Autoriser les transceiver no-name](/cisco/transceiver/noname)
+  * [Commandes de base Cisco](./networking/cisco/commandes_base)
+  * [Création de VLAN Cisco](./networking/cisco/vlan)
+  * [QOS Cisco](./networking/cisco/qos)
+  * [Désactiver la recherche DNS sur du matériel Cisco](./networking/cisco/dns)
+  * [Informations utiles sur le STP](./networking/cisco/stp)
+  * [Serveur SSH](./networking/cisco/ssh)
+  * [Installer un serveur DHCP sur un routeur Cisco](./networking/cisco/serveur_dhcp)
+  * [Accroître la sécurité](./networking/cisco/security)
+  * [Routage inter-VLAN](./networking/cisco/routage_vlan)
+  * [Protocole CDP](./networking/cisco/cdp)
+  * [Protocole LLDP](./networking/cisco/lldp)
+  * [Désactiver la propagation du TTL en MPLS](./networking/cisco/mpls/ttl_propagation)
+  * [Tunnel Automatic 6to4](./networking/cisco/ipv6/6to4_tunnel)
+  * [OSPF en IPv6](./networking/cisco/ipv6/ospf_ipv6)
+  * [Autoriser les transceiver no-name](./networking/cisco/transceiver/noname)
 
 ## Mac OS X
 
@@ -324,14 +324,14 @@ Cette magnifique documentation a été faites avec MkDocs
 
 ## Mikrotik
 
-  * [Installer son tunnel IPSec](/mkt/install_ipsec)
-  * [Ne pas router Netflix à travers son tunnel IPSEC](/mkt/netflix_vpn)
+  * [Installer son tunnel IPSec](./networking/mkt/install_ipsec)
+  * [Ne pas router Netflix à travers son tunnel IPSEC](./networking/mkt/netflix_vpn)
 
 ## ESXi
 
-  * [Acceder à la console de l'ESXi](/esxi/misc/shell_access)
-  * [Commandes network ESXi utiles](/esxi/commands/network)
-  * [Uploader ses ISO en ligne de commande](/esxi/upload_iso_cli)
+  * [Acceder à la console de l'ESXi](./hypervisor/esxi/misc/shell_access)
+  * [Commandes network ESXi utiles](./hypervisor/esxi/commands/network)
+  * [Uploader ses ISO en ligne de commande](./hypervisor/esxi/upload_iso_cli)
 
 ### NetApp
 
@@ -341,32 +341,32 @@ Cette magnifique documentation a été faites avec MkDocs
 
 ### Server
 
-  * [Setup de base d'un Windows 2012 R2](/windows_server/powershell/first_setup)
-  * [Connexion SSH "native" en Powershell](/windows_server/powershell/ssh)
-  * [Monter un ISO directement via PowerShell](/windows_server/powershell/mount_iso)
-  * [Installer et configurer un serveur DHCP en PowerShell](/windows_server/powershell/dhcp_server)
-  * [Installer et configurer un serveur AD en PowerShell](/windows_server/powershell/ad_server)
-  * [Creer un pool de stockage en PowerShell](/windows_server/powershell/storage/pool)
-  * [Gérer les exceptions pour les scripts PowerShell](/windows_server/powershell/exceptions)
-  * [Autoriser l'ICMP sur un serveur Windows 2012R2 en PowerShell](/windows_server/powershell/allow_icmp)
-  * [Importer des utilisateurs CSV dans un AD via PowerShell](/windows_server/powershell/import_csv_users)
-  * [Clés de Registre Utiles](/windows_server/registry/useful_keys)
-  * [Exécuter un script PowerShell via une tâche planifiée](/windows_server/admin/jobs/schedule_jobs_scripts)
-  * [Désactiver TLSv1 sur IIS via un script PowerShell](/windows_server/powershell/disable_tlsv1)
-  * [Connaitre le temps d'exécution d'une commande PowerShell](/windows_server/powershell/command_time_execution)
-  * [Accéder au Firewall sans Icône ni raccourci](/windows_server/firewall/access_without_shortcut)
-  * [Variables built-in utiles](/windows_server/powershell/useful_vars)
-  * [Initier des connexions iSCSi en CLI](/windows_server/powershell/initiate_iscsi)
-  * [Installer des drivers via PowerShell](/windows_server/powershell/install_drivers)
-  * [Définir PowerShell en temps que shell par défaut](/windows_server/core/setup_default_powershell)
+  * [Setup de base d'un Windows 2012 R2](/windows/server/powershell/first_setup)
+  * [Connexion SSH "native" en Powershell](/windows/server/powershell/ssh)
+  * [Monter un ISO directement via PowerShell](/windows/server/powershell/mount_iso)
+  * [Installer et configurer un serveur DHCP en PowerShell](/windows/server/powershell/dhcp_server)
+  * [Installer et configurer un serveur AD en PowerShell](/windows/server/powershell/ad_server)
+  * [Creer un pool de stockage en PowerShell](/windows/server/powershell/storage/pool)
+  * [Gérer les exceptions pour les scripts PowerShell](/windows/server/powershell/exceptions)
+  * [Autoriser l'ICMP sur un serveur Windows 2012R2 en PowerShell](/windows/server/powershell/allow_icmp)
+  * [Importer des utilisateurs CSV dans un AD via PowerShell](/windows/server/powershell/import_csv_users)
+  * [Clés de Registre Utiles](/windows/server/registry/useful_keys)
+  * [Exécuter un script PowerShell via une tâche planifiée](/windows/server/admin/jobs/schedule_jobs_scripts)
+  * [Désactiver TLSv1 sur IIS via un script PowerShell](/windows/server/powershell/disable_tlsv1)
+  * [Connaitre le temps d'exécution d'une commande PowerShell](/windows/server/powershell/command_time_execution)
+  * [Accéder au Firewall sans Icône ni raccourci](/windows/server/firewall/access_without_shortcut)
+  * [Variables built-in utiles](/windows/server/powershell/useful_vars)
+  * [Initier des connexions iSCSi en CLI](/windows/server/powershell/initiate_iscsi)
+  * [Installer des drivers via PowerShell](/windows/server/powershell/install_drivers)
+  * [Définir PowerShell en temps que shell par défaut](/windows/server/core/setup_default_powershell)
 
 ### Desktop
 
-  * [Enlever les publicités de Skype](/windows/soft/ads_skype)
-  * [Windows 10 : Comment activer la gestion des chemins trop long ?](/windows/tips/long_path)
-  * [Améliorer sa vie privée et les performances avec Blackbird](/windows/tips/improve_privacy)
-  * [Bloquer les serveurs d'activation via le fichiers hosts](/windows/tips/hosts_file)
-  * [Installer tous les logiciels de base via un simple installateur](/windows/tips/install_main_softwares)
+  * [Enlever les publicités de Skype](/windows/desktop/soft/ads_skype)
+  * [Windows 10 : Comment activer la gestion des chemins trop long ?](/windows/desktop/tips/long_path)
+  * [Améliorer sa vie privée et les performances avec Blackbird](/windows/desktop/tips/improve_privacy)
+  * [Bloquer les serveurs d'activation via le fichiers hosts](/windows/desktop/tips/hosts_file)
+  * [Installer tous les logiciels de base via un simple installateur](/windows/desktop/tips/install_main_softwares)
 
 # Misc
 

@@ -57,7 +57,7 @@ Concrètement, pour la taille de pièce, voici ce qu'il faut faire :
   2048Kb            Jusqu'à 4GB          21
   4096Kb            Jusqu'à 8GB          22
   8192Kb            Jusqu'à 16GB         22
-  16384Kb           Plus de 16G           23
+  16384Kb           Plus de 16G          23
 
 Plus l'on met une taille de pièce importante, plus le torrent sera de
 petite taille, mais il faut faire attention à ne pas mettre une taille
