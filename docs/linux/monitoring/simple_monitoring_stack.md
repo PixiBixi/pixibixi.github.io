@@ -1112,17 +1112,86 @@ ExecStart=alertmanager-bot --store=bolt --telegram.token=BOT_TOKEN --telegram.ad
 Penser bien à remplacer BOT_TOKEN et USER_ID par les bonnes variables.
 Quand au template default.tpl, voici celui que j'utilise :
 
-```toml
-{{ define "telegram.default" }}
-{{ range .Alerts }}
-{{ if eq .Status "firing"}}⚠️ <b>{{ .Status | toUpper }}</b> ⚠️{{ else }}✅<b>{{ .Status | toUpper }}</b>✅{{ end }}
-<b>~ {{ .Labels.alertname }} ~</b>
-{{ .Annotations.summary }}
-<b>Started :</b> {{ duration .StartsAt .EndsAt }}{{ if ne .Status "firing"}}
-<b>Ended:</b> {{ .EndsAt | since }}{{ end }}
-{{ end }}
-{{ end }}
-```
+??? note "Template alertmanager"
+    ```toml
+      {{/* Alertmanager Silence link */}}
+      {{ define "__alert_silence_link" -}}
+          https://alertmanager.dynfactory.com/#/silences/new?filter=%7B
+          {{- range .CommonLabels.SortedPairs -}}
+              {{- if ne .Name "alertname" -}}
+                  {{- .Name }}%3D"{{- .Value | urlquery -}}"%2C%20
+              {{- end -}}
+          {{- end -}}
+          alertname%3D"{{- .CommonLabels.alertname -}}"%7D
+      {{- end }}
+
+      {{/* Severity of the alert */}}
+      {{ define "__alert_severity" -}}
+          {{- if eq .CommonLabels.severity "critical" -}}
+          *Severity:* :no_entry:
+          {{- else if eq .CommonLabels.severity "warning" -}}
+          *Severity:* :warning:
+          {{- else if eq .CommonLabels.severity "info" -}}
+          *Severity:* :information_source:
+          {{- else -}}
+          *Severity:* :question: {{ .CommonLabels.severity }}
+          {{- end }}
+      {{- end }}
+
+      {{/* Title of the Slack alert */}}
+      {{ define "slack.title" -}}
+        [{{ .Status | toUpper -}}
+        {{ if eq .Status "firing" }}:{{ .Alerts.Firing | len }}{{- end -}}
+        ] {{ .CommonLabels.alertname }}
+      {{- end }}
+
+
+      {{/* Color of Slack attachment (appears as line next to alert )*/}}
+      {{ define "slack.color" -}}
+          {{ if eq .Status "firing" -}}
+              {{ if eq .CommonLabels.severity "warning" -}}
+                  warning
+              {{- else if eq .CommonLabels.severity "critical" -}}
+                  danger
+              {{- else -}}
+                  #439FE0
+              {{- end -}}
+          {{ else -}}
+          good
+          {{- end }}
+      {{- end }}
+
+      {{/* The text to display in the alert */}}
+      {{ define "slack.text" -}}
+
+          {{ template "__alert_severity" . }}
+
+          {{ range .Alerts }}
+
+              {{- if .Annotations.summary }}
+              {{- "\n" -}}
+              *Summary:* {{ .Annotations.summary }}
+              {{- "\n" -}}
+              {{- end }}
+              {{- if .Annotations.description }}
+              {{- "\n" -}}
+              {{ .Annotations.description }}
+              {{- "\n" -}}
+              {{- end }}
+              {{- if .Annotations.message }}
+              {{- "\n" -}}
+              {{ .Annotations.message }}
+              {{- "\n" -}}
+              {{- end }}
+
+       *Details:*
+         {{ range .Labels.SortedPairs }} • *{{ .Name }}:* `{{ .Value }}`
+         {{ end }}
+
+          {{- end }}
+
+      {{- end }}
+    ```
 
 ### Stockage très longue durée
 
