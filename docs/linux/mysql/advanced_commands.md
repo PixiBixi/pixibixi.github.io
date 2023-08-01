@@ -72,7 +72,7 @@ done
 
 ```sql
 SELECT ENGINE,
-       concat(TABLE_SCHEMA, ., TABLE_NAME) AS TABLE_NAME,
+       concat(TABLE_SCHEMA, TABLE_NAME) AS TABLE_NAME,
        round(DATA_LENGTH/1024/1024, 2) AS data_length,
        round(INDEX_LENGTH/1024/1024, 2) AS index_length,
        round(DATA_FREE/1024/1024, 2) AS data_free,
