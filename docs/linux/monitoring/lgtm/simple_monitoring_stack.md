@@ -583,12 +583,57 @@ exprimé en millisecondes, c'est pour cela qu'il faut multiplier par
 Pour apporter une sécurité supplémentaire, il faut faire écouter
 Prometheus sur localhost uniquement. Pour cela, dans votre unit systemd,
 il faudra rajouter l'argument
-**'--web.listen-address='"127.0.0.1:9090'"** sans oublier de relancer le
+`--web.listen-address="127.0.0.1:9090"` sans oublier de relancer le
 service Prometheus ainsi que de faire le reverse-proxy adéquate.
 
 Pour vérifier que notre modification a bien été prise en compte, il
 suffit de faire un *ss -laptn sport eq 9090* et de constater que la
 Local Address est bien 127.0.0.1.
+
+Si votre instance Prometheus n'est pas sur le même serveur et que Grafana/Prometheus ne sont pas joignables via un réseau privé, alors il vous faudra un reverse-proxy avec authentification basic
+
+Petit reverse proxy pour Prometheus, à adapter pour votre setup :
+
+??? abstract "nginx-prometheus.conf"
+	```nginx title="nginx-prometheus.conf"
+    upstream prometheus {
+        server localhost:9090;
+    }
+
+    server {
+        listen		80;
+        listen              [::]:80;
+
+        server_name		prometheus.domain.tld;
+
+        access_log		off;
+
+        include		snippets/letsencrypt.conf;
+
+        location / {
+            return 301 https://prometheus.domain.tld$request_uri;
+        }
+    }
+
+    server {
+        server_name prometheus.domain.tld;
+
+        auth_basic           "prometheus";
+        auth_basic_user_file /etc/nginx/.htpasswd;
+
+        listen 443 ssl;
+        listen [::]:443 ssl;
+        http2 on;
+
+        ssl_certificate /root/.acme.sh/prometheus.domain.tld_ecc/fullchain.cer;
+        ssl_certificate_key /root/.acme.sh/prometheus.domain.tld_ecc/prometheus.domain.tld.key;
+
+        location / {
+            proxy_set_header Host $http_host;
+            proxy_pass http://prometheus;
+        }
+    }
+    ```
 
 ### Netdata
 
