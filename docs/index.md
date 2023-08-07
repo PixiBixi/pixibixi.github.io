@@ -153,7 +153,7 @@ Cette magnifique documentation a été faites avec MkDocs
   * [Commandes avancées MySQL](/linux/mysql/advanced_commands)
   * [Debug sa replication Master-Slave](/linux/mysql/troubleshooting/replication_slave)
   * [Gérer ses users MySQL](/linux/mysql/users)
-  * [Restaurer DB installation MySQL](/linux/mysql/db_mysql)
+  * [Restaurer la DB système MySQL](/linux/mysql/db_mysql)
   * [Générer des INSERT INTO depuis un SELECT](/linux/mysql/troubleshooting/generate_insert_into)
 
 ### PostgreSQL
