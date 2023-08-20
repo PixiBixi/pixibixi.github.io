@@ -141,6 +141,7 @@ Cette magnifique documentation a été faites avec MkDocs
   * [Ecrire son script Bash](/linux/advanced/shell/write_bash_scripts)
   * [Astuces Bash](/linux/advanced/shell/tips_bash)
   * [Astuces ZSH](/linux/advanced/shell/tips_zsh)
+  * [Un Template pour un script bash](./linux/advanced/shell/template_bash_script.md)
   * [Config de base varnish](/linux/advanced/varnish/config)
   * [Utilisation de strace](/linux/advanced/strace)
   * [Luter contre un DDOS](/linux/advanced/lock_ddos)
