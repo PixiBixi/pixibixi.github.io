@@ -18,3 +18,9 @@ $ kubectl get Issuers,ClusterIssuers,Certificates,CertificateRequests,Orders,Cha
 
 Liste toutes les ressources qui sont link à la génération d'un
 certificat
+
+```bash
+$ kubectl get pods -o name | xargs -I{} kubectl exec {} -- <command goes here>
+```
+
+Permet d'exécuter la même commande sur de multiples pods
