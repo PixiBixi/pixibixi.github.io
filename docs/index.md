@@ -201,6 +201,10 @@ Cette magnifique documentation a été faites avec MkDocs
   * [Manage son $KUBECONFIG](/kubernetes/cli/kubeconfig)
   * [Outils pour mieux gérer K8S](/kubernetes/cli/tools)
 
+### Kafka
+
+  * [Kafkactl, un outil magique](./kafka/kafkactl.md)
+
 #### Troubleshooting
   * [Debug son ServiceAccount](./kubernetes/troubleshooting/troubleshooting_sa.md)
 
