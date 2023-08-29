@@ -30,3 +30,7 @@ mv "$TEXTFILE_COLLECTOR_DIR/myscript.prom.$$" \
 ```
 
 La chose importante ici est l'utilisation d'un fichier temporaire en .$$ (qui contient le PID du process bash) afin de garantir une atomicité des données pour ne pas avoir de données corrompues (node_exporter ne scrape que les fichiers en .prom)
+
+Il est évidemment possible d'écrire un script custom en n'importe quel language (python, bash...).
+
+La communauté prometheus met en libre services [quelques scripts](https://github.com/prometheus-community/node-exporter-textfile-collector-scripts) qui peuvent être utiles (métriques NVME, updates APT...)
