@@ -14,6 +14,9 @@ Plusieurs cas concrêts ici :
     * `group_names` nous indique l'ensemble des groupes où appartient notre serveur
 	* `groups` liste ici l'ensemble des groupes dont l'inventaire est constitué, et chaque groupe contient les hosts qu'il possède.
 
+!!! warning "Multi group"
+    Dans le cas d'un multi-group, il faut utiliser l'id -1 qui correpsond au groupe dont notre serveur dépend directement
+
 Cette boucle parcourt l'intégralité des serveurs dont est constitué le premier groupe parent (index 0 de notre tableau) de notre serveur
 
 `hostvars` est également une variable spéciale. Celle-ci contient l'ensemble des serveurs de notre inventaire ainsi que chaque variable qui lui est associé. Concrêtement, ici, nous listons toutes les adresses IPs de tous les serveurs qui constituent le premier groupe parent de notre serveur.
