@@ -30,7 +30,7 @@ Cette magnifique documentation a été faites avec MkDocs
   * [Configurer correctement son hostname](/linux/cli/define_hostname)
   * [Personnaliser son motd](/linux/cli/motd)
   * [Simuler des conditions réseau sur Linux](/linux/cli/limit_bandwidth)
-  * [Apprendre à se servir de git](./linux/cli/git)
+  * [Apprendre à se servir de git](./linux/cli/git/git)
   * [TMUX Multiplexeur de Shell](/linux/cli/tmux)
   * [Générer une clé publique au format RFC 4716 depuis la clef privée](/ssh/pubkey_rfc4716)
   * [Création de RAID logiciels avec mdadm](/linux/misc/create_raid)
