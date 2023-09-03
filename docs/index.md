@@ -31,6 +31,7 @@ Cette magnifique documentation a été faites avec MkDocs
   * [Personnaliser son motd](/linux/cli/motd)
   * [Simuler des conditions réseau sur Linux](/linux/cli/limit_bandwidth)
   * [Apprendre à se servir de git](./linux/cli/git/git)
+  * [Réduire la taille de son repository Git](./linux/cli/git/rework_files.md)
   * [TMUX Multiplexeur de Shell](/linux/cli/tmux)
   * [Générer une clé publique au format RFC 4716 depuis la clef privée](/ssh/pubkey_rfc4716)
   * [Création de RAID logiciels avec mdadm](/linux/misc/create_raid)
