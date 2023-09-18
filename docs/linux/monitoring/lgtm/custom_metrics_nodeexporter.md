@@ -4,7 +4,7 @@ Grace au module textfile de node_exporter, nous pouvons introduire facilement de
 
 Voici un petit script bash qui va vous permettre d'avoir vos métriques customs
 
-```
+```bash
 #!/usr/bin/env bash
 
 # Adjust as needed.
