@@ -62,6 +62,7 @@ Cette magnifique documentation a été faites avec MkDocs
   * [Munin: Supervision claire et efficace](/linux/monitoring/munin)
   * [Supervision via les outils eZ](/linux/monitoring/eztools)
   * [Netdata, Prometheus et Grafana : Une stack de monitoring simple et puissante](/linux/monitoring/lgtm/simple_monitoring_stack)
+  * [Générer des alertes depuis Loki](linux/monitoring/lgtm/loki_alerting)
   * [Métrique custom pour node_exporter](./linux/monitoring/lgtm/custom_metrics_nodeexporter)
   * [Configurer des notifications Slack pour check_mk](/linux/monitoring/check_mk/add_slack_notification)
 
