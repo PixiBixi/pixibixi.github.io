@@ -31,7 +31,7 @@ Cette magnifique documentation a été faites avec MkDocs
   * [Personnaliser son motd](/linux/cli/motd)
   * [Simuler des conditions réseau sur Linux](/linux/cli/limit_bandwidth)
   * [Apprendre à se servir de git](./linux/cli/git/git)
-  * [Réduire la taille de son repository Git](./linux/cli/git/rework_files.md)
+  * [Réduire la taille de son repository Git](./linux/cli/git/rework_files)
   * [TMUX Multiplexeur de Shell](/linux/cli/tmux)
   * [Générer une clé publique au format RFC 4716 depuis la clef privée](/ssh/pubkey_rfc4716)
   * [Création de RAID logiciels avec mdadm](/linux/misc/create_raid)
@@ -55,7 +55,7 @@ Cette magnifique documentation a été faites avec MkDocs
   * [Améliorer la vitesse de connexion à votre serveur SSH](/linux/security/ssh_improve_speed)
   * [Améliorer la sécurité des mots de passe par défaut avec PAM](/linux/security/password_pam)
   * [Configurer des notifications SSH Slack](/linux/security/slack_notifications_ssh)
-  * [Lister tous les certificats émis](./linux/security/issued_crt.md)
+  * [Lister tous les certificats émis](./linux/security/issued_crt)
 
 ### Supervision
 
@@ -82,7 +82,7 @@ Cette magnifique documentation a été faites avec MkDocs
   * [Configurer NGINX avec le support IPv6](/linux/hosting/lemp/ipv6_nginx)
   * [Faites une redirection permanente vers la version SSL de votre site avec NGINX](/linux/hosting/lemp/nginx_ssl)
   * [Installer NGINX, PHP et MariaDB](/linux/hosting/lemp/installation)
-  * [Installer la version de PHP que vous désirez](./linux/hosting/lemp/php_custom_version.md)
+  * [Installer la version de PHP que vous désirez](./linux/hosting/lemp/php_custom_version)
   * [Être encore plus safe en customisant son header Server NGINX](/linux/hosting/lemp/custom_server_header)
 
 #### Apache
@@ -91,11 +91,11 @@ Cette magnifique documentation a été faites avec MkDocs
 
 #### HAproxy
 
-  * [HAproxy : Sa configuration](/linux/hosting/lemp/haproxy/overview.md)
+  * [HAproxy : Sa configuration](/linux/hosting/lemp/haproxy/overview)
   * [HAproxy : Mettre un node en maintenance](/linux/hosting/lemp/haproxy/maintenance)
   * [HAproxy : Obtenir les vraies IPs depuis CloudFlare](/linux/hosting/lemp/haproxy/cloudflare)
   * [HAproxy : Utiliser son API](/linux/hosting/lemp/haproxy/api)
-  * [HAproxy : Conserver l'IP de son utilisateur](./linux/hosting/lemp/haproxy/keep_real_ip.md)
+  * [HAproxy : Conserver l'IP de son utilisateur](./linux/hosting/lemp/haproxy/keep_real_ip)
 
 #### FTP
 
@@ -144,7 +144,7 @@ Cette magnifique documentation a été faites avec MkDocs
   * [Ecrire son script Bash](/linux/advanced/shell/write_bash_scripts)
   * [Astuces Bash](/linux/advanced/shell/tips_bash)
   * [Astuces ZSH](/linux/advanced/shell/tips_zsh)
-  * [Un Template pour un script bash](./linux/advanced/shell/template_bash_script.md)
+  * [Un Template pour un script bash](./linux/advanced/shell/template_bash_script)
   * [Config de base varnish](/linux/advanced/varnish/config)
   * [Utilisation de strace](/linux/advanced/strace)
   * [Luter contre un DDOS](/linux/advanced/lock_ddos)
@@ -181,8 +181,8 @@ Cette magnifique documentation a été faites avec MkDocs
 
 ### AWS
 
-  * [Glossaire du vocabulaire AWS](./cloud/aws/glossaire.md)
-  * [Debug un payload d'erreur AWS](./cloud/aws/decode_error_aws.md)
+  * [Glossaire du vocabulaire AWS](./cloud/aws/glossaire)
+  * [Debug un payload d'erreur AWS](./cloud/aws/decode_error_aws)
 
 ## DevOps
 
@@ -190,13 +190,13 @@ Cette magnifique documentation a été faites avec MkDocs
 
 #### Ansible
 
-  * [Automatiser les taches avec Ansible](./linux/automatisation/ansible/ansible.md)
-  * [Tips ansible](./linux/automatisation/ansible/ansible_tips.md)
-  * [Réutilisation de variables ansible entre différentes tâches ](./linux/automatisation/ansible/ansible_reuse_variable.md)
+  * [Automatiser les taches avec Ansible](./linux/automatisation/ansible/ansible)
+  * [Tips ansible](./linux/automatisation/ansible/ansible_tips)
+  * [Réutilisation de variables ansible entre différentes tâches ](./linux/automatisation/ansible/ansible_reuse_variable)
 
 #### Divers
 
-  * [Makefile : à quoi ça sert ?](./linux/automatisation/misc/Makefile.md)
+  * [Makefile : à quoi ça sert ?](./linux/automatisation/misc/Makefile)
 
 ### Kubernetes
 
@@ -206,13 +206,13 @@ Cette magnifique documentation a été faites avec MkDocs
 
 ### Kafka
 
-  * [Kafkactl, un outil magique](./kafka/kafkactl.md)
+  * [Kafkactl, un outil magique](./kafka/kafkactl)
 
 #### Troubleshooting
-  * [Debug son ServiceAccount](./kubernetes/troubleshooting/troubleshooting_sa.md)
+  * [Debug son ServiceAccount](./kubernetes/troubleshooting/troubleshooting_sa)
 
 #### Misc
-  * [Commandes Avancées](./kubernetes/advanced_commands.md)
+  * [Commandes Avancées](./kubernetes/advanced_commands)
 
 #### Rancher
 
@@ -254,7 +254,7 @@ Cette magnifique documentation a été faites avec MkDocs
 ## Web
 
 ### Benchmark
-  * [Benchmark avec une random query string](./web/benchmark/benchmark_random_querystring.md)
+  * [Benchmark avec une random query string](./web/benchmark/benchmark_random_querystring)
 
 ### WordPress
 
