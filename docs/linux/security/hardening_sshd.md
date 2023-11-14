@@ -82,6 +82,8 @@ Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.
 MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-512,hmac-sha2-256,umac-128@openssh.com
 ```
 
+Le guide complet de Mozilla est diponible [ici](https://infosec.mozilla.org/guidelines/openssh)
+
 Si vous souhaitez savoir quels ciphers ou autres sont disponibles dans
 votre version d'OpenSSH, il est possible d'utiliser les commandes
 suivantes
@@ -93,6 +95,8 @@ ssh -Q mac
 ssh -Q kex
 ssh -Q key
 ```
+
+Il existe également un petit tool qui permet de vérifier les différents ciphers & co : [ssh-audit](https://github.com/jtesta/ssh-audit). Le guide d'hardening est disponible [ici](https://www.sshaudit.com/hardening_guides.html)
 
 Utiliser si possible les mécanismes de sandbox du kernel dans les
 processus non privilégiés
