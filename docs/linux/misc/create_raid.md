@@ -91,7 +91,7 @@ donc indispensable d'indiquer au système comment utiliser les
 
 ```bash
 mdadm --detail --scan | tee -a /etc/mdadm/mdadm.conf
-update-initramfs -u
+update-initramfs -u -k all
 ```
 
 N'oublions pas de monter notre partition dans le '_fstab'_
