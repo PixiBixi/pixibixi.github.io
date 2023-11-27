@@ -275,6 +275,7 @@ Cette magnifique documentation a été faites avec MkDocs
   * [Ajouter un ISO depuis une URL](./hypervisor/proxmox/insert_iso_from_url)
   * [Résoudre l'erreur "VM is locked"](./hypervisor/proxmox/troubleshooting/vm_locked)
   * [NAT pour les VMs Debian](./hypervisor/proxmox/networking/nat)
+  * [Gérer son cluster Proxmox](./hypervisor/proxmox/cluster)
 
 ## Codage
 
