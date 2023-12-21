@@ -37,4 +37,16 @@ IFS="$OIFS"
 Tous les fichiers dans ~/.kube/config-files et finissant en yml seront
 chargés automatiquement ! Free to use avec kubectx o/
 
-Autre manière, il y a l'outil kubeswitch qui permet de gérer facilement plusieurs contextes via son fichier de configuration [switch-config.yaml](https://github.com/danielfoehrKn/kubeswitch/blob/master/docs/kubeconfig_stores.md)
+## Utilisation avancée
+
+Autre manière, il y a l'outil kubeswitch qui permet de gérer facilement plusieurs contextes via son fichier de configuration [switch-config.yaml](https://github.com/danielfoehrKn/kubeswitch/blob/master/docs/kubeconfig_stores.md).
+
+Mon fichier de configuration est disponible dans mon [dotfiles](https://github.com/PixiBixi/dotfiles/blob/master/.kube/switch-config.yaml)
+
+Tous les fichiers dans `~/.kube/kubeconfig/` avec l'extension `.yaml` seront automatiquement chargés.
+
+Pour split, n'oubliez pas [konfig](https://github.com/corneliusweig/konfig). Par exemplep pour notre context tools
+
+```bash
+konfig split tools > tools.yaml
+```
