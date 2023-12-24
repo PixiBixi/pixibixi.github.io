@@ -55,7 +55,7 @@ ni tar cvfz monarchive.tgz monrepertoire/
     situées de base)**
 
 ```bash
-rsync --progress -avhe ssh -p 1998 . barracudaxt@$IP:$PATH
+rsync --progress -avhe ssh -p 1998 . jeremy@$IP:$PATH
 ```
 
   * Installe tous les packages 7.2 existants par les 7.3
@@ -67,7 +67,7 @@ dpkg -l|grep php7.2|awk {print $2}|sed s/7.2/7.3/g|xargs apt install -y
   * N'utilise pas l'alias de ls
 
 ```bash
-'ls
+\ls
 ```
 
   * Génère un fichier de 10G rapidement
