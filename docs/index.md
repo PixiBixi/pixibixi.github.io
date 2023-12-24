@@ -184,6 +184,7 @@ Cette magnifique documentation a été faites avec MkDocs
 
   * [Glossaire du vocabulaire AWS](./cloud/aws/glossaire)
   * [Debug un payload d'erreur AWS](./cloud/aws/decode_error_aws)
+  * [AWS : CLI](./cloud/aws/cli)
 
 ## DevOps
 
