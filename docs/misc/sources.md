@@ -3,9 +3,8 @@
 Evidemment, je me base sur beaucoup de sites internet ou autre pour
 faire mes posts. Voici la plupart de mes sources :
 
-  * [2buntu](https://2buntu.com)
+  * [101tech](https://www.101tech.net/)
   * [4 SysOps](https://4sysops.com)
-  * [Hacktricks Book](https://book.hacktricks.xyz/)
   * [Buzut](https://buzut.fr/)
   * [Calomel](https://calomel.org/)
   * [Cisco Made Simple](https://www.ciscomadesimple.be)
@@ -19,15 +18,13 @@ faire mes posts. Voici la plupart de mes sources :
   * [Forum La Fibre](https://lafibre.info/)
   * [Galera Website](https://galeracluster.com/)
   * [Goffinet](https://cisco.goffinet.org)
-  * [Guillaume Leduc](https://www.guillaume-leduc.fr)
+  * [Hacktricks Book](https://book.hacktricks.xyz/)
   * [Infosec Mozilla](https://infosec.mozilla.org/)
   * [KB VMWare](https://kb.vmware.com/)
   * [Lea Linux](http://lea-linux.org/)
   * [LinuxDev DK](http://linuxdev.dk/)
   * [Man Linux](http://man7.org/)
   * [MonDedie](http://mondedie.fr)
-  * [Noobunbox](https://www.noobunbox.net/)
-  * [Passkey](http://passkey.fr/)
   * [Petri](https://www.petri.com)
   * [RichardJGreen](https://richardjgreen.net)
   * [ShellHacks](https://www.shellhacks.com/)
@@ -35,8 +32,7 @@ faire mes posts. Voici la plupart de mes sources :
   * [SleepLessBeastie](https://sleeplessbeastie.eu/)
   * [Stackoverflow](https://stackoverflow.com)
   * [Techan](https://techan.fr)
-  * [netzspezialist](https://www.netzspezialist.de/)
-  * [101tech](https://www.101tech.net/)
+  * [netzspezialist](https://www.netzspezialist.de/blog/)
 
   * [Wiki Debian-FR.xyz](https://wiki.debian-fr.xyz/Accueil)
   * [Wiki Debian Facile](https://debian-facile.org/wiki)
@@ -47,4 +43,6 @@ faire mes posts. Voici la plupart de mes sources :
   * [Wiki Deimos](https://wiki.deimos.fr/Linux)
   * [Wiki Sebsauvage](http://sebsauvage.net/wiki/doku.php)
   * [Wikibooks](https://en.wikibooks.org/wiki)
-  * [Chaine Youtube de Xavki](https://www.youtube.com/channel/UCs_AZuYXi6NA9tkdbhjItHQ)
+
+  * [Stephane Robert](https://blog.stephane-robert.info/)
+  * [Xavki](https://xavki.blog/)
