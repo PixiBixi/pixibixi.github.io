@@ -1,6 +1,6 @@
 # Remplacer les commandes de base Linux par des versions plus performantes
 
-## Built-in
+## Commandes Built-in
 
 De nos jours, les commandes de bases linux sont désuètes. Il existe des
 commandes faisant le même travail, mais plus rapidement, ou alors avec
@@ -9,13 +9,23 @@ language rust et Open Source.
 
 ### Remplacant de ls
 
+Deux outils sont disponibles pour remplacer `ls`, libre à vous de choisir celui que vous préférez
+
 En remplacement ls, nous avons l'excellent outil
 [exa](https://the.exa.website/), disponible sur Linux et MacOS. exa est
 un excellent outil pour beaucoup de choses. Par exemple, celui-ci
 intègre la fonctionnalité tree (Visualisation des fichiers sous forme
-d'arbre) via '--tree. Celui-ci intègre également un thème visuel nous
+d'arbre) via `--tree`. Celui-ci intègre également un thème visuel nous
 permettant d'observer au premier coup d'oeil certaines choses comme la
 présence d'un lien symbolique rompus...
+
+---
+
+Le second candidat est [lsd](https://github.com/lsd-rs/lsd).
+
+Tout comme exa, ce dernier possède les mêmes arguments... mais avec des petites icones
+
+Personnelement, c'est ce second que je préfère car l'affichage est plus adapté pour moi
 
 ### Remplacant de du
 
@@ -84,3 +94,9 @@ benchmark est [disponible](https://rachaellappan.github.io/pigz/)
 Pour git, il existe un autre outil lightweight et très sympa :
 [tig](https://github.com/jonas/tig) permet une visualisation simple de
 son repository...
+
+### Alternative a rm
+
+Si comme moi vous êtes du genre étourdi et vous supprimez des fichiers que vous ne voulez pas, [rip](https://github.com/nivekuil/rip) est là.
+
+Basiquement, le fichier ne va pas être supprimé mais déplacé vers un répertoire temporaire. Pratique pour tous les étourdis
