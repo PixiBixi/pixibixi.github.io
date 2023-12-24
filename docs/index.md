@@ -230,6 +230,7 @@ Cette magnifique documentation a été faites avec MkDocs
 
   * [Optimiser sa CI Gitlab](/gitlab/ci/optimize)
   * [Intégrer un scan d'image à sa CI](/gitlab/ci/scan_image)
+  * [Utilisation de la CLI officielle](./gitlab/cli.md)
 
 ### Docker
 
