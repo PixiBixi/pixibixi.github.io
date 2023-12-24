@@ -81,6 +81,6 @@ benchmark est [disponible](https://rachaellappan.github.io/pigz/)
 
 ### Complément de git
 
-Pout git, il existe un autre outil lightweight et très sympa :
+Pour git, il existe un autre outil lightweight et très sympa :
 [tig](https://github.com/jonas/tig) permet une visualisation simple de
 son repository...
