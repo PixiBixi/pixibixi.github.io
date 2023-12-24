@@ -26,7 +26,6 @@ Cette magnifique documentation a été faites avec MkDocs
   * [Mes fichiers de configuration](/linux/cli/confrc)
   * [Mise à jour automatique de ses paquets](/linux/misc/autoupgrade)
   * [La commande ss (le nouveau netstat)](/linux/cli/ss)
-  * [HP Smart Array : Lignes de commande Linux](/misc/server/hp_cli_esx)
   * [Configurer correctement son hostname](/linux/cli/define_hostname)
   * [Personnaliser son motd](/linux/cli/motd)
   * [Simuler des conditions réseau sur Linux](/linux/cli/limit_bandwidth)
@@ -69,6 +68,7 @@ Cette magnifique documentation a été faites avec MkDocs
 ### Hardware
 
   * [Upgrade son firmware Mellanox](/hardware/nic/mellanox/identify_and_upgrade_firmware)
+  * [HP Smart Array : Lignes de commande Linux](./hardware/server/hp/cli_sas)
 
 ### Hébergement
 
