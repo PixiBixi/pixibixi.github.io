@@ -45,6 +45,8 @@ Mon fichier de configuration est disponible dans mon [dotfiles](https://github.c
 
 Tous les fichiers dans `~/.kube/kubeconfig/` avec l'extension `.yaml` seront automatiquement chargés.
 
+Si vous n'avez que des clusters managés par Rancher, c'est encore mieux ! l'URL Rancher, un token, quelques [lignes de configuration](https://github.com/danielfoehrKn/kubeswitch/blob/master/docs/stores/rancher/rancher.md), et hop, tous vos clusters sont automagiquement découverts. D'autres [fournisseurs](https://github.com/danielfoehrKn/kubeswitch/tree/master/docs/stores) sont également disponibles
+
 Pour split, n'oubliez pas [konfig](https://github.com/corneliusweig/konfig). Par exemplep pour notre context tools
 
 ```bash
