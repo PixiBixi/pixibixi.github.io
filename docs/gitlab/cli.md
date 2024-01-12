@@ -10,6 +10,14 @@ glab repo clone -g tecteam --archived=false --paginate -p
 
 Via cette simple ligne, je peux cloner tous les projets non archiver en concernant la structure de dossier de l'ensemble de l'organisation. Pour ma part, étant donné que je navigue entre beaucoup de projets Git, j'aime posséder l'intégralité des repositories sur lesquels je serai potentiellement être amené à travailler 
 
+## Merge Request
+
+```
+glab mr create --fill --yes
+```
+
+Une petite commande magique pour créer une MR sans rien faire, juste magique.
+
 
 ## Configuration
 
