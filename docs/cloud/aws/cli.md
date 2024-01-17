@@ -67,3 +67,12 @@ Il est possible d'utiliser des regex. Si nous souhaitons toutes les m6i, nous al
 
 
 Beaucoup d'autres exemples sont [disponibles ici](https://www.middlewareinventory.com/blog/aws-cli-ec2/)
+
+## RDS
+
+```
+aws rds describe-db-parameters --db-parameter-group-name <PG_name> --region <region> --query "Parameters[?Source=='user' || ApplyMethod=='immediate'].[ParameterName]" --output text
+```
+
+Petite query pour lister les options qui ont été modifié au sein d'un parameter group
+
