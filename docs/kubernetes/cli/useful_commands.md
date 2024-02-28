@@ -56,3 +56,9 @@ $ kubectl get pods --all-namespaces -o=json | jq -c '.items[] | {name: .metadata
 ```
 
 Permet de lister les PVC qui sont actuellement asssociés à un pod
+
+```
+kubectl get secret postgresql-secrets -o go-template='{{ range $key, $value := .data }}{{ $key }}{{ ": " }}{{ $value | base64decode }}{{ "\n" }}{{ end }}'
+```
+
+Permet de lister tous les secrets et de les decoder
