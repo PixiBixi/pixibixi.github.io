@@ -8,7 +8,7 @@ Certaines requêtes sont lentes à cause de la manière dont WordPress
 construit ses queries. (Par exemple plugin Yoast)
 
 ```sql
-UPDATE wp_options SET autoload = no WHERE LENGTH(option_value) > 4096 AND autoload = yes;
+UPDATE wp_options SET autoload = 'no' WHERE LENGTH(option_value) > 4096 AND autoload = 'yes';
 ```
 
 Désactive les tables à autoload trop grosses, provoquant un
