@@ -186,6 +186,10 @@ Cette magnifique documentation a été faites avec MkDocs
   * [Debug un payload d'erreur AWS](./cloud/aws/decode_error_aws)
   * [AWS : CLI](./cloud/aws/cli)
 
+
+### Google Cloud
+  * [Suivre l'upgrade de son cluster GKE](./cloud/gcloud/follow_gke_upgrade.md)
+
 ## DevOps
 
 ### Automatisation
