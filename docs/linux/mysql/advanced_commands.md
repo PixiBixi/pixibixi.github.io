@@ -2,6 +2,25 @@
 
 La plupart de ces commandes sont disponibles pour MySQL ou MariaDB.
 
+## RAM
+
+```
+SELECT ( @@key_buffer_size
++ @@innodb_buffer_pool_size
++ @@innodb_log_buffer_size
++ @@max_connections * (
+    @@read_buffer_size
+    + @@read_rnd_buffer_size
+    + @@sort_buffer_size
+    + @@join_buffer_size
+    + @@binlog_cache_size
+    + @@thread_stack
+    + @@tmp_table_size )
+) / (1024 * 1024 * 1024) AS MAX_MEMORY_GB;
+```
+
+Check la max RAM qui sera utilisée par MySQL
+
 ## InnoDB
 
 ```sql
