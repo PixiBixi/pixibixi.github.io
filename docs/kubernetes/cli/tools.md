@@ -13,7 +13,7 @@ Voici donc quelques outils pour mieux gérer tout ça :
   * `pluto` est un concurrent à kubepug, peut être plus facile : [a voir ici](https://github.com/FairwindsOps/pluto)
   * `ketall` permet de (réellement) lister toutes les ressources de son cluster : [a voir ici](https://github.com/corneliusweig/ketall)
   * `konfig` est un outil permettant de gérer sur `~/.kube/config` facilement, en faisant des merge, split... : [a voir ici](https://github.com/corneliusweig/konfig)
-  * `kubecolor` est un outil qui nous permet d'avoir une magnifique coloration syntaxique sur kubectl : [a voir ici](https://github.com/hidetatz/kubecolor/)
+  * `kubecolor` est un outil qui nous permet d'avoir une magnifique coloration syntaxique sur kubectl : [a voir ici](https://github.com/kubecolor/kubecolor)
   * `kdash` est un dashboard Kubernetes en CLI, tel que k9s : [a voir ici](https://github.com/kdash-rs/kdash)
 
 Evidemment, nous avons l'autocomplétion à activer :
