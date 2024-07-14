@@ -210,6 +210,10 @@ Cette magnifique documentation a été faites avec MkDocs
   * [Manage son $KUBECONFIG](/kubernetes/cli/kubeconfig)
   * [Outils pour mieux gérer K8S](/kubernetes/cli/tools)
 
+## Deploiement
+
+  * [Golang : Définir automatiquement son GOMEMLIMIT/GOMAXPROCS](./kubernetes/deployment/golang_kubernetes_limit.md)
+
 ### Kafka
 
   * [Kafkactl, un outil magique](./kafka/kafkactl)
