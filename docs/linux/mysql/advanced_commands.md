@@ -19,7 +19,9 @@ SELECT ( @@key_buffer_size
 ) / (1024 * 1024 * 1024) AS MAX_MEMORY_GB;
 ```
 
-Check la max RAM qui sera utilisée par MySQL
+Check la max RAM qui sera utilisée par MySQL. Il est important de bien prendre en compte la RAM pouvant être utilisée par chaque connection.
+
+Des sites existent tels que [MySQLCalculator](https://www.mysqlcalculator.com/), [MySQL DBA](https://www.abhinavbit.com/p/mysql-memory-calculator.html) ou encore le plus visuel [Avchinnikov](https://avchinnikov.com/utils/mysqlcalc)
 
 ## InnoDB
 
