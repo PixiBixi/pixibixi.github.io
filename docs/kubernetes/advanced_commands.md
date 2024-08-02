@@ -23,3 +23,13 @@ Ces commandes proviennent d'un peu partout, principalement la documentation Kube
     uniq -c|\
     sort -r
     ```
+
+!!! note "Avoir accès aux containers sur une machine"
+    ```
+    nerdctl -H /run/k3s/containerd/containerd.sock --namespace k8s.io ps|grep -v pause
+    ```
+
+!!! note "Forcer un noeud RKE2 K8S comme NotReady"
+    ```
+    systemctl stop rke2-server
+    ```
