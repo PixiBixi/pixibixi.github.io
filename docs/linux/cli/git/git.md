@@ -32,6 +32,17 @@ $ git clean -d -fx .
 
 Supprimer les fichiers non trackés inclus dans le gitignore
 
+------------------------------------------------------------------------
+
+```
+for BR in $(git branch --all --merged |grep -v $(git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@')) ; do
+    git push origin --delete "${BR#remotes/origin/}"
+done
+```
+
+Supprimer sur le repo distant toutes les branches déja merged
+
+
 ## .gitconfig
 
 Afin d'être indépendant de tout environnement (ohmyzsh ou autre), j'ai
