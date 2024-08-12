@@ -189,6 +189,7 @@ Cette magnifique documentation a été faites avec MkDocs
 
 ### Google Cloud
   * [Suivre l'upgrade de son cluster GKE](./cloud/gcloud/follow_gke_upgrade.md)
+  * [Commandes utiles pour la CLI GCP](./cloud/gcloud/misc_commands)
 
 ## DevOps
 
