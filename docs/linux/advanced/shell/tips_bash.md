@@ -42,3 +42,15 @@ sleep $[ ( $RANDOM % 10 )  + 1 ]s
 ```
 
 Introduit un random entre 1 et 10s
+
+------------------------------------------------------------------------
+
+```
+# Disconnect the session after 30 minutes of idle
+if [ -z "$TMOUT" ] ; then
+    TMOUT=1800
+    [ -z "$TMUX" ] || TMOUT=345600
+fi
+```
+
+Comme dis dans le commentaire, permet de deconnecteur automatiquement un user après X secondes, à mettre dans le .bashrc ou autre prompt
