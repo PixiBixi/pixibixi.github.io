@@ -62,3 +62,9 @@ kubectl get secret postgresql-secrets -o go-template='{{ range $key, $value := .
 ```
 
 Permet de lister tous les secrets et de les decoder
+
+```
+kubectl debug -it thanos-bidder-euw1-prod-sidecar-query-57bfd8f848-pmdp9 --image=busybox:1.28 --target=query
+```
+
+Permet d'attacher un container a un pod existant, ici, nous utilisons l'image busybox dans sa version 1.28, nous attachons notre container au pod `thanos-bidder-euw1-prod-sidecar-query-57bfd8f848-pmdp9` en partageant le process namespace du container query
