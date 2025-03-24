@@ -33,3 +33,8 @@ Ces commandes proviennent d'un peu partout, principalement la documentation Kube
     ```
     systemctl stop rke2-server
     ```
+
+!!! note "Lister toutes les taints de tous les noeuds"
+    ```
+    kubectl get nodes -o custom-columns=NAME:.metadata.name,TAINTS:.spec.taints --no-headers
+    ```
