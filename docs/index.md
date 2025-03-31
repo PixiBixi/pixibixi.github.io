@@ -212,6 +212,7 @@ Cette magnifique documentation a été faites avec MkDocs
   * [Commandes utiles pour K8S](/kubernetes/cli/useful_commands)
   * [Manage son $KUBECONFIG](/kubernetes/cli/kubeconfig)
   * [Outils pour mieux gérer K8S](/kubernetes/cli/tools)
+  * [Resize les PVC de ses Statefulset](./kubernetes/troubleshooting/resize_pvc_statefulset.md)
 
 ## Deploiement
 
