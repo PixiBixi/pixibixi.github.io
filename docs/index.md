@@ -296,6 +296,7 @@ Cette magnifique documentation a été faites avec MkDocs
   * [NAT pour les VMs Debian](./hypervisor/proxmox/networking/nat)
   * [Gérer son cluster Proxmox](./hypervisor/proxmox/cluster)
   * [Créer sa VM en CLI avec cloud-init](./hypervisor/proxmox/vm_as_cli)
+  * [Bootstrap correctement son Proxmox](./hypervisor/proxmox/bootstrap_pve)
 
 ## Codage
 
