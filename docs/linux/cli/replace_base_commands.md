@@ -89,6 +89,10 @@ Aujourd'hui, j'ai découvert un outil qui s'appelle
 mais multithread. Nous avons facilement un gain de performance de x3. Un
 benchmark est [disponible](https://rachaellappan.github.io/pigz/)
 
+### Complément de mtr/traceroute
+
+Trippy est un excellent à mtr avec une petite UI sympathique, pas forcément mieux mais très sympa, [à voir ici](https://github.com/fujiapple852/trippy)
+
 ### Complément de git
 
 Pour git, il existe un autre outil lightweight et très sympa :
