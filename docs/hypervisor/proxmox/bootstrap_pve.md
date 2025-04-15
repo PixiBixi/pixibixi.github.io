@@ -84,3 +84,11 @@ Setting pveproxy certificate and key
 Restarting pveproxy
 Task OK
 ```
+
+## Divers
+
+Si on utilise pas NFS, on desactive RPCbind  (Ce n'est pas grand chose, mais on ne veut pas de service inutile sur notre machine)
+
+```
+systemctl disable --now rpcbind.service rpcbind.socket
+```
