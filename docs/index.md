@@ -153,7 +153,7 @@ Cette magnifique documentation a été faites avec MkDocs
   * [Deplacer un processus dans un tmux](/linux/advanced/move_process_to_tmux)
   * [Troubleshooting Grub](/linux/advanced/troubleshooting_grub)
 
-### MySQL
+## MySQL
 
   * [Créer son cluster Galera](/linux/mysql/galera_gluster)
   * [Commandes avancées MySQL](/linux/mysql/advanced_commands)
@@ -162,23 +162,28 @@ Cette magnifique documentation a été faites avec MkDocs
   * [Restaurer la DB système MySQL](/linux/mysql/db_mysql)
   * [Générer des INSERT INTO depuis un SELECT](/linux/mysql/troubleshooting/generate_insert_into)
 
-### PostgreSQL
+## PostgreSQL
 
   * [Upgrade sa version de postgresql](/linux/postgres/upgrade_version)
   * [Creer sa replication postgresql](/linux/postgres/postgresql_replication)
   * [Commandes utiles postgresql](./linux/postgres/commands)
 
-### Redis
+## Redis
 
   * [Déployer un Redis en High Availability](/linux/redis/cluster_ha)
 
-### Memcached
+## Memcached
 
   * [Commandes diverses avec memcached](/linux/memcached/misc_commands)
 
-### ElasticSearch
+## ElasticSearch
 
   * [Log des slow queries de ElasticSearch](/linux/elasticsearch/log_slow_queries)
+
+## Kafka
+
+  * [Kafkactl, un outil magique](./kafka/kafkactl)
+
 
 ## Cloud
 
@@ -207,14 +212,18 @@ Cette magnifique documentation a été faites avec MkDocs
 
   * [Makefile : à quoi ça sert ?](./linux/automatisation/misc/Makefile)
 
-### Kubernetes
+## Kubernetes
 
   * [Commandes utiles pour K8S](/kubernetes/cli/useful_commands)
   * [Manage son $KUBECONFIG](/kubernetes/cli/kubeconfig)
   * [Outils pour mieux gérer K8S](/kubernetes/cli/tools)
   * [Resize les PVC de ses Statefulset](./kubernetes/troubleshooting/resize_pvc_statefulset.md)
 
-## Deploiement
+### Operators K8S
+
+  * [Redémarrer un cluster Strimzi](./kubernetes/operator/strimzi/rollout_strimzi.md)
+
+### Deploiement sur K8S
 
   * [Golang : Définir automatiquement son GOMEMLIMIT/GOMAXPROCS](./kubernetes/deployment/golang_kubernetes_limit.md)
 
@@ -223,38 +232,33 @@ Cette magnifique documentation a été faites avec MkDocs
   * [Creer un service account](./kubernetes/argocd/argocd_sa.md)
 
 
-### Kafka
-
-  * [Kafkactl, un outil magique](./kafka/kafkactl)
-
-#### Troubleshooting
+### Troubleshooting K8S
   * [Debug son ServiceAccount](./kubernetes/troubleshooting/troubleshooting_sa)
 
-#### Misc
+### Misc K8S
   * [Commandes Avancées](./kubernetes/advanced_commands)
 
-#### Rancher
+### Rancher
 
   * [Reset son password Rancher](/kubernetes/rancher/reset_password)
   * [Bootstrap rapidement son cluster](/kubernetes/rke/bootstrap_cluster)
 
-### Terraform
+## Terraform
 
   * [Cheatsheet terraform](./linux/automatisation/terraform/cheatsheet)
   * [Tools Terraform indispensables](./linux/automatisation/terraform/tools)
 
-### Gitlab
+## Gitlab
 
   * [Optimiser sa CI Gitlab](/gitlab/ci/optimize)
   * [Intégrer un scan d'image à sa CI](/gitlab/ci/scan_image)
   * [Utilisation de la CLI officielle](./gitlab/cli.md)
 
-### Docker
+## Docker
 
   * [Docker: l'indispensable](docker)
   * [Utiliser un proxy pour pull les images Docker](/docker/use_proxy)
   * [Templates docker-compose](/docker/compose/templates)
-
 
 
 ### Divers
