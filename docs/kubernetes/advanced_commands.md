@@ -38,3 +38,8 @@ Ces commandes proviennent d'un peu partout, principalement la documentation Kube
     ```
     kubectl get nodes -o custom-columns=NAME:.metadata.name,TAINTS:.spec.taints --no-headers
     ```
+
+!!! note "Lister les CPU/RAM sur les noeuds K8S et allouables sur K8S"
+    ```
+    kubectl get nodes -o custom-columns=NAME:.metadata.name,"CPU_Capacity":.status.capacity.cpu,"CPU_Allocatable":.status.allocatable.cpu,"MEMORY_Capacity":.status.capacity.memory,"MEMORY_Allocatable":.status.allocatable.memory
+    ```
