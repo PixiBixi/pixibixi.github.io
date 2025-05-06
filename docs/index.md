@@ -215,6 +215,7 @@ Cette magnifique documentation a été faites avec MkDocs
 ## Kubernetes
 
   * [Commandes utiles pour K8S](/kubernetes/cli/useful_commands)
+  * [Commandes Avancées](./kubernetes/advanced_commands)
   * [Manage son $KUBECONFIG](/kubernetes/cli/kubeconfig)
   * [Outils pour mieux gérer K8S](/kubernetes/cli/tools)
   * [Resize les PVC de ses Statefulset](./kubernetes/troubleshooting/resize_pvc_statefulset.md)
@@ -234,9 +235,6 @@ Cette magnifique documentation a été faites avec MkDocs
 
 ### Troubleshooting K8S
   * [Debug son ServiceAccount](./kubernetes/troubleshooting/troubleshooting_sa)
-
-### Misc K8S
-  * [Commandes Avancées](./kubernetes/advanced_commands)
 
 ### Rancher
 
