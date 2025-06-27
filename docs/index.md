@@ -216,6 +216,7 @@ Cette magnifique documentation a été faites avec MkDocs
 
   * [Commandes utiles pour K8S](/kubernetes/cli/useful_commands)
   * [Commandes Avancées](./kubernetes/advanced_commands)
+  * [Mes meilleurs plugins Krew](./kubernetes/cli/krew_plugins.md)
   * [Manage son $KUBECONFIG](/kubernetes/cli/kubeconfig)
   * [Outils pour mieux gérer K8S](/kubernetes/cli/tools)
   * [Resize les PVC de ses Statefulset](./kubernetes/troubleshooting/resize_pvc_statefulset.md)
