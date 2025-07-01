@@ -31,7 +31,7 @@ Ces commandes proviennent d'un peu partout, principalement la documentation Kube
 
 !!! note "Forcer un noeud RKE2 K8S comme NotReady"
     ```
-    systemctl stop rke2-server
+    systemctl stop rke2-agent
     ```
 
 !!! note "Lister toutes les taints de tous les noeuds"
