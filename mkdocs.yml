@@ -16,6 +16,7 @@ theme:
     - navigation.sections
     - navigation.expand
     - navigation.top
+    - content.code.copy
   name: material
   language: fr
 
