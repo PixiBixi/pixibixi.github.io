@@ -14,3 +14,15 @@
   * Pour voir les informations détaillées d'une table.
 
 Il y a un tools open-source Github permettant d'avoir une multitudes de commandes utiles rapidement : [Postgres DBA](https://github.com/NikolayS/postgres_dba)
+
+---
+
+``sql
+psql> \f '|'
+psql> \a
+psql> \o '/tmp/output.csv'
+psql> SELECT * from users;
+psql> \q
+```
+
+Permet d'avoir un output de psql en tant que CSV
