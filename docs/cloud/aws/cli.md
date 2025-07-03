@@ -65,6 +65,7 @@ aws ec2 describe-instances \
 
 Il est possible d'utiliser des regex. Si nous souhaitons toutes les m6i, nous allons donc utiliser le filtre suivant : `Name=instance-type,Values='m6i.*'`
 
+Vous pouvez tester vos expressions régulières en ligne avec des outils comme [Regex101](https://regex101.com/) ou [Pyrexp](https://pythonium.net/regex).
 
 Beaucoup d'autres exemples sont [disponibles ici](https://www.middlewareinventory.com/blog/aws-cli-ec2/)
 
