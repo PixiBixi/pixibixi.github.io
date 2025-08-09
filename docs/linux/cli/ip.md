@@ -10,9 +10,9 @@ ancêtre **ifconfig**, mais les habitudes sont durs à changer.
 ## Principe de base
 
 ```bash
-$ ip OBJECT COMMAND
-$ ip [options] OBJECT COMMAND
-$ ip OBJECT help
+ip OBJECT COMMAND
+ip [options] OBJECT COMMAND
+ip OBJECT help
 ```
 
 ## Activer/désactiver une interface
@@ -20,39 +20,41 @@ $ ip OBJECT help
 Pour **activer** une interface :
 
 ```bash
-$ ip link set wlan0 up
+ip link set wlan0 up
 ```
 
 Pour **désactiver** une interface
 
 ```bash
-$ ip link set wlan0 down
+ip link set wlan0 down
 ```
 
 ## Parametrer une adresse IP
 
 ```bash
-$ ip addr add 192.168.1.8/24 dev wlan0
+ip addr add 192.168.1.8/24 dev wlan0
 ```
 
 Afin de vérifier que l'adresse IP a bien été prise en compte
 
 ```bash
-$ ip addr show wlan0
+ip addr show wlan0
 ```
 
 Et voici l'output que nous devons obtenir :
 
+```sh
     3: wlan0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
         link/ether 00:25:00:3d:e1:aa brd ff:ff:ff:ff:ff:ff
         inet 192.168.1.8/24 brd 192.168.1.255 scope global wlan0
         valid_lft forever preferred_lft forever
+```
 
 Si nous souhaitons supprimer une adresse IP, il suffit de remplacer
 **add** par **del**
 
 ```bash
-$ ip addr del 192.168.1.8/24 dev wlan0
+ip addr del 192.168.1.8/24 dev wlan0
 ```
 
 ## Route
@@ -63,19 +65,19 @@ via la commande ip
 ### Montrer les routes
 
 ```bash
-$ ip route show
+ip route show
 ```
 
 ### Ajoute une route
 
 ```bash
-$ ip route add default via 192.168.1.1
+ip route add default via 192.168.1.1
 ```
 
 ### Supprime une route
 
 ```bash
-$ ip route del default via 192.168.1.1
+ip route del default via 192.168.1.1
 ```
 
 ## Statistiques
@@ -86,11 +88,12 @@ interfaces
 ### Toutes interfaces
 
 ```bash
-$ ip -statistics link
+ip -statistics link
 ```
 
 Output :
 
+```sh
     1: lo: <LOOPBACK,UP,LOWER_UP> mtu 16436 qdisc noqueue state UNKNOWN mode DEFAULT
         link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
         RX: bytes  packets  errors  dropped overrun mcast
@@ -115,21 +118,19 @@ Output :
         2316028442 35517985 0       0       0       0
         TX: bytes  packets  errors  dropped carrier collsns
         87027484021 64846840 0       567     0       0
+```
 
 ### Interface spécifique
 
 ```bash
-$ ip -statistics link show eth0
+ip -statistics link show eth0
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP mode DEFAULT qlen 1000
+    link/ether bc:30:5b:df:5a:36 brd ff:ff:ff:ff:ff:ff
+    RX: bytes  packets  errors  dropped overrun mcast
+    151856389090 446526528 0       0       0       47722861
+    TX: bytes  packets  errors  dropped carrier collsns
+    909111458731 783462602 0       0       0       0
 ```
-
-Output
-
-    2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP mode DEFAULT qlen 1000
-        link/ether bc:30:5b:df:5a:36 brd ff:ff:ff:ff:ff:ff
-        RX: bytes  packets  errors  dropped overrun mcast
-        151856389090 446526528 0       0       0       47722861
-        TX: bytes  packets  errors  dropped carrier collsns
-        909111458731 783462602 0       0       0       0
 
 ## ARP
 
