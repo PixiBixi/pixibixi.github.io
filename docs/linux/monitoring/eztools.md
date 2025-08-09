@@ -16,7 +16,7 @@ Ceux-ci ont été développés par un jeune français du pseudo de
 Pour l'installer, rien de plus simple, on télécharge la paquet
 
 ```bash
-$ wget -O ezservercli.zip http://www.ezservermonitor.com/esm-sh/downloads/version/2.3
+wget -O ezservercli.zip http://www.ezservermonitor.com/esm-sh/downloads/version/2.3
 ```
 
 Ne pas oublier de se rendre sur [le site du
@@ -27,13 +27,13 @@ les mises à jour ainsi que le
 On extrait le fichier de l'archive
 
 ```bash
-$ unzip ezservermonitor-sh_v2.3.zip
+unzip ezservermonitor-sh_v2.3.zip
 ```
 
 On le rend exécutable
 
 ```bash
-$ chmod +x eZServerMonitor.sh
+chmod +x eZServerMonitor.sh
 ```
 
 Et enfin, une chose qui n'est pas obligée mais je déplace le fichier
@@ -41,30 +41,30 @@ dans un répertoire de mon '$PATH, et je le renomme en quelque chose de
 simple comme monitor pour y accéder simplement
 
 ```bash
-$ mv eZServerMonitor.sh monitor.sh && move monitor.sh /usr/bin
+mv eZServerMonitor.sh monitor.sh && move monitor.sh /usr/bin
 ```
 
 Voici les options disponibles pour eZ Server Monitor SH
 
 ------------------------------------------------------------------------
 
-  * **-h**, **-u**, **'--help** ou **'--usage** : Affiche le message
+* **-h**, **-u**, **'--help** ou **'--usage** : Affiche le message
     d'aide
-  * **-v** ou **'--version** : Affiche le numéro de version du script
-  * **-C** ou **'--clear** : Clear la console
-  * **-a** ou **'--all** : Affiche toutes les informations
-  * **-s** ou **'--system** : Affiche des informations système de base
-  * **-e** ou **'--services** : Vérifie si les services sont ups ou pas
-  * **-n** ou **'--network** : Affiche les informations sur le réseau
-  * **-p** ou **'--ping** : Pings différents hosts selon la
+* **-v** ou **'--version** : Affiche le numéro de version du script
+* **-C** ou **'--clear** : Clear la console
+* **-a** ou **'--all** : Affiche toutes les informations
+* **-s** ou **'--system** : Affiche des informations système de base
+* **-e** ou **'--services** : Vérifie si les services sont ups ou pas
+* **-n** ou **'--network** : Affiche les informations sur le réseau
+* **-p** ou **'--ping** : Pings différents hosts selon la
     configuration
-  * **-c** ou **'--cpu** : Information sur le processeur
-  * **-m** ou **'--memory** : Informations sur la RAM
-  * **-l** ou **'--load** : Affiche le load et des infos sur les
+* **-c** ou **'--cpu** : Information sur le processeur
+* **-m** ou **'--memory** : Informations sur la RAM
+* **-l** ou **'--load** : Affiche le load et des infos sur les
     processus
-  * **-t** ou **'--temperatures** : Affiche les températures CPU,
+* **-t** ou **'--temperatures** : Affiche les températures CPU,
     HDD...
-  * **-d** ou **'--disk** : Affiche les différents disques
+* **-d** ou **'--disk** : Affiche les différents disques
 
 ------------------------------------------------------------------------
 
@@ -76,27 +76,27 @@ eZ Server Monitor est une suite extrêmement pratique pour monitorer son
 serveur depuis une page Web, où l'on peut y retrouver toutes les
 informations essentielles :
 
-![](/ez_serv.jpg)
+![Web server view](/ez_serv.jpg)
 
 Dans cette page, nous pouvons y observer différents éléments :
 
 ------------------------------------------------------------------------
 
-  * **System** où l'on y retrouve nos informations de base (OS,
+* **System** où l'on y retrouve nos informations de base (OS,
     Kernel..)
-  * **Load Average** où l'on peut observer notre occupation globale de
+* **Load Average** où l'on peut observer notre occupation globale de
     notre système
-  * **Network Usage** qui affiche les différentes interfaces, ainsi que
+* **Network Usage** qui affiche les différentes interfaces, ainsi que
     les données transmit
-  * **CPU** qui montre les caractéristiques de son CPU
-  * **Disk Usage** nous indique l'occupation de notre/nos disque(s) dur
-  * **Memory** qui montre notre RAM totale, utilisée et disponible
-  * **SWAP** qui fonctionne comme la RAM (Attention, montre 100% si le
+* **CPU** qui montre les caractéristiques de son CPU
+* **Disk Usage** nous indique l'occupation de notre/nos disque(s) dur
+* **Memory** qui montre notre RAM totale, utilisée et disponible
+* **SWAP** qui fonctionne comme la RAM (Attention, montre 100% si le
     SWAP est désactivé)
-  * **Last Login** montre les 5 dernières connexion
-  * **Ping** montre la latence sur différents hosts (Attention, si un
+* **Last Login** montre les 5 dernières connexion
+* **Ping** montre la latence sur différents hosts (Attention, si un
     host répond pas, le module plante)
-  * **Service Status** montre si différents services sont disponibles ou
+* **Service Status** montre si différents services sont disponibles ou
     pas
 
 ------------------------------------------------------------------------
@@ -151,10 +151,10 @@ contient divers éléments de configuration
 
 ------------------------------------------------------------------------
 
-  * **disk** qui permet de montrer la partition *tmpfs* ou pas
-  * **hosts** qui permet de configurer les différents sites à ping
-  * **last_login** pour paramétrer combien de login seront affichés sur
+* **disk** qui permet de montrer la partition *tmpfs* ou pas
+* **hosts** qui permet de configurer les différents sites à ping
+* **last_login** pour paramétrer combien de login seront affichés sur
     le site
-  * **services** pour paramétrer différents services à monitorer
+* **services** pour paramétrer différents services à monitorer
 
 ------------------------------------------------------------------------
