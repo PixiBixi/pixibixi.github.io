@@ -10,11 +10,11 @@ Comme des images sont plus représentatives, voilà les deux commandes :
 
 **df :**
 
-![](/df.png)
+![df](./_img/df.jpg)
 
 **dfc :**
 
-![](/dfc.png)
+![dfc](./_img/dfc.jpg)
 
 Comme vous pouvez, le voir, le résultat est quasiment identique, mais
 **dfc** est bien plus clair.
@@ -27,7 +27,7 @@ Sous Wheezy, il n'y a rien à faire, vu que le paquet est dans les
 dépots de base, donc on l'installe comme d'habitude :
 
 ```bash
-$ apt-get -y install dfc
+apt-get -y install dfc
 ```
 
 La version téléchargé est la 2.5.0, à l'heure actuelle, nous sommes à
@@ -47,31 +47,31 @@ base.
 On commence par installer les pré-requis pour compiler **dfc**
 
 ```bash
-$ apt-get -y install cmake gettext git-core
+apt-get -y install cmake gettext git-core
 ```
 
 On télécharge les sources
 
 ```bash
-$ git clone https://github.com/Rolinh/dfc
+git clone https://github.com/Rolinh/dfc
 ```
 
 On se rend dans le dossier de téléchargement de dfc
 
 ```bash
-$ cd dfc
+cd dfc
 ```
 
 On créé un dossier nécéssaire à la compilation
 
 ```bash
-$ mkdir build && cd build
+mkdir build && cd build
 ```
 
 Et enfin, on lance la compilation
 
 ```bash
-$ cmake .. && make && make install
+cmake .. && make && make install
 ```
 
 ### Stretch et Supérieur
@@ -80,7 +80,7 @@ A partir de Debian Stretch, dfc est rentré dans les repositories, il
 n'est donc plus nécessaire de le compiler.
 
 ```bash
-$ apt update && apt install -y dfc
+apt update && apt install -y dfc
 ```
 
 ## Bonus
@@ -89,5 +89,5 @@ Nous pouvons totalement se passer de **df** en le remplaçant par **dfc**
 via un alias dans le .bashrc
 
 ```bash
-$ echo "alias df=dfc" >> ~/.bashrc
+echo "alias df=dfc" >> ~/.bashrc
 ```
