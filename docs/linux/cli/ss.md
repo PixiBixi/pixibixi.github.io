@@ -8,7 +8,7 @@ déprécié depuis des années, voici comment l'utiliser :
 Une utilité basique, une commande basique
 
 ```bash
-$ ss | less
+ss | less
 ```
 
 Nous voyons ici **toutes** les connexion, aussi bien celles basées sur
@@ -20,22 +20,23 @@ généralement pas voir les connexions à des sockets UNIX)
 
 Rentrons un peu plus en profondeur dans la commande ss avec les filtres par type de connexion
 
-  * `-t` ou `--tcp` : Socket TCP
-  * `-u` ou `--udp` : Socket UDP
-  * `-x` ou `--unix` : Sockets UNIX
+* `-t` ou `--tcp` : Socket TCP
+* `-u` ou `--udp` : Socket UDP
+* `-x` ou `--unix` : Sockets UNIX
 
 Les filtres sont assez explicites. Il existe également 2 autres types de filtres, mais ceux-ci ne sont jamais utilisés dans un usage normal :
 
-  * `-d` ou `--dccp` : Sockets DCCP
-  * `-w` ou `--raw` : Sockets RAW
+* `-d` ou `--dccp` : Sockets DCCP
+* `-w` ou `--raw` : Sockets RAW
 
 Cette option est particulièrement utilisée avec `-a` ou `--all` qui permet de lister toutes les connexions d'un protocole
 
 Par exemple, pour lister toutes les connexions TCP :
 
 ```bash
-$ ss -t -a | less
+ss -t -a | less
 ```
+
 Par défaut (sans l'option -a), seuls les connexions ESTABLISHED sont listées (ou CONNECTED pour UDP). (Il s'agit de l'option `-l` ou `--listening`)
 
 ## Afficher les numéros de port / ne pas résoudre les IPs
@@ -46,57 +47,57 @@ Il est fort préférable que vous préferiez voir l'IP et le numéro de port, pl
 
 Pour cela, voici l'option :
 
-  * `-n` ou `--numeric` : Permet de ne pas résoudre les IP et les ports associés aux services
+* `-n` ou `--numeric` : Permet de ne pas résoudre les IP et les ports associés aux services
 
 A noter qu'il n'est pas possible de ne pas résoudre les adresses IPs ou les numéros de ports uniquement, les deux sont liés.
 
 Pour résoudre les adresses IP :
 
-  * `-r` ou `--resolve` : Permet de résoudre les adresse IPs
+* `-r` ou `--resolve` : Permet de résoudre les adresse IPs
 
 Petit exemple en cumulant les paramètres vu avant
 
 ```bash
-$ ss -s -t -a
+ss -s -t -a
 ```
 
 ## Afficher le nom du processus lié et son pid
 
 Lister précisément les connexions n'est pas très utile si on ne connait pas le pid du programme associé. Heureusement, la commande ss à pensé à tout.
 
-  * `-p` ou `--pid` : Permet de lister le processus lié à une connexion
+* `-p` ou `--pid` : Permet de lister le processus lié à une connexion
 
 ```bash
-$ ss -p
+ss -p
 ```
 
 ## Afficher des statistiques avec SS
 
 ss sait aussi faire des statistiques des connexions actives sur votre serveur
 
-  * `-s` ou `--summary`
+* `-s` ou `--summary`
 
 ```bash
-$ ss -s
+ss -s
 ```
 
 ## Filtrer les connexions par types
 
 Si vous ne souhaitez voir que les connexions IPv4 ou IPv6 (voir socket), c'est possible avec ss :
 
-  * `-f` ou `--family=...`
+* `-f` ou `--family=...`
 
 Et voici les types disponibles
 
-  * `inet`
-  * `inet6`
-  * `link`
-  * `netlink`
+* `inet`
+* `inet6`
+* `link`
+* `netlink`
 
 Voici un exemple d'utilisation
 
 ```bash
-$ ss -a -f inet6 -t -n
+ss -a -f inet6 -t -n
 ```
 
 Dans cette example, j'affiche toutes les connexion IPv6 en TCP sans résoudre le numéro de port
@@ -108,7 +109,7 @@ Dans cette example, j'affiche toutes les connexion IPv6 en TCP sans résoudre le
 Dans ss, il est possible de filtrer leur connexion via leur statut (ESTABLISHED, CLOSED...) de manière extrêmement simple :
 
 ```bash
-$ ss state ESTABLISHED
+ss state ESTABLISHED
 ```
 
 Dans cet exemple, j'affiche toutes les connexions ayant ESTABLISHED en
@@ -116,31 +117,31 @@ Dans cet exemple, j'affiche toutes les connexions ayant ESTABLISHED en
 
 Voici tous les états supportés par ss
 
-  * established
-  * syn-sent
-  * syn-recv
-  * fin-wait-2
-  * fin-wait-1
-  * time-wait
-  * closed
-  * close-wait
-  * last-ack
-  * listen
-  * closing
+* established
+* syn-sent
+* syn-recv
+* fin-wait-2
+* fin-wait-1
+* time-wait
+* closed
+* close-wait
+* last-ack
+* listen
+* closing
 
 Certains de ces états sont également regroupés en '"catégories'" :
 
-  * `connected` = {established'|syn-sent'|syn-recv'|fin-wait-{1,2}'|time-wait'|close-wait'|last-ack'|closing}
-  * `synchronized` = {established'|syn-recv'|fin-wait-{1,2}'|time-wait'|close-wait'|last-ack'|closing}
-  * `bucket` = {syn-recv'|time-wait}
-  * `big` = {established'|syn-sent'|fin-wait-{1,2}'|closed'|close-wait'|last-ack'|listen'|closing}
+* `connected` = {established'|syn-sent'|syn-recv'|fin-wait-{1,2}'|time-wait'|close-wait'|last-ack'|closing}
+* `synchronized` = {established'|syn-recv'|fin-wait-{1,2}'|time-wait'|close-wait'|last-ack'|closing}
+* `bucket` = {syn-recv'|time-wait}
+* `big` = {established'|syn-sent'|fin-wait-{1,2}'|closed'|close-wait'|last-ack'|listen'|closing}
 
 ### Filter les ports
 
 Et enfin, ultime fonctionnalité, le filtrage de port, qui permet de sélectionner par port source ou destination, par exemple
 
 ```bash
-$ ss -t -n sport eq 1998
+ss -t -n sport eq 1998
 ```
 
 Dans cet exemple, nous voulons voir toutes les connections TCP dont le port source est 1998
@@ -148,7 +149,7 @@ Dans cet exemple, nous voulons voir toutes les connections TCP dont le port sour
 Il est également possible de faire la même commande avec le nom du service
 
 ```bash
-$ ss -nt state ESTABLISHED dst :https
+ss -nt state ESTABLISHED dst :https
 ```
 
 Ici, nous voulons toutes les connexions TCP ayant l'état ESTABLISHED dont le port destination est HTTPS.
@@ -156,7 +157,7 @@ Ici, nous voulons toutes les connexions TCP ayant l'état ESTABLISHED dont le po
 Et enfin, il est possible de réunir plusieurs conditions avec un `AND` ou `OR`
 
 ```bash
-$ ss -nt ( dport = :443 or dport = :80 )
+ss -nt ( dport = :443 or dport = :80 )
 ```
 
 Enfin, nous voulons ici lister toutes les connexions de notre machine vers des sites internet (HTTP ou HTTPS)
@@ -167,7 +168,7 @@ Une fonctionnalité qui peut être également intéressante est d'avoir des stat
 
 Voilà comment une ligne se présente :
 
-```
+```sh
 root! misc-jd:/home/debian$ ss -4 -tin
 State                        Recv-Q                         Send-Q                                                  Local Address:Port                                                  Peer Address:Port                         Process
 ESTAB                        0                              0                                                      95.179.123.231:1234                                                 51.91.123.231:57587
@@ -176,12 +177,12 @@ ESTAB                        0                              0                   
 
 Vous observez que nous avons ici beaucoup plus d'informations qu'en temps normal, je vais décrire les principales :
 
-  * `bbr` indique ici l'algorythme de congestion TCP que nous utilisons, tel que cubic...
-  * `rto` indique (en ms) le timeout avant retransmission du paquet
-  * `rtt:<rtt>/<rttvar>`
-    * `rtt` indique (en ms) la valeur moyenne du (round time trip)
-    * `rttvar` est l'écart type
-  * `ptmu` est la valeur du MTU pour la connection TCP
-  * `mss` est la taille maximum du payload d'un paquet (hors entête)
+* `bbr` indique ici l'algorythme de congestion TCP que nous utilisons, tel que cubic...
+* `rto` indique (en ms) le timeout avant retransmission du paquet
+* `rtt:<rtt>/<rttvar>`
+  * `rtt` indique (en ms) la valeur moyenne du (round time trip)
+  * `rttvar` est l'écart type
+* `ptmu` est la valeur du MTU pour la connection TCP
+* `mss` est la taille maximum du payload d'un paquet (hors entête)
 
 Si vous voulez plus d'informations sur ss, n'hésitez pas à consulter le wiki Archlinux ou directement dman7.org
