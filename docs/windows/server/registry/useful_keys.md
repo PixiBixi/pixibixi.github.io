@@ -5,15 +5,13 @@ Voici donc quelques clés de registre bien utiles :
 
 ## Désactiver le Shutdown Event Tracker
 
-![](https://techan.fr/images/2017/06/Windows_Shutdown_Event_Tracker.png)
-
 Le Shutdown Event Tracker est la fameuse page qui nous empêche
 d'éteindre directement notre serveur.
 
 Pour la désactiver voici la règle à modifier :
 
 ```powershell
-HKEY_LOCAL_MACHINE'SOFTWARE'Policies'Microsoft'Windows NT'Reliability'ShutdownReasonOn
+HKEY_LOCAL_MACHINE/SOFTWARE/Policies/Microsoft/Windows NT/Reliability/ShutdownReasonOn
 ```
 
 Il se peut que la clé n'existe pas. Dans ces cas-là, il suffit de la
@@ -28,7 +26,7 @@ repasser en DHCP.
 Heureusement, ceci est possible via une simple ligne
 
 ```powershell
-HKEY_LOCAL_MACHINE'SYSTEM'CurrentControlSet'Services'{Adapter}'Parameters'Tcpip'EnableDHCP
+HKEY_LOCAL_MACHINE/SYSTEM/CurrentControlSet/Services/{Adapter}/Parameters/Tcpip/EnableDHCP
 ```
 
 Il suffit de passer cette clé de 0 à 1. À noter qu'il est assez facile
@@ -43,7 +41,7 @@ utile dans certains cas**
 Pour l'activité, voici la clé à modifier :
 
 ```powershell
-HKLM'Software'Microsoft'Windows NT'CurrentVersion'winlogon'AutoAdminLogon
+HKLM/Software/Microsoft/Windows NT/CurrentVersion/winlogon/AutoAdminLogon
 ```
 
 Encore une fois, si la clé n'existe pas, créer la, de type DWORD. 1
@@ -55,7 +53,7 @@ maintenant préciser l'username et le password.
 Pour cela, nous nous rendons dans le dossier suivant :
 
 ```powershell
-HKLM'Software'Microsoft'Windows NT'CurrentVersion'winlogon
+HKLM/Software/Microsoft/Windows NT/CurrentVersion/winlogon
 ```
 
 Et nous avons 2 clés de type STRING à créer :

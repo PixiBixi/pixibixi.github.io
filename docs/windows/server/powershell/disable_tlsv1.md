@@ -1,7 +1,5 @@
 # Désactiver TLSv1 et TLSv1.1
 
-![](/windows_server/powershell/tls.png)
-
 Ces 2 protocoles sont mort et devraient être désactivés depuis
 longtemps, voici la solution :
 
@@ -140,8 +138,4 @@ désactiver le protocole
 
 Voici un simple exemple pour désactiver SSL3 côté client :
 
-![](/windows_server/powershell/disabling-ssl-3.0-for-a-client-and-server.png)
-
-Pour plus d'informations détaillé sur le script, je vous renvoie vers
-la
-[source](https://4sysops.com/archives/disable-ssl-and-tls-1-01-1-on-iis-with-powershell/)
+Pour plus d'informations détaillé sur le script, je vous renvoie vers la [source](https://4sysops.com/archives/disable-ssl-and-tls-1-01-1-on-iis-with-powershell/)

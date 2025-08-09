@@ -6,7 +6,7 @@ statiques...
 
 Petit schéma pour vous rappeler comment fonctionne un serveur DHCP :
 
-![](/windows_server/powershell/trames_dhcp.jpg)
+![Trame DHCP](./_img/trame_dhcp.jpg)
 
 ## Installation
 
@@ -88,11 +88,11 @@ Set-DhcpServerv4OptionDefinition -OptionId 6 -DefaultValue 10.1.1.2
 Set-DhcpServerv4OptionDefinition -OptionId 15 -DefaultValue test.com
 ```
 
-**OptionID**
+Les options sont les suivantes **OptionID**
 
-  * 3 : Gateway
-  * 6 : DNS
-  * 15 : Domain
+* 3 : Gateway
+* 6 : DNS
+* 15 : Domain
 
 ### Réservation IP
 
@@ -100,7 +100,7 @@ Il peut-être pratique (par exemple dans le cas de serveurs) de faire une
 réservation d'IP avec un bail extrêmement long. Deux manières de
 procéder existe :
 
-  * Soit l'ajout manuel IP par IP (Ici, on va fixer l'adresse IP
+* Soit l'ajout manuel IP par IP (Ici, on va fixer l'adresse IP
     10.10.10.8 qui se trouve dans le range 10.10.10.0 ayant l'adresse
     mac F0-DE-F1-7A-00-5E
 
@@ -108,7 +108,7 @@ procéder existe :
 Add-DhcpServerv4Reservation -ScopeId 10.10.10.0 -IPAddress 10.10.10.8 -ClientId F0-DE-F1-7A-00-5E -Description "Reservation for Printer"
 ```
 
-  * Soit par l'instanciation d'un CSV comportant toutes les entrées à
+* Soit par l'instanciation d'un CSV comportant toutes les entrées à
     fixer :
 
 ```csv
@@ -148,7 +148,7 @@ Exporter la configuration du serveur DHCP
 Export-DHCPServer -ComputerName DHCPServer -File C:'dhcp'dhcp.xml
 ```
 
-  * `-Lease` pour inclure les baux
+* `-Lease` pour inclure les baux
 
 ## Problème de failover
 

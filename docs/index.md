@@ -374,12 +374,10 @@ Cette magnifique documentation a été faites avec MkDocs
 ### Server
 
 * [Setup de base d'un Windows 2012 R2](/windows/server/powershell/first_setup)
-* [Connexion SSH "native" en Powershell](/windows/server/powershell/ssh)
 * [Monter un ISO directement via PowerShell](/windows/server/powershell/mount_iso)
 * [Installer et configurer un serveur DHCP en PowerShell](/windows/server/powershell/dhcp_server)
 * [Installer et configurer un serveur AD en PowerShell](/windows/server/powershell/ad_server)
 * [Creer un pool de stockage en PowerShell](/windows/server/powershell/storage/pool)
-* [Gérer les exceptions pour les scripts PowerShell](/windows/server/powershell/exceptions)
 * [Autoriser l'ICMP sur un serveur Windows 2012R2 en PowerShell](/windows/server/powershell/allow_icmp)
 * [Importer des utilisateurs CSV dans un AD via PowerShell](/windows/server/powershell/import_csv_users)
 * [Clés de Registre Utiles](/windows/server/registry/useful_keys)
@@ -394,7 +392,6 @@ Cette magnifique documentation a été faites avec MkDocs
 
 ### Desktop
 
-* [Enlever les publicités de Skype](/windows/desktop/soft/ads_skype)
 * [Windows 10 : Comment activer la gestion des chemins trop long ?](/windows/desktop/tips/long_path)
 * [Améliorer sa vie privée et les performances avec Blackbird](/windows/desktop/tips/improve_privacy)
 * [Bloquer les serveurs d'activation via le fichiers hosts](/windows/desktop/tips/hosts_file)

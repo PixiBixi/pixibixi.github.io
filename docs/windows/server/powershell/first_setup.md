@@ -13,13 +13,13 @@ Rename-Computer -Name DHCP1
 
 ## Ajout au domaine
 
-  * **OU par défaut**
+* **OU par défaut**
 
 ```powershell
 Add-Computer -DomainName "Domain01" -Restart
 ```
 
-  * **OU Prédéfinie**
+* **OU Prédéfinie**
 
 ```powershell
 Add-Computer -DomainName "Domain02" -OUPath "OU=testOU,DC=domain,DC=Domain,DC=com" -Restart
