@@ -1,6 +1,4 @@
-# Configurer correctement son nom de domaine
-
-![](/domainnameregistration.png)
+# Configurer correctement son hostname
 
 Dans cet article, nous allons voir comment configurer correctement notre
 nom de domaine
@@ -10,22 +8,22 @@ nom de domaine
 Tout d'abord, pour bien installer son nom de domaine, voici un peu de
 vocabulaire spécifique dont nous aurons besoin par la suite :
 
-    Nom de domaine principal : domain.tld
+* Nom de domaine principal : domain.tld
 
 Il s'agit du nom de domaine que l'ont vient d'acheter (Par exemple :
 toto.fr)
 
-    Nom dhôte : hostname
+* Nom dhôte : hostname
 
 Il s'agit ce coup-ci du nom que portera notre machine (Par exemple :
 warrior)
 
-    FQDN : hostname.domain.tld
+* FQDN : hostname.domain.tld
 
 Désormais, il s'agit du '"mélange'" des deux éléments précédents (Donc
 dans notre cas : warrior.toto.fr)
 
-    Reverse : hostname.domain.tld
+* Reverse : hostname.domain.tld
 
 Attention, il se peut qu'il y ai parfois un . à la fin de celui-ci
 (Dans notre cas : warrior.toto.fr.)
@@ -38,7 +36,7 @@ Tout au long du tutoriel, nous allons prendre en exemple nos valeurs
 d'exemple
 
 ```bash
-$ echo "warrior" > /etc/hostname
+echo "warrior" > /etc/hostname
 ```
 
 Ou alors, une autre possibilité :
@@ -88,20 +86,3 @@ Doit retourner l'hostname
 
 Si tout se passe correctement, alleluia, sinon, il faut répeter les
 étapes précédentes
-
-## Configurer sur le panel de son hébergeur
-
-Voilà comment configurer son reverse sur différents panels d'hébergeur
-:
-
-![](/oneprovider_reverse_dns.png)
-
-![](//ovh_panel_v3_reverse_dns.png)
-
-![](//kimsufi_reverse_dns.png)
-
-![](//online_reverse_dns.png)
-
-![](//online_actuel_reverse_dns.png)
-
-![](//server4you_reverse_dns.png)
