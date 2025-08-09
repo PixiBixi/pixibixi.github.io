@@ -60,8 +60,8 @@ HKLM'Software'Microsoft'Windows NT'CurrentVersion'winlogon
 
 Et nous avons 2 clés de type STRING à créer :
 
-  * DefaultUserName
-  * DefaultPassword
+* DefaultUserName
+* DefaultPassword
 
 De plus, si nous utilisons une connexion via Active Directory, nous
 devons créer une 3ème clé : DefaultDomainName
