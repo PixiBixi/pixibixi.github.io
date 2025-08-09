@@ -11,58 +11,25 @@ Nous verrons en bonus _tmux_xpanes_ qui permet d'automatiser encore plus les tac
 
 ## Installation
 
-Comme pour une grande majorité des paquets, ça sera à `apt` ou à
-`aptitude` de faire cette partie du job. Nous avons besoin de la
-dernière version, qui se trouve dans le `distrib-backports`, où
-distrib est évidemment votre Distribution
-
-On update les dépots
+On update les dépots & on installe notre package
 
 ```bash
-$ apt update
+apt update && apt install tmux
 ```
-
-Et on installe tmux en spécifiant qu'il faut utiliser le dépot
-distrib-backports
-
-```bash
-$ apt-get install tmux
-```
-
-En n'oubliant pas de remplacer distrib soit par Wheezy, soit par Jessie
 
 ## Shortcuts
 
 De base, lorsque nous lançons tmux, nous avons une simple fenêtre, avec
 une bar de statut en bas :
 
-![](/tmux-standard.jpg)
+![Tmux basique](./_img/tmux_standard.png)
 
 Puis nous pouvons faire une multitude de choses sur cette simple fenêtre
 
-### Split horizontal
+* **Split horizontal** : `CTRL+B %`
+* **Split horizontal** : `CTRL+B "`
 
-```
-CTRL+B %
-```
-
-### Split Vertical
-
-```
-CTRL+B "
-```
-
-<https://github.com/gpakosz/.tmux>
-
-```
-    set ttymouse=xterm2
-    set mouse=a
-```
-
-Morceau de code dans le .vimrc afin d'activer la souris dans vim
-
-Petit handler tmux où on pourra gérer les multiples connexions SSH
-simplement : [xpanes](https://github.com/greymd/tmux-xpanes)
+Heureusement, nous avons des [repository git](https://github.com/gpakosz/.tmux) qui ont une bonne configuration de base
 
 ## Bonus
 
@@ -72,14 +39,23 @@ Mon utilisation la plus courante de tmux-xpanes est pour ouvrir un batch de sess
 
 J'utilise un alias csshx
 
-```
+```sh
 csshx='tmux-xpanes --ssh'
 ```
 
 Et enfin, voici le grep pour lancer le batch de sessions SSH :
 
-```
+```sh
 csshx $(grep kafka- inventory|sed "s/://g")
 ```
 
 Avec cet alias, je lance automatiquement une connexion ssh aux serveurs nommés kafka- de mon inventiare ansible.
+
+### Vim
+
+```vim
+    set ttymouse=xterm2
+    set mouse=a
+```
+
+Morceau de code dans le .vimrc afin d'activer la souris dans vim
