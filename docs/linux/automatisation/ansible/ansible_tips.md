@@ -12,7 +12,7 @@ Plusieurs cas concrêts ici :
 
   * Nous l'avons l'utilisation d'une [variable spéciale](https://docs.ansible.com/ansible/latest/reference_appendices/special_variables.html) d'ansible.
     * `group_names` nous indique l'ensemble des groupes où appartient notre serveur
-	* `groups` liste ici l'ensemble des groupes dont l'inventaire est constitué, et chaque groupe contient les hosts qu'il possède.
+    * `groups` liste ici l'ensemble des groupes dont l'inventaire est constitué, et chaque groupe contient les hosts qu'il possède.
 
 !!! warning "Multi group"
     Dans le cas d'un multi-group, il faut utiliser l'id -1 qui correpsond au groupe dont notre serveur dépend directement

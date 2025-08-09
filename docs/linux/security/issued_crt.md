@@ -12,16 +12,16 @@ psql=$(which psql)
 docker=$(which docker)
 
 if [ -z "$psql" ]; then
-	if [ -z "$docker" ]; then
-		echo "Ni Docker, ni PostgreSQL... can't do anything for you"
-		exit 1
-	fi
-	psql="docker run -it --rm postgres psql"
+    if [ -z "$docker" ]; then
+        echo "Ni Docker, ni PostgreSQL... can't do anything for you"
+        exit 1
+    fi
+    psql="docker run -it --rm postgres psql"
 fi
 
 if [ -z "${1}" ]; then
-	echo "Usage: $0 domain-name"
-	exit
+    echo "Usage: $0 domain-name"
+    exit
 fi
 Q="select distinct(lower(name_value)) FROM certificate_and_identities cai WHERE plainto_tsquery('$1') @@ identities(cai.CERTIFICATE) AND lower(cai.NAME_VALUE) LIKE ('%.$1')"
 $psql -P pager=off -P footer=off -U guest -d certwatch --host crt.sh -c "$Q" | sed -e '$d' -e 's/^ //' -e '1,2d'

@@ -26,23 +26,23 @@ trouvaient dans /etc/init.d.
 Concrètement, voici un exemple type d'unit :
 
 ??? example "Simple unit file : /etc/systemd/system/prometheus.service"
-	```bash
-	[Unit]
-	Description=Prometheus
-	Documentation=https://prometheus.io/docs/guides/
-	After=network-online.target
+    ```bash
+    [Unit]
+    Description=Prometheus
+    Documentation=https://prometheus.io/docs/guides/
+    After=network-online.target
 
-	[Service]
-	Type=simple
-	User=prometheus
-	WorkingDirectory=/etc/prometheus
-	EnvironmentFile=/etc/default/prometheus
-	ExecStart=/usr/bin/prometheus --storage.tsdb.path=/var/lib/prometheus
-	Restart=always
+    [Service]
+    Type=simple
+    User=prometheus
+    WorkingDirectory=/etc/prometheus
+    EnvironmentFile=/etc/default/prometheus
+    ExecStart=/usr/bin/prometheus --storage.tsdb.path=/var/lib/prometheus
+    Restart=always
 
-	[Install]
-	WantedBy=multi-user.target
-	```
+    [Install]
+    WantedBy=multi-user.target
+    ```
 
 Il s'agit d'une unit extrêmement simple.
 
@@ -124,33 +124,33 @@ Un service template est appelé ainsi car il s'agit d'un service
 pouvant être utilisé :
 
 ??? example "Simple unit file : /etc/systemd/system/openvpn@.service"
-	```bash
-	[Unit]
-	Description=OpenVPN service for %I
-	After=syslog.target network-online.target
-	Wants=network-online.target
-	Documentation=man:openvpn(8)
-	Documentation=https://community.openvpn.net/openvpn/wiki/Openvpn24ManPage
-	Documentation=https://community.openvpn.net/openvpn/wiki/HOWTO
+    ```bash
+    [Unit]
+    Description=OpenVPN service for %I
+    After=syslog.target network-online.target
+    Wants=network-online.target
+    Documentation=man:openvpn(8)
+    Documentation=https://community.openvpn.net/openvpn/wiki/Openvpn24ManPage
+    Documentation=https://community.openvpn.net/openvpn/wiki/HOWTO
 
-	[Service]
-	Type=notify
-	PrivateTmp=true
-	WorkingDirectory=/etc/openvpn/client/%i/
-	ExecStart=/usr/sbin/openvpn --status %t/openvpn-server/status-%i.log --status-version 2 --suppress-timestamps --cipher AES-256-GCM --ncp-ciphers AES-256-GCM:AES-128-GCM:AES-256-CBC:AES-128-CBC:BF-CBC --config /etc/openvpn/client/%i/%i.conf
-		=CAP_IPC_LOCK CAP_NET_ADMIN CAP_NET_BIND_SERVICE CAP_NET_RAW CAP_SETGID CAP_SETUID CAP_SYS_CHROOT CAP_DAC_OVERRIDE
-	LimitNPROC=10
-	DeviceAllow=/dev/null rw
-	DeviceAllow=/dev/net/tun rw
-	ProtectSystem=true
-	ProtectHome=true
-	KillMode=process
-	RestartSec=5s
-	Restart=on-failure
+    [Service]
+    Type=notify
+    PrivateTmp=true
+    WorkingDirectory=/etc/openvpn/client/%i/
+    ExecStart=/usr/sbin/openvpn --status %t/openvpn-server/status-%i.log --status-version 2 --suppress-timestamps --cipher AES-256-GCM --ncp-ciphers AES-256-GCM:AES-128-GCM:AES-256-CBC:AES-128-CBC:BF-CBC --config /etc/openvpn/client/%i/%i.conf
+        =CAP_IPC_LOCK CAP_NET_ADMIN CAP_NET_BIND_SERVICE CAP_NET_RAW CAP_SETGID CAP_SETUID CAP_SYS_CHROOT CAP_DAC_OVERRIDE
+    LimitNPROC=10
+    DeviceAllow=/dev/null rw
+    DeviceAllow=/dev/net/tun rw
+    ProtectSystem=true
+    ProtectHome=true
+    KillMode=process
+    RestartSec=5s
+    Restart=on-failure
 
-	[Install]
-	WantedBy=multi-user.target
-	```
+    [Install]
+    WantedBy=multi-user.target
+    ```
 
 Comme nous pouvons déjà l'observer dans le nom de l'unit, celle-ci
 contient un **@**. Celui-ci signifie qu'il s'agit d'un template.

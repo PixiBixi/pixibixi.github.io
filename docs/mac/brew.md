@@ -141,7 +141,7 @@ Voici les principales commandes à connaitre !
   * `brew bundle dump` : Permet de générer le fichier Brewfile
     * `--file=my_brewfile` : Pour spécifier un nom différent
   * `brew bundle install` : Permet d'installer tout ce qui est dans le fichier ~/Brewfile
-	* `--file=my_brewfile` : Permet de spécifier un nom différent
+    * `--file=my_brewfile` : Permet de spécifier un nom différent
 
 ### cask-upgrade
 

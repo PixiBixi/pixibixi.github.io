@@ -4,24 +4,24 @@ J'étais entrain de modifier un script bash puis m'est venu l'envie de voir la t
 
 ```bash
 root~ du -sh myscripts
-242M	myscripts
+242M    myscripts
 ```
 
 Il s'agit d'un repository ne comprenant uniquement des scripts, je ne comprenais pas ce qui prenait tant de place...
 
 ```bash
 root~ du -sh myscripts
-880K	dedicated
- 28K	img
+880K    dedicated
+ 28K    img
 ```
 
 Toujours rien, mais où sont donc cachés ces 242MB...
 
 ```bash
 root~ du -sh myscripts
-8.0K	.DS_Store
-241M	.git
-4.0K	.gitignore
+8.0K    .DS_Store
+241M    .git
+4.0K    .gitignore
 ```
 
 242MB de .git pour un repository qui a moins de 5MB de scripts... J'ai donc compris qu'un fichier binaire devait trainer dans les commits et qui n'aurait peut être pas du être commit. C'est à partir de maintenant que l'on s'amuse.
@@ -88,7 +88,7 @@ Une fois cette dernière étape faites... tadam
 
 ```bash
 root~ du -sh myscripts
-1.5M	myscripts
+1.5M    myscripts
 ```
 
 En supprimant ces gros fichiers binaires, nous sommes passés de 242MB à 1.5MB ! ;)
