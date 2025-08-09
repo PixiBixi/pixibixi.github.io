@@ -7,10 +7,10 @@
 [L'application munin](http://munin-monitoring.org/) se compose de 2
 parties :
 
-1.  Munin (master pour les systèmes BSD qui sont plus explicites) qui se
+1. Munin (master pour les systèmes BSD qui sont plus explicites) qui se
     charge de générer les pages web et de réaliser les graphiques à
     partir des données...
-2.  fournies par Munin node qui se charge à l'aide de '"sondes'"
+2. fournies par Munin node qui se charge à l'aide de '"sondes'"
     écrites en perl ou en shell script de générer les fichiers RRD qui
     vont bien. Le démon écoute par défaut sur le port TCP 4949.
 
@@ -25,7 +25,7 @@ plus simple possible : munin et munin-node sont sur la même machine
 remplacez simplement les commandes **apt** par **apt-get**, et remplacez
 **systemctl** par **service**
 
-```bash
+```sh
 sudo apt install munin
 sudo apt install munin-plugins-extra
 ```
@@ -39,7 +39,7 @@ surveiller nginx).
 On édite **/etc/munin.conf** par exemple, sachant que la page web
 affichera monfqdn.demondomaine.grd :
 
-```
+```ini
 [monfqdn.demondomaine.grd]
     address :::1
     use_node_name yes
@@ -54,7 +54,7 @@ munin-node sur toutes les interfaces réseaux. Il serait peut-être
 intéressant de limiter l'écoute à la boucle locale en éditant
 **/etc/munin-node.conf** :
 
-```
+```ini
 host ::1
 #host *
 ```
@@ -69,7 +69,8 @@ web dont le comportement parfois aléatoire (au moins avec la version de
 munin fournie avec Wheezy) était désespérant.
 
 On repère les lignes intéressantes dans **/etc/munin.conf** :
-```
+
+```ini
 graph_strategy cgi
 #graph_strategy cron
 
@@ -77,10 +78,9 @@ cgiurl_graph /munin-cgi/munin-cgi-graph
 #Important pour le serveur web
 ```
 
-
 On installe spawn-fcgi :
 
-```
+```sh
 apt install spawn-fcgi
 ```
 
@@ -88,7 +88,7 @@ On récupère les fichiers d'init (pour Jessie, il est aussi possible de
 créer une unité adéquate pour systemd mais je n'ai pas modifié ces
 fichiers depuis Wheezy et ils continuent de fonctionner avec Jessie) :
 
-```
+```sh
 sudo wget http://files.julienschmidt.com/public/cfg/munin/spawn-fcgi-munin-html
 sudo wget http://files.julienschmidt.com/public/cfg/munin/spawn-fcgi-munin-graph
 wget "https://wiki.mirtouf.fr/lib/exe/fetch.php?media=munin:munin-cgi.tar.gz" -O munin-cgi.tar.gz
@@ -100,6 +100,7 @@ le même principe).
 
 A modifier dans le fichier spawn-fcgi-munin-graph
 
+```sh
        PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
        NAME=spawn-fcgi-munin-graph
        PID_FILE=/var/run/munin/$NAME.pid
@@ -110,6 +111,7 @@ A modifier dans le fichier spawn-fcgi-munin-graph
        FCGI_WORKERS=2
        DAEMON=/usr/bin/spawn-fcgi
        DAEMON_OPTS="-s $SOCK_FILE -F $FCGI_WORKERS -U $SOCK_USER -u $FCGI_USER -g $FCGI_GROUP -P $PID_FILE -- /usr/lib/munin/cgi/munin-cgi-graph"
+```
 
 Veuillez noter que l'utilisateur de script doit être le même que celui
 de votre serveur web et la configuration de munin.conf doit être en
@@ -118,7 +120,7 @@ accord avec la dernière ligne.
 N'oubliez pas d'activer le ou les scripts et rendre persistant leur
 démarrage.
 
-  * __Configuration du vhost nginx__
+* **Configuration du vhost nginx**
 
 Je suppose que vous accéderez à l'adresse suivante :
 <http://munin.fqdn.grd>
@@ -134,8 +136,9 @@ Je suppose que vous accéderez à l'adresse suivante :
       server {
             server_name munin.fqdn.grd;
             root /var/cache/munin/www;
-            listen 443 ssl spdy;
-            listen [::]:443 ssl spdy;
+            http2 on;
+            listen 443 ssl;
+            listen [::]:443 ssl;
             ssl_certificate /etc/ssl/private/certificate.crt;
             ssl_certificate_key /etc/ssl/private/certificate.key;
             index index.html;
@@ -171,6 +174,7 @@ location /munin/ {
     include fastcgi_params;
 }
 ```
+
 ### Redémarrage des services
 
 ```bash
