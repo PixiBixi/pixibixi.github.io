@@ -1,4 +1,4 @@
-![](/franceix-weathermap.png)
+# Les weathermaps
 
 ## Vérifié l'état du réseau avec la Weathermap
 
@@ -16,25 +16,15 @@ les weathermap montrent le réseau Internet d'une entreprise
 
 ## Liste des Weathermap disponibles
 
-|  Service               |  Lien
+|  Service               |  Lien |
 |----------|:-------------:|
-|  IELO| [Ici](http://weathermap.ielo.net/) |
-|  OVH| [Ici](http://weathermap.ovh.net/) |
-|  Online/Scaleway| [Ici](http://netmap.scaleway.com/) |
-| France-IX | [Ici](https://tools.franceix.net/) |
-|  K-Net | [Ici](https://as24904.kwaoo.net/) et [Ici](https://k-net-stats.lafibre.info/)
-| Renater      |   [Ici IPv4](http://pasillo.renater.fr/weathermap/weathermap_metropole.html), [ici IPv6](https://pasillo.renater.fr/weathermap/weathermap_metropole_ipv6.html) et [Ici](https://pasillo.renater.fr/weathermap/weathermap_idf.html)
-|  Nerim| [Ici](http://stats.nerim.net/nav/map) |
-|  WideVOIP - WhichWAN | [Ici](http://www.as42456.com/fr/weathermap) |
-|  Hivane Network | [Ici](http://www.hivane.net/info/weathermap.html)
-|  Hosteur| [Ici](http://www.hosteur.com/infos/infrastructures-reseaux.php)
-|  Newsoo **RIP**| [Ici](https://newsoo.fr/cacti/weathermap.png)
-|  France-IX| [Ici](https://tools.franceix.net/stats/aggregated)
-|  Rezopole| [Ici](https://noc.rezopole.net/) |
-|  Sfinx  | [Ici](https://www.sfinx.fr/) |
-|  AMS-IX| [Ici](https://ams-ix.net/technical/statistics)
-|  DEC-IX| [Ici](https://www.de-cix.net/about/statistics/)
-|  Linx| [Ici](https://www.linx.net/pubtools/trafficstatshtml)
+|  OVH | [Ici](http://weathermap.ovh.net/) |
+| France-IX | [Ici](https://tools.franceix.net/weathermap/par) |
+|  K-Net | [Ici](https://as24904.kwaoo.net/) et [Ici](https://k-net-stats.lafibre.info/) |
+| Renater      |   [Ici IPv4](http://pasillo.renater.fr/weathermap/weathermap_metropole.html), [ici IPv6](https://pasillo.renater.fr/weathermap/weathermap_metropole_ipv6.html) et [Ici](https://pasillo.renater.fr/weathermap/weathermap_idf.html) |
+|  Hivane Network | [Ici](http://www.hivane.net/info/weathermap.html) |
+|  Hosteur| [Ici](http://www.hosteur.com/infos/infrastructures-reseaux.php) |
+|  France-IX| [Ici](https://tools.franceix.net/stats/aggregated) |
 
 ## Connaitre son réseau
 
@@ -43,7 +33,7 @@ Pour savoir par quels routeurs passe sa connexion, il suffit de faire un
 **[WinMTR](http://winmtr.net/)** sous Windows. Voici des informations
 qui nous intéressent :
 
-![](/mtr.png)
+![MTR Screenshot](./_img/winmtr.png)
 
 Ce screen provient du logiciel **WinMTR**.
 
@@ -61,7 +51,7 @@ on peut cependant faire des diagnostics plus poussés.
 
 **[Traceroute depuis différents pays + RS...](http://www.traceroute.org/)**
 
-|  Opérateur(s)               |  Lien
+|  Opérateur(s)               |  Lien |
 |----------|:-------------:|
 |  3T Systmes                  | [ici](http://lg.3tsystems.net/cgi-bin/bgplg) |
 |  Adeli                       | [ici](https://lg.adeli.biz/) |
@@ -117,6 +107,6 @@ Il est également possible de se renseigner via les route-servers
 (Disponible via telnet)
 
 |  Opérateur(s) |  Lien |
-|----------|:-------------:|
+|----------|:-------------|
 |  OTI     |      telnet route-server.opentransit.net |
 |  HE      |      telnet route-server.he.net |
