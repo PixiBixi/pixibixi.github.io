@@ -38,6 +38,8 @@ extra:
   social:
     - icon: fontawesome/brands/twitter
       link: https://twitter.com/Pixel__Art
+    - icon: fontawesome/brands/github
+      link: https://github.com/PixiBixi
 
 markdown_extensions:
   - pymdownx.highlight:
