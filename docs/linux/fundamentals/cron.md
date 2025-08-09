@@ -41,13 +41,15 @@ Tous les crons des utilisateurs sont stockés dans
 Si vous souhaitez déployez un script une fois/jour sans importance
 d'heure, alors nous pouvons passer par certains dossiers dédiés.
 
-       /etc/
-         |----- cron.d/
-         |----- cron.hourly/
-         |----- cron.daily/
-         |----- cron.monthly/
-         |----- cron.weekly/
-         |----- crontab
+```bash
+/etc/
+  |----- cron.d/
+  |----- cron.hourly/
+  |----- cron.daily/
+  |----- cron.monthly/
+  |----- cron.weekly/
+  |----- crontab
+```
 
 Par exemple, comme vous vous en doutez, si vous souhaitez avoir un
 script qui est exécutée toutes les heures, alors vous pouvez le déclarer
