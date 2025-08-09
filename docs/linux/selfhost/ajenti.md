@@ -1,6 +1,6 @@
 # Gérer son serveur en ligne via Ajenti
 
-![](/ajenti.jpg)
+![Ajenti Dashboard](./_img/ajenti_dashboard.png)
 
 A l'instar de Webmin ou encore Vesta, Ajenti est un panel
 d'administration de serveur. Simple et efficace, il vous permettra
@@ -13,9 +13,9 @@ Pour l'installer, il vaut mieux utiliser la source officielle. Les
 packages Debian étant assez vieux.
 
 ```bash
-$ echo "deb http://repo.ajenti.org/ng/debian main main" >> /etc/apt/sources.list
-$ wget http://repo.ajenti.org/debian/key -O- | apt-key add -
+curl https://raw.githubusercontent.com/ajenti/ajenti/master/scripts/install.sh | sudo bash -s -
 ```
+Pour plus de méthode d'installation, aller voir le [lien officiel](https://docs.ajenti.org/en/latest/man/install.html#installing)
 
 Puis on installe le package
 

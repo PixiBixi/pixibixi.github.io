@@ -14,12 +14,12 @@ Comme nous avons pu le dire précédemment, le protocole CDP permet de
 retrouver des propriétés intrinsèque à chaque équipemment, mais nous
 pouvons également en tirer d'autres utilités :
 
-  * **Vérifier l'état physique d'une connexion**. Si le CDP passe,
+* **Vérifier l'état physique d'une connexion**. Si le CDP passe,
     c'est que l'interface et la couche de liaison est opérationnelle.
     L'interface concernée sera donc en *Up/Up*.
-  * **Obtenir des informations sur son voisin** telle que son adresse
+* **Obtenir des informations sur son voisin** telle que son adresse
     IP, numéro de version...
-  * **Découvrir la topologie du réseau** en passant de machine à
+* **Découvrir la topologie du réseau** en passant de machine à
     machine...
 
 ## Condition d'utilisation

@@ -122,5 +122,3 @@ Rendez-vous sur la page <https://fqdn/> et insérez le nom d'utilisateur
 et votre mot de passe (préférez le hash MD5, ce n'est mieux que rien).
 Il est également possible de gérer de façon avancée les utilisateurs
 avec mysql ou pgsql, chose que je ne traite pas ici.
-
-![](/guacchose.png){width="200"} ![](/guaclogin.png){width="200"}

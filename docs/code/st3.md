@@ -1,6 +1,6 @@
-![](/code/st3header.jpg)
-
 # SublimeText : Le codage Efficace
+
+![Sublimetext](./_img/st3header.jpg)
 
 ## Préambule
 
@@ -132,7 +132,7 @@ opposée. Par exemple, **Tab** indente la ligne, alors que **MAJ + Tab**
 De base, comme toute application, sublime texte dispose d'**une seule
 fenêtre principale**, puis nous pouvons faire différents découpages :
 
-![](/windows_sublimetext.gif)
+![Windows Sublimetext](/windows_sublimetext.gif)
 
 ## Configuraton
 
@@ -257,7 +257,7 @@ additionnelles :
 
 Voici le thème :
 
-![](/code/presentation_material_design.gif)
+![Material Design for ST](./_img/presentation_material_design.gif)
 
 Comme vous pouvez le voir, le thème *Material Theme* ainsi que *Material
 Theme Darker* sont agréables et reposant, contrairement au thème
@@ -321,41 +321,63 @@ dépot Git, ou bien toute autre source officielle**
 
 ### PHP
 
-<https://github.com/benmatselby/sublime-phpcs>'
-<https://github.com/spadgos/sublime-jsdocs>'
-<https://github.com/erichard/SublimePHPCompanion>'
+<https://github.com/benmatselby/sublime-phpcs>
+
+<https://github.com/spadgos/sublime-jsdocs>
+
+<https://github.com/erichard/SublimePHPCompanion>
+
 ### CSS
 
-<https://github.com/weslly/ColorPicker>'
-<https://github.com/Monnoroch/ColorHighlighter>'
-<https://github.com/sindresorhus/sublime-autoprefixer>'
+<https://github.com/weslly/ColorPicker>
+
+<https://github.com/Monnoroch/ColorHighlighter>
+
+<https://github.com/sindresorhus/sublime-autoprefixer>
 
 ### Configuration
 
-<https://github.com/colinta/ApacheConf.tmLanguage>'
-<https://github.com/brandonwamboldt/sublime-nginx>'
-<https://github.com/condemil/Gist>'
-<https://github.com/sixty4k/st2-zonefile>'
+<https://github.com/colinta/ApacheConf.tmLanguage>
+
+<https://github.com/brandonwamboldt/sublime-nginx>
+
+<https://github.com/condemil/Gist>
+
+<https://github.com/sixty4k/st2-zonefile>
+
 <https://github.com/chrissimpkins/glue>
 
 ### Tout et rien
 
-<https://github.com/wbond/sublime_alignment/>'
-<https://github.com/mrmartineau/Placeholders>'
-<https://github.com/akalongman/sublimetext-codeformatter>'
-<https://github.com/al63/SublimeFiles>'
-<https://github.com/liamja/sublime-nfo>'
+<https://github.com/wbond/sublime_alignment/>
+
+<https://github.com/mrmartineau/Placeholders>
+
+<https://github.com/akalongman/sublimetext-codeformatter>
+
+<https://github.com/al63/SublimeFiles>
+
+<https://github.com/liamja/sublime-nfo>
 ### SQL ###
 
-<https://github.com/freewizard/SublimeFormatSQL>'
-<https://github.com/alienhard/SublimeAllAutocomplete>'
-<https://github.com/facelessuser/BracketHighlighter>'
-<https://github.com/aziz/PlainTasks>'
-<https://packagecontrol.io/packages/Minify>'
-<https://github.com/sergeche/emmet-sublime>'
+<https://github.com/freewizard/SublimeFormatSQL>
 
-<https://github.com/titoBouzout/SideBarEnhancements>'
-<https://github.com/wbond/sublime_terminal>'
-<https://github.com/skuroda/Sublime-AdvancedNewFile>'
-<https://github.com/BoundInCode/AutoFileName>'
-<https://wbond.net/sublime_packages/sftp>'
+<https://github.com/alienhard/SublimeAllAutocomplete>
+
+<https://github.com/facelessuser/BracketHighlighter>
+
+<https://github.com/aziz/PlainTasks>
+
+<https://packagecontrol.io/packages/Minify>
+
+<https://github.com/sergeche/emmet-sublime>
+
+<https://github.com/titoBouzout/SideBarEnhancements>
+
+<https://github.com/wbond/sublime_terminal>
+
+<https://github.com/skuroda/Sublime-AdvancedNewFile>
+
+<https://github.com/BoundInCode/AutoFileName>
+
+<https://wbond.net/sublime_packages/sftp>

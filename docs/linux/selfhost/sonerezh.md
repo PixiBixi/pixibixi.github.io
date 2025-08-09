@@ -1,6 +1,6 @@
 # Sonerezh
 
-![](/sonerezh.png)
+![Sonerezh](./_img/sonerezh.webp)
 
 ## Introduction
 

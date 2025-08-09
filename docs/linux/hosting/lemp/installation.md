@@ -468,7 +468,7 @@ $ apt-get install mariadb-server
 Pendant l'installation de **MariaDB-Server**, vous allez obtenir une
 fenêtre comme celle-ci :
 
-![](/mariadb_password.png)
+![MariaDB Password](/mariadb_password.png)
 
 Cette fenêtre est **très importante**, elle va vous permettre de définir
 votre **root password** pour gérer vos bases de données, il faut

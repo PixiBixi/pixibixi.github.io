@@ -30,7 +30,7 @@ $ dpkg-reconfigure unattended-upgrades
 
 Voici l'écran que vous allez avoir :
 
-![](/unattended-reconfigure.jpg)
+![Unattended Reconfigure](/unattended-reconfigure.jpg)
 
 Lorsque vous aurez cet écran, répondez tout simplement oui pour avoir
 les mises à jour quotidiennement

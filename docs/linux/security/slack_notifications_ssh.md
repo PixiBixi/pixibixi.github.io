@@ -50,4 +50,4 @@ systemctl try-restart ssh.service
 
 Et voici le résultat que nous aurons :
 
-![](/slack_bot.png)
+![Slack bot](/slack_bot.png)

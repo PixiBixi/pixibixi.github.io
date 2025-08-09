@@ -1,4 +1,4 @@
-# Tester la bande passante effective de son serveur avec des '"proofs files'"
+# Tester la bande passante effective de son serveur avec des proofs files
 
 ## Préambule
 
@@ -52,7 +52,7 @@ de location, le script est disponible sur Dropbox.
 
 Voici le rendu du script :
 
-![](/lbw9ftu.jpg)
+![Proof files](./_img/proof_files.jpg)
 
 ## Iperf, kezako ?
 
@@ -68,13 +68,13 @@ Par défaut, le port utilisé par iPerf est le 5001, sur le protocole TCP.
 
 2 options sont toutefois indispensables à l'utilisation de iperf :
 
-  * `-s` pour exécuter iperf en mode `serveur`
-  * `-c` pour exécuter iperf en mode `client`
+* `-s` pour exécuter iperf en mode `serveur`
+* `-c` pour exécuter iperf en mode `client`
 
 Voici l'exemple typique de la commande à lancer côté client :
 
 ```bash
-$ iperf -c ping.online.net -i 2 -t 2 -r
+iperf -c ping.online.net -i 2 -t 2 -r
 ```
 
 Dans cette commande, nous pouvons voir que nous lancons iperf en mode
@@ -88,13 +88,13 @@ documentation officielle](https://iperf.fr/iperf-doc.php) du logiciel.
 
 Voici le résultat que nous devrions obtenir :
 
-![](/iperf_client.jpg)
+![iPerf Output](./_img/iperf_client.jpg)
 
 Nous pouvons clairement apercevoir plusieurs parties sur le screen.
 
 Tout d'abord, le mode de transfert choisi (TCP), le port d'écoute du
-serveur (soit 5001, le port par défaut), ainsi que la '"TCP Window
-Size'" (85KB)
+serveur (soit 5001, le port par défaut), ainsi que la _TCP Window
+Size_ (85KB)
 
 Suivi des informations côté client, qui sont logiquement les mêmes que
 celle serveur, soit TCP, port 5001, et une Window Size +/- identique
@@ -102,7 +102,7 @@ celle serveur, soit TCP, port 5001, et une Window Size +/- identique
 
 Et enfin, nous observons enfin les données qui nous sont utiles. Tout
 d'abord, sous l'identifiant '"5'", il s'agit des données qui sont
-envoyées par le serveur, et enfin, sous le champ '"4'", les données qui
+envoyées par le serveur, et enfin, sous le champ 4, les données qui
 sont réellement reçus par le serveur '"hôte'".
 
 Nous pouvons apercevoir d'une perte de 10mbps, ce qui est plutôt

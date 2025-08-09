@@ -1,5 +1,3 @@
-![](/speed-test.jpg)
-
 # Effectuer un Speedtest depuis son serveur
 
 ## Introduction

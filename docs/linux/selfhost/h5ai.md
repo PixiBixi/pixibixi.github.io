@@ -1,6 +1,6 @@
 # Partager ses fichiers avec H5ai
 
-![](/h5ai.jpg)
+![H5ai](./_img/h5ai.png)
 
 ## Présentation
 
@@ -14,11 +14,10 @@ d'avoir au minimum la version 5.5 de PHP.
 Tout d'abord, nous devons faire un lien symbolique vers notre www, et
 le folder que nous souhaitons rendre accessible publiquement.
 
-Pour moi, je souhaite rendre ///home/boobs/torrents/ //accessible
-publiquement
+Pour moi, je souhaite rendre `/home/jeremy/files/` accessible publiquement
 
 ```bash
-ln -s /home/boobs/torrents/ /var/www/downloads
+ln -s /home/jeremy/files/ /var/www/downloads
 ```
 
 Il convient comme nom d'usage d'utiliser downloads en folder de
@@ -48,8 +47,7 @@ On n'oublie pas de donner les droits adéquats
 chown -R www-data:www-data .h5ai
 ```
 
-Et enfin, on créer le server-block nGinx adéquat, sans oublier de faire
-le bon CNAME
+Et enfin, on créer le server-block NGINX adéquat, sans oublier de faire le bon CNAME
 
 ```nginx
 server {
@@ -81,5 +79,4 @@ server {
 }
 ```
 
-La dernière ligne **autoindex on** est cruciale, car c'est elle qui va
-permettre de lister le contenu.
+La dernière ligne **autoindex on** est cruciale, car c'est elle qui va permettre de lister le contenu.

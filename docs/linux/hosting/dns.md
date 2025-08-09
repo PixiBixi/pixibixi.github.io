@@ -98,7 +98,7 @@ l'affaire, et est très simple à mettre en oeuvre
 Tout d'abord, il vous faudra mettre à jour votre liste de NS sur votre
 registrar, par exemple, pour mon cas :
 
-![](/internetbs_ns_list.jpg)
+![InternetBS NS List](./_img/internetbs_ns_list.jpg)
 
 Ici, nous disons à notre registrar que notre serveur autoritaire sera
 `ns1.jdelgado.fr` soit `195.154.226.173`

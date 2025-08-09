@@ -1,7 +1,5 @@
 # Selfoss, son Reader RSS self-hosted
 
-![](/screenshot1.png)
-
 ## Introduction
 
 Tout d'abord, un RSS est un fichier texte qui est automatiquement mis à
