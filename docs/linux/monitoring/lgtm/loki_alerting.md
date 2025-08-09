@@ -28,14 +28,14 @@ Pour cela, la première étape est de link son Loki (plus particulièrement le r
 
 Dans ce bloc de configuration, nous définissons en réalité plusieurs paramètres non directement liés à AlertManager:
 
-  * `evaluation_interval` à 15s qui nous permet de réévaluer les records toutes les 15 secondes et de les envoyer à notre Prometheus
-  * `enable_sharding` car nous disposons de plusieurs instances du ruler
-  * `alertmanager_url` qui nous indique où envoyer les alertes
-  * `enable_alertmanager_v2` car nous utilisons un AlertManager récent :)
-  * `storage` et subéquent car nous utilisons des règles locales.
-    * Dans un monde optimal, nous aurions du utiliser un backed remote type S3
-  * `wal.dir` le chart Helm a un bug qui nous force à override la valeur
-  * `remote_write` et subséquent pour envoyer nos records à Prometheus (ou VictoriaMetrics...)
+* `evaluation_interval` à 15s qui nous permet de réévaluer les records toutes les 15 secondes et de les envoyer à notre Prometheus
+* `enable_sharding` car nous disposons de plusieurs instances du ruler
+* `alertmanager_url` qui nous indique où envoyer les alertes
+* `enable_alertmanager_v2` car nous utilisons un AlertManager récent :)
+* `storage` et subéquent car nous utilisons des règles locales.
+  * Dans un monde optimal, nous aurions du utiliser un backed remote type S3
+* `wal.dir` le chart Helm a un bug qui nous force à override la valeur
+* `remote_write` et subséquent pour envoyer nos records à Prometheus (ou VictoriaMetrics...)
 
 Nous avons maintenant besoin de créer les règles Loki et différents éléments liés à Kubernetes dans un fichier `loki-rules.yaml`:
 ??? note "Helm: loki-rules.yaml"
@@ -68,13 +68,14 @@ Nous avons maintenant besoin de créer les règles Loki et différents élément
 Vous pouvez le voir, tel que Prometheus, Loki peut gérer les records et les alertes
 
 Comme d'habitude sur K8S, nous appliquons notre manifest
-```
+
+```shell
 kubectl apply -f loki-rules.yaml
 ```
 
 Pour appliquer les updates de rules, nous devons faire un rolling restart du statefulset loki-backend
 
-```
+```shell
 kubectl rollout restart statefulset loki-backend
 ```
 
@@ -96,4 +97,3 @@ Enfin, nous montons les différents volumes
         - name: loki-wal-dir
           emptyDir: {}
     ```
-
