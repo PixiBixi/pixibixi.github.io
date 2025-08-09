@@ -40,9 +40,9 @@ affiche également un visuel, extrêmement pratique
 df est un outil vieillissant et peu visuel mais suffisant. Cependant,
 pour un usage domestique et plus visuel, deux outils sont disponibles.
 
-  * dfc, outil écrit en C, un tout petit peu plus visuel que df mais
+* dfc, outil écrit en C, un tout petit peu plus visuel que df mais
     quasiment aussi rapide
-  * duf, outil écrit en Go, plus lent que dfc mais bien plus visuel et
+* duf, outil écrit en Go, plus lent que dfc mais bien plus visuel et
     paramétrable
 
 ### Remplacant de find

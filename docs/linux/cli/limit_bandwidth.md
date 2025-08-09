@@ -18,7 +18,7 @@ D'autres options sont disponibles, mais ne sont que très peu utile
 ### Ajout de latence
 
 ```bash
-$ tc qdisc add dev eth0 root netem delay 200ms
+tc qdisc add dev eth0 root netem delay 200ms
 ```
 
 Via cette commande, nous ajoutons sur l'interface **eth0** 200ms de
@@ -27,7 +27,7 @@ existe afin de simuler un comportement plus réel d'une connexion
 domestique basique
 
 ```bash
-$ tc qdisc change dev eth0 root netem delay 100ms 10ms 25%
+tc qdisc change dev eth0 root netem delay 100ms 10ms 25%
 ```
 
 Les arguments supplémentaires de cette commande impliquent un delta de
@@ -65,7 +65,7 @@ Un wrapper a été développé permettant de manipuler (uniquement) la bande
 passante simplement :
 
 ```bash
-$ apt-get install wondershaper
+apt-get install wondershaper
 ```
 
 Et la syntaxe est simplement la suivante : wondershaper '[ interface ']
@@ -74,7 +74,7 @@ Et la syntaxe est simplement la suivante : wondershaper '[ interface ']
 Ce qui nous donne par exemple
 
 ```bash
-$ wondershaper eth0 1024 1024
+wondershaper eth0 1024 1024
 ```
 
 On bride ici le traffic de eth0 en DL/UL a 1mbps

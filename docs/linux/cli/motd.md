@@ -4,10 +4,10 @@ Voici un petit tutoriel qui permet de personnaliser le '"Message Of The
 Day'" sur Debian (adaptable à toute distribution) Le '"motd'" c'est le
 message que vous avez au moment où vous vous connectez sur votre shell.
 Ce tutoriel vous permettra d'avoir un '"motd'" qui ressemblera à ça:'
-![](/linux/cli/motdstat1.png)
+![Motd stat](/linux/cli/motdstat1.png)
 
 ```bash
-$ apt-get install update-notifier-common
+apt-get install update-notifier-common
 ```
 
 Supprimer le contenu du motd actuel avec vim /etc/motd
@@ -61,13 +61,13 @@ nouvelles mises à jour sont disponibles
     rm -f /var/log/checkupdate.log
     fi
     /usr/lib/update-notifier/apt-check >> /var/log/checkupdate.log 2>&1
-    </File>
-
-    On fini par le rendre executable :
-
-    <code bash>
-    $ chmod +x /etc/cron.hourly/checkupdate
     ```
+
+On fini par le rendre executable :
+
+```bash
+chmod +x /etc/cron.hourly/checkupdate
+```
 
 Les plus impatients peuvent exécuter ce script
 (`/etc/cron.hourly/checkupdate`) manuellement et ouvrir un nouveau shell
@@ -75,5 +75,3 @@ pour voir le résultat :)
 
 Ce script est loin d'être parfait (Et n'a pas la prétention de
 l'être), mais il fait ce qu'on lui demande.
-
-<http://blog.admin-linux.org/administration/motdstat-message-of-the-day-system-status>
