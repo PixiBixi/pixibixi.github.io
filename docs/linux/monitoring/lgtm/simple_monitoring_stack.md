@@ -1,6 +1,6 @@
 # Netdata, Prometheus et Grafana : une stack de monitoring simple et puissante
 
-![](./_screens/monitoring_stack.jpeg)
+![Global image](./_img/monitoring_stack.jpeg)
 
 ## Introduction
 
@@ -19,24 +19,24 @@ lexique avec les notions de base :
 
 ## Lexique
 
-  * **Stack** : Une stack d'applications est une suite ou un ensemble
+* **Stack** : Une stack d'applications est une suite ou un ensemble
 d'applications qui aident à réaliser une tâche précise.
 
-  * **Métrique** : Mesure précise d'un composant (logiciel ou matériel), ex
+* **Métrique** : Mesure précise d'un composant (logiciel ou matériel), ex
 : Pourcentage de CPU utilisé à l'instant T...
 
-  * **Exporter** : Outil qui va récolter les métriques d'un système (CPU
+* **Exporter** : Outil qui va récolter les métriques d'un système (CPU
 utilisé, RAM utilisée...), les traiter et les envoyer à un logiciel.
 
-  * **Recolter** : Logiciel qui va s'occuper de stocker les métriques
+* **Recolter** : Logiciel qui va s'occuper de stocker les métriques
 envoyées par l'exporter
 
-  * **TSDB** : Une Time Series Database (TSDB) est une base de données
+* **TSDB** : Une Time Series Database (TSDB) est une base de données
 optimisée pour les données horodatées ou les séries chronologiques. Une
 '"time serie'" est seulement une suite de mesures ou évènements qui sont
 monitorées, downsampled et agrégées dans le temps.
 
-  * **Downsampling** : Le downsampling (sous-échantillonnage) est une
+* **Downsampling** : Le downsampling (sous-échantillonnage) est une
 opération mathématique extrêmement simple permettant de créer un
 échantillon. Par exemple, si nous avons 60 échantillons de
 l'utilisation du CPU sur une minute, cela fait 1 par seconde et
@@ -227,7 +227,7 @@ Toujours selon les 2 méthodes, via docker run ou docker-compose :
     d'un dossier.
 
 ```bash
-$ mkdir /etc/prometheus && touch /etc/prometheus/prometheus.yml
+mkdir /etc/prometheus && touch /etc/prometheus/prometheus.yml
 ```
 
 #### From scratch
@@ -246,28 +246,28 @@ officielle](https://prometheus.io/download/) pour trouver la dernière
 version de Prometheus. A l'heure où j'écris, il s'agit de la 2.40.7.
 
 ```bash
-$ cd ~ ; wget https://github.com/prometheus/prometheus/releases/download/v2.40.7/prometheus-2.40.7.linux-amd64.tar.gz
+cd ~ ; wget https://github.com/prometheus/prometheus/releases/download/v2.40.7/prometheus-2.40.7.linux-amd64.tar.gz
 ```
 
 On extrait les fichiers
 
 ```bash
-$ tar xzvf prometheus-2.40.7.linux-amd64.tar.gz
+tar xzvf prometheus-2.40.7.linux-amd64.tar.gz
 ```
 
 On crée notre utilisateur Prometheus :
 
 ```bash
-$ useradd --no-create-home --shell /bin/false prometheus
+useradd --no-create-home --shell /bin/false prometheus
 ```
 
 Puis on déplace les fichiers binaires et de configuration aux endroits
 prévus :
 
 ```bash
-$ mkdir /etc/prometheus && chown -R prometheus:prometheus /etc/prometheus
-$ mv ~/prometheus-2-40.7.linux-amd64/{console*,prometheus.yml} /etc/prometheus
-$ mv ~/prometheus-2-40.7.linux-amd64/{prom*,tsdb} /usr/bin/
+mkdir /etc/prometheus && chown -R prometheus:prometheus /etc/prometheus
+mv ~/prometheus-2-40.7.linux-amd64/{console*,prometheus.yml} /etc/prometheus
+mv ~/prometheus-2-40.7.linux-amd64/{prom*,tsdb} /usr/bin/
 ```
 
 Dans nos 2 fichiers exécutables, nous avons bien évidemment Prometheus
@@ -275,11 +275,11 @@ et un fichier nommé Promtool. Ce dernier nous permettra d'interroger
 directement Prometheus et d'effectuer des opérations avancées.
 
 Et enfin, nous devons faire le fichier de démarrage systemd via le
-[tutoriel](/linux/advanced/systemd/create_unit) disponible. Une fois le
+[tutoriel](../../linux/advanced/systemd/create_unit) disponible. Une fois le
 fichier créé, il faut l'activer :
 
 ```bash
-$ systemctl daemon-reload && systemctl enable --now prometheus
+systemctl daemon-reload && systemctl enable --now prometheus
 ```
 
 #### Configuration de Prometheus
@@ -388,11 +388,11 @@ metrics_path.
 Pour vérifier que tout est conforme, rendez-vous dans l'interface de
 Prometheus (Par défaut, port 9090), vous devriez tomber sur cette page :
 
-![prometheus_1.jpg](_screens/prometheus_1.jpg)
+![prometheus_1.jpg](./_img/prometheus_1.jpg)
 
 On se rend ensuite sur **Status** puis **Target**
 
-![prometheus_2.jpg](./_screens/prometheus_2.jpg)
+![prometheus_2.jpg](./_img/prometheus_2.jpg)
 
 Si tout est bon, vous devriez apercevoir vos différentes targets avec
 l'état UP.
@@ -414,7 +414,7 @@ Grafana suivi du chemin de la métrique.
 
 Voici un exemple de relevé :
 
-![prometheus_3.jpg](./_screens/prometheus_3.jpg)
+![prometheus_3.jpg](./_img/prometheus_3.jpg)
 
 Comme vous pouvez le voir, nous obtenons de nombreuses informations
 (Concrètement, on obtient en réponse tous les netdata que nous
@@ -437,7 +437,7 @@ pour le même serveur. Ce qui est contenu dans les accolades est une
 variable pour Prometheus. Par exemple, voici comment obtenir la RAM
 utilisée pour le serveur ci-dessus :
 
-![prometheus_4.jpg](./_screens/prometheus_4.jpg)
+![prometheus_4.jpg](./_img/prometheus_4.jpg)
 
 Comme nous pouvons le voir, nous nous sommes servis des variables de
 Prometheus pour filtrer ce que nous voulons. Nous pouvons également nous
@@ -458,7 +458,6 @@ Grafana.
 ??? abstract "docker-compose.yml"
     ```yaml title="docker-compose.yml"
     version: "3"
-
     services:
       grafana:
         hostname: grafana
@@ -475,18 +474,18 @@ nous devons donc ajouter ses propres dépôts avant de pouvoir
 l'installer :
 
 ```bash
-$ sudo apt-get install -y apt-transport-https
-$ echo "deb https://packages.grafana.com/oss/deb stable main" | sudo tee -a /etc/apt/sources.list.d/grafana.list
-$ wget -q -O - https://packages.grafana.com/gpg.key | sudo apt-key add -
-$ apt update && apt install -y grafana
+sudo apt-get install -y apt-transport-https
+echo "deb https://packages.grafana.com/oss/deb stable main" | sudo tee -a /etc/apt/sources.list.d/grafana.list
+wget -q -O - https://packages.grafana.com/gpg.key | sudo apt-key add -
+apt update && apt install -y grafana
 ```
 
 Une fois installé, Grafana n'est pas démarré et n'est pas lancé au
 démarrage de votre serveur. Pour cela voici les commandes :
 
 ```bash
-$ systemctl daemon-reload
-$ systemctl enable --now grafana-server.service
+systemctl daemon-reload
+systemctl enable --now grafana-server.service
 ```
 
 ### Utiliser Prometheus en Datasource
@@ -496,34 +495,34 @@ qu'il utilise Prometheus comme source de données. Par défaut, Grafana
 écoute sur le port **3030** et ses identifiants par défauts sont
 **admin** / **admin**.
 
-![grafana_datasources_1.jpeg](./_screens/grafana_datasources_1.jpeg)
+![grafana_datasources_1.jpeg](./_img/grafana_datasources_1.jpeg)
 
 Il faut alors cliquer sur *Add Data Sources* :
 
-![grafana_datasources_2.jpeg](./_screens/grafana_datasources_2.jpeg)
+![grafana_datasources_2.jpeg](./_img/grafana_datasources_2.jpeg)
 
 Dans le choix de la Data Source, nous choisissons bien évidemment
 **Prometheus** :
 
-![grafana_datasources_3.jpeg](./_screens/grafana_datasources_3.jpeg)
+![grafana_datasources_3.jpeg](./_img/grafana_datasources_3.jpeg)
 
 Ici, les choses se corsent un tout petit peu.
 
 Tout d'abord, en URL, 3 cas sont possibles :
 
-  * Si vous avez installé Prometheus et Grafana sur le même serveur,
+* Si vous avez installé Prometheus et Grafana sur le même serveur,
     alors vous pouvez pointer directement vers Prometheus :
     <http://localhost:9090>
-  * Si votre Prometheus n'est pas sur le serveur de Grafana, alors il
+* Si votre Prometheus n'est pas sur le serveur de Grafana, alors il
     vous faudra y accéder via son IP : [http://ip:port](http://ip:port)
-  * S'il est derrière un reverse-proxy (la solution optimale), alors il
+* S'il est derrière un reverse-proxy (la solution optimale), alors il
     faudra y accéder de la manière suivante : <https://domain.tld>
 
 Une fois ceci fait, **Save & Test**
 
 Si tout est correct, voici le message que vous obtiendrez :
 
-![grafana_datasources_4.jpeg](./_screens/grafana_datasources_4.jpeg)
+![grafana_datasources_4.jpeg](./_img/grafana_datasources_4.jpeg)
 
 Félicitations, une étape fastidieuse est passée, cependant, le plus dur
 reste à faire, la création de votre premier panel !
@@ -541,17 +540,17 @@ je vais vous partager mes panels.
 
 #### Mes panels Grafana
 
-![](./_screens/simple_netdata.png)
+![Netdata](./_img/simple_netdata.png)
 
 *Lien de téléchargement :
 [ici](https://files.jdelgado.fr/r/7JCI5fpv#nprlBuA4F3Dnt9qbXbrFBjMtQNuoQNPixGDr8SCjvcc=)*
 
-![](./_screens/docker_dashboard.png )
+![Docker dashboard](./_img/docker_dashboard.png )
 
 *Lien de téléchargement :
 [ici](https://files.jdelgado.fr/r/UEeLrP_8#9BJttU2EqJZa9aNXrrHzGTKi4UPooRnvu6VuzzsDQA0=)*
 
-![](./_screens/full_dashboard.png )
+![Full Dashboard](./_img/full_dashboard.png )
 
 *Lien de téléchargement :
 [ici](https://files.jdelgado.fr/r/U4KCGryY#JDkX10832wvNJvRMOh/C3nPJ+dwDT/pD67XwbofHSuc=)*
@@ -707,7 +706,7 @@ volume /home à votre container.
 
 La base d'une stack de monitoring est désormais acquise.
 
-# Pour aller plus loin
+## Pour aller plus loin
 
 Il s'agit d'une stack très simple à mettre en place. Cependant,
 celle-ci n'est pas parfaite, nous n'avons aucune indication concernant
@@ -794,22 +793,22 @@ Il faut toujours se rendre sur la page Github afin de s'assurer que
 nous disposons de la dernière version de notre logiciel :
 
 ```bash
-$ cd ~ ; wget https://github.com/prometheus/blackbox_exporter/releases/download/v0.24.0/blackbox_exporter-0.24.0.linux-amd64.tar.gz
+cd ~ ; wget https://github.com/prometheus/blackbox_exporter/releases/download/v0.24.0/blackbox_exporter-0.24.0.linux-amd64.tar.gz
 ```
 
 Et on extrait toujours les fichiers :
 
 ```bash
-$ tar xzvf blackbox_exporter-0.24.0.linux-amd64.tar.gz
+tar xzvf blackbox_exporter-0.24.0.linux-amd64.tar.gz
 ```
 
 Et on les déplace dans le dossier adéquate. Attention à bien mettre le
 bon username (prometheus ou celui que vous aurez décidés)
 
 ```bash
-$ mkdir /etc/blackbox && chown -R prometheus:prometheus /etc/blackbox
-$ mv ~/blackbox_exporter-0.24.0.linux-amd64/blackbox_exporter /usr/bin
-$ mv ~/blackbox_exporter-0.24.0.linux-amd64/blackbox.yml /etc/blackbox
+mkdir /etc/blackbox && chown -R prometheus:prometheus /etc/blackbox
+mv ~/blackbox_exporter-0.24.0.linux-amd64/blackbox_exporter /usr/bin
+mv ~/blackbox_exporter-0.24.0.linux-amd64/blackbox.yml /etc/blackbox
 ```
 
 Si nous souhaitons utiliser le test ICMP de blackbox et que nous avons
@@ -835,7 +834,9 @@ $ getcap /usr/bin/prometheus-blackbox-exporter
 Sans quoi, nous recevrons une erreur selon laquelle nous n'avons pas la
 permission d'effectuer cette action :
 
+```log
     ts=2020-04-06T01:59:18.302197375Z caller=main.go:119 module=icmp target=netdata.pierre.x.eu level=error msg="Error listening to socket" err="listen ip4:icmp 0.0.0.0: socket: operation not permitted"
+```
 
 Les tests écrits par défaut par les mainteneurs de Blackbox nous
 conviendront pour faire de simples tests de chargement de page web ainsi
@@ -915,10 +916,10 @@ s'agit ici des métriques pour le module http_2xx) :
 Comme vous pouvez le voir, nous avons de nombreuses métriques,
 particulièrement 2 plus utiles que les autres :
 
-  * `probe_success` nous indique si le test s'est effectué
+* `probe_success` nous indique si le test s'est effectué
     correctement
-  * `probe_http_status_code` nous renvoie le code de retour de la page
-  * `probe_ssl_earliest_cert_expiry` nous renvoie la date
+* `probe_http_status_code` nous renvoie le code de retour de la page
+* `probe_ssl_earliest_cert_expiry` nous renvoie la date
     d'expiration (sous forme de timestamp)
 
 Grace à ces nouvelles métriques, vous pouvez indiquer l'état de
@@ -944,13 +945,13 @@ pour trouver la dernière version de alermanager . A l'heure où
 j'écris, il s'agit de la 0.20.0.
 
 ```bash
-$ cd ~ ; wget https://github.com/prometheus/alertmanager/releases/download/v0.25.0/alertmanager-0.25.0.linux-amd64.tar.gz
+cd ~ ; wget https://github.com/prometheus/alertmanager/releases/download/v0.25.0/alertmanager-0.25.0.linux-amd64.tar.gz
 ```
 
 On extrait les fichiers
 
 ```bash
-$ tar xzvf alertmanager-0.25.0.linux-amd64.tar.gz
+tar xzvf alertmanager-0.25.0.linux-amd64.tar.gz
 ```
 
 cette archive contient, comme les autres, des exécutables et un fichier
@@ -960,9 +961,9 @@ configuration dans ce répertoire, sinon, nous créerons le répertoire
 **/etc/alertmanager**
 
 ```bash
-$ mv ~/alertmanager-0.25.0.linux-amd64/{amtool,alertmanager} /usr/bin/
-$ mv ~/alertmanager-0.25.0.linux-amd64/alertmanager.yml /etc/alertmanager
-$ chown -R prometheus:prometheus /etc/alertmanager
+mv ~/alertmanager-0.25.0.linux-amd64/{amtool,alertmanager} /usr/bin/
+mv ~/alertmanager-0.25.0.linux-amd64/alertmanager.yml /etc/alertmanager
+chown -R prometheus:prometheus /etc/alertmanager
 ```
 
 Pour créer l'unit, je vous renvoie une nouvelle fois vers le [tutoriel
@@ -1139,8 +1140,8 @@ juste à nos besoins. Dernière version au jour de l'écriture de cet
 article : 0.4.3
 
 ```bash
-$ cd ~ ; wget https://github.com/metalmatze/alertmanager-bot/releases/download/0.4.3/alertmanager-bot-0.4.3-linux-amd64
-$ mv alertmanager-bot-0.4.3-linux-amd64 /usr/bin/alertmanager-bot && chmod +x /usr/bin/alertmanager-bot
+cd ~ ; wget https://github.com/metalmatze/alertmanager-bot/releases/download/0.4.3/alertmanager-bot-0.4.3-linux-amd64
+mv alertmanager-bot-0.4.3-linux-amd64 /usr/bin/alertmanager-bot && chmod +x /usr/bin/alertmanager-bot
 ```
 
 Encore une fois, on n'oublie pas d'écrire l'unit file qui va bien,
@@ -1159,9 +1160,9 @@ Quand au template default.tpl, voici celui que j'utilise :
 
 ??? note "Template alertmanager"
     ```toml
-      {{/* Alertmanager Silence link */}}
+      {{/*Alertmanager Silence link*/}}
       {{ define "__alert_silence_link" -}}
-          https://alertmanager.dynfactory.com/#/silences/new?filter=%7B
+          <https://alertmanager.dynfactory.com/#/silences/new?filter=%7B>
           {{- range .CommonLabels.SortedPairs -}}
               {{- if ne .Name "alertname" -}}
                   {{- .Name }}%3D"{{- .Value | urlquery -}}"%2C%20
