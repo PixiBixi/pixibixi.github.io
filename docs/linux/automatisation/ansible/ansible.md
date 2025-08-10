@@ -14,7 +14,9 @@ vos serveurs.
 Le fichier hosts est le fichier où nous allons définir tous les serveurs
 déstinés à recevoir les commandes d'ansible. Sa syntaxe est simplissime
 
+```bash
     myserver.com:1881
+```
 
 Via ce simple code, nous allons indiquer à ansible de se connecter à
 myserver.com sur le port SSH 1881. Par défaut, le port 22 est évidemment
@@ -23,11 +25,13 @@ utilisé.
 Il est possible de définir des groupes de serveurs afin d'appliquer les
 actions sur un type de serveur donné, par exemple
 
+```ini
     myserver.com:1881
 
     [webservers]
     foo.myserver.com
     bar.myserver.com
+```
 
 Dans cet exemple, nous avons le groupe ``webservers``. L'argument
 `ansible` pour spécifier un groupe est ``-l webservers``. Il est
@@ -37,12 +41,14 @@ De plus, il est possible de définir des variables de groupes ou
 globales. Par exemple, si tous vos serveurs de BDD ont leur port SSH en
 8237, nous n'allons pas définir le port pour chaque hôte.
 
+```ini
     [database]
     db1.sql.com
     db2.sql.com
 
     [database:vars]
     ansible_port=8237
+```
 
 Dans le cas d'une société, nous avons un dossier **customers** dans le
 dossier `/etc/ansible`. Chaque fichier contenu dans ce dossier
@@ -55,7 +61,7 @@ la ligne de commande. Par exemple, si vous souhaitez faire un *ls* d'un
 répertoire précis dans tous vos *linux*, voici la commande à taper :
 
 ```bash
-$ ansible -i /etc/ansible/customers/absix.hosts linux -a "ls /var/www"
+ansible -i /etc/ansible/customers/absix.hosts linux -a "ls /var/www"
 ```
 
 Via cette commande, nous utilisons comme fichier hosts
@@ -113,15 +119,15 @@ l'utilisateur root.
 
 4 taches seront exécutées via ce script :
 
-  * Tout d'abord, il via copier le fichier contenu dans la machine
+* Tout d'abord, il via copier le fichier contenu dans la machine
     ansible `/root/mk_mysql/files_script/mk_mysql` vers
     `/usr/lib/check_mk_agent/plugins/mk_mysql` dans la machine distante
-  * Secondement, le fichier de la machine distante
+* Secondement, le fichier de la machine distante
     `/etc/mysql/debian.cnf` sera copié dans le répertoire
     `/etc/check_mk`
-  * Par la suite, il renomme le fichier contenu dans `/etc/check_mk` de
+* Par la suite, il renomme le fichier contenu dans `/etc/check_mk` de
     `debian.cnf` à `mysql.cfg`
-  * Et enfin, il supprime tous les whitespace du fichier
+* Et enfin, il supprime tous les whitespace du fichier
 
 Dans ce playbook, seul le module *copy* est utilisé, mais une liste
 exhaustive des modules existants est disponible sur le [site
@@ -155,7 +161,7 @@ users:
     my_key: my_value
 ```
 
-Dans ce fichiers _vars/users.yml_, nous avons une variable nommée **users** contenant 1 entrée, jdelgado, qui contient elle même une entrée exemple.
+Dans ce fichiers *vars/users.yml*, nous avons une variable nommée **users** contenant 1 entrée, jdelgado, qui contient elle même une entrée exemple.
 
 Pour utiliser ce fichier dans un role, il faut dans un premier temps inclure le fichier dans notre task:
 

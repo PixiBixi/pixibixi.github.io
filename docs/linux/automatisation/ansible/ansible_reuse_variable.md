@@ -55,4 +55,3 @@ Heureusement, ansible a tout prÃ©vu avec le keyword `hostvars` qui permet d'accÃ
             name: youtube-dl
           when: "'new_version_available' in hostvars['host_a']['neededupdate']['stdout']"
     ```
-
