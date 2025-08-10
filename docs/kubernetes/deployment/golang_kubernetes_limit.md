@@ -2,12 +2,12 @@
 
 Golang est un puissant language de programmation dont il est important de connaitre les subtilités, parmis celles-ci `GOMEMLIMIT` et `GOMAXPROCS`
 
-  * `GOMEMLIMIT` va définir le comportement du Garbage Collector (GC). Plus la limite tend vers GOMEMLIMT, plus le GC va devenir agressif
-  * `GOMAXPROCS` va limiter le nombre de CPU maximum sur lequel va s'exécuter notre programme Go
+* `GOMEMLIMIT` va définir le comportement du Garbage Collector (GC). Plus la limite tend vers GOMEMLIMT, plus le GC va devenir agressif
+* `GOMAXPROCS` va limiter le nombre de CPU maximum sur lequel va s'exécuter notre programme Go
 
 Imaginons le déploiement K8S suivant :
 
-```
+```yaml
 kind: Namespace
 apiVersion: v1
 metadata:
@@ -39,7 +39,7 @@ Par défaut, nos variables ne sont pas définies automagiquement. Cependant, com
 
 Il est cependant utile de bien comprendre ces variables, nous allons donc les attribuer automatiquement en ajoutant des variables d'environnement
 
-```
+```yaml
     env:
     - name: GOMEMLIMIT
       valueFrom:
