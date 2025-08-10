@@ -2,7 +2,7 @@
 
 Pour ajouter un NAT sur Proxmox :
 
-```
+```bash
 auto vmbr0
 iface vmbr0 inet static
         address  10.10.10.254
