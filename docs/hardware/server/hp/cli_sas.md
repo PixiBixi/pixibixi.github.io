@@ -2,6 +2,7 @@
 
 De nombreuses commandes utiles pour l'utilistaire hpssacli
 
+<!-- markdownlint-disable -->
 **Show configuration**
 
 ```bash
