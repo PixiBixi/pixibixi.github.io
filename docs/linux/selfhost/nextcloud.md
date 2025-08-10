@@ -212,7 +212,7 @@ activer le session locking côté PHP, sans quoi, notre locking n'aura
 aucun intérêt :
 
 ```bash
-cat >> /etc/php/7.4/fpm/conf.d/20-redis.ini << EOF
+cat >> /etc/php/8.2/fpm/conf.d/20-redis.ini << EOF
 redis.session.locking_enabled=1
 redis.session.lock_retries=-1
 redis.session.lock_wait_time=10000

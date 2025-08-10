@@ -315,7 +315,7 @@ internet.
 Le fichier **ssl.conf** est à inclure seulement si l'on souhaite du SSL
 sur ses sites web
 
-'### Certaines lignes sont importantes tels que **ssl_ciphers** qui
+Certaines lignes sont importantes tels que **ssl_ciphers** qui
 permet de sélectionner quels ciphers seront utilisés pour coder
 l'échange entre son serveur web, et son client. Cette ligne est
 extrêmement importante car il y a actuellement de nombreux ciphers
@@ -387,12 +387,12 @@ ces derniers sont suffisant pour 99% des installations.
 
 <!-- markdownlint-disable MD013 -->
 ```bash
-apt-get -y install php-common php7.4 php7.4-bz2 php7.4-cli php7.4-common php7.4-curl php7.4-fpm php7.4-gd php7.4-geoip php7.4-gmp php7.4-igbinary php7.4-imagick php7.4-intl php7.4-json php7.4-mbstring php7.4-mcrypt php7.4-memcached php7.4-msgpack php7.4-mysql php7.4-opcache php7.4-readline php7.4-sqlite3 php7.4-xml php7.4-xmlrpc php7.4-zip
+apt-get -y install php-common php8.2 php8.2-bz2 php8.2-cli php8.2-common php8.2-curl php8.2-fpm php8.2-gd php8.2-geoip php8.2-gmp php8.2-igbinary php8.2-imagick php8.2-intl php8.2-json php8.2-mbstring php8.2-mcrypt php8.2-memcached php8.2-msgpack php8.2-mysql php8.2-opcache php8.2-readline php8.2-sqlite3 php8.2-xml php8.2-xmlrpc php8.2-zip
 ```
 
 Nous allons maintenant passer à la configuration de base de **PHP-FPM**,
-tout se situe dans le répertoire /etc/php/7.4/fpm/ et ses
-sous-répertoires. (7.4 a remplacer par votre numéro de version)
+tout se situe dans le répertoire /etc/php/8.2/fpm/ et ses
+sous-répertoires. (8.2 a remplacer par votre numéro de version)
 
 Nous allons éditer le fichier php.ini :
 
@@ -463,10 +463,7 @@ Si tout se passe comme il faut, on lance l'installation du serveur SQL
 apt-get install mariadb-server
 ```
 
-Pendant l'installation de **MariaDB-Server**, vous allez obtenir une
-fenêtre comme celle-ci :
-
-![MariaDB Password](/mariadb_password.png)
+Pendant l'installation de **mariadb-server**, vous allez obtenir une fenêtre vous demandant de spécifier un password
 
 Cette fenêtre est **très importante**, elle va vous permettre de définir
 votre **root password** pour gérer vos bases de données, il faut
