@@ -2,17 +2,15 @@
 
 Pour K8S, les commandes sont assez difficiles de base. De plus, il existe certaines commandes assez tricky que je vais essayer de répertorier ici
 
-
 ```bash
-$ kubectl delete pods --field-selector=status.phase!=Running -A
+kubectl delete pods --field-selector=status.phase!=Running -A
 ```
 
 Permet de supprimer les pods de la liste qui ne sont pas running (Dont les evicted). Si vous en avez beaucoup, on passe par xargs comme des barbares
 
-```
+```bash
 kubectl get pods |grep -v Running |awk '{print $1}' |xargs -P20 -I{} kubectl delete pod {}
 ```
-
 
 ```bash
 $ kubectl get Issuers,ClusterIssuers,Certificates,CertificateRequests,Orders,Challenges -A
@@ -44,12 +42,12 @@ Liste toutes les ressources qui sont link à la génération d'un certificat
 ---
 
 ```bash
-$ kubectl get pods -o name | xargs -I{} kubectl exec {} -- <command goes here>
+kubectl get pods -o name | xargs -I{} kubectl exec {} -- <command goes here>
 ```
 
 Permet d'exécuter la même commande sur de multiples pods
 
-```
+```bash
 $ kubectl get pods --all-namespaces -o=json | jq -c '.items[] | {name: .metadata.name, namespace: .metadata.namespace, claimName: .spec |  select( has ("volumes") ).volumes[] | select( has ("persistentVolumeClaim") ).persistentVolumeClaim.claimName }'
 {"name":"loki-backend-0","namespace":"dyn-tools","claimName":"data-loki-backend-0"}
 {"name":"loki-write-0","namespace":"dyn-tools","claimName":"data-loki-write-0"}
@@ -60,7 +58,7 @@ $ kubectl get pods --all-namespaces -o=json | jq -c '.items[] | {name: .metadata
 
 Permet de lister les PVC qui sont actuellement asssociés à un pod
 
-```
+```bash
 kubectl get secret postgresql-secrets -o go-template='{{ range $key, $value := .data }}{{ $key }}{{ ": " }}{{ $value | base64decode }}{{ "\n" }}{{ end }}'
 ```
 
@@ -68,7 +66,7 @@ Permet de lister tous les secrets et de les decoder
 
 ---
 
-```
+```bash
 kubectl debug -it thanos-bidder-euw1-prod-sidecar-query-57bfd8f848-pmdp9 --image=busybox:1.28 --target=query
 ```
 
@@ -76,7 +74,7 @@ Permet d'attacher un container a un pod existant, ici, nous utilisons l'image bu
 
 ---
 
-```
+```bash
 (echo -e "NAMESPACE\tPOD\tNODE\tPVC" && \
 kubectl get pods -A -o json | jq -r '
   .items[]

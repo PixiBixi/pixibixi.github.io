@@ -4,7 +4,6 @@ Quelques commandes avancées Kube toujours utile
 
 Ces commandes proviennent d'un peu partout, principalement la documentation Kubernetes, mais regroupée sur une seule source
 
-
 !!! note "Lister les pods avec le ServiceAccount par défaut"
     ```
     kubectl get pods --all-namespaces -o jsonpath='{range .items[?(@.spec.serviceAccountName == "default")]}{.metadata.namespace} {.metadata.name}{"\n"}{end}' 2>/dev/null
