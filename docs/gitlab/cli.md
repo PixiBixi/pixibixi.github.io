@@ -8,20 +8,19 @@ La CLI gitlab peut être utile en de nombreux points. Pour l'instant, voici l'in
 glab repo clone -g tecteam --archived=false --paginate -p
 ```
 
-Via cette simple ligne, je peux cloner tous les projets non archiver en concernant la structure de dossier de l'ensemble de l'organisation. Pour ma part, étant donné que je navigue entre beaucoup de projets Git, j'aime posséder l'intégralité des repositories sur lesquels je serai potentiellement être amené à travailler 
+Via cette simple ligne, je peux cloner tous les projets non archiver en concernant la structure de dossier de l'ensemble de l'organisation. Pour ma part, étant donné que je navigue entre beaucoup de projets Git, j'aime posséder l'intégralité des repositories sur lesquels je serai potentiellement être amené à travailler
 
 ## Merge Request
 
-```
+```bash
 glab mr create --fill --yes
 ```
 
 Une petite commande magique pour créer une MR sans rien faire, juste magique.
 
-
 ## Configuration
 
-Des opérations sont particulièrement pénibles en GUI sur Gitlab tel que l'ajout de clé, c'est pourquoi nous pouvons le faire en CLI sans aucun probleme 
+Des opérations sont particulièrement pénibles en GUI sur Gitlab tel que l'ajout de clé, c'est pourquoi nous pouvons le faire en CLI sans aucun probleme
 
 ```bash
 glab ssh-key add ~/.ssh/id_ed25519.pub -t "ED25519 Mac"
@@ -30,7 +29,6 @@ glab ssh-key add ~/.ssh/id_ed25519.pub -t "ED25519 Mac"
 ## Divers
 
 Si tout comme moi vous avez plusieurs Gitlab, vous pouvez définir sur quel Gitlab vous souhaitez effectuer vos actions avec la variable `GL_HOST` (ou `GITLAB_HOST`)
-
 
 ```bash
 GL_HOST=gitlab.myorg.com glab repo search -s myproject
@@ -45,17 +43,20 @@ Comme toute CLI en 2023, Gitlab vient avec sa propre auto completion disponible 
 !!! warning "Lenteurs"
     Pour ma part, je n'ai pas activé cette autocompletion, je trouve mon shell (zsh) lent à charger après ajout de cette completion
 
-**Fish**
+### Fish
+
 ```bash
 glab completion -s fish > ~/.config/fish/completions/glab.fish
 ```
 
-**Zsh**
+### ZSH
+
 ```bash
 echo "source <(glab completion -s zsh); compdef _glab glab" >> ~/.zshrc
 ```
 
-**Bash**
+### Bash
+
 ```bash
 echo "source <(glab completion bash) >> ~/.bashrc"
 ```
