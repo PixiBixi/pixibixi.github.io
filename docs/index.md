@@ -397,7 +397,7 @@ Cette magnifique documentation a été faites avec MkDocs
 * [Bloquer les serveurs d'activation via le fichiers hosts](/windows/desktop/tips/hosts_file)
 * [Installer tous les logiciels de base via un simple installateur](/windows/desktop/tips/install_main_softwares)
 
-# Misc
+## Misc
 
 * [Mes sources](/misc/sources)
 * [Bordel de liens utiles](/mess/useful_links)
@@ -405,7 +405,6 @@ Cette magnifique documentation a été faites avec MkDocs
 * [Optimisation](/mess/optimization)
 * [Scripts utiles](/mess/scripts_useful)
 * [Générer un template pour ses Pull Request et ses Issues](/mess/github_template)
-* [Logiciels Utiles](/mess/useful_software)
 * [Lancer la console iLO/iDRAC depuis un Mac](/hardware/server/hp/run_ilo)
 * [Lancer une ancienne console iLO](/hardware/server/hp/run_old_ilo)
 * [ILO Advanced Key](/hardware/server/hp/ilo_key)
