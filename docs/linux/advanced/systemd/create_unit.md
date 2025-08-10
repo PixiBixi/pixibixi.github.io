@@ -13,18 +13,19 @@ toujours les bonnes pratiques. Officiellement, voici les bonnes
 pratiques à faire quand on parle d'unit systemd. Une unit est un
 service en jargon systemd.
 
-  * `/usr/lib/systemd/system/` : Units installées par les paquets
-  * `/etc/systemd/system/` : Units créés par l'administrateur
+* `/usr/lib/systemd/system/` : Units installées par les paquets
+* `/etc/systemd/system/` : Units créés par l'administrateur
     système.
 
 Malheureusement, quelques units de packages se trouvent encore dans
-/etc/systemd/system. Historiquement, les scripts de démarrages se
-trouvaient dans /etc/init.d.
+`/etc/systemd/system`. Historiquement, les scripts de démarrages se
+trouvaient dans `/etc/init.d`.
 
 ## Cas pratique
 
 Concrètement, voici un exemple type d'unit :
 
+<!-- markdownlint-disable -->
 ??? example "Simple unit file : /etc/systemd/system/prometheus.service"
     ```bash
     [Unit]
@@ -43,6 +44,7 @@ Concrètement, voici un exemple type d'unit :
     [Install]
     WantedBy=multi-user.target
     ```
+<!-- markdownlint-enable -->
 
 Il s'agit d'une unit extrêmement simple.
 
@@ -65,17 +67,17 @@ Dans cette partie, nous commencons par la directive *Type=Simple*. Il
 existe de nombreux types, celui-ci nous indique simplement que notre
 processus va démarrer immédiatement :
 
-  * `Simple` : Il s'agit du type par défaut. C'est un service
+* `Simple` : Il s'agit du type par défaut. C'est un service
     démarrant immédiatement qui ne doit pas fork. Il ne faut pas
     utiliser ce type de service s'il dépend d'autres services
-  * `idle` : Le service est identique au type *Simple*. Cependant, il
+* `idle` : Le service est identique au type *Simple*. Cependant, il
     n'est pas prioritaire et sera lancé après tous les autres au
     démarrage du système.
-  * `Forking` : Considère le service comme lancé une fois que le
+* `Forking` : Considère le service comme lancé une fois que le
     processus père à exit après démarrage complet de son fork. Il est
     utile d'y combiner l'option *PIDFile* afin que systemd garde une
     trace du processus père
-  * `Oneshot` : Encore une fois, il s'agit du même comportement que
+* `Oneshot` : Encore une fois, il s'agit du même comportement que
     le service simple. Il est par exemple très utile dans l'exécution
     d'un script qui font un seul job et se terminent.
 
@@ -92,7 +94,7 @@ directives des fichiers de configuration faisant référence à des chemins
 relatifs seront donc basés par rapport à celui-ci. Exemple, si dans mon
 fichier de configuration je précise un chemin relatif vers fichier.json
 par exemple, alors le fichier comprit par le logiciel sera
-/etc/prometheus/fichier.json.
+`/etc/prometheus/fichier.json`.
 
 `EnvironmentFile` est un autre fichier également important. Il sera
 utilisé pour charger des variables d'environnement au fichier. Il
@@ -123,6 +125,7 @@ toujours utiliser cette target.
 Un service template est appelé ainsi car il s'agit d'un service
 pouvant être utilisé :
 
+<!-- markdownlint-disable -->
 ??? example "Simple unit file : /etc/systemd/system/openvpn@.service"
     ```bash
     [Unit]
@@ -151,36 +154,41 @@ pouvant être utilisé :
     [Install]
     WantedBy=multi-user.target
     ```
+<!-- markdownlint-enable -->
 
 Comme nous pouvons déjà l'observer dans le nom de l'unit, celle-ci
 contient un **@**. Celui-ci signifie qu'il s'agit d'un template.
 
-L'exemple est un peu plus compliqué que le précédent. La directive
-*PrivateTmp* nous permet de nous assurer qu'aucun fichier ne soit écrit
-dans le */tmp* (accessible par tout le monde). Ici, WorkingDirectory
+L'exemple est un peu plus compliqué que le précédent.
+
+* `PrivateTmp` nous permet de nous assurer qu'aucun fichier ne soit écrit
+dans le */tmp* (accessible par tout le monde).
+
+* `WorkingDirectory`
 contient ici un %i indiquant une variable systemd. Ici, le %i signifie
 que nous prenons tous les caractères tapés après l'@ lors du start du
-service. Par exemple *systemctl start openvpn@toto.service*, notre
-variable *%i* contiendra toto.
+service.
 
-*%t* contenu dans la directive ExecStart est le répertoire d'exécution.
-Il existe une tonne de variables de ce genre, une liste complète est
-disponible sur [la
-documentation](https://www.freedesktop.org/software/systemd/man/systemd.unit.html#Specifiers)
-du projet.
+    <!-- markdownlint-disable-next-line -->
+    * Par exemple *systemctl start <openvpn@toto.service>*, notre variable `%i` contiendra toto.
 
-La directive `CapabilityBoundingSet` nous permet de définir à quelles
+<!-- markdownlint-disable MD013 -->
+* `%t` contenu dans la directive ExecStart est le répertoire d'exécution. Il existe une tonne de variables de ce genre, une liste complète est disponible sur [la documentation](https://www.freedesktop.org/software/systemd/man/systemd.unit.html#Specifiers) du projet.
+
+* `CapabilityBoundingSet` nous permet de définir à quelles
 capabilities aura accès le binaire, seules les capabilities listées dans
-la liste seront autorisées et aucune autre. `LimitNPROC` nous définit
-le nombre de processus pouvant être lancés par le service.
-`DeviceAllow` nous permet d'accéder à un device spécifique en lecture
+la liste seront autorisées et aucune autre.
+
+* `LimitNPROC` nous définit le nombre de processus pouvant être lancés par le service.
+
+* `DeviceAllow` nous permet d'accéder à un device spécifique en lecture
 et écriture.
 
-`ProtectSystem` est une directive très utile. Ici, mise à true, les
+* `ProtectSystem` est une directive très utile. Ici, mise à true, les
 répertoires /usr et /boot seront accessible en lecture uniquement pour
 le processus invoquée par notre unit. Si cette directive est définie à
 *full*, le répertoire /etc sera également en read-only. Enfin, définie à
 *strict*, tout le système est en read-only sauf /dev, /proc et /sys.
 
-De même, `ProtectHome`, définie à *true*, nous permettra de rendre les
+* `ProtectHome`, définie à *true*, nous permettra de rendre les
 répertoires /home, /root et /run/user `vides` pour le processus.
