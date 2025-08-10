@@ -4,7 +4,7 @@ Dans certains cas, il peut être utile d'upgrade son firmware de sa NIC si vous 
 
 Premièrement, nous devons repérer nos lignes PCI correspondant à notre NIC :
 
-```
+```bash
 root@hostname:/home/user# lspci |grep -i mel
 18:00.0 Ethernet controller: Mellanox Technologies MT27800 Family [ConnectX-5]
 18:00.1 Ethernet controller: Mellanox Technologies MT27800 Family [ConnectX-5]
@@ -16,7 +16,7 @@ Nous voyons ici que nous avons 2 NIC, chacune comprenant 2 ports.
 
 Via l'utilitaire que nous fournit Mellanox, nous pourrons récuperer le PSID de la NIC, qui correspondra à un modele precis.
 
-```
+```bash
 root@hostname:/home/user# mstflint -d 18:00.0 q
 Image type:            FS4
 FW Version:            16.25.1020
@@ -39,7 +39,8 @@ Après une petite recherche Google, nous pouvons en déduire qu'il s'agit du mod
 
 Via un autre utilitaire fournit par Mellanox, disponible [ici](https://network.nvidia.com/products/adapter-software/firmware-tools/), nous devons trouver le nom "interne" de la NIC.
 
-```
+<!-- markdownlint-disable MD046 -->
+```bash
 root@hostname:/home/user# mst start
 root@hostname:/home/user# mst status
 MST modules:
@@ -56,10 +57,11 @@ MST devices:
                                    domain:bus:dev.fn=0000:af:00.0 addr.reg=88 data.reg=92 cr_bar.gw_offset=-1
                                    Chip revision is: 00
 ```
+<!-- markdownlint-enable MD046 -->
 
 Imaginons que nous voulons upgrade notre NIC ayant comme ligne PCI 18:00.0, son nom est donc `/dev/mst/mt4119_pciconf0`. Nous n'avons plus qu'à appliquer le firmware avec flint :
 
-```
+```bash
 root@hostname:/home/user# flint -d <device_name> -i <binary image> burn
 ```
 
