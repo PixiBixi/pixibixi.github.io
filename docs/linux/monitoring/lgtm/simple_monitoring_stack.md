@@ -275,7 +275,7 @@ et un fichier nommé Promtool. Ce dernier nous permettra d'interroger
 directement Prometheus et d'effectuer des opérations avancées.
 
 Et enfin, nous devons faire le fichier de démarrage systemd via le
-[tutoriel](../../linux/advanced/systemd/create_unit) disponible. Une fois le
+[tutoriel](../../../linux/advanced/systemd/create_unit.md) disponible. Une fois le
 fichier créé, il faut l'activer :
 
 ```bash
@@ -288,6 +288,7 @@ Toute la configuration Prometheus se fait via le fichier
 `/etc/prometheus/prometheus.yml` en syntaxe YAML. Voici la configuration à
 appliquer :
 
+<!-- markdownlint-disable MD046 -->
 ??? abstract "/etc/prometheus/prometheus.yml"
     ```yaml title="prometheus.yml"
     # my global config
@@ -323,6 +324,7 @@ appliquer :
         static_configs:
         - targets: [netdata:19999]
     ```
+<!-- markdownlint-enable MD046 -->
 
 Afin de ne pas copier coller bêtement la configuration, voici une
 explication succincte du fichier de configuration :
@@ -593,6 +595,7 @@ Si votre instance Prometheus n'est pas sur le même serveur et que Grafana/Prome
 
 Petit reverse proxy pour Prometheus, à adapter pour votre setup :
 
+<!-- markdownlint-disable MD046 -->
 ??? abstract "nginx-prometheus.conf"
     ```nginx title="nginx-prometheus.conf"
     upstream prometheus {
@@ -633,6 +636,7 @@ Petit reverse proxy pour Prometheus, à adapter pour votre setup :
         }
     }
     ```
+<!-- markdownlint-enable MD046 -->
 
 ### Netdata
 
@@ -967,13 +971,14 @@ chown -R prometheus:prometheus /etc/alertmanager
 ```
 
 Pour créer l'unit, je vous renvoie une nouvelle fois vers le [tutoriel
-adéquat](/linux/advanced/systemd/create_unit). Amtool est un outil
+adéquat](../../../linux/advanced/systemd/create_unit.md). Amtool est un outil
 permettant d'interagir directement avec l'API de AlertManager.
 
 #### alertmanager.yml
 
 Voici le contenu par défaut du fichier alertmanager.yml :
 
+<!-- markdownlint-disable MD046 -->
 ??? abstract "/etc/prometheus/alertmanager.yml"
     ```yaml
     global:
@@ -996,6 +1001,7 @@ Voici le contenu par défaut du fichier alertmanager.yml :
           severity: warning
         equal: [alertname, dev, instance]
     ```
+<!-- markdownlint-enable MD046 -->
 
 Nous voyons ici une directive `route` qui nous indique comment chaque
 alerte sera traitée par alertmanager, nous pouvons faire plusieurs
@@ -1031,8 +1037,7 @@ d'alertmanager.
 
 #### Modifications du fichier prometheus.yml
 
-Faisons un petit point sur ce à quoi ressemble notre
-[prometheus.yml](/linux/monitoring/simple_monitoring_stack#configuration_de_prometheus)
+Faisons un petit point sur ce à quoi ressemble notre `prometheys.yml`
 à ce stade-là. Nous voyons une partie concernant les règles (rule_files)
 mais nous n'y avons pas touché. Nous allons donc charger notre première
 règle. De plus, il faudra indiquer à Prometheus de renvoyer ses alertes
@@ -1091,6 +1096,7 @@ Checking /etc/prometheus/alert.rules.yml
 
 Voici d'autres exemples de règles Prometheus trouvées sur le web :
 
+<!-- markdownlint-disable MD046 -->
 ??? abstract "/etc/prometheus/alert.rules.yml"
     ```yaml title="alert.rules.yml"
     groups:
@@ -1130,6 +1136,7 @@ Voici d'autres exemples de règles Prometheus trouvées sur le web :
           summary: Disk fill alert for node {{ $labels.job }}
     ```
 
+<!-- markdownlint-enable MD046 -->
 Enormement d'exemples sont disponibles [ici](https://awesome-prometheus-alerts.grep.to/rules.html)
 
 ### Bot Telegram Alertmanager
@@ -1158,6 +1165,7 @@ ExecStart=alertmanager-bot --store=bolt --telegram.token=BOT_TOKEN --telegram.ad
 Penser bien à remplacer BOT_TOKEN et USER_ID par les bonnes variables.
 Quand au template default.tpl, voici celui que j'utilise :
 
+<!-- markdownlint-disable MD046 -->
 ??? note "Template alertmanager"
     ```toml
       {{/*Alertmanager Silence link*/}}
@@ -1238,6 +1246,7 @@ Quand au template default.tpl, voici celui que j'utilise :
 
       {{- end }}
     ```
+<!-- markdownlint-enable MD046 -->
 
 ### Stockage très longue durée
 
