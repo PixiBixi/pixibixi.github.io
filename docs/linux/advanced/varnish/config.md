@@ -3,14 +3,13 @@
 Bonne config trouvée de Git que je reposte ici si jamais : [Gist](https://gist.github.com/davidthingsaker/6b0997b641fdd370a395)
 
 ??? example "Example : /etc/varnish/default.vcl"
-    ```bash
+    ```vcl
     #########################################################################
     # This is an example VCL file for Varnish 4.0.              #
-    # From: https://gist.github.com/davidthingsaker/6b0997b641fdd370a395    #
+    # From: <https://gist.github.com/davidthingsaker/6b0997b641fdd370a395>    #
     # LICENSE: If this could help you in any way, you are obliged to use it #
     # for free with no limitations.                     #
     #########################################################################
-
 
     # Marker to tell the VCL compiler that this VCL has been adapted to the
     # new 4.0 format.
@@ -127,7 +126,7 @@ Cette autre config orientée pour WordPress est également bien [Gist](https://g
 :
 
 ??? example "Example 2 : /etc/varnish/default.vcl"
-    ```bash
+    ```vcl
 
     # Set the default backend (Nginx server for me)
     backend default {
