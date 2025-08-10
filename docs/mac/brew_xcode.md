@@ -7,7 +7,7 @@ nous n'en n'avons aucune utilité, et il est fréquent que celui-ci
 prenne plus de 10GB sur le MAC (Ce qui est énorme sur 250GB), il existe
 donc un trick pour n'installer que les ressources utiles à brew.
 
-```
+```bash
 xcode-select --install
 ```
 
