@@ -12,8 +12,6 @@ types 0day.
 Avec cet utilitaire, les paquets vont être mis à jour automatiquement,
 ce qui va nous éviter d'y penser, ou de le faire.
 
-## Introduction
-
 Tout ce que nous avons à faire est d'installer le paquage
 **unattended-upgrades**
 
