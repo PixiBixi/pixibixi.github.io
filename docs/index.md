@@ -128,7 +128,7 @@ Cette magnifique documentation a été faites avec MkDocs
 * [Streamer sa musique depuis Koel](/linux/selfhost/koel)
 * [Partager ses fichiers avec H5ai](/linux/selfhost/h5ai)
 
-### Networking
+### Linux Networking
 
 * [Installer et configurer son VPN OpenVPN](/linux/networking/openvpn)
 * [Configurer son serveur OpenVPN pour de l'IPv6](/linux/networking/openvpn_v6)
