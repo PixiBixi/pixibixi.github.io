@@ -1,4 +1,4 @@
-## Autoriser les transceiver no-name
+# Autoriser les transceiver no-name
 
 Pour éviter de payer une fortune le transceiver 1XG LC LR, il est
 possible d'autoriser des transceivers dit '"no-name'". Par exemple, un
@@ -7,7 +7,9 @@ no-name (qui fera exactement le même travaille) ne coutera que 25e.
 
 Voici la commande magique à rentrer (en configuration générale)
 
+```cisco
     service unsupported-transceiver
+```
 
 Et voici les logs que vous obtiendrez :
 
