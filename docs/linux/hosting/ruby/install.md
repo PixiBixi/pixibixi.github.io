@@ -13,8 +13,8 @@ souhaitez pouvoir switch entre les environnements.
 Tout simple.
 
 ```bash
-$ apt install rbenv
-$ rbenv init
+apt install rbenv
+rbenv init
 ```
 
 Attention, ruby sera installé dans ~/.rbenv/xxx.
@@ -26,8 +26,8 @@ Installez celle que vous voulez (par ex: 2.7.4) puis définissez là par
 défaut :
 
 ```bash
-$ rbenv install 2.7.4
-$ rbenv global 2.7.4
+rbenv install 2.7.4
+rbenv global 2.7.4
 ```
 
 ### Troubleshooting
@@ -56,8 +56,8 @@ Puis comme rbenv, on liste les versions dispo, et on installe celle
 qu'on veut :
 
 ```bash
-$ ruby-build --definitions
-$ ruby-build 2.7.4 /usr/local/ruby-2.7.4
+ruby-build --definitions
+ruby-build 2.7.4 /usr/local/ruby-2.7.4
 ```
 
 Et voilà, on a un ruby tout beau
