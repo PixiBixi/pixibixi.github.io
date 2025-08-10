@@ -18,10 +18,12 @@ noeuds de votre cluster.
 
 2 solutions, soit on utilise un domaine, soit un fichier hosts.
 
+```bash
     node1$ cat /etc/hosts
     10.0.0.1 node1
     10.0.0.2 node2
     10.0.0.3 node2
+```
 
 Penser à bien avoir le même fichier hosts sur vos différents hosts
 
@@ -34,6 +36,7 @@ s'effectueront dans le fichier
 
 Voilà à quoi ce dernier doit ressembler (pour le node1)
 
+```ini
     binlog_format=ROW
     bind-address=10.0.0.1
     default_storage_engine=innodb
@@ -44,6 +47,7 @@ Voilà à quoi ce dernier doit ressembler (pour le node1)
     wsrep_cluster_address="gcomm://node1,node2,node3"
     wsrep_node_address="10.0.0.1"
     wsrep_sst_method=rsync
+```
 
 Le wsrep_node_address n'est pas obligatoire, cependant, il se peut que
 l'adresse soit mal '"devinée'", je préfère donc la fixer manuellement.
@@ -51,11 +55,14 @@ l'adresse soit mal '"devinée'", je préfère donc la fixer manuellement.
 Une fois que ce fichier est bon sur votre cluster, il faut créer le
 cluster depuis le serveur qui sera primaire.
 
+```bash
     node1$ galera_new_cluster
+```
 
 Une fois l'initialisation passée, on vérife sur MySQL la variable
 qu'il faut
 
+<!-- markdownlint-disable MD046 -->
 ```sql
 SHOW STATUS LIKE wsrep_cluster_size;
 
@@ -65,6 +72,7 @@ SHOW STATUS LIKE wsrep_cluster_size;
 | wsrep_cluster_size | 1     |
 +--------------------+-------+
 ```
+<!-- markdownlint-enable MD046 -->
 
 Et on ajoute les autres nodes
 
