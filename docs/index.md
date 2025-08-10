@@ -9,7 +9,7 @@ d'aider un grand nombre de débutants dans le monde de Linux.
 
 Ce wiki me permet d'apprendre de nombreuses choses mais également de
 vous en faire apprendre. Je reste disponible sur mon mail personnel pour
-toute question wiki[at]jdelgado[dot]fr
+toute question contact+wiki[at]jdelgado[dot]fr
 
 Cette magnifique documentation a été faites avec MkDocs
 
