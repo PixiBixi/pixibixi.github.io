@@ -42,7 +42,7 @@ end
 
 Et pour l'utiliser, rien de plus simple :
 
-```
+```bash
 wrk -t4 -c100 -d10s --timeout 1 -s add_random_alpha https://wiki.jdelgado.fr/
 ```
 
