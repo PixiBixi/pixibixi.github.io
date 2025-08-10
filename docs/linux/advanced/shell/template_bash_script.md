@@ -93,7 +93,7 @@ msg "- arguments: ${args[*]-}"
 
 Quelques explications de ce template (qui n'est pas de moi, mais qui est excellent)
 
-  * Utilisation de env à la place de bash directement pour garantir une compatibilité sur tous les OS
-  * Utilisation de trap pour effectuer une fonction de cleanup
-  * Affichage d'une aide
-  * Parsage des paramètres fournit au script
+* Utilisation de env à la place de bash directement pour garantir une compatibilité sur tous les OS
+* Utilisation de trap pour effectuer une fonction de cleanup
+* Affichage d'une aide
+* Parsage des paramètres fournit au script

@@ -45,7 +45,7 @@ Introduit un random entre 1 et 10s
 
 ------------------------------------------------------------------------
 
-```
+```bash
 # Disconnect the session after 30 minutes of idle
 if [ -z "$TMOUT" ] ; then
     TMOUT=1800

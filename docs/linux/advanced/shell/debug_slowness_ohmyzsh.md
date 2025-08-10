@@ -4,7 +4,7 @@ Quelques informations chopées à gauche à droite bien utile
 
 On peut profiler basiquement quel plugin cause les lenteurs, dans le fichier source de ohmyzsh remplacer cette [partie de code](https://github.com/ohmyzsh/ohmyzsh/blob/master/oh-my-zsh.sh#L202-L206) par le code suivant :
 
-```
+```bash
 # Load all of the plugins that were defined in ~/.zshrc
 for plugin ($plugins); do
   timer=$(($(/opt/homebrew/bin/gdate +%s%N)/1000000))
@@ -21,7 +21,7 @@ done
 
 Ce code induit que vous êtes sur mac avec gdate d'installé, sinon, utilisez simplement date. Vous aurez l'output suivant :
 
-```
+```bash
 27: ssh-agent
 3: terraform
 14: zsh-syntax-highlighting
@@ -40,7 +40,7 @@ N'hésitez pas à cleanup régulièrement vos plugins
 
 On peut également faire un profiling beaucoup plus poussé avec du zsh natif
 
-```
+```bash
 ➜  ~ cat .zshrc
 zmodload zsh/zprof
 ...
@@ -51,8 +51,7 @@ zprof
 
 Via cette méthode, nous aurons réellement un profiling de votre ZSH détaillé
 
-
-```
+```bash
 num  calls                time                       self            name
 -----------------------------------------------------------------------------------
  1)    1         642.37   642.37   85.74%    369.76   369.76   49.36%  compinit
@@ -87,18 +86,19 @@ num  calls                time                       self            name
 -----------------------------------------------------------------------------------
 ```
 
-  * Les colonnes les plus importantes sont le temps passé dans le self, en pourcentage et en temps réel
-  * Cette stacktrace nous apprend qu'une grande partie du temps est passé dans les calls de compinit, compinit et compdump
+* Les colonnes les plus importantes sont le temps passé dans le self, en pourcentage et en temps réel
+* Cette stacktrace nous apprend qu'une grande partie du temps est passé dans les calls de compinit, compinit et compdump
 
 Par la suite, nous avons le détail de chaque numéro, par exemple
 
-```
+```bash
  1)    1         642.37   642.37   85.74%    369.76   369.76   49.36%  compinit
        1/2        28.07    28.07    3.75%      0.17     0.17             compaudit [5]
        1/1       107.30   107.30   14.32%    107.30   107.30             compdump [3]
      800/816     137.23     0.17   18.32%    137.23     0.17             compdef [2]
 
 ```
-  * Dans les 369ms de compinit qui prend 49% de zsh, une grande partie est du à compdump
+
+* Dans les 369ms de compinit qui prend 49% de zsh, une grande partie est du à compdump
 
 Plus qu'à faire de la speleologie dans vos plugins :)
