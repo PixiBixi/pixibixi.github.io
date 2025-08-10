@@ -19,8 +19,8 @@ Pour se faire, c'est très simple
 
 Dans celui-ci, il faudra faire 2 fichiers :
 
-  * `ISSUE_TEMPLATE.md` : Pour vos issues
-  * `PULL_REQUEST_TEMPLATE.md` : Pour vos pull request
+* `ISSUE_TEMPLATE.md` : Pour vos issues
+* `PULL_REQUEST_TEMPLATE.md` : Pour vos pull request
 
 Et voici des exemples de templates :
 

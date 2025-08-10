@@ -21,6 +21,6 @@ Liens d'optimisations vers pas mal de logiciels
 
 [Optimiser les performances de MySQL](https://buzut.fr/optimiser-performances-de-mysql/)
 
-# Linux
+## Linux
 
 [Forcer le mode '"Performance'" sur Linux](https://askubuntu.com/questions/523640/how-i-can-disable-cpu-frequency-scaling-and-set-the-system-to-performance)
