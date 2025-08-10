@@ -2,19 +2,19 @@
 
 ## Longeur d'onde
 
-  * **1310/1550nm** : Monomode
-  * **850nm** : Multimode
+* **1310/1550nm** : Monomode
+* **850nm** : Multimode
 
 ## Connecteur
 
-  * **LC** : Connecteur le plus '"basique'"
-  * **DAC** : Direct Attach Cables : Généralement pour stacker les switchs
+* **LC** : Connecteur le plus '"basique'"
+* **DAC** : Direct Attach Cables : Généralement pour stacker les switchs
 
 ## Dénominations
 
-  * **SR** = Single Range = Monomode
-  * **SM** = Monomode
-  * **MMC** = Multimode
+* **SR** = Single Range = Monomode
+* **SM** = Monomode
+* **MMC** = Multimode
 
 ## Récapitulatif
 
