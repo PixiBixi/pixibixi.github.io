@@ -8,11 +8,11 @@ d'obtenir des versions plus à jour de ces différents logiciels Pour les
 sources de nginx, il faudra remplacer *codename* par sa distribution
 (Wheezy, Jessie...)
 
-  **Sites officiels**               **Liens utiles**
-  --------------------------------- -------------------------------------------------------------------
-  [NGINX](http://nginx.com/)        [Doc NGINX](http://nginx.org/en/docs/)
-  [PHP](http://php.net/)            [Manuel PHP](http://php.net/manual/fr/)
-  [MariaDB](https://mariadb.org/)   [Documentation MariaDB](https://mariadb.com/kb/en/documentation/)
+| **Sites officiels**               | **Liens utiles** |
+| --------------------------------- |-------------------------------------------------------------------|
+| [NGINX](http://nginx.com/)       |[Doc NGINX](http://nginx.org/en/docs/) |
+| [PHP](http://php.net/)           |[Manuel PHP](http://php.net/manual/fr/) |
+| [MariaDB](https://mariadb.org/)  |[Documentation MariaDB](https://mariadb.com/kb/en/documentation/) |
 
 ## Installer et configurer NGINX
 
