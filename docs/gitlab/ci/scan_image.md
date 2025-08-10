@@ -2,7 +2,6 @@
 
 Avoir une CI qui créé une image, c'est bien. Si l'on peut y ajouter des tests de sécurité, c'est mieux :)
 
-
 [Trivy](https://github.com/aquasecurity/trivy) est un scanner de vulnérabilité rapide & simple à utiliser. Il peut nous aider à scanner un repository Git, un filesystem, ou bien comme dans notre cas, une image.
 
 ## .gitlab-ci.yml

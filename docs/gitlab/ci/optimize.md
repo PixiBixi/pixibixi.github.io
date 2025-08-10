@@ -63,8 +63,7 @@ test-job:
 
 Cet exemple basique nous permet de mettre plusieurs éléments en avant :
 
-  * `GIT_STRATEGY` : Ici, nous ne clonons par le repository Git. Nul
-    nécessaire de le cloner si nous n'en avons pas besoin
+* `GIT_STRATEGY` : Ici, nous ne clonons par le repository Git. Nul nécessaire de le cloner si nous n'en avons pas besoin
 
 Nous allons utiliser un artifact, expirant dans 1h pour stocker le
 résultat d'une commande
