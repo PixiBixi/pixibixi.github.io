@@ -55,4 +55,6 @@ IGNORE_SMTP_LINE_LENGTH_LIMIT=1
 
 Puis côté DNS, ça nous donne ce genre de record :
 
+```bind
     preprod-df._domainkey.dpfsol.net.   120 IN  TXT "v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDF2DawbF8KlxduaXU0GHp/VMTXPyhYvAr9/zWs6u3AqpktH4/+7u66BOf3NJvEmsuJezjwpYA8YmyJ4aRyRkOqeB+k1FeMadWtCkcy/LpBGkBbBCvb3QPDZRP85oiOR9Lt4Oo5/m+YKbwYkEIAe/5yHDMlXZ3NGEMDzalHbAcdRwIDAQAB;"
+```
