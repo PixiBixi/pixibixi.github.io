@@ -6,7 +6,7 @@ Pour effectuer simplement un speedtest sur votre serveur, installer
 speedtest-cli
 
 ```bash
-$ apt install speedtest-cli
+apt install speedtest-cli
 ```
 
 Puis lancer simplement la commande

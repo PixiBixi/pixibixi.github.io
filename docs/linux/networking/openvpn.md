@@ -33,7 +33,7 @@ staff facilement accessible).
 Pour installer OpenVPN, rien de plus simple:
 
 ```bash
-$ apt install openvpn
+apt install openvpn
 ```
 
 Nous allons installer la brique de base de notre serveur VPN, cependant,
@@ -43,9 +43,9 @@ Nous allons copier les fichiers utiles à la création des futures
 certificats :
 
 ```bash
-$ cp -a /usr/share/easy-rsa /etc/openvpn/ && cd /etc/openvpn/easy-rsa
-$ source vars
-$ ./clean-all
+cp -a /usr/share/easy-rsa /etc/openvpn/ && cd /etc/openvpn/easy-rsa
+source vars
+./clean-all
 ```
 
 ## Création des certificats
@@ -54,8 +54,8 @@ Afin d'être sécuriser, un VPN a besoin de certificats SSL. Ceux-ci sont
 très facile à build via easy-rsa
 
 ```bash
-$ cd /etc/openvpn/easy-rsa
-$ ./build-ca
+cd /etc/openvpn/easy-rsa
+./build-ca
 ```
 
 Spammez la touche '"Entree'" de votre clavier jusqu'à revenir sur votre
@@ -63,56 +63,57 @@ terminal de base
 
 Puis on creer le Diffie-Hellman
 
-```
-$ openvpn --genkey --secret /etc/openvpn/ta.key
+```bash
+openvpn --genkey --secret /etc/openvpn/ta.key
 ```
 
 Et enfin, le certificat côté serveur, que l'on n'oublie pas de signer
 !
 
-```
-$ ./build-key-server srvcert
+```bash
+./build-key-server srvcert
 ```
 
 Une fois ceci fait, nous avons tous nos certificats pour configurer
 correctement notre OpenVPN
 
-# Configuration de OpenVPN
+## Configuration de OpenVPN
 
 OpenVPN fournit des fichiers de configurations exemple relativement bien
 complet, nous allons donc les réutiliser
 
-```
-$ gunzip -c /usr/share/doc/openvpn/examples/sample-config-files/server.conf.gz > /etc/openvpn/server.conf
+```bash
+gunzip -c /usr/share/doc/openvpn/examples/sample-config-files/server.conf.gz > /etc/openvpn/server.conf
 ```
 
 Puis on l'édite afin qu'il concorde à notre installation
 
-```
-$ vim /etc/openvpn/server.conf
+```bash
+vim /etc/openvpn/server.conf
 ```
 
 Voici les valeurs que nous devons avoir dans server.conf :
 
-  * user nobody
-  * group nogroup
-  * ca /etc/openvpn/easy-rsa/keys/ca.crt
-  * cert /etc/openvpn/easy-rsa/keys/srvcert.crt
-  * key /etc/openvpn/easy-rsa/keys/srvcert.key '# This file should be
+* user nobody
+* group nogroup
+* ca /etc/openvpn/easy-rsa/keys/ca.crt
+* cert /etc/openvpn/easy-rsa/keys/srvcert.crt
+* key /etc/openvpn/easy-rsa/keys/srvcert.key '# This file should be
     kept secret
-  * dh /etc/openvpn/easy-rsa/keys/dh2048.pem
-  * cipher AES-256-CBC
+* dh /etc/openvpn/easy-rsa/keys/dh2048.pem
+* cipher AES-256-CBC
 
 Et on ajoute en bas du fichier ces lignes:
 
-  * push '"redirect-gateway def1 bypass-dhcp'"
-  * push '"dhcp-option DNS 4.2.2.1'"
-  * push '"dhcp-option DNS 4.2.2.2'"
-  * sndbuf 0
-  * rcvbuf 0
+* push '"redirect-gateway def1 bypass-dhcp'"
+* push '"dhcp-option DNS 4.2.2.1'"
+* push '"dhcp-option DNS 4.2.2.2'"
+* sndbuf 0
+* rcvbuf 0
 
 Voici à quoi doit ressembler le fichier final
 
+```bash
     port 42600
     proto udp
     dev tun
@@ -139,8 +140,9 @@ Voici à quoi doit ressembler le fichier final
     status openvpn-status.log
     log /var/log/openvpn.log
     verb 3
+```
 
-# Configuration du Serveur
+## Configuration du Serveur
 
 Maintenant qu'OpenVPN est correctement configurer, nous devons
 configurer notre distribution Linux afin que celle-ci route correctement
@@ -149,18 +151,20 @@ notre serveur VPN
 Tout d'abord, on active l'IP Forwarding
 
 ```bash
-$ echo net.ipv4.ip_forward=1 >> /etc/sysctl.conf
-$ sysctl -p
+echo net.ipv4.ip_forward=1 >> /etc/sysctl.conf
+sysctl -p
 ```
 
 Et on active le NAT via IPTables
 
-    $ iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-    $ iptables -t nat -A POSTROUTING -s 10.8.0.0/24 -o eth0 -j MASQUERADE
+```bash
+    iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+    iptables -t nat -A POSTROUTING -s 10.8.0.0/24 -o eth0 -j MASQUERADE
+```
 
 Par défaut, OpenVPN utilise le réseau 10.8.0.0/24
 
-# Configuration du client OpenVPN
+## Configuration du client OpenVPN
 
 Maintenant que notre OpenVPN est correctement configuré côté server,
 nous devons nous occuper de la partie client.
@@ -169,9 +173,9 @@ Tout d'abord, il faut génerer les certificats pour notre client (Votre
 PC).
 
 ```bash
-$ cd /etc/openvpn/easy-rsa/
-$ source vars
-$ ./build-key jeremy
+cd /etc/openvpn/easy-rsa/
+source vars
+./build-key jeremy
 ```
 
 Et on créer le fichier de conf :
@@ -204,15 +208,15 @@ rcvbuf 0
 
 N'oubliez pas de télécharger les fichiers suivants sur votre PC :
 
-  * ca.crt
-  * ta.key
-  * jeremy.crt
-  * jeremy.key
-  * client.ovpn
+* ca.crt
+* ta.key
+* jeremy.crt
+* jeremy.key
+* client.ovpn
 
 Et voilà, vous avez votre propre VPN fonctionnel :)
 
-# Script d'auto-installation
+## Script d'auto-installation
 
 [piVPN](https://github.com/pivpn/pivpn) est un petit script permettant
 d'installer un serveur OVPN en nous permettant de setup port utilisé,
