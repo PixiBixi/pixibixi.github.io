@@ -15,13 +15,13 @@ serveurs autoritaires.
 Un NS est un enregistrement DNS afin d'avoir son propre autoritaire :
 Prenons l'exemple avec ce nom de domaine : **wiki.jdelgado.fr**.
 
-1.  Tout d'abord, nous allons intérroger les ***root servers***, par
+1. Tout d'abord, nous allons intérroger les ***root servers***, par
     exemple *g.root-servers.net*
-2.  Ce serveur nous indique le serveur à contacter, ici, les serveurs
+2. Ce serveur nous indique le serveur à contacter, ici, les serveurs
     autoritaires **du TLD .eu** : *x.dns.eu*
-3.  Ces serveurs nous disent quel serveur autoritaires **du nom de
+3. Ces serveurs nous disent quel serveur autoritaires **du nom de
     domaine**, dans notre cas, **ns1.jdelgado.fr**
-4.  Et enfin, nous obtenons enfin l'IP du serveur.
+4. Et enfin, nous obtenons enfin l'IP du serveur.
 
 Le serveur que nous allons installer correspond à l'étape **3**
 
@@ -70,14 +70,14 @@ google.fr` doit vous renvoyez une IP appartenant à Google.
 Dans le dossier de configuration BIND9, vous y retrouverez 4 fichiers de
 configuration :
 
-  * `named.conf` recense tous les fichiers de configuration. Au lieu
+* `named.conf` recense tous les fichiers de configuration. Au lieu
     d'écrire la configuration dans un seul fichier, celle-ci est
     partagée en plusieurs fichiers.
-  * `named.conf.default-zones` est un fichier contenant toutes les
+* `named.conf.default-zones` est un fichier contenant toutes les
     zones par défaut, comme son nom l'indique.
-  * `named.conf.local` est vide par défaut, et c'est normal, il
+* `named.conf.local` est vide par défaut, et c'est normal, il
     s'agit du fichier où l'on effectuera toutes nos modifications
-  * `named.conf.options` est le configuration de base par défaut, il
+* `named.conf.options` est le configuration de base par défaut, il
     contient toutes les options nécéssaires pour bien paramétrer notre
     BIND9
 

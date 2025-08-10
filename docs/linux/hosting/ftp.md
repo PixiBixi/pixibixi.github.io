@@ -16,14 +16,14 @@ Pour l'installer, rien de plus simple. Il suffit de l'installer via
 son gestionnaire de paquet.
 
 ```bash
-$ apt install pure-ftpd
+apt install pure-ftpd
 ```
 
 Ne pas oublier de vérifier que nous disposons bien du paquet dans les
 sources
 
 ```bash
-$ apt show pure-ftpd
+apt show pure-ftpd
 ```
 
 ## Configuration
@@ -33,16 +33,16 @@ Lorsque nous installons **Pure-FTPd**, son exécutable se place dans
 
 Par défaut, voici ce que contient répertoire :
 
-  * **auth** : Dossier contenant les différents moyens de se connecter à
+* **auth** : Dossier contenant les différents moyens de se connecter à
     notre serveur FTP (Unix, PAM, PureDB)
-  * **conf** est un dossier contenant les fichiers que nous pourrons
+* **conf** est un dossier contenant les fichiers que nous pourrons
     configurer. Nous pouvons également ajouter d'autres fichiers afin
     de configurer des éléments supplémentaires
-  * **db** est un dossier vide qui va contenir la BDD des Virtual User
+* **db** est un dossier vide qui va contenir la BDD des Virtual User
     de PureFTPd
-  * **pureftpd-dir-aliases** est un fichier pouvant contenir des alias,
+* **pureftpd-dir-aliases** est un fichier pouvant contenir des alias,
     ceci évitant les liens symboliques
-  * **pureftpd.passwd** est le fichier, tel que */etc/passwd* qui va
+* **pureftpd.passwd** est le fichier, tel que */etc/passwd* qui va
     contenir diverses informations tel que username, password,
     chemin...
 
@@ -50,23 +50,23 @@ Tout d'abord, nous devons ajouter un utilisateur et un groupe pour nos
 utilisateurs virtuels PureFTPd
 
 ```bash
-$ groupadd ftpgroup
+groupadd ftpgroup
 ```
 
 ```bash
-$ useradd -g ftpgroup -d /dev/null -s /usr/sbin/nologin ftpuser
+useradd -g ftpgroup -d /dev/null -s /usr/sbin/nologin ftpuser
 ```
 
 Maintenant, il faut donc créer un user afin de se connecter au FTP
 
 ```bash
-$ pure-pw useradd test -u ftpuser -g ftpgroup -d /home/www/test
+pure-pw useradd test -u ftpuser -g ftpgroup -d /home/www/test
 ```
 
 Puis on génère la DB
 
 ```bash
-$ pure-pw mkdb
+pure-pw mkdb
 ```
 
 **Attention, à chaque modification d'utilisateur, il ne faut pas
@@ -75,7 +75,7 @@ oublier de régénérer la base de donnée**
 On active la reconnaissance des virtuals users par PureFTPd
 
 ```bash
-$ ln -s /etc/pure-ftpd/conf/PureDB /etc/pure-ftpd/auth/50pure
+ln -s /etc/pure-ftpd/conf/PureDB /etc/pure-ftpd/auth/50pure
 ```
 
 Et enfin, pour activer la gestion des virtual users, il faut éditer le
@@ -100,21 +100,21 @@ se trouve dans le **dossier conf**
 
 Voici les valeurs qu'il peut avoir:
 
-  * **0** : N'autorise pas les connexions SSL
-  * **1** : Autorise les connexions SSL **et** les connexions non-SSL
-  * **2** : Autorise **seulement** les connexions SSL
+* **0** : N'autorise pas les connexions SSL
+* **1** : Autorise les connexions SSL **et** les connexions non-SSL
+* **2** : Autorise **seulement** les connexions SSL
 
 Qui dit TLS, dit également certificat. Nous devons donc créer les
 certificats
 
 ```bash
-$ mkdir -p /etc/ssl/private/
+mkdir -p /etc/ssl/private/
 ```
 
 Puis nous créons notre certificat:
 
 ```bash
-$ openssl req -x509 -nodes -days 7300 -newkey rsa:4096 -keyout /etc/ssl/private/pure-ftpd.pem -out /etc/ssl/private/pure-ftpd.pem
+openssl req -x509 -nodes -days 7300 -newkey rsa:4096 -keyout /etc/ssl/private/pure-ftpd.pem -out /etc/ssl/private/pure-ftpd.pem
 ```
 
 Et évidemment, on n'oublie pas de redémarrer son serveur FTP.
@@ -132,13 +132,13 @@ Il suffit donc de copier la Ciphers Listdans un fichier que nous allons
 créer dans le **dossier conf**
 
 ```bash
-$ touch /etc/pure-ftpd/conf/TLSCipherSuite
+touch /etc/pure-ftpd/conf/TLSCipherSuite
 ```
 
 Puis l'on '"insère'" les ciphers
 
 ```bash
-$ echo "ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256" > /etc/pure-ftpd/conf/TLSCipherSuite
+echo "ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256" > /etc/pure-ftpd/conf/TLSCipherSuite
 ```
 
 ### FXP
@@ -150,7 +150,7 @@ Comme d'habitude, pour activer le FXP (**F**ile e**X**change
 Voici la commande à taper afin d'activer le FXP
 
 ```bash
-$ echo yes > /etc/pure-ftpd/conf/AllowUserFXP
+echo yes > /etc/pure-ftpd/conf/AllowUserFXP
 ```
 
 **Rappel:** Pour fonctionner, le FXP doit être activer sur les 2
@@ -163,8 +163,8 @@ virtuelles, alors il faut désactiver l'authentification UNIX mais
 également l'authentification PAM
 
 ```bash
-$ echo no > /etc/pure-ftpd/conf/PAMAuthentication
-$ echo no > /etc/pure-ftpd/conf/UnixAuthentication
+echo no > /etc/pure-ftpd/conf/PAMAuthentication
+echo no > /etc/pure-ftpd/conf/UnixAuthentication
 ```
 
 ### Bridage
@@ -177,8 +177,8 @@ controler l'utilisateur
 Afin de restreindre à une IP/range un compte utilisateur :
 
 ```bash
-$ pure-pw usermod <username> -R 192.168.2.0/24 -m
-$ pure-pw usermod <username> -R 192.168.0.8 -m
+pure-pw usermod <username> -R 192.168.2.0/24 -m
+pure-pw usermod <username> -R 192.168.0.8 -m
 ```
 
 Il est possible de séparer plusieurs IP par une virgule.
@@ -188,18 +188,18 @@ Il est possible de séparer plusieurs IP par une virgule.
 Vous pouvez affecter un débit maximum à vos utiliateurs :
 
 ```bash
-$ pure-pw usermod <username> -t 10 -T 10 -m
+pure-pw usermod <username> -t 10 -T 10 -m
 ```
 
 Il est possible d'utiliser -t et -T indépendament l'un de l'autre:
 
-  * `-t` signifie downloads
-  * `-T` signifie upload
+* `-t` signifie downloads
+* `-T` signifie upload
 
 #### Reset Bridage
 
 Tout simple !
 
 ```bash
-$ pure-pw usermod <username> -N  -m
+pure-pw usermod <username> -N  -m
 ```
