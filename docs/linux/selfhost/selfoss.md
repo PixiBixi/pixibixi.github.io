@@ -35,8 +35,8 @@ d'informations.
 Une fois ceci fait, nous devons cloner notre repository GitHub
 
 ```bash
-$ cd /var/www
-$ git clone https://github.com/SSilence/selfoss rss
+cd /var/www
+git clone https://github.com/SSilence/selfoss rss
 ```
 
 Puis l'on créé le server-block sur nginx
@@ -104,8 +104,8 @@ Une fois ceci fait, nous n'oublions pas d'appliquer les bons droits à
 selfoss, ainsi que de redémarrer nginx
 
 ```bash
-$ chown -R www-data:www-data rss
-$ systemctl restart nginx
+chown -R www-data:www-data rss
+systemctl restart nginx
 ```
 
 Vous avez désormais un selfoss installé, mais sans rien de configuré,
@@ -126,11 +126,11 @@ Nous allons voir ici seulement les paramètres que je juge utile, pour
 plus d'informations, aller sur la [page
 officielle](https://selfoss.aditu.de/) de SelfOSS
 
-  * db_type
-  * db_host
-  * db_database
-  * db_username
-  * db_password
+* db_type
+* db_host
+* db_database
+* db_username
+* db_password
 
 Comme leur nom l'indique, tous ces champs concernent la base de donnée.
 Par défaut, une base de donnée SQLite est utilisée, mais je préfère
@@ -139,9 +139,9 @@ utilisée une base de donné MySQL.
 Il existe d'autre champs pour la base de donnée, mais généralement, il
 n'est pas utile de les modifier.
 
-  * username
-  * password
-  * salt
+* username
+* password
+* salt
 
 Ces 3 champs servent à configurer la sécurité sur SelfOss. Je vous
 conseille de modifier la valeur du champ salt afin d'avoir un salt
@@ -150,22 +150,22 @@ unique.
 Pour générer un password, il faut se rendre sur la page */password* de
 votre SelfOss **obligatoirement**
 
-  * items_perpage
+* items_perpage
 
 Nombre d'élément automatiquement affichés. Par défaut de 50, je
 conseille de le passer à 100 minimum
 
-  * auto_mark_as_read
+* auto_mark_as_read
 
 Option très intéréssante qui vous permet de mettre automatiquement un
 article comme '"Lu'" une fois que vous l'avez ouvert (Désactivé par
 défaut)
 
-  * load_images_on_mobile
+* load_images_on_mobile
 
 Permet d'activer le LazyLoad des images sur mobile
 
-  * base_url
+* base_url
 
 Option très utile qui force généralement le chargement des CSS & co
 depuis votre sous-domaine.

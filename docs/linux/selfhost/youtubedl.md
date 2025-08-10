@@ -36,14 +36,14 @@ Installation et configuration du youtube-dl-webui évidemment).
 On commence par clone le repository :
 
 ```bash
-$ cd /var/www
-$ git clone https://github.com/PixiBixi/Youtube-dl-WebUI youtube
+cd /var/www
+git clone https://github.com/PixiBixi/Youtube-dl-WebUI youtube
 ```
 
 Et on lui applique les bons droits
 
 ```bash
-$ chown -R www-data:www-data youtube
+chown -R www-data:www-data youtube
 ```
 
 (Le mot de passe par défaut est root, pour le changer, il suffit de

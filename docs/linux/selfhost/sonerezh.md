@@ -49,15 +49,15 @@ Une fois cela fait, nous pourrons cloner le repo de Sonerezh sur notre
 serveur web :
 
 ```bash
-$ cd /var/www
-$ sudo git clone https://github.com/Sonerezh/sonerezh.git music
+cd /var/www
+sudo git clone https://github.com/Sonerezh/sonerezh.git music
 ```
 
 Et nous n'oublions pas de lui appliquer les droits et propriétaires
 appropriés
 
 ```bash
-$ sudo chown -R www-data: music/ && sudo chmod -R 775 music/
+sudo chown -R www-data: music/ && sudo chmod -R 775 music/
 ```
 
 Une fois cela, nous passons au server-block de notre nginx

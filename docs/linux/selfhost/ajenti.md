@@ -15,12 +15,13 @@ packages Debian étant assez vieux.
 ```bash
 curl https://raw.githubusercontent.com/ajenti/ajenti/master/scripts/install.sh | sudo bash -s -
 ```
+
 Pour plus de méthode d'installation, aller voir le [lien officiel](https://docs.ajenti.org/en/latest/man/install.html#installing)
 
 Puis on installe le package
 
 ```bash
-$ apt-get update && apt-get install ajenti
+apt-get update && apt-get install ajenti
 ```
 
 Si l'installation est bonne, vous pourrez accéder à ajenti via le port
