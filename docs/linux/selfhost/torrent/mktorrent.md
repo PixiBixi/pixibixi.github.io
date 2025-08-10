@@ -42,10 +42,10 @@ Une fois mktorrent installé, nous devons maintenant s'approprier le
 logiciel. Heureusement pour nous, mktorrent est plutôt simple
 d'utilisation:
 
-  * `-a` : Announce pour le torrent
-  * `-t` : Nombre de threads à utiliser pour la création du torrent
-  * `-p` : Set le flag private du torrent
-  * `-l` : Taille des pièces (En puissance de 2, par exemple, si l'on tape 18, on aura 2'^18 = 256Kb)
+* `-a` : Announce pour le torrent
+* `-t` : Nombre de threads à utiliser pour la création du torrent
+* `-p` : Set le flag private du torrent
+* `-l` : Taille des pièces (En puissance de 2, par exemple, si l'on tape 18, on aura 2'^18 = 256Kb)
 
 Concrètement, pour la taille de pièce, voici ce qu'il faut faire :
 
