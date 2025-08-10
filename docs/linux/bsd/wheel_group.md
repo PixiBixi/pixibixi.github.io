@@ -8,7 +8,7 @@ faire la commande '"su'" par défaut. Nous devons l'ajouter au groupe
 importance.
 
 ```bash
-$ pw groupmod wheel -m username
+pw groupmod wheel -m username
 ```
 
 Avec cette commande, vous pourriez effectuer la commande '"su'" comme de
