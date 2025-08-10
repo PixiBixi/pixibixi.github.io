@@ -1,8 +1,6 @@
-![WD Green](/mess/cover-wd-green.png)
-
 # WD Green HDD, Comment prémunir le old_age prématuré
 
-**Attention, ce problème concerne également d'autres HDD de la marque WD**
+![WD Green](/mess/cover-wd-green.png)
 
 Ce problème est du à la technologie **IntelliPark** qui a été introduite
 dans les WD Green ainsi que les RED. Cette technologie défaillante
