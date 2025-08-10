@@ -12,6 +12,7 @@ serveur lui même, ou bien en remote. Vous trouverez la dernière version
 
 Voici un exemple de fichier cluster.yml
 
+<!-- markdownlint-disable MD046 -->
 ```yaml
 ####################################
 ## CLUBIC Rancher master cluster ##
@@ -99,6 +100,7 @@ ingress:
   options:
     use-forwarded-headers: "true"
 ```
+<!-- markdownlint-enable MD046 -->
 
 Une fois toute l'infrastructure décrite, une simple commande suffit : _rke up_
 
@@ -113,6 +115,8 @@ résolvable.
 
 Voici un fichier hosts idéal pour faire fonctionner notre cluster K8S
 
+<!-- markdownlint-disable MD046 -->
+```ini
     # K8S
     192.168.1.220   master01.vlan master01.rancher.k8s    master01.rancher.k8s.local
     192.168.1.221   master02.vlan master02.rancher.k8s    master02.rancher.k8s.local
@@ -121,6 +125,7 @@ Voici un fichier hosts idéal pour faire fonctionner notre cluster K8S
     192.168.1.210   node01.vlan node01.rancher.k8s    node01.rancher.k8s.local
     192.168.1.211   node02.vlan node02.rancher.k8s    node02.rancher.k8s.local
     192.168.1.212   node03.vlan node03.rancher.k8s    node03.rancher.k8s.local
+```
 
 Nous activons également quelques options supplémentaires tel que le
 snapshot automatique de l'etcd toutes les 6h. Des

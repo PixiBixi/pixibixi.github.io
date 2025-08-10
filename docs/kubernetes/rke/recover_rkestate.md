@@ -30,7 +30,7 @@ docker run --rm --net=host -v $(docker inspect kubelet --format '{{ range .Mount
 
 ## Depuis une machine cliente, utilisant kubectl
 
-```
+```bash
 # get kubeconfig file (this one has only *one* context inside)
 kubectl config view --flatten > kube_config_cluster.yml
 # get cluster.yml (this one references *master nodes only*)
