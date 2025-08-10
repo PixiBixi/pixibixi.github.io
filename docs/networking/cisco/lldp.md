@@ -23,14 +23,12 @@ pouvons également en tirer d'autres utilités :
 * **Découvrir la topologie du réseau** en passant de machine à
     machine...
 
-## Condition d'utilisation
-
-# Cisco
+## Cisco
 
 Etant donner que LLDP est un protocle assez récent, il n'est disponible
 uniquement sur des équipements Cisco et des iOS assez
 
-# Autres
+## Autres
 
 ## Utilisation
 
@@ -90,8 +88,5 @@ interface Fa0/0 lldp enable exit
 
 ### Packets LLDP
 
-lldp holdtime '<x'> : Durée de vie de l'information envoyée (10 - 255)
-lldp timer '<x'> : Définit la période à laquelle l'équipement doit
-renvoyer les informations (5-254)
-
-<https://www.ciscomadesimple.be/2014/07/30/lldp-link-layer-discovery-protocol/>
+* `lldp holdtime <x>` : Durée de vie de l'information envoyée (10 - 255)
+* `lldp timer <x>` : Définit la période à laquelle l'équipement doit renvoyer les informations (5-254)

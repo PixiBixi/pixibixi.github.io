@@ -9,8 +9,8 @@ Il nous est tous arrivé de taper une commande fausse sur un terminal Cisco, et 
 Tout d'abord, on rentre dans le mode configuration
 
 ```cisco
-    Routeur>enable
-    Routeur#conf terminal
+Routeur>enable
+Routeur#conf terminal
 ```
 
 Puis on désactive la résolution DNS, pour ne plus avoir de problème
@@ -20,5 +20,3 @@ Puis on désactive la résolution DNS, pour ne plus avoir de problème
 ```
 
 Lorsque nous taperons une commande fausse, ou un ping, on aura juste une erreur, plus un affreux timeout :)
-
-**Raccourci : Alt Maj 6**

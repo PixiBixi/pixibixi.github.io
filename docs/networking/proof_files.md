@@ -93,8 +93,8 @@ Voici le résultat que nous devrions obtenir :
 Nous pouvons clairement apercevoir plusieurs parties sur le screen.
 
 Tout d'abord, le mode de transfert choisi (TCP), le port d'écoute du
-serveur (soit 5001, le port par défaut), ainsi que la _TCP Window
-Size_ (85KB)
+serveur (soit 5001, le port par défaut), ainsi que la *TCP Window
+Size* (85KB)
 
 Suivi des informations côté client, qui sont logiquement les mêmes que
 celle serveur, soit TCP, port 5001, et une Window Size +/- identique

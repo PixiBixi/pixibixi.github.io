@@ -6,19 +6,19 @@ donc communiquer entrent-eux.
 Nous devons donc agir au niveau du routeur pour faire en sorte qu'ils
 puissent communiquer entrent eux
 
-### Exemple concret
+## Exemple concret
 
 On dispose dun Switch (**24 ports FastEthernet**, **2 ports Gigabits**)
 et dun routeur (**1 port Gigabit, 1 port série**). On souhaite
-attribuer le **VLAN3**'
+attribuer le **VLAN3**
 aux interfaces Fa0/6 à Fa0/12
 
-**Réseau VLAN3 :** 192.168.0.0/24'
+**Réseau VLAN3 :** 192.168.0.0/24
 **IP Switch GA0/0 :** 192.168.0.1
 
 **IP Routeur GA0/1.3 :** 192.168.0.254
 
-### Application côté routeur
+## Application côté routeur
 
 Pour cela, nous allons donc devoir faire des sous-interfaces sur
 l'interface **GA0/1** du **routeur**
@@ -30,11 +30,13 @@ Généralement, la sous-interface correspond au numéro du VLAN.
 
 Il faut également faire une sous-interface par VLAN.
 
+```cisco
     Router(config)#interface Ga0/1.3
     Router(config-subif)#encapsulation dot1Q 3
     Router(config-subif)#ip address 192.168.0.254 255.255.255.0
     Router(config-subif)#no shutdown
     Router(config-subif)#exit
+```
 
 Ici, nous voyons que nous avons activer l'encapsulation **Dot1Q** avec
 le **VLAN 3** afin de taguer les trames en provenance du Routeur et de
