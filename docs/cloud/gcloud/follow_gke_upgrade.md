@@ -2,7 +2,7 @@
 
 Pour suivre l'upgrade de son cluster, rien de plus simple en CLI
 
-```
+```bash
 ➜  ~ CLOUDSDK_CORE_PROJECT=infra-tooling-prod gcloud container operations list
 NAME                                                          TYPE            LOCATION      TARGET                            STATUS_MESSAGE  STATUS   START_TIME                      END_TIME
 operation-1711096877589-18d83587-5e25-450c-b618-b654f799abde  UPGRADE_MASTER  europe-west9  base                                              DONE     2024-03-22T08:41:17.589291471Z  2024-03-22T09:01:56.984453011Z
