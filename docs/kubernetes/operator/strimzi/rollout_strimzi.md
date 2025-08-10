@@ -8,7 +8,7 @@ Pour restart un composant strimzi, il faut ajouter une annotation.
 
 La première étape consiste à vérifier quels sont les clusters dont nous disposons :
 
-```
+```bash
 ➜  strimzi git:(master) k get strimzipodsets.core.strimzi.io -A
 NAMESPACE               NAME                                   PODS   READY PODS   CURRENT PODS   AGE
 namespace-a             kafka-random-cluster-dev-kafka         3      3            3              2d23h
@@ -17,7 +17,7 @@ namespace-a             kafka-random-cluster-dev-zookeeper     3      3         
 
 Annotons le cluster Kafka
 
-```
+```bash
 kubectl annotate -n namespace-a strimzipodset kafka-random-cluster-dev-kafka strimzi.io/manual-rolling-update="true"
 ```
 
@@ -25,7 +25,7 @@ L'opérateur traitera l'annotation et déclenchera le redémarrage des pods
 
 Vous pouvez ajouter la même annotation à un pod spécifique si vous souhaitez redémarrer un seul pod :
 
-```
+```bash
 kubectl annotate -n namespace-a pod kafka-random-cluster-dev-kafka-0 strimzi.io/manual-rolling-update="true"
 ```
 
