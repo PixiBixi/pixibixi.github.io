@@ -3,13 +3,14 @@
 Pas de blabla, quelques commandes ici et on en parle plus !
 
 Au préalable, il faut telecharger l'img
-```
+
+```bash
 cd /var/lib/vz/template/iso ; wget https://cloud-images.ubuntu.com/daily/server/releases/24.04/release/ubuntu-24.04-server-cloudimg-amd64.img
 ```
 
 Puis hop on créé notre VM
 
-```
+```bash
 ID_VM="102"
 STORAGE_CLASS="local"
 qm create ${ID_VM} --name "cloudron01-prod" --memory 3072 --cores 2 --net0 virtio,bridge=vmbr0
@@ -27,13 +28,13 @@ qm set ${ID_VM} --sshkey ~/.ssh/customers.pub
 
 On peut également passer sa VM en DHCP à la place :
 
-```
+```bash
 qm set ${ID_VM} --ipconfig0 ip=dhcp
 ```
 
 Enfin, on start sa VM
 
-```
+```bash
 qm start ${ID_VM}
 ```
 
