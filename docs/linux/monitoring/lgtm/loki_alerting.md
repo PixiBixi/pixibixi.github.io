@@ -7,7 +7,7 @@ Les différentes configuration sont valables pour le [chart Helm](https://github
 Pour cela, la première étape est de link son Loki (plus particulièrement le ruler de Loki) avec son instance de Prometheus :
 
 ??? note "Helm : Ruler Configuration"
-    ```
+    ```yaml
     loki:
       rulerConfig:
         evaluation_interval: 15s
@@ -39,7 +39,7 @@ Dans ce bloc de configuration, nous définissons en réalité plusieurs paramèt
 
 Nous avons maintenant besoin de créer les règles Loki et différents éléments liés à Kubernetes dans un fichier `loki-rules.yaml`:
 ??? note "Helm: loki-rules.yaml"
-    ```
+    ```yaml
     apiVersion: v1
     kind: ConfigMap
     metadata:
@@ -82,7 +82,7 @@ kubectl rollout restart statefulset loki-backend
 Enfin, nous montons les différents volumes
 
 ??? note "Helm: Loki Volumes"
-    ```
+    ```yaml
     loki:
       backend:
         extraVolumeMounts:

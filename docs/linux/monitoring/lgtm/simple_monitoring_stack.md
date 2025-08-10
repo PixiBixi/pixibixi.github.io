@@ -372,7 +372,7 @@ d'afficher le type de métrique renvoyé et `&help=yes` pouvant vous
 apporter diverses précisions. Voici un exemple :
 
 ??? note "Example output of prometheus exporter"
-    ```
+    ```promql
     # COMMENT netdata_ipv4_tcperrors_packets_persec_average: dimension "RetransSegs", value is packets/s, gauge, dt 1586642036 to 1586642038 inclusive
     # COMMENT TYPE netdata_ipv4_tcperrors_packets_persec_average gauge
     netdata_ipv4_tcperrors_packets_persec_average{chart="ipv4.tcperrors",family="tcp",dimension="RetransSegs"} 0.0000000 1586642038000

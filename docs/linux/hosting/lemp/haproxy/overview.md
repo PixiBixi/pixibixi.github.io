@@ -48,7 +48,7 @@ l'unit systemd.
 Voici ce que nous dit la [documentation haproxy](https://cbonte.github.io/haproxy-dconv/2.6/management.html) :
 
 ??? note "HAproxy : Official Documentation"
-    ```
+    ```bash
       -f <cfgfile|cfgdir> : adds <cfgfile> to the list of configuration files to be
         loaded. If <cfgdir> is a directory, all the files (and only files) it
         contains are added in lexical order (using LC_COLLATE=C) to the list of
