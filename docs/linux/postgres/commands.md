@@ -11,13 +11,13 @@
  WHERE i.relname='uploads'
  ```
 
-  * Pour voir les informations détaillées d'une table.
+* Pour voir les informations détaillées d'une table.
 
 Il y a un tools open-source Github permettant d'avoir une multitudes de commandes utiles rapidement : [Postgres DBA](https://github.com/NikolayS/postgres_dba)
 
 ---
 
-``sql
+```sql
 psql> \f '|'
 psql> \a
 psql> \o '/tmp/output.csv'
