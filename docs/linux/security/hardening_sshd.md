@@ -56,10 +56,10 @@ connexions SSH ouvertes, il peut être intéressant de configurer une
 valeur pour laquelle votre sesssion SSH sera automatiquement terminée. 2
 paramètres cohabitent :
 
-  * `ClientAliveCountMax` - Indique le nombre total de messages de
+* `ClientAliveCountMax` - Indique le nombre total de messages de
     vérification envoyés par le serveur SSH sans obtenir de réponse du
     client SSH. La valeur par défaut est 3.
-  * `ClientAliveInterval` - Indique le délai d'attente en secondes.
+* `ClientAliveInterval` - Indique le délai d'attente en secondes.
     Après x secondes, le serveur SSH envoie un message au client pour
     lui demander une réponse. Deafult est égal à 0 (le serveur
     n'enverra pas de message au client pour vérifier.).
@@ -154,11 +154,11 @@ restent modifiables.
 Beaucoup d'options sont également possibles au niveau du fichier
 *authorized_keys*
 
-  * `no-agent-forwarding`: Désactivation du SSH agent forwarding
-  * `no-port-forwarding`: Désactivation du SSH port forwarding.
-  * `no-X11-forwarding`: Désactivation du X11 display forwarding.
-  * `no-pty`: Désactive la possibilité de démarrer un shell
-  * `no-user-rc`: Empêche l'interprétation du fichier ~/.ssh/rc.
+* `no-agent-forwarding`: Désactivation du SSH agent forwarding
+* `no-port-forwarding`: Désactivation du SSH port forwarding.
+* `no-X11-forwarding`: Désactivation du X11 display forwarding.
+* `no-pty`: Désactive la possibilité de démarrer un shell
+* `no-user-rc`: Empêche l'interprétation du fichier ~/.ssh/rc.
 
 Par défaut, tout est autorisé. Cependant, une autre approche est
 possible. Via le keyword `restrict`, ce qui va implicitement refuser
@@ -200,7 +200,7 @@ A outre mesure, il est possible de sécuriser une connexion SSH avec les entrée
 
 Si SSHFP est correctement configuré, vous aurez cette entrée :
 
-```
+```bash
 debug1: matching host key fingerprint found in DNS
 ```
 

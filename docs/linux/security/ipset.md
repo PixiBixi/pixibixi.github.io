@@ -9,8 +9,8 @@ ipset create drop hash:net
 
 Il existe 2 types de tables, à adapter selon son usage :
 
-  * `hash:net` pour les subnets
-  * `has:ip` pour les IPs
+* `hash:net` pour les subnets
+* `has:ip` pour les IPs
 
 On commence par créer une map où l'on va ajouter les différents ranges
 d'IPs

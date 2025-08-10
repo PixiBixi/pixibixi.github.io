@@ -13,48 +13,53 @@ Des benchmarks sont disponibles
 Pour changer les paramètres, il faut éditer le fichier `/etc/default/grub`
 et rajouter ceci :
 
-    GRUB_CMDLINE_LINUX_DEFAULT="quiet mitigations=off"
+```bash
+GRUB_CMDLINE_LINUX_DEFAULT="quiet mitigations=off"
+```
 
 Si vous disposez d'un kernel inférieur à 5.2, alors voici la ligne à
 mettre
 
-    GRUB_CMDLINE_LINUX_DEFAULT="quiet noibrs noibpb nopti nospectre_v2 nospectre_v1 l1tf=off nospec_store_bypass_disable no_stf_barrier mds=off tsx_async_abort=off mitigations=off"
+```bash
+GRUB_CMDLINE_LINUX_DEFAULT="quiet noibrs noibpb nopti nospectre_v2 nospectre_v1 l1tf=off nospec_store_bypass_disable no_stf_barrier mds=off tsx_async_abort=off mitigations=off"
+```
 
 Puis il faut lancer une regénération du grub :
 
-    update-grub
+``` bash
+update-grub
+```
 
 Voici les paramètres mitigés via un mitigations=off dans un kernel
 récent :
 
-  * `nopti` [X86,PPC] - Control Page Table Isolation of user and
+* `nopti` [X86,PPC] - Control Page Table Isolation of user and
     kernel address spaces. Disabling this feature removes hardening, but
     improves performance of system calls and interrupts.
-  * `kpti`=0 [ARM64] - Control page table isolation of user and
+* `kpti`=0 [ARM64] - Control page table isolation of user and
     kernel address spaces.
-  * `nobp`=0 [S390] - Undocumented. Does something on S390 systems,
+* `nobp`=0 [S390] - Undocumented. Does something on S390 systems,
     nobody knows what.
-  * `nospectre_v1` [X86,PPC] - Disable mitigations for Spectre
+* `nospectre_v1` [X86,PPC] - Disable mitigations for Spectre
     Variant 1 (bounds check bypass). With this option data leaks are
     possible in the system.
-  * `nospectre_v2` [X86,PPC,S390,ARM64] - Disable all mitigations
+* `nospectre_v2` [X86,PPC,S390,ARM64] - Disable all mitigations
     for the Spectre variant 2 (indirect branch prediction)
     vulnerability. System may allow data leaks with this option.
-  * `spectre_v2_user=off` [X86] - Control mitigation of Spectre
+* `spectre_v2_user=off` [X86] - Control mitigation of Spectre
     variant 2 (indirect branch speculation) vulnerability between user
     space tasks
-  * `spec_store_bypass_disable=off` [X86,PPC] - Control Speculative
+* `spec_store_bypass_disable=off` [X86,PPC] - Control Speculative
     Store Bypass (SSB) Disable mitigation (Speculative Store Bypass
     vulnerability)
-  * `ssbd=force-off` [ARM64] - Speculative Store Bypass Disable
+* `ssbd=force-off` [ARM64] - Speculative Store Bypass Disable
     control
-  * `l1tf=off` [X86] - Control mitigation of the L1TF vulnerability
+* `l1tf=off` [X86] - Control mitigation of the L1TF vulnerability
     on affected CPUs
-  * `mds=off` [X86] - Control mitigation for the Micro-architectural
+* `mds=off` [X86] - Control mitigation for the Micro-architectural
     Data Sampling (MDS) vulnerability.
-  * `tsx_async_abort=off` [X86] - Control mitigation for the Micro-architectural
+* `tsx_async_abort=off` [X86] - Control mitigation for the Micro-architectural
     TSX (MDS) vulnerability.
-
 
 ## Vérification
 

@@ -29,7 +29,7 @@ $psql -P pager=off -P footer=off -U guest -d certwatch --host crt.sh -c "$Q" | s
 
 Petit usage tout simple :
 
-```
+```bash
 ➜  ~ ./al mydomain.eu
 adguard.mydomain.eu
 bitwarden.mydomain.eu

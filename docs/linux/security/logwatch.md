@@ -8,7 +8,7 @@ sera nécessaire d'installer un MTA
 Simple installation via APT :
 
 ```bash
-$ apt install logwatch
+apt install logwatch
 ```
 
 Par défaut, sans configuration, logwatch va analyser les logiciels

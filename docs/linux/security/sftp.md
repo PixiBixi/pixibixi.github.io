@@ -12,9 +12,9 @@ daemon SSH.
 
 2 types de chroot sont possible, le chroot SFTP, et le chroot SSH
 
-  * Dans le chroot SFTP, vous aurez également les mêmes droits qu'avec
+* Dans le chroot SFTP, vous aurez également les mêmes droits qu'avec
     un serveur FTP
-  * Dans le chroot SSH, il s'agit alors d'un environnement SSH
+* Dans le chroot SSH, il s'agit alors d'un environnement SSH
     classique, cependant, l'accès aux différents fichiers/binaires
     système peut être limité par l'administrateur de la machine
 
@@ -34,13 +34,13 @@ Dans notre exemple, l'utilisateur *jeremy* sera chroot dans son home
 directory. Mais si nous faisons que cela, le chroot ne marchera pas.
 
 ```bash
-$ chown -R jeremy:jeremy /home/jeremy
-$ chown root:root /home/jeremy
-$ chmod 755 /home/jeremy
+chown -R jeremy:jeremy /home/jeremy
+chown root:root /home/jeremy
+chmod 755 /home/jeremy
 ```
 
 Et on redémarre OpenSSH
 
 ```bash
-$ systemctl try-restart sshd
+systemctl try-restart sshd
 ```

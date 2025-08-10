@@ -6,9 +6,9 @@ soit pour vérifier que celui-ci ne casse pas tout ou alors pour
 
 Tout d'abord, il y a 2 moyens de logger les actions :
 
-  * En éditant le fichier `bash.rc` se situant dans `/etc` ce qui aura
+* En éditant le fichier `bash.rc` se situant dans `/etc` ce qui aura
     comme conséquence logger **tous** les utilisateurs
-  * En éditant le fichier `.bashrc` propre à chaque utilisateur. (Il se
+* En éditant le fichier `.bashrc` propre à chaque utilisateur. (Il se
     situe dans son répertoire home)
 
 Dans tous les cas, les logs seront envoyés dans syslog (exploitable via

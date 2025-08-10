@@ -40,9 +40,11 @@ curl -s -d "chat_id=${USERID}&text=${TEXT}&disable_web_page_preview=true&parse_m
 
 Nous utilisons un autre fichier afin de contenir les credentials :
 
-    # Your USERID or Channel ID to display alert and key, we recommend you create new bot with @BotFather on Telegram
-    USERID="USERID"
-    KEY="BOT_TOKEN"
+```bash
+# Your USERID or Channel ID to display alert and key, we recommend you create new bot with @BotFather on Telegram
+USERID="USERID"
+KEY="BOT_TOKEN"
+```
 
 Penser à remplacer le WEBHOOK_URL et le channel par le votre. On rend
 notre script exécutable

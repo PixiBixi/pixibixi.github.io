@@ -12,16 +12,16 @@ prémunir de celui-ci
 Une installation de base de portsentry se fera toujours via apt :
 
 ```bash
-$ apt update && apt install portsentry
+apt update && apt install portsentry
 ```
 
 Conrêtement, portsentry s'axe autour de 3 fichiers :
 
-  * `/etc/default/portsentry` : Fichier où l'on indique dans quel mode
+* `/etc/default/portsentry` : Fichier où l'on indique dans quel mode
     portsentry doit démarrer
-  * `/etc/portsentry/portsentry.conf` : Fichier où l'on indique les
+* `/etc/portsentry/portsentry.conf` : Fichier où l'on indique les
     actions à effectuer quand au drop d'une connexion...
-  * `/etc/portsentry/portsentry.ignore.static` : Nous y plaçons les IPs
+* `/etc/portsentry/portsentry.ignore.static` : Nous y plaçons les IPs
     que nous autorisons (whitelist)
 
 De sorti d'installation, portsentry est inefficace, des réglages
@@ -39,18 +39,18 @@ Maintenant, nous allons configurer portsentry via le fichier
 La première directive à configurer est BLOCK_TCP (et son homologue UDP),
 3 valeurs sont possibles :
 
-  * `0` : Je détecte les scans de port mais je ne fais rien
-  * `1` : Je bloque les scans UDP/TCP
-  * `2` : Je lance uniquement la directive `KILL_RUN_CMD`
+* `0` : Je détecte les scans de port mais je ne fais rien
+* `1` : Je bloque les scans UDP/TCP
+* `2` : Je lance uniquement la directive `KILL_RUN_CMD`
 
 Dans cette partie du tutoriel, pour couvrir le plus de cas possible,
 nous allons choisir l'option 1.
 
 La valeur 1 de BLOCK_TCP nous indique 3 modes de bannissements :
 
-  * Bloquage via route linux (Directive KILL_ROUTE)
-  * Bloquage via fichier hosts.deny (Directive KILL_HOSTS_DENY)
-  * Bloquage via règle custom (Directive KILL_RUN_CMD)
+* Bloquage via route linux (Directive KILL_ROUTE)
+* Bloquage via fichier hosts.deny (Directive KILL_HOSTS_DENY)
+* Bloquage via règle custom (Directive KILL_RUN_CMD)
 
 Les valeurs par défaut de KILL_ROUTE et KILL_HOSTS_DENY sont correctes
 selon votre OS, il n'y a pas besoin d'y toucher.
@@ -75,14 +75,14 @@ Il faut installer ipset comme n'importe quel paquet (Mais également
 iptables-persistent afin de rendre la config persistent):
 
 ```bash
-$ apt install ipset iptables-persistent
+apt install ipset iptables-persistent
 ```
 
 **Si vous êtes sous Debian 10, Ubuntu 19.04 ou supérieur**, alors il
 existe un paquet permettant de rendre ipset persistent également :
 
 ```bash
-$ apt install ipset-persistent
+apt install ipset-persistent
 ```
 
 Sinon, il vous faudra créer l'unit systemd manuellement (Fichier
@@ -120,8 +120,8 @@ RequiredBy=ufw.service
 Et on reload systemd + activation du service au démarrage
 
 ```bash
-$ systemctl daemon-reload
-$ systemctl enable --now ipset-persistent.service
+systemctl daemon-reload
+systemctl enable --now ipset-persistent.service
 ```
 
 Il nous faut d'abord créer notre set ipset avec un timeout de 180s. Il
@@ -129,13 +129,13 @@ est inutile de bannir à vie ces IPs, un timeout de 3 minutes suffit
 amplement à stopper l'attaquant.
 
 ```bash
-$ ipset create portsentry hash:ip timeout 180
+ipset create portsentry hash:ip timeout 180
 ```
 
 Puis créer notre règle correspondante dans iptables
 
 ```bash
-$ iptables -I INPUT -m set --match-set portsentry src -j DROP
+iptables -I INPUT -m set --match-set portsentry src -j DROP
 ```
 
 Maintenant, il faut spécifier à portsentry d'ajouter ces IPs bannies à
