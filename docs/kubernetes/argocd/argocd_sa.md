@@ -8,7 +8,7 @@ Dans notre cas, nous déployons ArgoCD via le Helm chart
 
 On commence par définir le SA dans le `values.yaml` du chart
 
-```
+```bash
 argo-cd:
   configs:
     cm:
@@ -24,7 +24,8 @@ Ici, nous définissons un compte qui aura comme nom  `mysuperSA` et aura l'autor
 La syntaxe des politiques ArgoCD est la suivante : `p, <role/user/group>, <resource>, <action>, <object>, <effect>`. Je vous invite à consulter la [documentation ArgoCD RABC](https://argo-cd.readthedocs.io/en/stable/operator-manual/rbac/)
 
 Une fois ceci fait, on vérifie que notre compte existe :
-```
+
+```bash
 ➜  docs git:(master) ✗ argocd account list
 NAME                 ENABLED  CAPABILITIES
 mysuperSA            true     apiKey
@@ -32,7 +33,7 @@ mysuperSA            true     apiKey
 
 On voit que ce compte existe. Il faut maintenant qu'on lui créé son token associé :
 
-```
+```bash
 argocd account generate-token --account mysuperSA
 ```
 
