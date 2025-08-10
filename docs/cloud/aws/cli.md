@@ -6,7 +6,7 @@
 
 Nous allons partir d'une query assez simple pour lister quelques éléments basiques
 
-```
+```bash
 aws ec2 describe-instances \
 --query "Reservations[*].Instances[*].{PublicIP:PublicIpAddress,Type:InstanceType,Name:Tags[?Key=='Name']|[0].Value,Status:State.Name}"  \
 --filters "Name=instance-state-name,Values=running" "Name=tag:Name,Values='*'"  \
@@ -26,7 +26,7 @@ aws ec2 describe-instances \
 
 Comme nous utilisons souvent les VPC (& privatez IP) sur AWS, nous pouvons également les afficher via la query suivante
 
-```
+```bash
  aws ec2 describe-instances \
  --query "Reservations[*].Instances[*].{PublicIP:PublicIpAddress,PrivateIP:PrivateIpAddress,Name:Tags[?Key=='Name']|[0].Value,Type:InstanceType,Status:State.Name,VpcId:VpcId}" \
  --filters Name=instance-state-name,Values=running \
@@ -48,7 +48,7 @@ Comme nous utilisons souvent les VPC (& privatez IP) sur AWS, nous pouvons égal
 
 Il est également possible d'ajouter des filtres sur le gabarit. Par exemple, si nous souhaitons que les `m6i.16xlarge`
 
-```
+```bash
 aws ec2 describe-instances \
 --query "Reservations[*].Instances[*].{PublicIP:PublicIpAddress,Type:InstanceType,Name:Tags[?Key=='Name']|[0].Value,Status:State.Name}"  \
 --filters "Name=instance-state-name,Values=running" "Name=instance-type,Values='m6i.16xlarge'" \
@@ -71,9 +71,8 @@ Beaucoup d'autres exemples sont [disponibles ici](https://www.middlewareinventor
 
 ## RDS
 
-```
+```bash
 aws rds describe-db-parameters --db-parameter-group-name <PG_name> --region <region> --query "Parameters[?Source=='user' || ApplyMethod=='immediate'].[ParameterName]" --output text
 ```
 
 Petite query pour lister les options qui ont été modifié au sein d'un parameter group
-
