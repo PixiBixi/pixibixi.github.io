@@ -14,6 +14,7 @@ Supprimer le contenu du motd actuel avec vim /etc/motd
 
 On créer ensuite le script qui affichera les informations choisies
 
+<!-- markdownlint-disable MD046 -->
 ??? abstract "/etc/profile.d/motd.sh"
     ```bash
     let upSeconds="$(/usr/bin/cut -d. -f1 /proc/uptime)"
@@ -50,6 +51,7 @@ On créer ensuite le script qui affichera les informations choisies
     Update.....: ${PACKAGE} package update / ${SECURITY} security update ${REBOOT}
     ------------------------------------------------------------------ --- -- - - '033[0m"
     ```
+<!-- markdownlint-enable MD046 -->
 
 On créer ensuite le script qui vérifiera toutes les heures si de
 nouvelles mises à jour sont disponibles
