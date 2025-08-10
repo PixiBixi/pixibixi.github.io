@@ -1,4 +1,4 @@
-## Repérer un disque dur défaillant en le faisant clignoter
+# Repérer un disque dur défaillant en le faisant clignoter
 
 Pour identifier un disque défaillant afin de le remplacer, il nous faut
 auparavant connaitre le disque dur défaillant
