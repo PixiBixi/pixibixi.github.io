@@ -8,26 +8,26 @@ comment faire un cluster pour le rendre redondant côté applicatif
 
 Dans notre cluster, nous allons utiliser les outils suivants :
 
-  * **sentinel** : Nous l'utiliserons pour surveiller nos nœuds
+* **sentinel** : Nous l'utiliserons pour surveiller nos nœuds
     maître/esclave, sentinel élira un esclave pour le passer en maître
     lorsqu'un problème survient.
-  * **haproxy** : Équilibreur de charge TCP, HAproxy peut tester si un
+* **haproxy** : Équilibreur de charge TCP, HAproxy peut tester si un
     noeud redis est maître ou esclave, nous l'utiliserons comme
     front-end auquel les clients se connecteront. HAproxy détectera quel
     noeud est maître et s'assurera que le trafic circule vers le bon
     noeud. Nous pouvons égalment utiliser un autre frontend HAproxy afin
     de balancer les lectures sur tous les noeuds Redis
-  * **pacemaker** : équilibreur de charge au niveau du réseau, nous
+* **pacemaker** : équilibreur de charge au niveau du réseau, nous
     utiliserons pacemaker pour exposer une ip virtuelle et gérer le
     basculement entre nos noeuds HAproxy.
 
 ## Atteindre une disponibilité de 100%
 
-  * **Réplication Redis** - Redis a une réplication intégrée, nous
+* **Réplication Redis** - Redis a une réplication intégrée, nous
     configurerons redis2/redis3 comme esclave, ce qui assurera que nos
     trois nœuds redis ont les mêmes données RDB.
 
-  * **Défaillance Redis** : Si notre maître Redis tombe en panne
+* **Défaillance Redis** : Si notre maître Redis tombe en panne
     (redis1), un des nœuds sentinelle/redis esclave (redis2) détecteront
     la défaillance. Nous utilisons 3 nœuds sentinelle pour nous assurer
     d'avoir un quorum, ce qui garantit que nous n'aurons pas de faux
@@ -40,7 +40,7 @@ Dans notre cluster, nous allons utiliser les outils suivants :
     s'assurera que le nœud maître sera celui vers lequel le trafic sera
     dirigé.
 
-  * **Défaillance de HAproxy** : En cas de problème de HAproxy, nous
+* **Défaillance de HAproxy** : En cas de problème de HAproxy, nous
     avons probablement un problème plus important concernant le serveur.
     L'IP sera donc re-routée sur un autre serveur avec pacemaker.
 
@@ -60,7 +60,7 @@ redis1 sera pour nous le master.
 Installation des packages nécessaires :
 
 ```bash
-$ apt install -y haproxy redis redis-sentinel
+apt install -y haproxy redis redis-sentinel
 ```
 
 Pour simplifier la configuration, on entre tout dans le fichier hosts
@@ -98,7 +98,7 @@ replicaof redis1.internal 6379
 On restart
 
 ```bash
-$ systemctl restart redis-server
+systemctl restart redis-server
 ```
 
 Et on observe :
@@ -128,7 +128,7 @@ observer un changement de master (côté Redis & HAproxy)
 root@dev redis1:/root$ redis-cli DEBUG sleep 30
 ```
 
-  * Si tout se passe bien, nous verrons que le master se sera déplacé
+* Si tout se passe bien, nous verrons que le master se sera déplacé
     sur redis02 ou redis03 et que le frontend HAproxy redis-write
     indiquera le même redis.
 
@@ -137,13 +137,14 @@ root@dev redis1:/root$ redis-cli DEBUG sleep 30
 La configuration de HAproxy est quand à elle assez simple. Il faut
 l'adapter à son usage. Dans ce que je propose, nous avons 2 entrypoints
 
-  * Un pour les écritures, qui va nous permettre de détecter le master.
-  * Un second pour les lectures, qui les balancera sur tous les redis.
+* Un pour les écritures, qui va nous permettre de détecter le master.
+* Un second pour les lectures, qui les balancera sur tous les redis.
 
 Pour rappel, nous utilisons une configuration spliited par fichier.
 
-**Backend**
+#### Backend
 
+<!-- markdownlint-disable MD046 -->
 ??? example "/etc/haproxy/30-backend.cfg"
     ```bash
     backend redis_read
@@ -174,10 +175,12 @@ Pour rappel, nous utilisons une configuration spliited par fichier.
         server redis2 redis2.internal:6379 check inter 1s fall 1 rise 1
         server redis3 redis3.internal:6379 check inter 1s fall 1 rise 1
     ```
+<!-- markdownlint-enable MD046 -->
 
-**Frontend**
+#### Frontend
 
 ??? example "/etc/haproxy/40-backend.cfg"
+<!-- markdownlint-disable MD046 -->
     ```bash
     frontend redis-write
         bind *:6380
@@ -199,6 +202,7 @@ Pour rappel, nous utilisons une configuration spliited par fichier.
 
         default_backend redis_read
     ```
+<!-- markdownlint-enable MD046 -->
 
 Côté backend, nous voyons que la différence est uniquement côté
 détection du master. Nous avons également réduit le fall et le rise à 1
@@ -230,4 +234,3 @@ pouvoir se connecter depuis tous les noeuds.
 Attention à vérifier que sentinel écoute bien sur toutes les interfaces
 (du moins, à minima celle que nous désirons) mais également que les
 ports 6379 et 26379 soit bien ouverts
-
