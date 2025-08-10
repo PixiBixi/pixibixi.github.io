@@ -68,7 +68,7 @@ packets disponibles.
 Si tout marche bien, voici ce que nous devrions obtenir lorsque l'on
 fait la commande `apt-cache policy nginx`
 
-```
+```bash
     └─# apt-cache policy nginx
     nginx:
       Installé : (aucun)
@@ -115,6 +115,7 @@ qu'à le configurer.
 
 Voici ma configuration personnel que j'utilise
 
+<!-- markdownlint-disable -->
 ??? example "File: /etc/nginx/nginx.conf"
     ```nginx
     user www-data;
@@ -192,41 +193,37 @@ Voici ma configuration personnel que j'utilise
         include /etc/nginx/sites-enabled/*;
     }
     ```
+<!-- markdownlint-enable -->
 
 Évidemment, ce fichier n'est pas à recopier tel quel, mais il y a tout
 de même certains points importants à conserver :
 
-------------------------------------------------------------------------
-
-  * `user` qui sera l'utilisateur qui exécutera les instances nginx
-  * `worker_processes` qui définira combien d'instances seront
+* `user` qui sera l'utilisateur qui exécutera les instances nginx
+* `worker_processes` qui définira combien d'instances seront
     exécutées en simultanées (Ce nombre doit correspondre au nombre de
     coeurs `logiques` dont dispose votre CPU). Vous pouvez disposez de
     cette information via la commande *nproc*. La valeur `auto` est
     censée définir le bon nombre de workers automatiquement
-  * `include` qui permet d'inclure différents éléments de
+* `include` qui permet d'inclure différents éléments de
     configuration à votre `nginx.conf` afin de rendre celui-ci plus
     clair. Nous pouvons voir dans notre exemple que nos sites se
     trouvent dans le répertoire *sites-enabled* et que certains éléments
     de configuration se trouvent dans le répertoire //conf.d/static/ //
-  * `server_tokens` une valeur très importante, celle-ci doit être
+* `server_tokens` une valeur très importante, celle-ci doit être
     mise à `off`. Cette valeur évite à nginx de montrer des éléments
     importants tel que son numéro de version. Ces éléments peuvent être
     utilisés pour exploiter des failles sur nginx
-  * `ignore_invalid_headers` est également une directive assez
+* `ignore_invalid_headers` est également une directive assez
     intéréssante. Si des bots tentent de se connecter avec un header
     incorrect, nginx leur retourne une erreur 404.
-  * `resolver` nous permet de spécifier les DNS qui vont être utilisés
+* `resolver` nous permet de spécifier les DNS qui vont être utilisés
     dans les logs pour résoudre les différents noms de domaines
-
-------------------------------------------------------------------------
 
 La directive *more_set_headers* permet de ne pas dévoiler son serveur
 web, et n'est disponible que via le package **nginx-extras**
 
 Comme vous pouvez le voir, on inclut également différents fichiers, les
 voici :
-
 
 ??? example "File: /etc/nginx/conf.d/filecache.conf"
     ```nginx
@@ -238,7 +235,6 @@ voici :
     open_file_cache_min_uses 2;
     open_file_cache_errors   on;
     ```
-
 
 ??? example "File: /etc/nginx/conf.d/gzip.conf"
     ```nginx
@@ -267,28 +263,27 @@ Ce fichier est assez important, il permet d'activer la compression
 **gzip**, ce qui signifie concrètement un gain de vitesse sur votre site
 internet.
 
-------------------------------------------------------------------------
-
-  * `gzip` permet d'activer la compression gzip
-  * `gzip_buffers` permet de spécifier le nombre de buffers qui vont
+* `gzip` permet d'activer la compression gzip
+* `gzip_buffers` permet de spécifier le nombre de buffers qui vont
     être utilisés, ainsi que leur taille
-  * `gzip_comp_level` spécifie lagressivité de la compression gzip.
+* `gzip_comp_level` spécifie lagressivité de la compression gzip.
     `Attention` plus la compression gzip sera forte (9), plus le CPU
     va être sollicité.
-  * `gzip_disable` permet de désactiver la compression GZip selon
+* `gzip_disable` permet de désactiver la compression GZip selon
     l'User-Agent (Par exemple, ici, nous désactivons la compression
     gzip pour `IE4 à IE6`)
-  * `gzip_min_length` spécifie quelle est la longueur minimale d'un
+* `gzip_min_length` spécifie quelle est la longueur minimale d'un
     élément qui doit être '"gzippé'". Il dépend du header
     *Content-Length*
-  * `gzip_proxied` spécifie les éléments qui doivent être '"gzippé'"
+* `gzip_proxied` spécifie les éléments qui doivent être '"gzippé'"
     lorsque nginx agit comme reverse-proxy
-  * `gzip_types` est également une autre ligne importante. C'est ici
+* `gzip_types` est également une autre ligne importante. C'est ici
     que l'on doit spécifié les `MIME-Types` des différents éléments
     qui vont être '"gzippés'"
-  * `gzip_vary` indique si un ajout va être effectué dans le header si
+* `gzip_vary` indique si un ajout va être effectué dans le header si
     le fichier a été '"gzippé'"
 
+<!-- markdownlint-disable -->
 ??? example "File: /etc/nginx/snippets/ssl.conf"
     ```nginx
     ###
@@ -314,8 +309,8 @@ internet.
 
     ssl_certificate /etc/nginx/ssl/server.crt;
     ssl_certificate_key /etc/nginx/ssl/server.key;
-
     ```
+<!-- markdownlint-enable -->
 
 Le fichier **ssl.conf** est à inclure seulement si l'on souhaite du SSL
 sur ses sites web
@@ -342,6 +337,7 @@ je vous renvoie vers l'[article de préférence](https://content-security-policy
 
 Voici désormais des snippets utiles pour ses différents blocks nginx :
 
+<!-- markdownlint-disable -->
 ??? example "File: /etc/nginx/snippets/protect.conf"
     ```nginx
     ###
@@ -357,9 +353,8 @@ Voici désormais des snippets utiles pour ses différents blocks nginx :
     location ~* (?:'.(?:bak|conf.*|sql|fla|psd|ini|log|sh|inc|swp|dist)|~)$ {
         deny all;
     }
-
-
     ```
+<!-- markdownlint-enable -->
 
 Ce fichier nous permet d'éviter que des fichiers de configuration ou
 autres soient accessible par tout le monde. Il s'agit d'un fichier
@@ -371,6 +366,7 @@ cas-là, il faut les ajouter manuellement.
 
 Snippets utiles pour vos vhosts (snippets/letsencrypt.conf)
 
+<!-- markdownlint-disable -->
 ??? example "File: /etc/nginx/snippets/letsencrypt.conf"
     ```nginx
     location ^~ /.well-known/acme-challenge/ {
@@ -382,14 +378,16 @@ Snippets utiles pour vos vhosts (snippets/letsencrypt.conf)
         root /var/www/letsencrypt;
     }
     ```
+<!-- markdownlint-enable -->
 
 ## Installer et configurer PHP7-FPM
 
 Commande à adapter selon les modules que vous souhaitez. Généralement,
 ces derniers sont suffisant pour 99% des installations.
 
+<!-- markdownlint-disable MD013 -->
 ```bash
-$ apt-get -y install php-common php7.4 php7.4-bz2 php7.4-cli php7.4-common php7.4-curl php7.4-fpm php7.4-gd php7.4-geoip php7.4-gmp php7.4-igbinary php7.4-imagick php7.4-intl php7.4-json php7.4-mbstring php7.4-mcrypt php7.4-memcached php7.4-msgpack php7.4-mysql php7.4-opcache php7.4-readline php7.4-sqlite3 php7.4-xml php7.4-xmlrpc php7.4-zip
+apt-get -y install php-common php7.4 php7.4-bz2 php7.4-cli php7.4-common php7.4-curl php7.4-fpm php7.4-gd php7.4-geoip php7.4-gmp php7.4-igbinary php7.4-imagick php7.4-intl php7.4-json php7.4-mbstring php7.4-mcrypt php7.4-memcached php7.4-msgpack php7.4-mysql php7.4-opcache php7.4-readline php7.4-sqlite3 php7.4-xml php7.4-xmlrpc php7.4-zip
 ```
 
 Nous allons maintenant passer à la configuration de base de **PHP-FPM**,
@@ -398,13 +396,13 @@ sous-répertoires. (7.4 a remplacer par votre numéro de version)
 
 Nous allons éditer le fichier php.ini :
 
-  * `expose_php` : Désactivation afin de ne pas exposer la version de
+* `expose_php` : Désactivation afin de ne pas exposer la version de
     PH
-  * `upload_max_filesize` : Modification de la taille maximale des
+* `upload_max_filesize` : Modification de la taille maximale des
     fichiers qu'on peut upload avec PHP
-  * `post_max_size` : Va avec la directive *upload_max_filesize* et
+* `post_max_size` : Va avec la directive *upload_max_filesize* et
     doit être supérieur à cette dernière
-  * `max_file_uploads` : Nombre de fichiers qu'on peut upload en
+* `max_file_uploads` : Nombre de fichiers qu'on peut upload en
     parallèle. Par défaut à 20, peut suffir dans une majorité des cas
 
 Petit customisation de la. configuration afin d'optimiser les
@@ -437,13 +435,13 @@ surveiller votre monitoring.
 On met à jour les paquets disponibles :
 
 ```bash
-$ apt-get update
+apt-get update
 ```
 
 Et enfin, on vérifie que la *Candidate Version* est la bonne :
 
 ```bash
-$ apt-cache policy mariadb-server
+apt-cache policy mariadb-server
 ```
 
 Voilà le résultat attendu :
@@ -462,7 +460,7 @@ mariadb-server:
 Si tout se passe comme il faut, on lance l'installation du serveur SQL
 
 ```bash
-$ apt-get install mariadb-server
+apt-get install mariadb-server
 ```
 
 Pendant l'installation de **MariaDB-Server**, vous allez obtenir une
@@ -478,5 +476,5 @@ utiliser un mot de passe relativement puissant pour qu'il ne puisse pas
 Et on finit par le script made in MariaDB pour sécuriser le tout
 
 ```bash
-$ mysql_secure_installation
+mysql_secure_installation
 ```

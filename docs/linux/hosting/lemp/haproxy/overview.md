@@ -116,17 +116,21 @@ local0. rsyslog s'occupera de traiter les logs. (par défaut,
 * `user/group` indique à haproxy qu'il ne faut pas lancer les fork
 en tant que root, mais en tant qu'haproxy dans notre cas.
 * `stats socket` nous permet de définir un socket afin d'y extraire les stats ou autre. Il est également possible d'écrire la configuration de HAproxy via ce moyen. Attention à donc bien restreindre les privilèges.
+    <!-- markdownlint-disable-next-line -->
     * SleepLessBeastie a écrit [un excellent article](https://sleeplessbeastie.eu/2020/01/29/how-to-use-haproxy-stats-socket/) sur la définition des privilèges et comment interagir avec l'API.
 * `nbproc/nbthread` sont les paramètres permettant à HAproxy de
 scale. Nous pouvons utiliser *nbproc* indépendamment de *nbthread*.
 Chaque process dispose de ses propres stats, tables de
 persistances... Tous les threads disposent cependant des mêmes
 informations.
+    <!-- markdownlint-disable-next-line -->
     * Il est largement déconseillé d'utiliser plusieurs processus sur HAproxy
+    <!-- markdownlint-disable-next-line -->
     * Ces options requièrent la présence de la directive *daemon* afin de lancer HAproxy en tant que daemon.
 * `cpu-map` nous permet de profiter totalement de nos différents cores CPU afin de bind 1 thread/core
 * `daemon` permet de lancer HAproxy en tant que daemon.
 * `ssl-default-bind-ciphers/ssl-default-bind-options` configure tout ce qui est relatif au TLS. La première option configure les ciphers et la seconde configure les versions autorisées de TLS minimum...
+    <!-- markdownlint-disable-next-line -->
     * La fondation Mozilla propose un [configurateur](https://ssl-config.mozilla.org/#server=haproxy&version=2.1&config=intermediate&openssl=1.1.1k&guideline=5.6) offrant une configuration alliant sécurité & compatibilité de équipements. Le profil Intermediate est adapté pour une utilisation en production. Modern est trop restrictif.
 
 ### Defaults
@@ -136,6 +140,7 @@ Votre configuration est évolution, c'est pour cela que la catégorie
 frontend mais également pour les backends. Vous pouvez overwrite vos
 paramètres pour un frontend/backend spécifique par la suite
 
+<!-- markdownlint-disable -->
 ??? example "HAproxy: Default section"
     ```haproxy
     defaults
@@ -157,6 +162,7 @@ paramètres pour un frontend/backend spécifique par la suite
 
         http-reuse safe
     ```
+<!-- markdownlint-enable -->
 
 * `mode http` indique à HAproxy de fonctionner en tant que balancer
 HTTP et non simplement TCP. Légèrement plus lent que le TCP mais
@@ -172,15 +178,16 @@ de log plus détaillé. Il existe également l'attribut `tcplog` si
 vous utilisez le load-balancer en tant que balancer L4 (TCP)
 * `option dontlognull` permet de ne pas logger les sessions n'ayant
 donné aucun échange de donnée (requête ou réponse)
+    <!-- markdownlint-disable-next-line -->
     * Il peut être intéressant de les log en pour avoir des logs bien plus détaillés. Peut-être utile en cas de saturation socket (DOS ou autre).
+    <!-- markdownlint-disable-next-line -->
     * Certaines méthodes (tel qu'un monitoring ou autre) peuvent également générer certaines de ces requêtes. Il peut être intéressant d'activer cette option dans ce cas
 * `timeout connect...` spécifie les différents timeout (connect,
 server)...
-    * Il peut être intéressant de spécifier différentes valeurs de
-    timeout afin de faciliter le debug
-* `http-reuse safe` est l'option par défaut. Nous nous assurons via
-le paramètre `safe` que le serveur ferme la connexion lorsque
-quand la requête a été envoyée
+    <!-- markdownlint-disable-next-line -->
+    * Il peut être intéressant de spécifier différentes valeurs de timeout afin de faciliter le debug
+<!-- markdownlint-disable MD013 -->
+* `http-reuse safe` est l'option par défaut. Nous nous assurons via le paramètre `safe` que le serveur ferme la connexion lorsque quand la requête a été envoyée
 
 ### Frontend
 
@@ -189,9 +196,9 @@ quand la requête a été envoyée
 Les frontends sont utilisés pour définir comment les demandes doivent
 être transmises aux backends. Ils se composent des éléments suivants :
 
-  * Adresses IP/Ports
-  * ACLs
-  * Règles quant à l'utilisation spécifiques de backends
+* Adresses IP/Ports
+* ACLs
+* Règles quant à l'utilisation spécifiques de backends
 
 #### Exemple basique
 
@@ -213,6 +220,7 @@ types d'ACL, que ce soir sur l'URI, les paramètres... Nous allons
 voir un exemple simple avec l'utilisation d'une ACL sur le nom de
 domaine.
 
+<!-- markdownlint-disable -->
 ??? example "HAproxy : Simple frontend w/ ACL"
     ```vcl
     frontend http
@@ -227,6 +235,7 @@ domaine.
 
        default_backend undefined
     ```
+<!-- markdownlint-enable -->
 
 Nous définissons ici un backend par défaut. Il est possible de ne pas en
 définir et HAproxy renverra une erreur 421 de lui même.
@@ -304,14 +313,13 @@ requête HEAD sur /
      http-check expect status 200
 ```
 
-Ce test est légèrement plus détaillé. Nous spécifions ici un Host à
-utilisé (www.jdelgado.fr) ainsi que l'user-agent. Nous spécifions
-également que nous attendons un retour 200 (OK).
+<!-- markdownlint-disable MD034 -->
+<!-- markdownlint-disable MD013 -->
+Ce test est légèrement plus détaillé. Nous spécifions ici un Host à utilisé (www.jdelgado.fr) ainsi que l'user-agent. Nous spécifions également que nous attendons un retour 200 (OK).
 
 #### Check spécifiques
 
-HAproxy intègre différents checks pour différents protocoles. Voici les
-checks disponibles
+HAproxy intègre différents checks pour différents protocoles. Voici les checks disponibles
 
 * option mysql-check
 * option pgsql-check
@@ -349,6 +357,7 @@ indique à haproxy de toujours envoyer le traffic pour une URI spécifique
 vers le même backend. Ainsi, nous maximisons le hitrate.
 
 ??? example "HAproxy : Backend Varnish"
+<!-- markdownlint-disable -->
     ```vcl
     backend varnish
         timeout     check 3000
@@ -358,6 +367,7 @@ vers le même backend. Ainsi, nous maximisons le hitrate.
         server      varnish01  varnish01.vlan:82  check
         server      varnish02  varnish02.vlan:82  check
     ```
+<!-- markdownlint-enable -->
 
 ### HTTP to HTTPS
 
@@ -381,6 +391,7 @@ méthode. Pour un usage durable dans le temps, nous préférons à cela une
 Si pour quelconques raison vous voulez retournez des URLs custom selon
 des URI précises, la manière la plus facile :
 
+<!-- markdownlint-disable MD013 -->
 ??? example "HAproxy : Using map"
     ```vcl
         acl     acl           hdr_beg(host) -i monsite.fr

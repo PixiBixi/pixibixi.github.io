@@ -38,10 +38,10 @@ RemoteIPTrustedProxy 127.0.0.1 ::1
 
 Et on active tout ça
 
-```
-$ a2enconf remoteip
-$ a2enconf log-proxified
-$ a2enmod remoteip
+```bash
+a2enconf remoteip
+a2enconf log-proxified
+a2enmod remoteip
 ```
 
 On n'oublie pas de spécifier le format du CustomLog à proxified

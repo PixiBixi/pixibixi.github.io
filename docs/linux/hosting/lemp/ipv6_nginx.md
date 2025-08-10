@@ -10,7 +10,7 @@ supporte.
 Pour vérifier que nous avons l'IPv6 :
 
 ```bash
-$ ping6 google.com
+ping6 google.com
 ```
 
 Si cela ping, nous sommes déjà sûr que votre hôte dispose d'une
@@ -20,7 +20,7 @@ Maintenant, pour être sur que **nginx**, nous affichons les options de
 compilation nginx, et nous devons apercevoir `--with-ipv6`
 
 ```bash
-$ nginx -V | grep --with-ipv6
+nginx -V | grep --with-ipv6
 ```
 
 Si nous avons la ligne, nous sommes prêts à modifier la configuration
@@ -34,15 +34,15 @@ listen [::]:80 ipv6only=on deferred default_server;
 
 Dans cette ligne, nous pouvons observer plusieurs éléments :
 
-  * `listen` l'instruction **nginx** qui nous indique que nous devons
+* `listen` l'instruction **nginx** qui nous indique que nous devons
     '"écouter'"
-  * `[::']` qui nous indique sur quelles interfaces écouter (Ici, sur
+* `[::']` qui nous indique sur quelles interfaces écouter (Ici, sur
     toutes)
-  * `ipv6only=on` signifie que cette ligne listen ne concerne uniquement
+* `ipv6only=on` signifie que cette ligne listen ne concerne uniquement
     l'IPv6
-  * `deferred` peut accélerer la communication TCP, mais est tout de
+* `deferred` peut accélerer la communication TCP, mais est tout de
     même **indispensable** en IPv6
-  * `default_server` signifie que nous voulons que cette configuration
+* `default_server` signifie que nous voulons que cette configuration
     soit chargée avant les autres
 
 Sur les autres servers blocks, nous devons ajouter
@@ -54,7 +54,7 @@ listen [::]:80;
 Un petit coup de restart
 
 ```bash
-$ service nginx restart
+service nginx restart
 ```
 
 Et voilà, nous avons désormais nos serveurs utilisant l'IPv6 o/
