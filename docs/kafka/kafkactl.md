@@ -8,7 +8,7 @@ Il y'a peu, j'ai découvert un outil changeant ma manière de travailler avec Ka
 
 Sous mac, l'installer est d'une simplicité enfantine
 
-```
+```bash
 # install tap repostory once
 brew tap deviceinsight/packages
 # install kafkactl
@@ -17,7 +17,7 @@ brew install deviceinsight/packages/kafkactl
 
 Et son utilisation l'est tout autant. Tout se passe dans un seul fichier de configuration :
 
-```
+```bash
 ➜  ~ \cat ~/.config/kafkactl/config.yml
 contexts:
     cluster1:
@@ -38,14 +38,13 @@ Beaucoup d'autres paramètres sont disponibles, n'hésitez pas à consulter la d
 
 Et tout comme kubectl, il ne faut pas oublier de source l'autocompletion, à ajouter dans ton .zshrc (ou tout autre)
 
-
-```
+```bash
 echo "source <(kafkactl completion zsh)" >> .zshrc"
 ```
 
 L'utilisation des contextes est comme sur Kube
 
-```
+```bash
 ➜  ~ kafkactl config get-contexts
 ACTIVE     NAME
 *          cluster1
@@ -59,19 +58,19 @@ ACTIVE     NAME
 
 Une fois tout configuré, voici les principales fonctionnalités dont je me sers :
 
-```
+```bash
 kafkactl alter topic "$TOPIC" --replication-factor 3 --validate-only
 ```
 
 Afin de voir les futures modifications (--validate-only). Si elles vous conviennent, enlever le paramètre
 
-
-```
+```bash
 kafkactl get consumer-groups
 ```
 
 Et pour avoir les détails d'un consumer group
-```
+
+```bash
 kafkactl describe consumer-group "my-consumer-group"
 CLIENT_HOST       CLIENT_ID     TOPIC  ASSIGNED_PARTITIONS
 /1.2.3.21     rdkafka       topica     44,45,46,47,48,49,50,51,52,53
