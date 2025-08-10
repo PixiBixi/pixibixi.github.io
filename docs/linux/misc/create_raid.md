@@ -3,6 +3,8 @@
 Créer son RAID avec mdadm est assez simple, cependant, il est toujours
 utile de rappeller les commandes élémentaires.
 
+## Différents types de RAID
+
 ### RAID0
 
 Performances accrues, 0 sécurité
@@ -42,7 +44,6 @@ la sécurité d'un RAID1 quid d'un grand nombre de devices à utiliser.
 
 !!! warning "Reboot"
     Il est important de ne pas reboot son serveur avec finalisation de création de RAID afin de ne pas perdre son RAID
-
 
 ## Monter son RAID
 

@@ -30,7 +30,7 @@ Puis exporter la commande dans votre '*'*.bashrc '*'*
 echo "export MANPAGER='"/usr/bin/most -s'"" >> ~/.bashrc
 ```
 
-**Il faut refaire la commande export pour chaque utilisateur**
+Il faut refaire la commande export pour **chaque utilisateur**
 
 Pour la seconde méthode, il faut exporter plusieurs variables dans votre
 **.bashrc** :

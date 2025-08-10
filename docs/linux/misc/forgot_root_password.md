@@ -14,7 +14,7 @@ root sans connaitre le password.
 Une fois l'accès au prompt, il faut remonter la partition en RW
 
 ```bash
-$ mount -rw -o remount /
+mount -rw -o remount /
 ```
 
 Puis vous pourrez alors changer le password avec l'instruction

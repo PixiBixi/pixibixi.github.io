@@ -9,13 +9,13 @@ farfelu en .iso d'une manière extrêmement simpliste
 Il faut évidemment commencer par installer iat
 
 ```bash
-$ apt install iat
+apt install iat
 ```
 
 Puis nous convertissons simplement notre fichier .bin en .iso
 
 ```bash
-$ iat source.bin source.iso
+iat source.bin source.iso
 ```
 
 Et voilà, après processing de la part de iat, nous nous retrouvons avec
