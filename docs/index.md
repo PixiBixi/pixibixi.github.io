@@ -199,7 +199,7 @@ Cette magnifique documentation a été faites avec MkDocs
 
 ### Azure
 
-* [EphemeralDisks : comment faire ?](./cloud/azure/epehmeral_disks.md)
+* [EphemeralDisks : comment faire ?](./cloud/azure/ephemeral_disks)
 
 ## DevOps
 
