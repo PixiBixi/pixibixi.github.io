@@ -47,3 +47,13 @@ Ces commandes proviennent d'un peu partout, principalement la documentation Kube
     ```bash
     kubectl get svc -o jsonpath='{range .items[*]}{.metadata.name}.{.metadata.namespace}.svc.cluster.local{"\n"}{end}'
     ```
+
+!!! note "Split un manifest Kube contenant plusieurs ressources"
+    ```bash
+    yq -s '.kind +"_" + .metadata.name' my_file
+    ```
+    You will have this kind of output
+    <!-- markdownlint-disable MD038 -->
+    ```
+    Deployment_release-name-testjd.yml  ExternalSecret_pullsecret.yml  Ingress_release-name-testjd-app-private.yml  Ingress_release-name-testjd-app-public.yml  Ingress_release-name-testjd-app.yml  Service_release-name-testjd.yml
+    ```
