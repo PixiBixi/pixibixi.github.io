@@ -179,8 +179,8 @@ Pour rappel, nous utilisons une configuration spliited par fichier.
 
 #### Frontend
 
-??? example "/etc/haproxy/40-backend.cfg"
 <!-- markdownlint-disable MD046 -->
+??? example "/etc/haproxy/40-backend.cfg"
     ```bash
     frontend redis-write
         bind *:6380
