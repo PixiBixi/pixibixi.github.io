@@ -23,7 +23,7 @@ et a dépassé de loin les attentes des développeurs
 
 Pour installer Sonerezh, il nous faut bien évidemment un **environnement
 LAMP** ou équivalent. Je vous invite à aller voir la page sur [le
-wiki](/linux/hosting/lemp/installation) que j'ai fais à cet effet.
+wiki](../hosting/lemp/installation.md) que j'ai fais à cet effet.
 
 Nous aurons également besoin du package **libav-tools** pour convertir
 les FLAC en MP3

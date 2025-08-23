@@ -40,7 +40,7 @@ Le dossier private n'existe pas, n'oubliez pas de le créer de lui
 donner les droits adéquates.
 
 Evidemment, des explications plus détaillées sont disponibles dans le
-[https://linux.die.net/man/5/ssh_config](man de ssh_config)
+[man de ssh_config](https://linux.die.net/man/5/ssh_config)
 
 ## Benchmark
 

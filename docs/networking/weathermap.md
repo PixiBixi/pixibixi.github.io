@@ -100,7 +100,7 @@ on peut cependant faire des diagnostics plus poussés.
 |  Telia                       | [ici](http://lg.telia.net/) |
 |  Trit                        | [ici](http://lg.trit.net/cgi-bin/bgplg) |
 |  Vienna IX                   | [ici](https://www.vix.at/vix_lookingglass.html) |
-|  WorldStream                 | [ici](/lg.worldstream.nl) |
+|  WorldStream                 | [ici](https://lg.worldstream.nl) |
 |  Zayo                        | [Ici](http://lg.as8218.eu/) |
 
 Il est également possible de se renseigner via les route-servers

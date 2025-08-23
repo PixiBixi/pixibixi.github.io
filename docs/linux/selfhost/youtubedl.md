@@ -1,7 +1,5 @@
 # Sauvegarder ses vidéos avec YoutubeDL et sa GUI
 
-![YoutubeDL WeUI](/youtubedlwebui_main.png)
-
 youtube-dl est un outil formidable permettant de télécharger ses vidéos
 en ligne de commande à partir d'une foule de providers (Youtube, Arte,
 SoundCloud...). ([Liste
@@ -18,7 +16,7 @@ ligne.
 Pour installer cette WebUI, 2 manières sont disponibles. La manière
 traditionnelle avec un nginx installé physiquement sur la machine. (Nous
 devrons avoir suivi le tutoriel [Installer son Serveur Web : nGinx,
-PHP-FPM et MariaDB](/linux/hosting/lemp/installation)), ou alors via
+PHP-FPM et MariaDB](../hosting/lemp/installation.md)), ou alors via
 Docker. Nous allons voir les 2 manières
 
 ## Docker

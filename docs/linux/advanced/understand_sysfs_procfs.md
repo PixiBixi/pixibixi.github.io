@@ -113,7 +113,7 @@ instructions embarquées ainsi que les bugs auquel il est touché.
 Pour rappel, si vous souhaitez retrouver des performances sur votre
 processeur Intel et désactiver les patchs de sécurité, je vous rappelle
 qu'un tutoriel est disponible
-[ici](/linux/security/disable_patches#application)
+[ici](../security/disable_patches.md#application)
 
 * `/proc/meminfo` nous permet d'obtenir toutes les informations
     nécessaires à notre RAM (RAM Totale, disponible, free...)
