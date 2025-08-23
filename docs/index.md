@@ -249,6 +249,7 @@ Cette magnifique documentation a été faites avec MkDocs
 
 * [Cheatsheet terraform](./linux/automatisation/terraform/cheatsheet.md)
 * [Tools Terraform indispensables](./linux/automatisation/terraform/tools.md)
+* [Accélerer Terraform](./linux/automatisation/terraform/speedup.md)
 
 ## Gitlab
 
