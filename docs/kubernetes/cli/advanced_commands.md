@@ -57,3 +57,12 @@ Ces commandes proviennent d'un peu partout, principalement la documentation Kube
     ```
     Deployment_release-name-testjd.yml  ExternalSecret_pullsecret.yml  Ingress_release-name-testjd-app-private.yml  Ingress_release-name-testjd-app-public.yml  Ingress_release-name-testjd-app.yml  Service_release-name-testjd.yml
     ```
+
+
+!!! note "Lister les zones pour les noeuds K8S"
+    ```bash
+    ➜  docs git:(master) kubectl get nodes -o custom-columns='NAME:metadata.name, REGION:metadata.labels.topology\.kubernetes\.io/region, ZONE:metadata.labels.topology\.kubernetes\.io/zone'
+    NAME                                                   REGION     ZONE
+    gke-my-node-pool--my-node-pool--0de3fd48-p2qc          us-west1   us-west1-a
+    gke-my-node-pool--my-node-pool--0de3fd48-yhl4          us-west1   us-west1-b
+    ```
