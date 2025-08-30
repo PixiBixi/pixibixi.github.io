@@ -35,6 +35,9 @@ plugins:
 
 extra:
   generator: false
+  analytics:
+    provider: google
+    property: G-NHG8VK60NB
   social:
     - icon: fontawesome/brands/twitter
       link: https://twitter.com/Pixel__Art
@@ -49,5 +52,4 @@ markdown_extensions:
   - pymdownx.details
   - attr_list
 
-extra_javascript:
-  - nodoc_custom/js/matomo.js
+
