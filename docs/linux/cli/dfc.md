@@ -10,11 +10,11 @@ Comme des images sont plus représentatives, voilà les deux commandes :
 
 **df :**
 
-![df](./_img/df.jpg)
+![df](./_img/df.webp)
 
 **dfc :**
 
-![dfc](./_img/dfc.jpg)
+![dfc](./_img/dfc.webp)
 
 Comme vous pouvez, le voir, le résultat est quasiment identique, mais
 **dfc** est bien plus clair.

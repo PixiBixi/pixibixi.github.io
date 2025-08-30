@@ -1,6 +1,6 @@
 # Rappel des commandes de base
 
-![Linux GNU](./_img/gnu_and_tux.png)
+![Linux GNU](./_img/gnu_and_tux.webp)
 
 Linux est un système incroyable, malheureusement complexe pour les
 néophytes. Dans cet article, nous allons voir les commandes de base que
@@ -68,7 +68,7 @@ type
 
 `chmod <xyz> <file'|directory>` : **ch**ange file **mod**e bits
 
-![Tableau des chmod](./_img/chmod.png)
+![Tableau des chmod](./_img/chmod.webp)
 
 * **x** correspond aux droits pour le propriétaire
 * **y** les droits du groupe

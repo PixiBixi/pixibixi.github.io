@@ -9,7 +9,7 @@ templates afin d'avoir une structure.
 
 Voici un exemple de Pull Request et d'Issue pour le repo [aframe](https://github.com/aframevr/aframe/issues/new) :
 
-![Template PR Github](./_img/template_pr_github.png)
+![Template PR Github](./_img/template_pr_github.webp)
 
 Pour se faire, c'est très simple
 

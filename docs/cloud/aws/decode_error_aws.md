@@ -18,6 +18,6 @@ decode_aws () {
 
 Nous pouvons pipe l'output vers fx pour avoir un bel affichage. Voilà ce que ça donne
 
-![Exemple d'un message AWS décodé](./_screens/decoded_aws_message.png)
+![Exemple d'un message AWS décodé](./_screens/decoded_aws_message.webp)
 
 On peut facilement voir ici que la polirique n'a pas la rule pour monter le volume EBS. Nous pouvons donc facilement debug le probleme :)

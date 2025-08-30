@@ -108,7 +108,7 @@ On peut limiter le nombre d'adresse MAC utilisable par port
 
 Il existe différents mode de violation de droits
 
-![Port Security Violation](./_img/port-security-violations.png)
+![Port Security Violation](./_img/port-security-violations.webp)
 
 Par défaut, les ports sont en protect, pas très utile donc.
 

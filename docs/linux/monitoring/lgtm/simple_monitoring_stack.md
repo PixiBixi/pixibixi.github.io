@@ -1,6 +1,6 @@
 # Netdata, Prometheus et Grafana : une stack de monitoring simple et puissante
 
-![Global image](./_img/monitoring_stack.jpeg)
+![Global image](./_img/monitoring_stack.webp)
 
 ## Introduction
 
@@ -390,11 +390,11 @@ metrics_path.
 Pour vérifier que tout est conforme, rendez-vous dans l'interface de
 Prometheus (Par défaut, port 9090), vous devriez tomber sur cette page :
 
-![prometheus_1.jpg](./_img/prometheus_1.jpg)
+![prometheus_1.webp](./_img/prometheus_1.webp)
 
 On se rend ensuite sur **Status** puis **Target**
 
-![prometheus_2.jpg](./_img/prometheus_2.jpg)
+![prometheus_2.webp](./_img/prometheus_2.webp)
 
 Si tout est bon, vous devriez apercevoir vos différentes targets avec
 l'état UP.
@@ -416,7 +416,7 @@ Grafana suivi du chemin de la métrique.
 
 Voici un exemple de relevé :
 
-![prometheus_3.jpg](./_img/prometheus_3.jpg)
+![prometheus_3.webp](./_img/prometheus_3.webp)
 
 Comme vous pouvez le voir, nous obtenons de nombreuses informations
 (Concrètement, on obtient en réponse tous les netdata que nous
@@ -439,7 +439,7 @@ pour le même serveur. Ce qui est contenu dans les accolades est une
 variable pour Prometheus. Par exemple, voici comment obtenir la RAM
 utilisée pour le serveur ci-dessus :
 
-![prometheus_4.jpg](./_img/prometheus_4.jpg)
+![prometheus_4.webp](./_img/prometheus_4.webp)
 
 Comme nous pouvons le voir, nous nous sommes servis des variables de
 Prometheus pour filtrer ce que nous voulons. Nous pouvons également nous
@@ -497,16 +497,16 @@ qu'il utilise Prometheus comme source de données. Par défaut, Grafana
 écoute sur le port **3030** et ses identifiants par défauts sont
 **admin** / **admin**.
 
-![grafana_datasources_1.jpeg](./_img/grafana_datasources_1.jpeg)
+![grafana_datasources_1.webp](./_img/grafana_datasources_1.webp)
 
 Il faut alors cliquer sur *Add Data Sources* :
 
-![grafana_datasources_2.jpeg](./_img/grafana_datasources_2.jpeg)
+![grafana_datasources_2.webp](./_img/grafana_datasources_2.webp)
 
 Dans le choix de la Data Source, nous choisissons bien évidemment
 **Prometheus** :
 
-![grafana_datasources_3.jpeg](./_img/grafana_datasources_3.jpeg)
+![grafana_datasources_3.webp](./_img/grafana_datasources_3.webp)
 
 Ici, les choses se corsent un tout petit peu.
 
@@ -524,7 +524,7 @@ Une fois ceci fait, **Save & Test**
 
 Si tout est correct, voici le message que vous obtiendrez :
 
-![grafana_datasources_4.jpeg](./_img/grafana_datasources_4.jpeg)
+![grafana_datasources_4.webp](./_img/grafana_datasources_4.webp)
 
 Félicitations, une étape fastidieuse est passée, cependant, le plus dur
 reste à faire, la création de votre premier panel !
@@ -542,17 +542,17 @@ je vais vous partager mes panels.
 
 #### Mes panels Grafana
 
-![Netdata](./_img/simple_netdata.png)
+![Netdata](./_img/simple_netdata.webp)
 
 *Lien de téléchargement :
 [ici](https://files.jdelgado.fr/r/7JCI5fpv#nprlBuA4F3Dnt9qbXbrFBjMtQNuoQNPixGDr8SCjvcc=)*
 
-![Docker dashboard](./_img/docker_dashboard.png )
+![Docker dashboard](./_img/docker_dashboard.webp )
 
 *Lien de téléchargement :
 [ici](https://files.jdelgado.fr/r/UEeLrP_8#9BJttU2EqJZa9aNXrrHzGTKi4UPooRnvu6VuzzsDQA0=)*
 
-![Full Dashboard](./_img/full_dashboard.png )
+![Full Dashboard](./_img/full_dashboard.webp )
 
 *Lien de téléchargement :
 [ici](https://files.jdelgado.fr/r/U4KCGryY#JDkX10832wvNJvRMOh/C3nPJ+dwDT/pD67XwbofHSuc=)*

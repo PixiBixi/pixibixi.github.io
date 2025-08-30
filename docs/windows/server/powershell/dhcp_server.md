@@ -6,7 +6,7 @@ statiques...
 
 Petit schéma pour vous rappeler comment fonctionne un serveur DHCP :
 
-![Trame DHCP](./_img/trame_dhcp.jpg)
+![Trame DHCP](./_img/trame_dhcp.webp)
 
 ## Installation
 

@@ -1,7 +1,7 @@
 <!-- markdownlint-disable -->
 # SublimeText : Le codage Efficace
 
-![Sublimetext](./_img/st3header.jpg)
+![Sublimetext](./_img/st3header.webp)
 
 ## Préambule
 

@@ -22,7 +22,7 @@ apt update && apt install tmux
 De base, lorsque nous lançons tmux, nous avons une simple fenêtre, avec
 une bar de statut en bas :
 
-![Tmux basique](./_img/tmux_standard.png)
+![Tmux basique](./_img/tmux_standard.webp)
 
 Puis nous pouvons faire une multitude de choses sur cette simple fenêtre
 

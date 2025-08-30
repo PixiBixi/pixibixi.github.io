@@ -1,6 +1,6 @@
 # NextCloud, son cloud personnel
 
-![NextCloud](/linux/selfhost/endtoend-server-nw.png)
+![NextCloud](/linux/selfhost/endtoend-server-nw.webp)
 
 Nextcloud est une solution de stockage et de partage de fichiers en
 ligne. Il s'agit d'un logiciel gratuit se basant sur MySQL / PHP (et
@@ -94,7 +94,7 @@ default_phone_region --value="FR"
 rm -r "/var/www/nextcloud/core/skeleton/Documents/"
 rm -r "/var/www/nextcloud/core/skeleton/Photos/"
 rm "/var/www/nextcloud/core/skeleton/Nextcloud intro.mp4"
-rm "/var/www/nextcloud/core/skeleton/Nextcloud.png"
+rm "/var/www/nextcloud/core/skeleton/Nextcloud.webp"
 ```
 
 ------------------------------------------------------------------------

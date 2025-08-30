@@ -1,6 +1,6 @@
 # Partager ses fichiers avec H5ai
 
-![H5ai](./_img/h5ai.png)
+![H5ai](./_img/h5ai.webp)
 
 ## Présentation
 

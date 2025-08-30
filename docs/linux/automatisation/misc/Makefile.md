@@ -17,4 +17,4 @@ Pour vous décripter ce que fait cette ligne automagique, tout d'abord, nous all
 
 Tout ceci pour nous donner le résultat suivant :
 
-![Makefile](./_screens/make_help_example.png)
+![Makefile](./_screens/make_help_example.webp)

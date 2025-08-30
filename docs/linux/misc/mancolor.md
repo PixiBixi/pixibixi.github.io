@@ -4,7 +4,7 @@ Voilà une astuce pour ajouter de la couleur à sa commande **man**
 
 Concrètement: voilà le rendu finale de la manipulation :
 
-![Man color](./_img/man_color.jpeg)
+![Man color](./_img/man_color.webp)
 
 Cela améliore grandement la lisibilité de la commande man je trouve, et
 la rend plus agréable à l'utiliser. Il se peut que les couleurs soient

@@ -1,6 +1,6 @@
 # Gérer son serveur en ligne via Ajenti
 
-![Ajenti Dashboard](./_img/ajenti_dashboard.png)
+![Ajenti Dashboard](./_img/ajenti_dashboard.webp)
 
 A l'instar de Webmin ou encore Vesta, Ajenti est un panel
 d'administration de serveur. Simple et efficace, il vous permettra

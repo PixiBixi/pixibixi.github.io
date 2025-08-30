@@ -33,7 +33,7 @@ Pour savoir par quels routeurs passe sa connexion, il suffit de faire un
 **[WinMTR](http://winmtr.net/)** sous Windows. Voici des informations
 qui nous intéressent :
 
-![MTR Screenshot](./_img/winmtr.png)
+![MTR Screenshot](./_img/winmtr.webp)
 
 Ce screen provient du logiciel **WinMTR**.
 

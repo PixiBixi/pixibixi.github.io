@@ -52,7 +52,7 @@ de location, le script est disponible sur Dropbox.
 
 Voici le rendu du script :
 
-![Proof files](./_img/proof_files.jpg)
+![Proof files](./_img/proof_files.webp)
 
 ## Iperf, kezako ?
 
@@ -88,7 +88,7 @@ documentation officielle](https://iperf.fr/iperf-doc.php) du logiciel.
 
 Voici le résultat que nous devrions obtenir :
 
-![iPerf Output](./_img/iperf_client.jpg)
+![iPerf Output](./_img/iperf_client.webp)
 
 Nous pouvons clairement apercevoir plusieurs parties sur le screen.
 
