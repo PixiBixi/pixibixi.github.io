@@ -11,7 +11,7 @@ et je tombe sur un petit article sur un blog allemand (Source dans la
 main page).
 
 Il faut télécharger un JAR ici :
-[http://'<ip_of_lo100'>/M2.JAR](http://<ip_of_lo100>/M2.JAR)
+[http://IP_ILO/M2.JAR](http://IP_ILO/M2.JAR)
 
 **Attention** : Il s'agit d'une URl case-sensitive.
 
