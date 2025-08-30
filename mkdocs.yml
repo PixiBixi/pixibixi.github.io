@@ -63,6 +63,8 @@ extra:
       link: https://twitter.com/Pixel__Art
     - icon: fontawesome/brands/github
       link: https://github.com/PixiBixi
+    - icon: fontawesome/brands/linkedin
+      link: https://fr.linkedin.com/in/je-delgado
 
 markdown_extensions:
   - pymdownx.highlight:
