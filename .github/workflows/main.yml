@@ -30,5 +30,12 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: 3.x
+      - run: echo "cache_id=$(date --utc '+%V')" >> $GITHUB_ENV
+      - uses: actions/cache@v4
+        with:
+          key: mkdocs-material-${{ env.cache_id }}
+          path: ~/.cache
+          restore-keys: |
+            mkdocs-material-
       - run: pip3 install mkdocs-git-revision-date-plugin mkdocs-git-revision-date-localized-plugin mkdocs-material mkdocs-minify-plugin
       - run: mkdocs gh-deploy --force -d site/
