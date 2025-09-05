@@ -1,8 +1,10 @@
-# Commandes Avancées
+# Kubernetes : Commandes Avancées
 
 Quelques commandes avancées Kube toujours utile
 
 Ces commandes proviennent d'un peu partout, principalement la documentation Kubernetes, mais regroupée sur une seule source
+
+## Pods
 
 !!! note "Lister les pods avec le ServiceAccount par défaut"
     ```bash
@@ -23,6 +25,31 @@ Ces commandes proviennent d'un peu partout, principalement la documentation Kube
     sort -r
     ```
 
+!!! note "Lister les requests/limites de tous les pods en contenant"
+    ```bash
+    kubectl get pods -A -o json \
+      | jq -r '
+        .items[]
+        | .metadata.namespace as $ns
+        | .metadata.name as $pod
+        | .spec.containers[]
+        | [
+            $ns,
+            $pod,
+            .name,
+            (.resources.requests.cpu // "none"),
+            (.resources.limits.cpu // "none"),
+            (.resources.requests.memory // "none"),
+            (.resources.limits.memory // "none")
+          ]
+        | @tsv
+      ' \
+      | column -t -s $'\t' \
+      | (echo -e "NAMESPACE\tPOD\tCONTAINER\tREQ_CPU\tLIM_CPU\tREQ_MEM\tLIM_MEM" && cat) | grep -Ev "(kube-system|none   none  none   none)"
+    ```
+
+## Misc baremetal
+
 !!! note "Avoir accès aux containers sur une machine"
     ```bash
     nerdctl -H /run/k3s/containerd/containerd.sock --namespace k8s.io ps|grep -v pause
@@ -32,6 +59,8 @@ Ces commandes proviennent d'un peu partout, principalement la documentation Kube
     ```bash
     systemctl stop rke2-agent
     ```
+
+## Nodes
 
 !!! note "Lister toutes les taints de tous les noeuds"
     ```bash
@@ -48,6 +77,16 @@ Ces commandes proviennent d'un peu partout, principalement la documentation Kube
     kubectl get svc -o jsonpath='{range .items[*]}{.metadata.name}.{.metadata.namespace}.svc.cluster.local{"\n"}{end}'
     ```
 
+!!! note "Lister les zones pour les noeuds K8S"
+    ```bash
+    kubectl get nodes -o custom-columns='NAME:metadata.name, REGION:metadata.labels.topology\.kubernetes\.io/region, ZONE:metadata.labels.topology\.kubernetes\.io/zone'
+    NAME                                                   REGION     ZONE
+    gke-my-node-pool--my-node-pool--0de3fd48-p2qc          us-west1   us-west1-a
+    gke-my-node-pool--my-node-pool--0de3fd48-yhl4          us-west1   us-west1-b
+    ```
+
+## Misc manifests
+
 !!! note "Split un manifest Kube contenant plusieurs ressources"
     ```bash
     yq -s '.kind +"_" + .metadata.name' my_file
@@ -56,13 +95,4 @@ Ces commandes proviennent d'un peu partout, principalement la documentation Kube
     <!-- markdownlint-disable MD038 -->
     ```
     Deployment_release-name-testjd.yml  ExternalSecret_pullsecret.yml  Ingress_release-name-testjd-app-private.yml  Ingress_release-name-testjd-app-public.yml  Ingress_release-name-testjd-app.yml  Service_release-name-testjd.yml
-    ```
-
-
-!!! note "Lister les zones pour les noeuds K8S"
-    ```bash
-    ➜  docs git:(master) kubectl get nodes -o custom-columns='NAME:metadata.name, REGION:metadata.labels.topology\.kubernetes\.io/region, ZONE:metadata.labels.topology\.kubernetes\.io/zone'
-    NAME                                                   REGION     ZONE
-    gke-my-node-pool--my-node-pool--0de3fd48-p2qc          us-west1   us-west1-a
-    gke-my-node-pool--my-node-pool--0de3fd48-yhl4          us-west1   us-west1-b
     ```
