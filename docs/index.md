@@ -97,6 +97,7 @@ Cette magnifique documentation a été faites avec MkDocs
 * [HAproxy : Obtenir les vraies IPs depuis CloudFlare](linux/hosting/lemp/haproxy/cloudflare.md)
 * [HAproxy : Utiliser son API](linux/hosting/lemp/haproxy/api.md)
 * [HAproxy : Conserver l'IP de son utilisateur](./linux/hosting/lemp/haproxy/keep_real_ip.md)
+* [HAproxy : Comportement d'une limite mémoire](./linux/hosting/lemp/haproxy/memory_limit.md)
 
 #### FTP
 
