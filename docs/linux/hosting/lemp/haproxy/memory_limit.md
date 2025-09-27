@@ -22,8 +22,7 @@ Il y a un hic, il s'agissait d'une ancienne documentation HAproxy. En regardant 
 Au départ, j'ai alloué une limite de **2500mi** de RAM ce qui nous a donné le comportement suivant :
 
 ```bash
-/ $  echo "show info" | socat - /var/run/haproxy-runtime-api.sock   | egrep -i 'Ulimit-n|Maxsock|Maxconn|Nbthread|Nbpr
-> oc'
+/ $  echo "show info" | socat - /var/run/haproxy-runtime-api.sock   | egrep -i 'Ulimit-n|Maxsock|Maxconn|Nbthread|Nbproc'
 Nbthread: 4
 Nbproc: 1
 Process_num: 1
@@ -42,12 +41,11 @@ Etant donné que je n'avais que 7 pods, nous étions sur une limit de 81K connec
 Avec 12500mi, on a déjà des résultats un peu plus probants :
 
 ```bash
-/ $  echo "show info" | socat - /var/run/haproxy-runtime-api.sock   | egrep -i 'Ulimit-n|Maxsock|Maxconn|Nbthread|Nbpr
-> oc'
+/ $  echo "show info" | socat - /var/run/haproxy-runtime-api.sock   | egrep -i 'Ulimit-n|Maxsock|Maxconn|Nbthread|Nbproc'
 Nbthread: 4
 Nbproc: 1
 Process_num: 1
-PoolAhaproxy_frontend_connections_totallloc_MB: 72
+PoolAlloc_MB: 72
 Ulimit-n: 130787
 Maxsock: 130787
 Maxconn: 65000
