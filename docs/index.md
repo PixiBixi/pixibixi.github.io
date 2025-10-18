@@ -172,6 +172,7 @@ Cette magnifique documentation a été faites avec MkDocs
 ## Redis
 
 * [Déployer un Redis en High Availability](linux/redis/cluster_ha.md)
+* [Décoder une fonction Redis](./linux/redis/decode_function.md)
 
 ## Memcached
 
