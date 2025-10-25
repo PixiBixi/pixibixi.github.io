@@ -85,6 +85,11 @@ Ces commandes proviennent d'un peu partout, principalement la documentation Kube
     gke-my-node-pool--my-node-pool--0de3fd48-yhl4          us-west1   us-west1-b
     ```
 
+!!! note "Compter le nombre de pods par node"
+    ```bash
+    kubectl get pods -A -o json | jq -r '.items[].spec.nodeName' | sort | uniq -c
+    ```
+
 ## Misc manifests
 
 !!! note "Split un manifest Kube contenant plusieurs ressources"

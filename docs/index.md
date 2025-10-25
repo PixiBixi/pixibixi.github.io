@@ -234,6 +234,7 @@ Cette magnifique documentation a été faites avec MkDocs
 ### Deploiement sur K8S
 
 * [Golang : Définir automatiquement son GOMEMLIMIT/GOMAXPROCS](./kubernetes/deployment/golang_kubernetes_limit.md)
+* [Spegel : Un OCI registry cache stateless](./kubernetes/deployment/local_image_cache.md)
 
 ### ArgoCD
 
