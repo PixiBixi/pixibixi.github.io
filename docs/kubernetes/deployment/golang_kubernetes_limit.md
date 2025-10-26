@@ -1,5 +1,8 @@
 # Golang : Définir automatiquement son GOMEMLIMIT/GOMAXPROCS
 
+!!! info "Comportement à partir de Go 1.25"
+    Depuis Go 1.25, `GOMAXPROCS` ajuste automatiquement le nombre de threads Go en fonction des limites CPU du conteneur, optimisant ainsi l’utilisation des ressources. Plus de détails dans [l'article officiel](https://go.dev/blog/container-aware-gomaxprocs)
+
 Golang est un puissant language de programmation dont il est important de connaitre les subtilités, parmis celles-ci `GOMEMLIMIT` et `GOMAXPROCS`
 
 * `GOMEMLIMIT` va définir le comportement du Garbage Collector (GC). Plus la limite tend vers GOMEMLIMT, plus le GC va devenir agressif
