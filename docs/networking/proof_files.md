@@ -86,6 +86,8 @@ prochain test.
 Pour plus d'informations, je vous invite à aller consulter [la
 documentation officielle](https://iperf.fr/iperf-doc.php) du logiciel.
 
+Il semble également exister une [liste officieuse](https://iperf3serverlist.net/) comprenant de nombreux autres serveurs
+
 Voici le résultat que nous devrions obtenir :
 
 ![iPerf Output](./_img/iperf_client.webp)
