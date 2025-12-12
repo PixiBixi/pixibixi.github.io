@@ -57,20 +57,6 @@ Permet d'exécuter la même commande sur de multiples pods
 
 ---
 
-Permet de lister les PVC qui sont actuellement asssociés à un pod
-
-??? note "List all PVC bound to a pod"
-    ```bash
-    $ kubectl get pods --all-namespaces -o=json | jq -c '.items[] | {name: .metadata.name, namespace: .metadata.namespace, claimName: .spec |  select( has ("volumes") ).volumes[] | select( has ("persistentVolumeClaim") ).persistentVolumeClaim.claimName }'
-    {"name":"loki-backend-0","namespace":"dyn-tools","claimName":"data-loki-backend-0"}
-    {"name":"loki-write-0","namespace":"dyn-tools","claimName":"data-loki-write-0"}
-    {"name":"loki-write-1","namespace":"dyn-tools","claimName":"data-loki-write-1"}
-    {"name":"prometheus-alertmanager-0","namespace":"dyn-tools","claimName":"storage-prometheus-alertmanager-0"}
-    {"name":"prometheus-server-7774557469-6jrhk","namespace":"dyn-tools","claimName":"prometheus-server"}
-    ```
-
----
-
 Permet de lister tous les secrets et de les decoder
 
 ??? note "Decode all secrets from a secret"
