@@ -203,6 +203,7 @@ Cette magnifique documentation a été faites avec MkDocs
 
 * [EphemeralDisks : comment faire ?](./cloud/azure/ephemeral_disks.md)
 * [AKS Limitations](./cloud/azure/aks_limitations.md)
+* [Commandes utiles pour la CLI Azure](./cloud/azure/misc_commands.md)
 
 ## DevOps
 
