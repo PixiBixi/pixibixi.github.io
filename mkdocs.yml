@@ -166,6 +166,11 @@ plugins:
         'linux/advanced/cli/extend_partition.md': 'linux/storage/extend_partition.md'
         'linux/misc/create_raid.md': 'linux/storage/create_raid.md'
         'ssh/pubkey_rfc4716.md': 'linux/security/pubkey_rfc4716.md'
+        # Phase 7 — networking/ consolidation
+        'networking/mkt/install_ipsec.md': 'networking/mikrotik/install_ipsec.md'
+        'networking/mkt/netflix_vpn.md': 'networking/mikrotik/netflix_vpn.md'
+        'pfsense/update_bogon_list.md': 'networking/pfsense/update_bogon_list.md'
+        'pfsense/network/gateway_outside_network.md': 'networking/pfsense/network/gateway_outside_network.md'
   - minify:
       minify_html: true
       minify_js: true
