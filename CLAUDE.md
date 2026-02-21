@@ -92,6 +92,15 @@ Lint only runs when `.md` files are changed.
 - **Code blocks**: use fenced with language tag and optional title/lineno
 - **Superfences**: nested code blocks inside admonitions work
 - **Line number anchors**: `anchor_linenums: true` is active
+- **Glightbox**: all images get a lightbox automatically (no extra syntax needed)
+- **Redirects**: when moving/renaming a `.md` file, add an entry in `mkdocs.yml`
+
+  ```yaml
+  plugins:
+    - redirects:
+        redirect_maps:
+          'old/path.md': 'new/path.md'
+  ```
 
 Example admonition:
 
