@@ -120,7 +120,7 @@ When rewriting an article:
 2. Fetch external sources if needed (dotfiles repo, upstream docs)
 3. Write: practical examples, tables for options, real-world use cases
 4. Lint: `markdownlint-cli2 "path/to/file.md"`
-5. Preview: run `mkdocs serve` (background) and open the article in the browser
+5. Preview: run `mkdocs serve --dirty` (background) and open the article in the browser
    - URL pattern: `http://127.0.0.1:8000/<path-without-docs-prefix-and-md>/`
    - Example: `docs/linux/cli/sed.md` → `open http://127.0.0.1:8000/linux/cli/sed/`
 6. Commit + push — CI validates automatically
