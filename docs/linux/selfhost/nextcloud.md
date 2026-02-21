@@ -1,7 +1,5 @@
 # NextCloud, son cloud personnel
 
-![NextCloud](/linux/selfhost/endtoend-server-nw.webp)
-
 Nextcloud est une solution de stockage et de partage de fichiers en
 ligne. Il s'agit d'un logiciel gratuit se basant sur MySQL / PHP (et
 accessoirement redis). Attention, si beaucoup d'entre vous se servent

@@ -1,7 +1,5 @@
 # WD Green HDD, Comment prémunir le old_age prématuré
 
-![WD Green](/mess/cover-wd-green.webp)
-
 Ce problème est du à la technologie **IntelliPark** qui a été introduite
 dans les WD Green ainsi que les RED. Cette technologie défaillante
 provoque un vieillissement prématuré du disque dur.

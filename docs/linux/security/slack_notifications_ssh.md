@@ -49,5 +49,3 @@ systemctl try-restart ssh.service
 ```
 
 Et voici le résultat que nous aurons :
-
-![Slack bot](/slack_bot.webp)

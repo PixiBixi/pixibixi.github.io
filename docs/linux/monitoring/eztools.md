@@ -76,8 +76,6 @@ eZ Server Monitor est une suite extrêmement pratique pour monitorer son
 serveur depuis une page Web, où l'on peut y retrouver toutes les
 informations essentielles :
 
-![Web server view](/ez_serv.webp)
-
 Dans cette page, nous pouvons y observer différents éléments :
 
 ------------------------------------------------------------------------

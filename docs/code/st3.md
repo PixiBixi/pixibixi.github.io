@@ -147,7 +147,6 @@ Code Formatter
 De base, comme toute application, sublime texte dispose d'**une seule
 fenêtre principale**, puis nous pouvons faire différents découpages :
 
-![Windows Sublimetext](/windows_sublimetext.gif)
 
 ## Configuraton
 
