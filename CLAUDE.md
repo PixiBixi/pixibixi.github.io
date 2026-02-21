@@ -22,9 +22,6 @@ mkdocs serve
 mkdocs build --strict
 ```
 
-> **Note:** `mkdocs serve` requires full git history due to `git-revision-date-localized`.
-> Shallow clones (`--depth 1`) will cause errors. Use `git fetch --unshallow` if needed.
-
 ## Linting
 
 Pre-commit hooks run `markdownlint-cli2` on changed files. Rules are in `.markdownlint.json`:
@@ -82,8 +79,9 @@ change(cloud/gcloud): add billing export commands
 
 ## CI Behavior
 
-Lint and deploy jobs run **in parallel** — a lint failure does not block deployment.
+Deploy job requires lint to pass (`needs: [lint]`).
 Lint only runs when `.md` files are changed.
+Deploy runs `mkdocs build --strict` before `gh-deploy` — warnings are fatal.
 
 ## MkDocs Material Features in Use
 
@@ -108,3 +106,12 @@ Example admonition:
 !!! warning "Title here"
     Content indented 4 spaces.
 ```
+
+## Gotchas
+
+- **External images**: the `privacy` plugin downloads external assets to self-host them.
+  A 403/unreachable URL triggers a warning → fatal with `--strict`.
+  Always store images locally next to the `.md` file (e.g., `docs/linux/selfhost/koel.jpg`).
+
+- **Shallow clones**: `mkdocs serve` requires full git history due to `git-revision-date-localized`.
+  Shallow clones (`--depth 1`) will cause errors. Use `git fetch --unshallow` if needed.
