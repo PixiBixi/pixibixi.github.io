@@ -32,8 +32,8 @@ Cette magnifique documentation a été faites avec MkDocs
 * [Apprendre à se servir de git](./linux/cli/git/git.md)
 * [Réduire la taille de son repository Git](./linux/cli/git/rework_files.md)
 * [TMUX Multiplexeur de Shell](linux/cli/tmux.md)
-* [Générer une clé publique au format RFC 4716 depuis la clef privée](ssh/pubkey_rfc4716.md)
-* [Création de RAID logiciels avec mdadm](linux/misc/create_raid.md)
+* [Générer une clé publique au format RFC 4716 depuis la clef privée](linux/security/pubkey_rfc4716.md)
+* [Création de RAID logiciels avec mdadm](linux/storage/create_raid.md)
 * [Remplacer les commandes de base Linux par des versions plus performantes](linux/cli/replace_base_commands.md)
 
 ### Sécuriser son serveur Linux
@@ -55,13 +55,13 @@ Cette magnifique documentation a été faites avec MkDocs
 
 ### Supervision
 
-* [Munin: Supervision claire et efficace](linux/monitoring/munin.md)
-* [Supervision via les outils eZ](linux/monitoring/eztools.md)
-* [Netdata, Prometheus et Grafana : Une stack de monitoring simple et puissante](linux/monitoring/lgtm/simple_monitoring_stack.md)
-* [Générer des alertes depuis Loki](linux/monitoring/lgtm/loki_alerting.md)
-* [Tips sur la stack LGTM](linux/monitoring/lgtm/tips_lgtm.md)
-* [Métrique custom pour node_exporter](./linux/monitoring/lgtm/custom_metrics_nodeexporter.md)
-* [Configurer des notifications Slack pour check_mk](linux/monitoring/check_mk/add_slack_notification.md)
+* [Munin: Supervision claire et efficace](monitoring/munin.md)
+* [Supervision via les outils eZ](monitoring/eztools.md)
+* [Netdata, Prometheus et Grafana : Une stack de monitoring simple et puissante](monitoring/lgtm/simple_monitoring_stack.md)
+* [Générer des alertes depuis Loki](monitoring/lgtm/loki_alerting.md)
+* [Tips sur la stack LGTM](monitoring/lgtm/tips_lgtm.md)
+* [Métrique custom pour node_exporter](./monitoring/lgtm/custom_metrics_nodeexporter.md)
+* [Configurer des notifications Slack pour check_mk](monitoring/check_mk/add_slack_notification.md)
 
 ### Hardware
 
@@ -72,56 +72,56 @@ Cette magnifique documentation a été faites avec MkDocs
 
 #### Mail Stack
 
-* [Postfix/Dovecot/DKIM/Postgrey et plus encore](linux/hosting/mail.md)
-* [Configurer DKIM avec Exim](linux/hosting/mail/exim_manage_dkim.md)
+* [Postfix/Dovecot/DKIM/Postgrey et plus encore](web/mail.md)
+* [Configurer DKIM avec Exim](web/mail/exim_manage_dkim.md)
 
 #### NGINX/PHP
 
-* [Configurer NGINX avec le support IPv6](linux/hosting/lemp/ipv6_nginx.md)
-* [Faites une redirection permanente vers la version SSL de votre site avec NGINX](linux/hosting/lemp/nginx_ssl.md)
-* [Installer NGINX, PHP et MariaDB](linux/hosting/lemp/installation.md)
-* [Installer la version de PHP que vous désirez](./linux/hosting/lemp/php_custom_version.md)
-* [Être encore plus safe en customisant son header Server NGINX](linux/hosting/lemp/custom_server_header.md)
+* [Configurer NGINX avec le support IPv6](web/nginx/ipv6_nginx.md)
+* [Faites une redirection permanente vers la version SSL de votre site avec NGINX](web/nginx/nginx_ssl.md)
+* [Installer NGINX, PHP et MariaDB](web/nginx/installation.md)
+* [Installer la version de PHP que vous désirez](./web/nginx/php_custom_version.md)
+* [Être encore plus safe en customisant son header Server NGINX](web/nginx/custom_server_header.md)
 
 #### Apache
 
-* [Obtenir les bonnes IP sur apache derrière un reverse proxy](linux/hosting/lemp/fetch_good_ips.md)
+* [Obtenir les bonnes IP sur apache derrière un reverse proxy](web/nginx/fetch_good_ips.md)
 
 #### HAproxy
 
-* [HAproxy : Sa configuration](linux/hosting/lemp/haproxy/overview.md)
-* [HAproxy : Mettre un node en maintenance](linux/hosting/lemp/haproxy/maintenance.md)
-* [HAproxy : Obtenir les vraies IPs depuis CloudFlare](linux/hosting/lemp/haproxy/cloudflare.md)
-* [HAproxy : Utiliser son API](linux/hosting/lemp/haproxy/api.md)
-* [HAproxy : Conserver l'IP de son utilisateur](./linux/hosting/lemp/haproxy/keep_real_ip.md)
-* [HAproxy : Comportement d'une limite mémoire](./linux/hosting/lemp/haproxy/memory_limit.md)
+* [HAproxy : Sa configuration](web/haproxy/overview.md)
+* [HAproxy : Mettre un node en maintenance](web/haproxy/maintenance.md)
+* [HAproxy : Obtenir les vraies IPs depuis CloudFlare](web/haproxy/cloudflare.md)
+* [HAproxy : Utiliser son API](web/haproxy/api.md)
+* [HAproxy : Conserver l'IP de son utilisateur](./web/haproxy/keep_real_ip.md)
+* [HAproxy : Comportement d'une limite mémoire](./web/haproxy/memory_limit.md)
 
 #### FTP
 
-* [Installer un serveur FTP avec Pure-ftp](linux/hosting/ftp.md)
+* [Installer un serveur FTP avec Pure-ftp](web/ftp.md)
 
 #### DNS
 
-* [Héberger les NS de son serveur avec BIND (+ Resolveur DNS.md)](linux/hosting/dns.md)
+* [Héberger les NS de son serveur avec BIND (+ Resolveur DNS.md)](web/dns.md)
 
 #### Troubleshooting
 
-* [MOZILLA_PKIX_ERROR_REQUIRED_TLS_FEATURE_MISSING](linux/hosting/troubleshooting.md)
+* [MOZILLA_PKIX_ERROR_REQUIRED_TLS_FEATURE_MISSING](web/troubleshooting.md)
 
 #### Misc
 
-* [Installer Ruby](linux/hosting/ruby/install.md)
+* [Installer Ruby](web/ruby/install.md)
 
 ### Services web auto-hébergés
 
-* [Selfoss, son Reader RSS self-hosted](linux/selfhost/selfoss.md)
-* [NextCloud, son cloud personnel](linux/selfhost/nextcloud.md)
-* [Stream sa propre music avec Sonerezh, un produit français !](linux/selfhost/sonerezh.md)
-* [Subsonic, le couteau Suisse de la musique](linux/selfhost/subsonic.md)
-* [Sauvegarder ses vidéos avec YoutubeDL et sa GUI](linux/selfhost/youtubedl.md)
-* [Gérer son serveur en ligne via Ajenti](linux/selfhost/ajenti.md)
-* [Streamer sa musique depuis Koel](linux/selfhost/koel.md)
-* [Partager ses fichiers avec H5ai](linux/selfhost/h5ai.md)
+* [Selfoss, son Reader RSS self-hosted](selfhost/selfoss.md)
+* [NextCloud, son cloud personnel](selfhost/nextcloud.md)
+* [Stream sa propre music avec Sonerezh, un produit français !](selfhost/sonerezh.md)
+* [Subsonic, le couteau Suisse de la musique](selfhost/subsonic.md)
+* [Sauvegarder ses vidéos avec YoutubeDL et sa GUI](selfhost/youtubedl.md)
+* [Gérer son serveur en ligne via Ajenti](selfhost/ajenti.md)
+* [Streamer sa musique depuis Koel](selfhost/koel.md)
+* [Partager ses fichiers avec H5ai](selfhost/h5ai.md)
 
 ### Linux Networking
 
@@ -133,16 +133,16 @@ Cette magnifique documentation a été faites avec MkDocs
 
 ### Avancé
 
-* [Etendre à chaud sa partition root](linux/advanced/cli/extend_partition.md)
-* [Créer son service syst](linux/advanced/systemd/create_unit.md)
+* [Etendre à chaud sa partition root](linux/storage/extend_partition.md)
+* [Créer son service syst](linux/systemd/create_unit.md)
 * [Exploration poussée des systèmes de fichiers sysfs & procfs](linux/advanced/understand_sysfs_procfs.md)
-* [Commandes avancées utiles](linux/advanced/shell/useful_commands.md)
-* [Ecrire son script Bash](linux/advanced/shell/write_bash_scripts.md)
-* [Astuces Bash](linux/advanced/shell/tips_bash.md)
-* [Astuces ZSH](linux/advanced/shell/tips_zsh.md)
-* [Debug ses lenteurs de ohmyzsh](./linux/advanced/shell/debug_slowness_ohmyzsh.md)
-* [Un Template pour un script bash](./linux/advanced/shell/template_bash_script.md)
-* [Config de base varnish](linux/advanced/varnish/config.md)
+* [Commandes avancées utiles](linux/shell/useful_commands.md)
+* [Ecrire son script Bash](linux/shell/write_bash_scripts.md)
+* [Astuces Bash](linux/shell/tips_bash.md)
+* [Astuces ZSH](linux/shell/tips_zsh.md)
+* [Debug ses lenteurs de ohmyzsh](./linux/shell/debug_slowness_ohmyzsh.md)
+* [Un Template pour un script bash](./linux/shell/template_bash_script.md)
+* [Config de base varnish](web/varnish/config.md)
 * [Utilisation de strace](linux/advanced/strace.md)
 * [Luter contre un DDOS](linux/advanced/lock_ddos.md)
 * [Deplacer un processus dans un tmux](linux/advanced/move_process_to_tmux.md)
@@ -150,35 +150,35 @@ Cette magnifique documentation a été faites avec MkDocs
 
 ## MySQL
 
-* [Créer son cluster Galera](linux/mysql/galera_gluster.md)
-* [Commandes avancées MySQL](linux/mysql/advanced_commands.md)
-* [Debug sa replication Master-Slave](linux/mysql/troubleshooting/replication_slave.md)
-* [Gérer ses users MySQL](linux/mysql/users.md)
-* [Restaurer la DB système MySQL](linux/mysql/db_mysql.md)
-* [Générer des INSERT INTO depuis un SELECT](linux/mysql/troubleshooting/generate_insert_into.md)
+* [Créer son cluster Galera](databases/mysql/galera_gluster.md)
+* [Commandes avancées MySQL](databases/mysql/advanced_commands.md)
+* [Debug sa replication Master-Slave](databases/mysql/troubleshooting/replication_slave.md)
+* [Gérer ses users MySQL](databases/mysql/users.md)
+* [Restaurer la DB système MySQL](databases/mysql/db_mysql.md)
+* [Générer des INSERT INTO depuis un SELECT](databases/mysql/troubleshooting/generate_insert_into.md)
 
 ## PostgreSQL
 
-* [Upgrade sa version de postgresql](linux/postgres/upgrade_version.md)
-* [Creer sa replication postgresql](linux/postgres/postgresql_replication.md)
-* [Commandes utiles postgresql](./linux/postgres/commands.md)
+* [Upgrade sa version de postgresql](databases/postgres/upgrade_version.md)
+* [Creer sa replication postgresql](databases/postgres/postgresql_replication.md)
+* [Commandes utiles postgresql](./databases/postgres/commands.md)
 
 ## Redis
 
-* [Déployer un Redis en High Availability](linux/redis/cluster_ha.md)
-* [Décoder une fonction Redis](./linux/redis/decode_function.md)
+* [Déployer un Redis en High Availability](databases/redis/cluster_ha.md)
+* [Décoder une fonction Redis](./databases/redis/decode_function.md)
 
 ## Memcached
 
-* [Commandes diverses avec memcached](linux/memcached/misc_commands.md)
+* [Commandes diverses avec memcached](databases/memcached/misc_commands.md)
 
 ## ElasticSearch
 
-* [Log des slow queries de ElasticSearch](linux/elasticsearch/log_slow_queries.md)
+* [Log des slow queries de ElasticSearch](databases/elasticsearch/log_slow_queries.md)
 
 ## Kafka
 
-* [Kafkactl, un outil magique](./kafka/kafkactl.md)
+* [Kafkactl, un outil magique](./containers/kafka/kafkactl.md)
 
 ## Cloud
 
@@ -205,13 +205,13 @@ Cette magnifique documentation a été faites avec MkDocs
 
 #### Ansible
 
-* [Automatiser les taches avec Ansible](./linux/automatisation/ansible/ansible.md)
-* [Tips ansible](./linux/automatisation/ansible/ansible_tips.md)
-* [Réutilisation de variables ansible entre différentes tâches](./linux/automatisation/ansible/ansible_reuse_variable.md)
+* [Automatiser les taches avec Ansible](./automation/ansible/ansible.md)
+* [Tips ansible](./automation/ansible/ansible_tips.md)
+* [Réutilisation de variables ansible entre différentes tâches](./automation/ansible/ansible_reuse_variable.md)
 
 #### Divers
 
-* [Makefile : à quoi ça sert ?](./linux/automatisation/misc/Makefile.md)
+* [Makefile : à quoi ça sert ?](./automation/misc/Makefile.md)
 
 ## Kubernetes
 
@@ -246,21 +246,21 @@ Cette magnifique documentation a été faites avec MkDocs
 
 ## Terraform
 
-* [Cheatsheet terraform](./linux/automatisation/terraform/cheatsheet.md)
-* [Tools Terraform indispensables](./linux/automatisation/terraform/tools.md)
-* [Accélerer Terraform](./linux/automatisation/terraform/speedup.md)
+* [Cheatsheet terraform](./automation/terraform/cheatsheet.md)
+* [Tools Terraform indispensables](./automation/terraform/tools.md)
+* [Accélerer Terraform](./automation/terraform/speedup.md)
 
 ## Gitlab
 
-* [Optimiser sa CI Gitlab](gitlab/ci/optimize.md)
-* [Intégrer un scan d'image à sa CI](gitlab/ci/scan_image.md)
-* [Utilisation de la CLI officielle](./gitlab/cli.md)
+* [Optimiser sa CI Gitlab](ci-cd/gitlab/ci/optimize.md)
+* [Intégrer un scan d'image à sa CI](ci-cd/gitlab/ci/scan_image.md)
+* [Utilisation de la CLI officielle](./ci-cd/gitlab/cli.md)
 
 ## Docker
 
-* [Docker: l'indispensable](docker.md)
-* [Utiliser un proxy pour pull les images Docker](docker/use_proxy.md)
-* [Templates docker-compose](docker/compose/templates.md)
+* [Docker: l'indispensable](containers/docker.md)
+* [Utiliser un proxy pour pull les images Docker](containers/docker/use_proxy.md)
+* [Templates docker-compose](containers/docker/compose/templates.md)
 
 ### Divers
 
@@ -305,16 +305,16 @@ Cette magnifique documentation a été faites avec MkDocs
 
 ## Codage
 
-* [SublimeText3 Best Tips](code/st3.md)
+* [SublimeText3 Best Tips](os/misc/st3.md)
 
 ## Torrent
 
-* [ruTorrent le polyvalent](./linux/selfhost/torrent/rutorrent.md)
-* [Creer ses torrents avec mktorrent](./linux/selfhost/torrent/mktorrent.md)
+* [ruTorrent le polyvalent](./selfhost/torrent/rutorrent.md)
+* [Creer ses torrents avec mktorrent](./selfhost/torrent/mktorrent.md)
 
 ## Accès à distance
 
-* [Une multitude d'accès à distance via la WebApp Guacamole](guacamole.md)
+* [Une multitude d'accès à distance via la WebApp Guacamole](selfhost/guacamole.md)
 
 ## Networking
 
@@ -324,8 +324,8 @@ Cette magnifique documentation a été faites avec MkDocs
 
 ## pfSense
 
-* [Mise à jour de la bogon list via l'interface graphique](pfsense/update_bogon_list.md)
-* [Ajouter une gateway en dehors de son réseau](pfsense/network/gateway_outside_network.md)
+* [Mise à jour de la bogon list via l'interface graphique](networking/pfsense/update_bogon_list.md)
+* [Ajouter une gateway en dehors de son réseau](networking/pfsense/network/gateway_outside_network.md)
 
 ## Cisco
 
@@ -346,16 +346,16 @@ Cette magnifique documentation a été faites avec MkDocs
 
 ## Mac OS X
 
-* [Brew, l'apt-get d'Apple](mac/brew.md)
-* [Brew: L'installer sans XCode](mac/brew_xcode.md)
-* [Informations sur MindView](mac/mind-view.md)
-* [Enlever le premier caractère bizarre de iTerm](mac/iterm/troubleshooting/first_chat.md)
-* [Remap le Alt+Arrow de iTerm](mac/iterm/troubleshooting/alt_arrow.md)
+* [Brew, l'apt-get d'Apple](os/mac/brew.md)
+* [Brew: L'installer sans XCode](os/mac/brew_xcode.md)
+* [Informations sur MindView](os/mac/mind-view.md)
+* [Enlever le premier caractère bizarre de iTerm](os/mac/iterm/troubleshooting/first_chat.md)
+* [Remap le Alt+Arrow de iTerm](os/mac/iterm/troubleshooting/alt_arrow.md)
 
 ## Mikrotik
 
-* [Installer son tunnel IPSec](./networking/mkt/install_ipsec.md)
-* [Ne pas router Netflix à travers son tunnel IPSEC](./networking/mkt/netflix_vpn.md)
+* [Installer son tunnel IPSec](./networking/mikrotik/install_ipsec.md)
+* [Ne pas router Netflix à travers son tunnel IPSEC](./networking/mikrotik/netflix_vpn.md)
 
 ## ESXi
 
@@ -371,29 +371,29 @@ Cette magnifique documentation a été faites avec MkDocs
 
 ### Server
 
-* [Setup de base d'un Windows 2012 R2](windows/server/powershell/first_setup.md)
-* [Monter un ISO directement via PowerShell](windows/server/powershell/mount_iso.md)
-* [Installer et configurer un serveur DHCP en PowerShell](windows/server/powershell/dhcp_server.md)
-* [Installer et configurer un serveur AD en PowerShell](windows/server/powershell/ad_server.md)
-* [Creer un pool de stockage en PowerShell](windows/server/powershell/storage/pool.md)
-* [Autoriser l'ICMP sur un serveur Windows 2012R2 en PowerShell](windows/server/powershell/allow_icmp.md)
-* [Importer des utilisateurs CSV dans un AD via PowerShell](windows/server/powershell/import_csv_users.md)
-* [Clés de Registre Utiles](windows/server/registry/useful_keys.md)
-* [Exécuter un script PowerShell via une tâche planifiée](windows/server/admin/jobs/schedule_jobs_scripts.md)
-* [Désactiver TLSv1 sur IIS via un script PowerShell](windows/server/powershell/disable_tlsv1.md)
-* [Connaitre le temps d'exécution d'une commande PowerShell](windows/server/powershell/command_time_execution.md)
-* [Accéder au Firewall sans Icône ni raccourci](windows/server/firewall/access_without_shortcut.md)
-* [Variables built-in utiles](windows/server/powershell/useful_vars.md)
-* [Initier des connexions iSCSi en CLI](windows/server/powershell/initiate_iscsi.md)
-* [Installer des drivers via PowerShell](windows/server/powershell/install_drivers.md)
-* [Définir PowerShell en temps que shell par défaut](windows/server/core/setup_default_powershell.md)
+* [Setup de base d'un Windows 2012 R2](os/windows/server/powershell/first_setup.md)
+* [Monter un ISO directement via PowerShell](os/windows/server/powershell/mount_iso.md)
+* [Installer et configurer un serveur DHCP en PowerShell](os/windows/server/powershell/dhcp_server.md)
+* [Installer et configurer un serveur AD en PowerShell](os/windows/server/powershell/ad_server.md)
+* [Creer un pool de stockage en PowerShell](os/windows/server/powershell/storage/pool.md)
+* [Autoriser l'ICMP sur un serveur Windows 2012R2 en PowerShell](os/windows/server/powershell/allow_icmp.md)
+* [Importer des utilisateurs CSV dans un AD via PowerShell](os/windows/server/powershell/import_csv_users.md)
+* [Clés de Registre Utiles](os/windows/server/registry/useful_keys.md)
+* [Exécuter un script PowerShell via une tâche planifiée](os/windows/server/admin/jobs/schedule_jobs_scripts.md)
+* [Désactiver TLSv1 sur IIS via un script PowerShell](os/windows/server/powershell/disable_tlsv1.md)
+* [Connaitre le temps d'exécution d'une commande PowerShell](os/windows/server/powershell/command_time_execution.md)
+* [Accéder au Firewall sans Icône ni raccourci](os/windows/server/firewall/access_without_shortcut.md)
+* [Variables built-in utiles](os/windows/server/powershell/useful_vars.md)
+* [Initier des connexions iSCSi en CLI](os/windows/server/powershell/initiate_iscsi.md)
+* [Installer des drivers via PowerShell](os/windows/server/powershell/install_drivers.md)
+* [Définir PowerShell en temps que shell par défaut](os/windows/server/core/setup_default_powershell.md)
 
 ### Desktop
 
-* [Windows 10 : Comment activer la gestion des chemins trop long ?](windows/desktop/tips/long_path.md)
-* [Améliorer sa vie privée et les performances avec Blackbird](windows/desktop/tips/improve_privacy.md)
-* [Bloquer les serveurs d'activation via le fichiers hosts](windows/desktop/tips/hosts_file.md)
-* [Installer tous les logiciels de base via un simple installateur](windows/desktop/tips/install_main_softwares.md)
+* [Windows 10 : Comment activer la gestion des chemins trop long ?](os/windows/desktop/tips/long_path.md)
+* [Améliorer sa vie privée et les performances avec Blackbird](os/windows/desktop/tips/improve_privacy.md)
+* [Bloquer les serveurs d'activation via le fichiers hosts](os/windows/desktop/tips/hosts_file.md)
+* [Installer tous les logiciels de base via un simple installateur](os/windows/desktop/tips/install_main_softwares.md)
 
 ## Misc
 
