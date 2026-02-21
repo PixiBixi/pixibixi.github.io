@@ -39,12 +39,9 @@ Cette magnifique documentation a été faites avec MkDocs
 ### Sécuriser son serveur Linux
 
 * [Désactiver les patchs de sécurité Meltdown & co](linux/security/disable_patches.md)
-* [Apprendre à se servir d'IPTables](linux/security/iptables.md)
 * [Apprendre à se servir d'ipset](linux/security/ipset.md)
-* [Installer et configurer Fail2Ban](linux/security/fail2ban.md)
 * [Installer et configurer RKHunter](linux/security/rkhunter.md)
 * [Installer et configurer LogWatch](linux/security/logwatch.md)
-* [Installer et configurer SSH Guard](linux/security/sshGuard.md)
 * [Hardening de son serveur SSH](linux/security/hardening_sshd.md)
 * [Installer et configuer PortSentry](linux/security/portsentry.md)
 * [Bloquer tous les préfixes d'un pays entier](linux/security/iptables_country.md)
@@ -119,13 +116,10 @@ Cette magnifique documentation a été faites avec MkDocs
 
 * [Selfoss, son Reader RSS self-hosted](linux/selfhost/selfoss.md)
 * [NextCloud, son cloud personnel](linux/selfhost/nextcloud.md)
-* [Stream sa propre music avec Ampache](linux/selfhost/ampache.md)
 * [Stream sa propre music avec Sonerezh, un produit français !](linux/selfhost/sonerezh.md)
 * [Subsonic, le couteau Suisse de la musique](linux/selfhost/subsonic.md)
 * [Sauvegarder ses vidéos avec YoutubeDL et sa GUI](linux/selfhost/youtubedl.md)
-* [ZeroBin, son propre service de paste](linux/selfhost/ZeroBin.md)
 * [Gérer son serveur en ligne via Ajenti](linux/selfhost/ajenti.md)
-* [Héberger ses images avec Chevreto](linux/selfhost/chevreto.md)
 * [Streamer sa musique depuis Koel](linux/selfhost/koel.md)
 * [Partager ses fichiers avec H5ai](linux/selfhost/h5ai.md)
 
@@ -316,16 +310,11 @@ Cette magnifique documentation a été faites avec MkDocs
 ## Torrent
 
 * [ruTorrent le polyvalent](./linux/selfhost/torrent/rutorrent.md)
-* [Flood le sublime](rtorrent/flood.md)
-* [Transmission, le client torrent facile](transmission.md)
-* [Deluge, l'agressif](deluge.md)
 * [Creer ses torrents avec mktorrent](./linux/selfhost/torrent/mktorrent.md)
 
 ## Accès à distance
 
 * [Une multitude d'accès à distance via la WebApp Guacamole](guacamole.md)
-* [Accès à distance via TeamViewer (TV.md)](tv.md)
-* [Accès à distance via VNC](vnc.md)
 
 ## Networking
 
@@ -352,7 +341,6 @@ Cette magnifique documentation a été faites avec MkDocs
 * [Protocole CDP](./networking/cisco/cdp.md)
 * [Protocole LLDP](./networking/cisco/lldp.md)
 * [Désactiver la propagation du TTL en MPLS](./networking/cisco/mpls/ttl_propagation.md)
-* [Tunnel Automatic 6to4](./networking/cisco/ipv6/6to4_tunnel.md)
 * [OSPF en IPv6](./networking/cisco/ipv6/ospf_ipv6.md)
 * [Autoriser les transceiver no-name](./networking/cisco/transceiver/noname.md)
 

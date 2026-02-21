@@ -45,10 +45,13 @@ plugins:
       type: date
       fallback_to_build_date: true
       enable_creation_date: true
+  - glightbox
   - search:
       lang: fr
   - tags
   - privacy
+  - redirects:
+      redirect_maps: {}
   - minify:
       minify_html: true
       minify_js: true
