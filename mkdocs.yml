@@ -51,7 +51,14 @@ plugins:
   - tags
   - privacy
   - redirects:
-      redirect_maps: {}
+      redirect_maps:
+        'mess/useful_links.md': 'misc/useful_links.md'
+        'mess/linux_performances.md': 'misc/linux_performances.md'
+        'mess/optimization.md': 'misc/optimization.md'
+        'mess/scripts_useful.md': 'misc/scripts_useful.md'
+        'mess/github_template.md': 'misc/github_template.md'
+        'mess/fibre_optique/info_transceiver.md': 'misc/fibre_optique/info_transceiver.md'
+        'mess/download/netflix_subs.md': 'misc/download/netflix_subs.md'
   - minify:
       minify_html: true
       minify_js: true
