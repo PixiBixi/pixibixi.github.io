@@ -24,6 +24,10 @@ mkdocs build --strict
 
 ## Linting
 
+- **Inline disable/enable**: always specify rule names (e.g. `MD046`).
+  A bare `markdownlint-enable` without rule names re-enables ALL rules,
+  overriding `.markdownlint.json` globals (including MD013).
+
 Pre-commit hooks run `markdownlint-cli2` on changed files. Rules are in `.markdownlint.json`:
 
 - MD013 (line length): **disabled**
@@ -54,18 +58,29 @@ All content lives under `docs/`. Organized by technology domain:
 
 | Directory | Topics |
 |-----------|--------|
-| `linux/` | fundamentals, security, hosting, monitoring, databases (mysql/postgres/redis/elasticsearch), CLI |
+| `linux/` | fundamentals, security, hosting (nginx, haproxy, lemp), CLI, shell, storage, systemd |
+| `automation/` | Ansible, Terraform, Makefile |
+| `databases/` | MySQL, Postgres, Redis, Elasticsearch, Memcached |
+| `monitoring/` | LGTM stack, check_mk, Munin |
 | `kubernetes/` | CLI, deployments, ArgoCD, operators, RKE, Rancher, troubleshooting |
 | `cloud/` | AWS, Azure, GCloud |
-| `networking/` | Cisco, MikroTik, proof files |
-| `docker/`, `gitlab/`, `kafka/` | Container and CI/CD tooling |
+| `containers/` | Docker, Kafka |
+| `ci-cd/` | GitLab |
+| `networking/` | Cisco, MikroTik, pfSense |
+| `os/` | macOS, Windows, misc desktop |
+| `selfhost/` | Self-hosted apps (Nextcloud, Koel, etc.) |
+| `web/` | nginx, HAProxy, Varnish, DNS, mail, WordPress |
 | `hardware/` | NIC, HDD, SAN, server |
 | `hypervisor/` | ESXi, Proxmox |
+| `ssh/` | SSH config and tips |
 
 Sidebar navigation is **auto-generated** from the `docs/` directory structure (no `nav:` in `mkdocs.yml`).
 `docs/index.md` is a hand-maintained landing page TOC — update it when adding new files.
 
 ## Commit Convention
+
+Always run `git status` before committing — pre-staged changes from unrelated work
+may exist. Stage and commit only the specific file(s) you modified.
 
 Scoped conventional commits following the content path:
 
