@@ -1,5 +1,8 @@
 # Reverse proxy: HAproxy
 
+!!! warning "Version HAproxy"
+    Les directives et options évoluent entre les versions majeures. Vérifiez toujours la version installée (`haproxy -v`) et consultez la [documentation officielle](https://docs.haproxy.org/3.3/management.html) correspondante. La version actuelle stable est la **3.3**.
+
 HAproxy est un reverse proxy optimisé pour les fortes charges créé en
 2000 par Willy Tarreau, un contributeur kernel. Ce dernier propose
 toutes les fonctionnalités d'un reverse proxy classique :
@@ -45,7 +48,7 @@ CONFIG="/etc/haproxy"
 
 La variable CONFIG est utilisée pour le paramètre `-F $CONFIG` de
 l'unit systemd.
-Voici ce que nous dit la [documentation haproxy](https://cbonte.github.io/haproxy-dconv/2.6/management.html) :
+Voici ce que nous dit la [documentation haproxy](https://docs.haproxy.org/3.3/management.html) :
 
 ??? note "HAproxy : Official Documentation"
     ```bash
@@ -97,11 +100,11 @@ configuration HAproxy
         user haproxy
         group haproxy
         stats socket /run/haproxy/admin.sock user haproxy group haproxy mode 660 level admin
-        nbproc 2
         nbthread 4
-        cpu-map auto:1/1-4 0-3
+        cpu-map auto:1-4 0-3
         daemon
-        ssl-default-bind-ciphers ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256
+        ssl-default-bind-ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305
+        ssl-default-bind-ciphersuites TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256
         ssl-default-bind-options ssl-min-ver TLSv1.2 no-tls-tickets
     ```
 
@@ -118,20 +121,14 @@ en tant que root, mais en tant qu'haproxy dans notre cas.
 * `stats socket` nous permet de définir un socket afin d'y extraire les stats ou autre. Il est également possible d'écrire la configuration de HAproxy via ce moyen. Attention à donc bien restreindre les privilèges.
     <!-- markdownlint-disable-next-line -->
     * SleepLessBeastie a écrit [un excellent article](https://sleeplessbeastie.eu/2020/01/29/how-to-use-haproxy-stats-socket/) sur la définition des privilèges et comment interagir avec l'API.
-* `nbproc/nbthread` sont les paramètres permettant à HAproxy de
-scale. Nous pouvons utiliser *nbproc* indépendamment de *nbthread*.
-Chaque process dispose de ses propres stats, tables de
-persistances... Tous les threads disposent cependant des mêmes
-informations.
+* `nbthread` permet à HAproxy de scaler sur plusieurs threads. Utiliser `auto` pour détecter automatiquement le nombre de threads disponibles, ou spécifier un entier.
     <!-- markdownlint-disable-next-line -->
-    * Il est largement déconseillé d'utiliser plusieurs processus sur HAproxy
+    * `nbproc` (multi-processus) est **déprécié depuis HAProxy 2.5** et **supprimé en 2.9**. Ne plus utiliser cette directive.
+* `cpu-map` permet de binder chaque thread sur un core CPU dédié. La syntaxe avec `nbthread` : `cpu-map auto:<thread-range> <cpu-range>`
+* `daemon` permet de lancer HAproxy en tant que daemon. Indépendant de `nbthread` — les deux directives n'ont aucune dépendance l'une envers l'autre.
+* `ssl-default-bind-ciphers` configure les ciphers **TLS 1.2**. `ssl-default-bind-ciphersuites` configure les ciphers **TLS 1.3** (directive distincte, obligatoire pour couvrir les deux versions). `ssl-default-bind-options` configure les versions autorisées et options associées.
     <!-- markdownlint-disable-next-line -->
-    * Ces options requièrent la présence de la directive *daemon* afin de lancer HAproxy en tant que daemon.
-* `cpu-map` nous permet de profiter totalement de nos différents cores CPU afin de bind 1 thread/core
-* `daemon` permet de lancer HAproxy en tant que daemon.
-* `ssl-default-bind-ciphers/ssl-default-bind-options` configure tout ce qui est relatif au TLS. La première option configure les ciphers et la seconde configure les versions autorisées de TLS minimum...
-    <!-- markdownlint-disable-next-line -->
-    * La fondation Mozilla propose un [configurateur](https://ssl-config.mozilla.org/#server=haproxy&version=2.1&config=intermediate&openssl=1.1.1k&guideline=5.6) offrant une configuration alliant sécurité & compatibilité de équipements. Le profil Intermediate est adapté pour une utilisation en production. Modern est trop restrictif.
+    * La fondation Mozilla propose un [configurateur](https://ssl-config.mozilla.org/#server=haproxy&version=3.3&config=intermediate) pour HAProxy 3.x. Le profil Intermediate est adapté pour une utilisation en production.
 
 ### Defaults
 
@@ -140,7 +137,7 @@ Votre configuration est évolution, c'est pour cela que la catégorie
 frontend mais également pour les backends. Vous pouvez overwrite vos
 paramètres pour un frontend/backend spécifique par la suite
 
-<!-- markdownlint-disable -->
+<!-- markdownlint-disable MD046 -->
 ??? example "HAproxy: Default section"
     ```haproxy
     defaults
@@ -162,7 +159,7 @@ paramètres pour un frontend/backend spécifique par la suite
 
         http-reuse safe
     ```
-<!-- markdownlint-enable -->
+<!-- markdownlint-enable MD046 -->
 
 * `mode http` indique à HAproxy de fonctionner en tant que balancer
 HTTP et non simplement TCP. Légèrement plus lent que le TCP mais
@@ -220,7 +217,7 @@ types d'ACL, que ce soir sur l'URI, les paramètres... Nous allons
 voir un exemple simple avec l'utilisation d'une ACL sur le nom de
 domaine.
 
-<!-- markdownlint-disable -->
+<!-- markdownlint-disable MD046 MD037 -->
 ??? example "HAproxy : Simple frontend w/ ACL"
     ```vcl
     frontend http
@@ -235,7 +232,7 @@ domaine.
 
        default_backend undefined
     ```
-<!-- markdownlint-enable -->
+<!-- markdownlint-enable MD046 -->
 
 Nous définissons ici un backend par défaut. Il est possible de ne pas en
 définir et HAproxy renverra une erreur 421 de lui même.
@@ -357,7 +354,7 @@ indique à haproxy de toujours envoyer le traffic pour une URI spécifique
 vers le même backend. Ainsi, nous maximisons le hitrate.
 
 ??? example "HAproxy : Backend Varnish"
-<!-- markdownlint-disable -->
+<!-- markdownlint-disable MD046 -->
     ```vcl
     backend varnish
         timeout     check 3000
@@ -367,7 +364,7 @@ vers le même backend. Ainsi, nous maximisons le hitrate.
         server      varnish01  varnish01.vlan:82  check
         server      varnish02  varnish02.vlan:82  check
     ```
-<!-- markdownlint-enable -->
+<!-- markdownlint-enable MD046 -->
 
 ### HTTP to HTTPS
 
