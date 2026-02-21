@@ -5,11 +5,43 @@
          <lastmod>2026-02-21</lastmod>
     </url>
     <url>
-         <loc>https://wiki.jdelgado.fr/docker/</loc>
+         <loc>https://wiki.jdelgado.fr/automation/ansible/ansible/</loc>
          <lastmod>2026-02-21</lastmod>
     </url>
     <url>
-         <loc>https://wiki.jdelgado.fr/guacamole/</loc>
+         <loc>https://wiki.jdelgado.fr/automation/ansible/ansible_reuse_variable/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/automation/ansible/ansible_tips/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/automation/misc/Makefile/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/automation/terraform/cheatsheet/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/automation/terraform/speedup/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/automation/terraform/tools/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/ci-cd/gitlab/cli/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/ci-cd/gitlab/ci/optimize/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/ci-cd/gitlab/ci/scan_image/</loc>
          <lastmod>2026-02-21</lastmod>
     </url>
     <url>
@@ -45,27 +77,71 @@
          <lastmod>2026-02-21</lastmod>
     </url>
     <url>
-         <loc>https://wiki.jdelgado.fr/code/st3/</loc>
+         <loc>https://wiki.jdelgado.fr/containers/docker/</loc>
          <lastmod>2026-02-21</lastmod>
     </url>
     <url>
-         <loc>https://wiki.jdelgado.fr/docker/use_proxy/</loc>
+         <loc>https://wiki.jdelgado.fr/containers/docker/use_proxy/</loc>
          <lastmod>2026-02-21</lastmod>
     </url>
     <url>
-         <loc>https://wiki.jdelgado.fr/docker/compose/templates/</loc>
+         <loc>https://wiki.jdelgado.fr/containers/docker/compose/templates/</loc>
          <lastmod>2026-02-21</lastmod>
     </url>
     <url>
-         <loc>https://wiki.jdelgado.fr/gitlab/cli/</loc>
+         <loc>https://wiki.jdelgado.fr/containers/kafka/kafkactl/</loc>
          <lastmod>2026-02-21</lastmod>
     </url>
     <url>
-         <loc>https://wiki.jdelgado.fr/gitlab/ci/optimize/</loc>
+         <loc>https://wiki.jdelgado.fr/databases/elasticsearch/log_slow_queries/</loc>
          <lastmod>2026-02-21</lastmod>
     </url>
     <url>
-         <loc>https://wiki.jdelgado.fr/gitlab/ci/scan_image/</loc>
+         <loc>https://wiki.jdelgado.fr/databases/memcached/misc_commands/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/databases/mysql/advanced_commands/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/databases/mysql/db_mysql/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/databases/mysql/galera_gluster/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/databases/mysql/users/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/databases/mysql/troubleshooting/generate_insert_into/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/databases/mysql/troubleshooting/replication_slave/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/databases/postgres/commands/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/databases/postgres/postgresql_replication/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/databases/postgres/upgrade_version/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/databases/redis/cluster_ha/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/databases/redis/decode_function/</loc>
          <lastmod>2026-02-21</lastmod>
     </url>
     <url>
@@ -130,10 +206,6 @@
     </url>
     <url>
          <loc>https://wiki.jdelgado.fr/hypervisor/proxmox/troubleshooting/vm_locked/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/kafka/kafkactl/</loc>
          <lastmod>2026-02-21</lastmod>
     </url>
     <url>
@@ -213,70 +285,6 @@
          <lastmod>2026-02-21</lastmod>
     </url>
     <url>
-         <loc>https://wiki.jdelgado.fr/linux/advanced/cli/extend_partition/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/linux/advanced/shell/debug_slowness_ohmyzsh/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/linux/advanced/shell/template_bash_script/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/linux/advanced/shell/tips_bash/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/linux/advanced/shell/tips_zsh/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/linux/advanced/shell/useful_commands/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/linux/advanced/shell/write_bash_scripts/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/linux/advanced/systemd/create_unit/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/linux/advanced/varnish/config/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/linux/automatisation/ansible/ansible/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/linux/automatisation/ansible/ansible_reuse_variable/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/linux/automatisation/ansible/ansible_tips/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/linux/automatisation/misc/Makefile/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/linux/automatisation/terraform/cheatsheet/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/linux/automatisation/terraform/speedup/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/linux/automatisation/terraform/tools/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
          <loc>https://wiki.jdelgado.fr/linux/bsd/wheel_group/</loc>
          <lastmod>2026-02-21</lastmod>
     </url>
@@ -337,10 +345,6 @@
          <lastmod>2026-02-21</lastmod>
     </url>
     <url>
-         <loc>https://wiki.jdelgado.fr/linux/elasticsearch/log_slow_queries/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
          <loc>https://wiki.jdelgado.fr/linux/fundamentals/base_commands/</loc>
          <lastmod>2026-02-21</lastmod>
     </url>
@@ -357,91 +361,11 @@
          <lastmod>2026-02-21</lastmod>
     </url>
     <url>
-         <loc>https://wiki.jdelgado.fr/linux/hosting/dns/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/linux/hosting/ftp/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/linux/hosting/mail/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/linux/hosting/troubleshooting/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/linux/hosting/lemp/custom_server_header/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/linux/hosting/lemp/fetch_good_ips/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/linux/hosting/lemp/installation/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/linux/hosting/lemp/ipv6_nginx/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/linux/hosting/lemp/nginx_ssl/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/linux/hosting/lemp/php_custom_version/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/linux/hosting/lemp/haproxy/api/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/linux/hosting/lemp/haproxy/cloudflare/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/linux/hosting/lemp/haproxy/keep_real_ip/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/linux/hosting/lemp/haproxy/maintenance/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/linux/hosting/lemp/haproxy/memory_limit/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/linux/hosting/lemp/haproxy/overview/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/linux/hosting/mail/exim_manage_dkim/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/linux/hosting/ruby/install/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/linux/memcached/misc_commands/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
          <loc>https://wiki.jdelgado.fr/linux/misc/autoupgrade/</loc>
          <lastmod>2026-02-21</lastmod>
     </url>
     <url>
          <loc>https://wiki.jdelgado.fr/linux/misc/convert_bin_to_iso/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/linux/misc/create_raid/</loc>
          <lastmod>2026-02-21</lastmod>
     </url>
     <url>
@@ -473,58 +397,6 @@
          <lastmod>2026-02-21</lastmod>
     </url>
     <url>
-         <loc>https://wiki.jdelgado.fr/linux/monitoring/eztools/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/linux/monitoring/munin/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/linux/monitoring/check_mk/add_slack_notification/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/linux/monitoring/lgtm/custom_metrics_nodeexporter/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/linux/monitoring/lgtm/loki_alerting/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/linux/monitoring/lgtm/simple_monitoring_stack/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/linux/monitoring/lgtm/tips_lgtm/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/linux/mysql/advanced_commands/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/linux/mysql/db_mysql/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/linux/mysql/galera_gluster/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/linux/mysql/users/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/linux/mysql/troubleshooting/generate_insert_into/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/linux/mysql/troubleshooting/replication_slave/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
          <loc>https://wiki.jdelgado.fr/linux/networking/buffer_nic/</loc>
          <lastmod>2026-02-21</lastmod>
     </url>
@@ -542,26 +414,6 @@
     </url>
     <url>
          <loc>https://wiki.jdelgado.fr/linux/networking/ipv6/setup_online/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/linux/postgres/commands/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/linux/postgres/postgresql_replication/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/linux/postgres/upgrade_version/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/linux/redis/cluster_ha/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/linux/redis/decode_function/</loc>
          <lastmod>2026-02-21</lastmod>
     </url>
     <url>
@@ -597,6 +449,10 @@
          <lastmod>2026-02-21</lastmod>
     </url>
     <url>
+         <loc>https://wiki.jdelgado.fr/linux/security/pubkey_rfc4716/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
          <loc>https://wiki.jdelgado.fr/linux/security/rkhunter/</loc>
          <lastmod>2026-02-21</lastmod>
     </url>
@@ -625,63 +481,39 @@
          <lastmod>2026-02-21</lastmod>
     </url>
     <url>
-         <loc>https://wiki.jdelgado.fr/linux/selfhost/ajenti/</loc>
+         <loc>https://wiki.jdelgado.fr/linux/shell/debug_slowness_ohmyzsh/</loc>
          <lastmod>2026-02-21</lastmod>
     </url>
     <url>
-         <loc>https://wiki.jdelgado.fr/linux/selfhost/h5ai/</loc>
+         <loc>https://wiki.jdelgado.fr/linux/shell/template_bash_script/</loc>
          <lastmod>2026-02-21</lastmod>
     </url>
     <url>
-         <loc>https://wiki.jdelgado.fr/linux/selfhost/koel/</loc>
+         <loc>https://wiki.jdelgado.fr/linux/shell/tips_bash/</loc>
          <lastmod>2026-02-21</lastmod>
     </url>
     <url>
-         <loc>https://wiki.jdelgado.fr/linux/selfhost/nextcloud/</loc>
+         <loc>https://wiki.jdelgado.fr/linux/shell/tips_zsh/</loc>
          <lastmod>2026-02-21</lastmod>
     </url>
     <url>
-         <loc>https://wiki.jdelgado.fr/linux/selfhost/selfoss/</loc>
+         <loc>https://wiki.jdelgado.fr/linux/shell/useful_commands/</loc>
          <lastmod>2026-02-21</lastmod>
     </url>
     <url>
-         <loc>https://wiki.jdelgado.fr/linux/selfhost/sonerezh/</loc>
+         <loc>https://wiki.jdelgado.fr/linux/shell/write_bash_scripts/</loc>
          <lastmod>2026-02-21</lastmod>
     </url>
     <url>
-         <loc>https://wiki.jdelgado.fr/linux/selfhost/subsonic/</loc>
+         <loc>https://wiki.jdelgado.fr/linux/storage/create_raid/</loc>
          <lastmod>2026-02-21</lastmod>
     </url>
     <url>
-         <loc>https://wiki.jdelgado.fr/linux/selfhost/youtubedl/</loc>
+         <loc>https://wiki.jdelgado.fr/linux/storage/extend_partition/</loc>
          <lastmod>2026-02-21</lastmod>
     </url>
     <url>
-         <loc>https://wiki.jdelgado.fr/linux/selfhost/torrent/mktorrent/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/linux/selfhost/torrent/rutorrent/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/mac/brew/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/mac/brew_xcode/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/mac/mind-view/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/mac/iterm/troubleshooting/alt_arrow/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/mac/iterm/troubleshooting/first_chat/</loc>
+         <loc>https://wiki.jdelgado.fr/linux/systemd/create_unit/</loc>
          <lastmod>2026-02-21</lastmod>
     </url>
     <url>
@@ -714,6 +546,34 @@
     </url>
     <url>
          <loc>https://wiki.jdelgado.fr/misc/fibre_optique/info_transceiver/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/monitoring/eztools/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/monitoring/munin/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/monitoring/check_mk/add_slack_notification/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/monitoring/lgtm/custom_metrics_nodeexporter/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/monitoring/lgtm/loki_alerting/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/monitoring/lgtm/simple_monitoring_stack/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/monitoring/lgtm/tips_lgtm/</loc>
          <lastmod>2026-02-21</lastmod>
     </url>
     <url>
@@ -785,27 +645,247 @@
          <lastmod>2026-02-21</lastmod>
     </url>
     <url>
-         <loc>https://wiki.jdelgado.fr/networking/mkt/install_ipsec/</loc>
+         <loc>https://wiki.jdelgado.fr/networking/mikrotik/install_ipsec/</loc>
          <lastmod>2026-02-21</lastmod>
     </url>
     <url>
-         <loc>https://wiki.jdelgado.fr/networking/mkt/netflix_vpn/</loc>
+         <loc>https://wiki.jdelgado.fr/networking/mikrotik/netflix_vpn/</loc>
          <lastmod>2026-02-21</lastmod>
     </url>
     <url>
-         <loc>https://wiki.jdelgado.fr/pfsense/update_bogon_list/</loc>
+         <loc>https://wiki.jdelgado.fr/networking/pfsense/update_bogon_list/</loc>
          <lastmod>2026-02-21</lastmod>
     </url>
     <url>
-         <loc>https://wiki.jdelgado.fr/pfsense/network/gateway_outside_network/</loc>
+         <loc>https://wiki.jdelgado.fr/networking/pfsense/network/gateway_outside_network/</loc>
          <lastmod>2026-02-21</lastmod>
     </url>
     <url>
-         <loc>https://wiki.jdelgado.fr/ssh/pubkey_rfc4716/</loc>
+         <loc>https://wiki.jdelgado.fr/os/mac/brew/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/os/mac/brew_xcode/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/os/mac/mind-view/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/os/mac/iterm/troubleshooting/alt_arrow/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/os/mac/iterm/troubleshooting/first_chat/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/os/misc/st3/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/os/windows/desktop/tips/hosts_file/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/os/windows/desktop/tips/improve_privacy/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/os/windows/desktop/tips/install_main_softwares/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/os/windows/desktop/tips/long_path/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/os/windows/server/admin/jobs/schedule_jobs_scripts/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/os/windows/server/core/setup_default_powershell/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/os/windows/server/firewall/access_without_shortcut/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/os/windows/server/powershell/ad_server/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/os/windows/server/powershell/allow_icmp/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/os/windows/server/powershell/command_time_execution/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/os/windows/server/powershell/dhcp_server/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/os/windows/server/powershell/disable_tlsv1/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/os/windows/server/powershell/first_setup/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/os/windows/server/powershell/import_csv_users/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/os/windows/server/powershell/initiate_iscsi/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/os/windows/server/powershell/install_drivers/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/os/windows/server/powershell/mount_iso/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/os/windows/server/powershell/useful_vars/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/os/windows/server/powershell/storage/pool/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/os/windows/server/registry/useful_keys/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/selfhost/ajenti/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/selfhost/guacamole/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/selfhost/h5ai/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/selfhost/koel/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/selfhost/nextcloud/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/selfhost/selfoss/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/selfhost/sonerezh/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/selfhost/subsonic/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/selfhost/youtubedl/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/selfhost/torrent/mktorrent/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/selfhost/torrent/rutorrent/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/web/dns/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/web/ftp/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/web/mail/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/web/troubleshooting/</loc>
          <lastmod>2026-02-21</lastmod>
     </url>
     <url>
          <loc>https://wiki.jdelgado.fr/web/benchmark/benchmark_random_querystring/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/web/haproxy/api/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/web/haproxy/cloudflare/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/web/haproxy/keep_real_ip/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/web/haproxy/maintenance/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/web/haproxy/memory_limit/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/web/haproxy/overview/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/web/mail/exim_manage_dkim/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/web/nginx/custom_server_header/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/web/nginx/fetch_good_ips/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/web/nginx/installation/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/web/nginx/ipv6_nginx/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/web/nginx/nginx_ssl/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/web/nginx/php_custom_version/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/web/ruby/install/</loc>
+         <lastmod>2026-02-21</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/web/varnish/config/</loc>
          <lastmod>2026-02-21</lastmod>
     </url>
     <url>
@@ -814,86 +894,6 @@
     </url>
     <url>
          <loc>https://wiki.jdelgado.fr/web/wordpress/tips_sql/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/windows/desktop/tips/hosts_file/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/windows/desktop/tips/improve_privacy/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/windows/desktop/tips/install_main_softwares/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/windows/desktop/tips/long_path/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/windows/server/admin/jobs/schedule_jobs_scripts/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/windows/server/core/setup_default_powershell/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/windows/server/firewall/access_without_shortcut/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/windows/server/powershell/ad_server/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/windows/server/powershell/allow_icmp/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/windows/server/powershell/command_time_execution/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/windows/server/powershell/dhcp_server/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/windows/server/powershell/disable_tlsv1/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/windows/server/powershell/first_setup/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/windows/server/powershell/import_csv_users/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/windows/server/powershell/initiate_iscsi/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/windows/server/powershell/install_drivers/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/windows/server/powershell/mount_iso/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/windows/server/powershell/useful_vars/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/windows/server/powershell/storage/pool/</loc>
-         <lastmod>2026-02-21</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/windows/server/registry/useful_keys/</loc>
          <lastmod>2026-02-21</lastmod>
     </url>
 </urlset>
