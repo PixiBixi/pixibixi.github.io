@@ -107,6 +107,24 @@ Example admonition:
     Content indented 4 spaces.
 ```
 
+## Content Language
+
+All article content is written in **French**. This overrides the global
+English rule. Code, commands, and commit messages stay in English.
+
+## Article Rewrite Workflow
+
+When rewriting an article:
+
+1. Read the existing file first
+2. Fetch external sources if needed (dotfiles repo, upstream docs)
+3. Write: practical examples, tables for options, real-world use cases
+4. Lint: `markdownlint-cli2 "path/to/file.md"`
+5. Commit + push — CI validates automatically
+
+Quality bar: prefer examples over prose, tables over lists, one-liners
+over paragraphs. A good article has commands you can copy-paste on the spot.
+
 ## Gotchas
 
 - **External images**: the `privacy` plugin downloads external assets to self-host them.
