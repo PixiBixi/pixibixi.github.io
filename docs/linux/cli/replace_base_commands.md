@@ -1,106 +1,294 @@
-# Remplacer les commandes de base Linux par des versions plus performantes
+# Remplacer les commandes de base Linux
 
-## Commandes Built-in
+Les commandes Unix historiques font le job, mais des alternatives modernes
+— souvent écrites en Rust — offrent une meilleure ergonomie, une sortie
+colorisée, et parfois des gains de performance significatifs.
 
-De nos jours, les commandes de bases linux sont désuètes. Il existe des
-commandes faisant le même travail, mais plus rapidement, ou alors avec
-une syntaxe simplifiée. Ces logiciels sont généralement écrit en
-language rust et Open Source.
-
-### Remplacant de ls
-
-Deux outils sont disponibles pour remplacer `ls`, libre à vous de choisir celui que vous préférez
-
-En remplacement ls, nous avons l'excellent outil
-[exa](https://the.exa.website/), disponible sur Linux et MacOS. exa est
-un excellent outil pour beaucoup de choses. Par exemple, celui-ci
-intègre la fonctionnalité tree (Visualisation des fichiers sous forme
-d'arbre) via `--tree`. Celui-ci intègre également un thème visuel nous
-permettant d'observer au premier coup d'oeil certaines choses comme la
-présence d'un lien symbolique rompus...
+!!! note "Installation"
+    Tous ces outils sont disponibles via Homebrew (`brew install <tool>`)
+    et la plupart via `apt`/`dnf` sur Linux.
 
 ---
 
-Le second candidat est [lsd](https://github.com/lsd-rs/lsd).
+## Fichiers & répertoires
 
-Tout comme exa, ce dernier possède les mêmes arguments... mais avec des petites icones
+### `ls` → `lsd`
 
-Personnelement, c'est ce second que je préfère car l'affichage est plus adapté pour moi
+[lsd](https://github.com/lsd-rs/lsd) ajoute icônes, couleurs, et une vue
+arborescente intégrée :
 
-### Remplacant de du
+```bash
+lsd                   # liste classique avec icônes
+lsd -la               # détails complets
+lsd --tree            # vue arborescente (remplace tree)
+lsd --tree --depth 2  # limiter la profondeur
+```
 
-Si comme moi vous vous prenez toujours la tête avec du pour savoir quel
-fichier/dossier est le plus, gros,
-[dust](https://github.com/bootandy/dust) est fait pour vous. Disponible
-sur Linux et Mac, duty affiche simplement les plus gros éléments et
-affiche également un visuel, extrêmement pratique
+!!! note "exa / eza"
+    [exa](https://the.exa.website/) était l'alternative historique mais le
+    projet est archivé depuis 2022. Son fork
+    [eza](https://github.com/eza-community/eza) continue mais `lsd` reste
+    mon choix par défaut.
 
-### Remplacant de df
+---
 
-df est un outil vieillissant et peu visuel mais suffisant. Cependant,
-pour un usage domestique et plus visuel, deux outils sont disponibles.
+### `cat` → `bat`
 
-* dfc, outil écrit en C, un tout petit peu plus visuel que df mais
-    quasiment aussi rapide
-* duf, outil écrit en Go, plus lent que dfc mais bien plus visuel et
-    paramétrable
+[bat](https://github.com/sharkdp/bat) ajoute numéros de ligne, coloration
+syntaxique, intégration git, et pagination automatique :
 
-### Remplacant de find
+```bash
+bat script.sh            # affichage colorisé
+bat --style=plain file   # sans décoration (alias cat)
+bat -A file              # affiche les caractères non-imprimables
+```
 
-find est un outil très puissant que nous utilisons tous. Cependant, il
-existe encore un outil plus puissant se nommant
-[fd](https://github.com/sharkdp/fd). fd nous permet simplement de
-simples recherches. Par exemple, `fd -e md` nous permettra
-de rechercher tous les fichiers du répertoire (et sous-répertoire)
-courant. De nombreux exemples sont disponibles dans le Github
+Intégration git : les lignes modifiées sont marquées dans la gouttière
+gauche par rapport à l'index git.
 
-### Remplacant de cat
+---
 
-Arrêtons d'afficher nos textes avec cat et utilisons son petit frère,
-[bat](https://github.com/sharkdp/bat). Il s'agit d'un logiciel
-puissant pouvant afficher les numéros de lignes, intégrant une
-coloration syntaxique pour nos différents scripts. De plus, si le texte
-est trop long ou large, pas besoin d'utiliser less, bat l'intègre
-automatiquement. Enfin, d'un simple coup d'oeil, nous pouvons observer
-la différence entre notre version et celle que nous avons clone depuis
-Git car bat se base sur l'index de git pour montrer les modifications.
+### `find` → `fd`
 
-### Remplacant de grep
+[fd](https://github.com/sharkdp/fd) est plus rapide, respecte `.gitignore`
+par défaut, et a une syntaxe simplifiée :
 
-ripgrep est un remplacant extrêmement efficace à grep. Il est en moyenne
-2x plus rapide pour une recherche que grep.
-[ripgrep](https://github.com/BurntSushi/ripgrep) ignore par défaut les
-fichiers contenu dans le .gitignore. Un [tutoriel
-détaillé](https://blog.burntsushi.net/ripgrep/) est disponible sur le
-blog de Burntsushi
+```bash
+fd pattern              # recherche par nom (récursif)
+fd -e md                # filtrer par extension
+fd -t f pattern         # fichiers uniquement
+fd -t d pattern         # répertoires uniquement
+fd --hidden pattern     # inclure les fichiers cachés
+fd pattern -x cmd {}    # exécuter une commande sur chaque résultat
+```
 
-## Bonus
+---
 
-### Remplacant de dig
+### `du` → `dust`
 
-dig est déjà un excellent outil face à nslookup. Cependant, un outil
-encore plus performant existe, [dog](https://github.com/ogham/dog/).
-Malheureusement, il n'y a pas d'équivalent de dig -x.
+[dust](https://github.com/bootandy/dust) affiche les plus gros éléments
+avec une barre visuelle de proportion :
 
-### Remplacant de gzip
+```bash
+dust            # analyse du répertoire courant
+dust -d 2       # limiter la profondeur
+dust /var/log   # sur un répertoire spécifique
+```
 
-Aujourd'hui, j'ai découvert un outil qui s'appelle
-[pigz](https://zlib.net/pigz/). Il s'agit tout simplement d'un gzip
-mais multithread. Nous avons facilement un gain de performance de x3. Un
-benchmark est [disponible](https://rachaellappan.github.io/pigz/)
+---
 
-### Complément de mtr/traceroute
+### `df` → `dfc`
 
-Trippy est un excellent à mtr avec une petite UI sympathique, pas forcément mieux mais très sympa, [à voir ici](https://github.com/fujiapple852/trippy)
+[dfc](https://github.com/Rolinh/dfc) est un `df` légèrement plus lisible,
+avec graphe d'utilisation en ASCII :
 
-### Complément de git
+```bash
+dfc             # vue globale avec barres de progression
+dfc -T          # affiche le type de système de fichiers
+```
 
-Pour git, il existe un autre outil lightweight et très sympa :
-[tig](https://github.com/jonas/tig) permet une visualisation simple de
-son repository...
+Pour un rendu encore plus visuel, [duf](https://github.com/muesli/duf)
+est une alternative en Go avec une UI colorisée et des filtres :
 
-### Alternative a rm
+```bash
+duf             # tableau complet par type de montage
+duf /home       # filtré sur un point de montage
+```
 
-Si comme moi vous êtes du genre étourdi et vous supprimez des fichiers que vous ne voulez pas, [rip](https://github.com/nivekuil/rip) est là.
+---
 
-Basiquement, le fichier ne va pas être supprimé mais déplacé vers un répertoire temporaire. Pratique pour tous les étourdis
+### `rm` → `rip`
+
+[rip](https://github.com/nivekuil/rip) déplace les fichiers dans un
+répertoire temporaire plutôt que de les supprimer définitivement :
+
+```bash
+rip file.txt        # "suppression" récupérable
+rip --seance        # liste les fichiers supprimés
+rip --unbury file   # restaurer un fichier
+```
+
+Filet de sécurité indispensable quand on travaille vite.
+
+---
+
+## Recherche dans les fichiers
+
+### `grep` → `ripgrep`
+
+[ripgrep](https://github.com/BurntSushi/ripgrep) est en moyenne 2× plus
+rapide que grep. Il respecte `.gitignore` par défaut et supporte les
+expressions régulières avancées :
+
+```bash
+rg pattern              # recherche dans le répertoire courant
+rg pattern -t py        # filtrer par type de fichier
+rg -l pattern           # afficher uniquement les noms de fichiers
+rg -i pattern           # insensible à la casse
+rg pattern --hidden     # inclure les fichiers cachés
+rg -A 3 -B 3 pattern    # contexte avant/après
+```
+
+---
+
+## Processus & système
+
+### `top` → `htop` / `bottom`
+
+[htop](https://htop.dev/) est le successeur naturel de `top`, avec une
+interface interactive et des filtres :
+
+```bash
+htop
+htop -u username    # filtrer par utilisateur
+```
+
+[bottom](https://github.com/ClementTsang/bottom) (`btm`) va plus loin
+avec graphes CPU/mémoire/réseau en temps réel :
+
+```bash
+btm             # vue graphique complète
+btm --basic     # mode simplifié
+```
+
+---
+
+### `ps` → `procs`
+
+[procs](https://github.com/dalance/procs) affiche les processus de manière
+lisible avec coloration et recherche :
+
+```bash
+procs               # liste tous les processus
+procs nginx         # filtrer par nom
+procs --tree        # vue arborescente des processus
+```
+
+---
+
+## Réseau
+
+### `dig` → `dog`
+
+[dog](https://github.com/ogham/dog) offre une sortie colorisée et une
+syntaxe plus intuitive que `dig` :
+
+```bash
+dog example.com          # requête A par défaut
+dog example.com MX       # enregistrement MX
+dog example.com @8.8.8.8 # serveur DNS spécifique
+```
+
+!!! warning "Limitation"
+    `dog` ne supporte pas l'équivalent de `dig -x` (reverse DNS).
+    Pour le reverse DNS, utiliser `dig -x` ou `host`.
+
+---
+
+### `ping` / `mtr` → `trippy`
+
+[trippy](https://github.com/fujiapple852/trippy) (`trip`) combine ping et
+traceroute dans une UI interactive :
+
+```bash
+trip example.com        # traceroute interactif
+trip -p udp example.com # mode UDP
+```
+
+---
+
+### `curl` → `httpie`
+
+[HTTPie](https://httpie.io/) (`http`) simplifie les requêtes HTTP avec une
+syntaxe intuitive et une sortie colorisée :
+
+```bash
+http GET example.com/api
+http POST api.example.com/users name=john email=j@example.com
+http -A bearer -a token123 GET api.example.com/secure
+http --download example.com/file.zip
+```
+
+---
+
+## Compression
+
+### `gzip` → `pigz`
+
+[pigz](https://zlib.net/pigz/) est un `gzip` multithread — gain de
+performance de ×3 sur les machines multi-cœurs :
+
+```bash
+pigz file.txt           # compression (remplace gzip)
+pigz -d file.txt.gz     # décompression
+tar -I pigz -czf archive.tar.gz dir/  # via tar
+```
+
+---
+
+## Git
+
+### `diff` → `delta`
+
+[delta](https://github.com/dandavison/delta) remplace le pager de diff de
+git avec coloration syntaxique et affichage côte-à-côte :
+
+```ini title="~/.gitconfig"
+[core]
+    pager = delta
+
+[interactive]
+    diffFilter = delta --color-only
+```
+
+Voir la [configuration complète dans les dotfiles](confrc.md#git).
+
+---
+
+### `git log` → `tig`
+
+[tig](https://github.com/jonas/tig) est une interface ncurses légère pour
+naviguer dans l'historique git :
+
+```bash
+tig                 # historique interactif
+tig blame file.txt  # blame interactif
+tig status          # vue status interactive
+```
+
+---
+
+## Lecture & exploration
+
+### `man` / docs → `glow`
+
+[glow](https://github.com/charmbracelet/glow) rend le Markdown dans le
+terminal avec style :
+
+```bash
+glow README.md          # affichage formaté
+glow -p README.md       # avec pagination
+glow                    # naviguer dans les .md du répertoire
+```
+
+---
+
+## Récapitulatif
+
+| Commande | Remplacement | Langage | Alias |
+|----------|-------------|---------|-------|
+| `ls` | `lsd` | Rust | `alias ls='lsd'` |
+| `cat` | `bat` | Rust | `alias cat='bat --style=plain'` |
+| `find` | `fd` | Rust | `alias f='fd'` |
+| `du` | `dust` | Rust | — |
+| `df` | `dfc` | C | `alias df='dfc'` |
+| `rm` | `rip` | Rust | `alias rm='rip'` |
+| `grep` | `ripgrep` | Rust | — |
+| `top` | `htop` / `bottom` | C / Rust | — |
+| `ps` | `procs` | Rust | — |
+| `dig` | `dog` | Rust | `alias dig='dog'` |
+| `ping`/`mtr` | `trippy` | Rust | — |
+| `curl` | `httpie` | Python | — |
+| `gzip` | `pigz` | C | — |
+| `git diff` | `delta` | Rust | (pager git) |
+| `vim` | `nvim` | C | `alias vim='nvim'` |
