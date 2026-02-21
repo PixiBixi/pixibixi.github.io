@@ -148,7 +148,9 @@ Cette magnifique documentation a été faites avec MkDocs
 * [Deplacer un processus dans un tmux](linux/advanced/move_process_to_tmux.md)
 * [Troubleshooting Grub](linux/advanced/troubleshooting_grub.md)
 
-## MySQL
+## Bases de données
+
+### MySQL
 
 * [Créer son cluster Galera](databases/mysql/galera_gluster.md)
 * [Commandes avancées MySQL](databases/mysql/advanced_commands.md)
@@ -157,28 +159,24 @@ Cette magnifique documentation a été faites avec MkDocs
 * [Restaurer la DB système MySQL](databases/mysql/db_mysql.md)
 * [Générer des INSERT INTO depuis un SELECT](databases/mysql/troubleshooting/generate_insert_into.md)
 
-## PostgreSQL
+### PostgreSQL
 
 * [Upgrade sa version de postgresql](databases/postgres/upgrade_version.md)
 * [Creer sa replication postgresql](databases/postgres/postgresql_replication.md)
 * [Commandes utiles postgresql](./databases/postgres/commands.md)
 
-## Redis
+### Redis
 
 * [Déployer un Redis en High Availability](databases/redis/cluster_ha.md)
 * [Décoder une fonction Redis](./databases/redis/decode_function.md)
 
-## Memcached
+### Memcached
 
 * [Commandes diverses avec memcached](databases/memcached/misc_commands.md)
 
-## ElasticSearch
+### ElasticSearch
 
 * [Log des slow queries de ElasticSearch](databases/elasticsearch/log_slow_queries.md)
-
-## Kafka
-
-* [Kafkactl, un outil magique](./containers/kafka/kafkactl.md)
 
 ## Cloud
 
@@ -199,17 +197,21 @@ Cette magnifique documentation a été faites avec MkDocs
 * [AKS Limitations](./cloud/azure/aks_limitations.md)
 * [Commandes utiles pour la CLI Azure](./cloud/azure/misc_commands.md)
 
-## DevOps
+## Automatisation
 
-### Automatisation
-
-#### Ansible
+### Ansible
 
 * [Automatiser les taches avec Ansible](./automation/ansible/ansible.md)
 * [Tips ansible](./automation/ansible/ansible_tips.md)
 * [Réutilisation de variables ansible entre différentes tâches](./automation/ansible/ansible_reuse_variable.md)
 
-#### Divers
+### Terraform
+
+* [Cheatsheet terraform](./automation/terraform/cheatsheet.md)
+* [Tools Terraform indispensables](./automation/terraform/tools.md)
+* [Accélerer Terraform](./automation/terraform/speedup.md)
+
+### Divers
 
 * [Makefile : à quoi ça sert ?](./automation/misc/Makefile.md)
 
@@ -244,23 +246,23 @@ Cette magnifique documentation a été faites avec MkDocs
 * [Reset son password Rancher](kubernetes/rancher/reset_password.md)
 * [Bootstrap rapidement son cluster](kubernetes/rke/bootstrap_cluster.md)
 
-## Terraform
-
-* [Cheatsheet terraform](./automation/terraform/cheatsheet.md)
-* [Tools Terraform indispensables](./automation/terraform/tools.md)
-* [Accélerer Terraform](./automation/terraform/speedup.md)
-
 ## Gitlab
 
 * [Optimiser sa CI Gitlab](ci-cd/gitlab/ci/optimize.md)
 * [Intégrer un scan d'image à sa CI](ci-cd/gitlab/ci/scan_image.md)
 * [Utilisation de la CLI officielle](./ci-cd/gitlab/cli.md)
 
-## Docker
+## Containers
+
+### Docker
 
 * [Docker: l'indispensable](containers/docker.md)
 * [Utiliser un proxy pour pull les images Docker](containers/docker/use_proxy.md)
 * [Templates docker-compose](containers/docker/compose/templates.md)
+
+### Kafka
+
+* [Kafkactl, un outil magique](./containers/kafka/kafkactl.md)
 
 ### Divers
 
