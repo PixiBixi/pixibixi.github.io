@@ -1,3 +1,12 @@
+---
+description: Méthodologie de triage des performances Linux — outils et one-liners pour diagnostiquer CPU, mémoire, I/O disque et réseau.
+tags:
+  - Linux
+  - Performance
+  - Monitoring
+  - Observability
+---
+
 # Performances Linux
 
 La carte ci-dessous recense les outils disponibles par couche du système.

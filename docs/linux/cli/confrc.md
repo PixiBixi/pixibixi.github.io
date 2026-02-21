@@ -1,3 +1,12 @@
+---
+description: Configuration de l'environnement de travail — zsh, aliases, fonctions, git, SSH, tmux et Wezterm via le dépôt dotfiles.
+tags:
+  - Dotfiles
+  - Zsh
+  - Git
+  - Productivity
+---
+
 # Dotfiles
 
 L'ensemble de mes fichiers de configuration est disponible sur

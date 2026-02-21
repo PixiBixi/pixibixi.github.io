@@ -128,6 +128,19 @@ When rewriting an article:
 Quality bar: prefer examples over prose, tables over lists, one-liners
 over paragraphs. A good article has commands you can copy-paste on the spot.
 
+After writing, add YAML front matter to the article:
+
+```yaml
+---
+description: One-line description of the article (used for SEO).
+tags:
+  - RelevantTag
+---
+```
+
+Directory-level tags come from `.meta.yml` files — add per-article tags
+that are more specific than the directory defaults.
+
 ## Gotchas
 
 - **External images**: the `privacy` plugin downloads external assets to self-host them.

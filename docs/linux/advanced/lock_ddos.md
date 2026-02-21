@@ -1,3 +1,12 @@
+---
+description: Mitigation d'un DDoS Layer 7 — identification, blocage réseau, filtrage HAProxy et NGINX, tuning PHP-FPM et arbre de décision.
+tags:
+  - Security
+  - DDoS
+  - HAProxy
+  - NGINX
+---
+
 # Mitigation DDoS L7
 
 Un DDoS Layer 7 cible la couche applicative (HTTP/HTTPS) plutôt que la

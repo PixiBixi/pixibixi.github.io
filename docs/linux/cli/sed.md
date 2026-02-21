@@ -1,3 +1,10 @@
+---
+description: Référence complète de sed — substitution, filtrage par adresse, suppression de lignes, insertion et cas pratiques pour l'édition de flux.
+tags:
+  - sed
+  - Text Processing
+---
+
 # sed
 
 !!! warning "Mac / BSD sed"

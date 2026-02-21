@@ -1,3 +1,11 @@
+---
+description: Référence complète de tmux — sessions, windows, panes, raccourcis, configuration et batch SSH avec tmux-xpanes.
+tags:
+  - Tmux
+  - Terminal
+  - Productivity
+---
+
 # tmux
 
 tmux est un multiplexeur de terminal : il permet de gérer plusieurs fenêtres

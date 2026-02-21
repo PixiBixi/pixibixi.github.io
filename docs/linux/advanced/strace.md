@@ -1,3 +1,10 @@
+---
+description: Utilisation de strace pour déboguer les processus Linux — filtrage des appels système, attach multi-process et diagnostics courants.
+tags:
+  - Debugging
+  - Observability
+---
+
 # strace
 
 strace intercepte et trace les appels système effectués par un processus.

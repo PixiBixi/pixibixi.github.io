@@ -1,3 +1,11 @@
+---
+description: Alternatives modernes aux commandes Unix de base — lsd, bat, fd, dust, ripgrep, procs, dog, httpie et plus, la plupart écrites en Rust.
+tags:
+  - Rust
+  - Productivity
+  - Tools
+---
+
 # Remplacer les commandes de base Linux
 
 Les commandes Unix historiques font le job, mais des alternatives modernes
