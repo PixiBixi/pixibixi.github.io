@@ -141,11 +141,23 @@ tags:
 Directory-level tags come from `.meta.yml` files — add per-article tags
 that are more specific than the directory defaults.
 
+## mkdocs serve
+
+Before starting, check if already running:
+
+```bash
+pgrep -f "mkdocs serve"  # if a PID is returned, server is up
+```
+
+If not running: `source venv/bin/activate && mkdocs serve --dirty &>/tmp/mkdocs.log &`
+
 ## Gotchas
 
 - **External images**: the `privacy` plugin downloads external assets to self-host them.
   A 403/unreachable URL triggers a warning → fatal with `--strict`.
   Always store images locally next to the `.md` file (e.g., `docs/linux/selfhost/koel.jpg`).
+
+- **SVG diagrams**: store in `docs/<section>/_img/<name>.svg` — run `mkdir -p` first as the dir may not exist. Reference with `![](./_img/name.svg)` — Glightbox applies automatically.
 
 - **Shallow clones**: `mkdocs serve` requires full git history due to `git-revision-date-localized`.
   Shallow clones (`--depth 1`) will cause errors. Use `git fetch --unshallow` if needed.
