@@ -155,6 +155,17 @@ plugins:
         'gitlab/ci/optimize.md': 'ci-cd/gitlab/ci/optimize.md'
         'gitlab/ci/scan_image.md': 'ci-cd/gitlab/ci/scan_image.md'
         'gitlab/cli.md': 'ci-cd/gitlab/cli.md'
+        # Phase 6 — linux/ internal cleanup
+        'linux/advanced/shell/debug_slowness_ohmyzsh.md': 'linux/shell/debug_slowness_ohmyzsh.md'
+        'linux/advanced/shell/template_bash_script.md': 'linux/shell/template_bash_script.md'
+        'linux/advanced/shell/tips_bash.md': 'linux/shell/tips_bash.md'
+        'linux/advanced/shell/tips_zsh.md': 'linux/shell/tips_zsh.md'
+        'linux/advanced/shell/useful_commands.md': 'linux/shell/useful_commands.md'
+        'linux/advanced/shell/write_bash_scripts.md': 'linux/shell/write_bash_scripts.md'
+        'linux/advanced/systemd/create_unit.md': 'linux/systemd/create_unit.md'
+        'linux/advanced/cli/extend_partition.md': 'linux/storage/extend_partition.md'
+        'linux/misc/create_raid.md': 'linux/storage/create_raid.md'
+        'ssh/pubkey_rfc4716.md': 'linux/security/pubkey_rfc4716.md'
   - minify:
       minify_html: true
       minify_js: true
