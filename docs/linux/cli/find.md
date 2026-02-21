@@ -1,3 +1,7 @@
+---
+description: Guide complet de la commande find sous Linux — recherche par nom, taille, date, permissions et exécution d'actions sur les résultats.
+---
+
 # La commande find
 
 La commande **find** sous Linux est une commande extrêmement puissante

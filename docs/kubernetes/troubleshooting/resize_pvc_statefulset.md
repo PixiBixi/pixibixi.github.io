@@ -1,3 +1,7 @@
+---
+description: Redimensionner les PVC d'un StatefulSet Kubernetes — procédure pour contourner la limitation by-design et resize les volumes sans recréer le StatefulSet.
+---
+
 # Resize les PVC de son Statefulset
 
 Les Statefulset, c'est archaïque.

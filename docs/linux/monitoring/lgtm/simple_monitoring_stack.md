@@ -1,3 +1,7 @@
+---
+description: Déployer une stack de monitoring avec Prometheus, Grafana et Loki sous Linux — installation, configuration des exporters et alerting.
+---
+
 # Netdata, Prometheus et Grafana : une stack de monitoring simple et puissante
 
 ![Global image](./_img/monitoring_stack.webp)

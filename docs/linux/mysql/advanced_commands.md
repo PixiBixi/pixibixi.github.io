@@ -1,3 +1,7 @@
+---
+description: Commandes avancées MySQL et MariaDB pour l'administration — analyse des performances, gestion de la RAM, des connexions et optimisation des requêtes.
+---
+
 # MySQL : Commandes avancées
 
 La plupart de ces commandes sont disponibles pour MySQL ou MariaDB.

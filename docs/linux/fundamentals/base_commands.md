@@ -1,3 +1,7 @@
+---
+description: Mémo des commandes Linux essentielles — gestion de fichiers, processus, réseau, permissions et archivage. Référence rapide pour administrateurs système.
+---
+
 # Rappel des commandes de base
 
 ![Linux GNU](./_img/gnu_and_tux.webp)

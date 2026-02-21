@@ -1,3 +1,7 @@
+---
+description: Hardening du serveur SSH sous Linux — désactiver l'authentification par mot de passe, restreindre les accès et sécuriser sshd_config.
+---
+
 # Hardening simple du serveur SSH
 
 ## sshd_config
