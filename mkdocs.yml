@@ -60,6 +60,20 @@ plugins:
         'mess/github_template.md': 'misc/github_template.md'
         'mess/fibre_optique/info_transceiver.md': 'misc/fibre_optique/info_transceiver.md'
         'mess/download/netflix_subs.md': 'misc/download/netflix_subs.md'
+        # Phase 1 — databases/ extracted from linux/
+        'linux/mysql/advanced_commands.md': 'databases/mysql/advanced_commands.md'
+        'linux/mysql/db_mysql.md': 'databases/mysql/db_mysql.md'
+        'linux/mysql/galera_gluster.md': 'databases/mysql/galera_gluster.md'
+        'linux/mysql/users.md': 'databases/mysql/users.md'
+        'linux/mysql/troubleshooting/generate_insert_into.md': 'databases/mysql/troubleshooting/generate_insert_into.md'
+        'linux/mysql/troubleshooting/replication_slave.md': 'databases/mysql/troubleshooting/replication_slave.md'
+        'linux/postgres/commands.md': 'databases/postgres/commands.md'
+        'linux/postgres/postgresql_replication.md': 'databases/postgres/postgresql_replication.md'
+        'linux/postgres/upgrade_version.md': 'databases/postgres/upgrade_version.md'
+        'linux/redis/cluster_ha.md': 'databases/redis/cluster_ha.md'
+        'linux/redis/decode_function.md': 'databases/redis/decode_function.md'
+        'linux/memcached/misc_commands.md': 'databases/memcached/misc_commands.md'
+        'linux/elasticsearch/log_slow_queries.md': 'databases/elasticsearch/log_slow_queries.md'
   - minify:
       minify_html: true
       minify_js: true
