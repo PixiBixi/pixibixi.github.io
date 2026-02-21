@@ -100,6 +100,26 @@ plugins:
         'linux/automatisation/terraform/cheatsheet.md': 'automation/terraform/cheatsheet.md'
         'linux/automatisation/terraform/speedup.md': 'automation/terraform/speedup.md'
         'linux/automatisation/terraform/tools.md': 'automation/terraform/tools.md'
+        # Phase 3 — web/ expanded from linux/hosting/
+        'linux/hosting/lemp/custom_server_header.md': 'web/nginx/custom_server_header.md'
+        'linux/hosting/lemp/fetch_good_ips.md': 'web/nginx/fetch_good_ips.md'
+        'linux/hosting/lemp/installation.md': 'web/nginx/installation.md'
+        'linux/hosting/lemp/ipv6_nginx.md': 'web/nginx/ipv6_nginx.md'
+        'linux/hosting/lemp/nginx_ssl.md': 'web/nginx/nginx_ssl.md'
+        'linux/hosting/lemp/php_custom_version.md': 'web/nginx/php_custom_version.md'
+        'linux/hosting/lemp/haproxy/api.md': 'web/haproxy/api.md'
+        'linux/hosting/lemp/haproxy/cloudflare.md': 'web/haproxy/cloudflare.md'
+        'linux/hosting/lemp/haproxy/keep_real_ip.md': 'web/haproxy/keep_real_ip.md'
+        'linux/hosting/lemp/haproxy/maintenance.md': 'web/haproxy/maintenance.md'
+        'linux/hosting/lemp/haproxy/memory_limit.md': 'web/haproxy/memory_limit.md'
+        'linux/hosting/lemp/haproxy/overview.md': 'web/haproxy/overview.md'
+        'linux/advanced/varnish/config.md': 'web/varnish/config.md'
+        'linux/hosting/mail/exim_manage_dkim.md': 'web/mail/exim_manage_dkim.md'
+        'linux/hosting/ruby/install.md': 'web/ruby/install.md'
+        'linux/hosting/dns.md': 'web/dns.md'
+        'linux/hosting/ftp.md': 'web/ftp.md'
+        'linux/hosting/mail.md': 'web/mail.md'
+        'linux/hosting/troubleshooting.md': 'web/troubleshooting.md'
   - minify:
       minify_html: true
       minify_js: true
