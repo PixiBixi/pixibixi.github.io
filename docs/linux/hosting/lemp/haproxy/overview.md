@@ -237,6 +237,46 @@ domaine.
 Nous définissons ici un backend par défaut. Il est possible de ne pas en
 définir et HAproxy renverra une erreur 421 de lui même.
 
+#### Terminaison TLS
+
+HAproxy peut terminer le TLS directement sur le `bind`. La méthode recommandée est
+le répertoire de certificats : HAproxy charge automatiquement tous les fichiers `.pem`
+qu'il contient et sélectionne le bon certificat via SNI.
+
+Chaque fichier `.pem` doit contenir le certificat (fullchain) **et** la clé privée
+concaténés :
+
+```bash
+cat /etc/letsencrypt/live/wiki.jdelgado.fr/fullchain.pem \
+    /etc/letsencrypt/live/wiki.jdelgado.fr/privkey.pem \
+    > /etc/haproxy/certs/wiki.jdelgado.fr.pem
+chmod 600 /etc/haproxy/certs/wiki.jdelgado.fr.pem
+```
+
+<!-- markdownlint-disable MD046 MD037 -->
+??? example "HAproxy : Frontend avec terminaison TLS"
+    ```haproxy
+    frontend https
+        bind *:80
+        bind *:443 ssl crt /etc/haproxy/certs/ alpn h2,http/1.1
+
+        # Redirection HTTP → HTTPS
+        http-request redirect scheme https code 301 unless { ssl_fc }
+
+        acl wiki hdr(host) -i wiki.jdelgado.fr
+        acl site hdr(host) -i jdelgado.fr
+
+        use_backend wiki if wiki
+        use_backend site if site
+
+        default_backend undefined
+    ```
+<!-- markdownlint-enable MD046 -->
+
+La négociation TLS étant terminée avant l'évaluation des ACLs, `hdr(host)` suffit.
+Pas besoin de filtrer sur `ssl_fc_sni`. L'option `alpn h2,http/1.1` active
+HTTP/2 via négociation ALPN.
+
 ### Backend
 
 Les backends sont la force de HAproxy, entièrement modulables, nous
