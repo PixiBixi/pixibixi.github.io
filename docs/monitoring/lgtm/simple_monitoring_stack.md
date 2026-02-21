@@ -279,7 +279,7 @@ et un fichier nommé Promtool. Ce dernier nous permettra d'interroger
 directement Prometheus et d'effectuer des opérations avancées.
 
 Et enfin, nous devons faire le fichier de démarrage systemd via le
-[tutoriel](../../../linux/advanced/systemd/create_unit.md) disponible. Une fois le
+[tutoriel](../../linux/advanced/systemd/create_unit.md) disponible. Une fois le
 fichier créé, il faut l'activer :
 
 ```bash
@@ -975,7 +975,7 @@ chown -R prometheus:prometheus /etc/alertmanager
 ```
 
 Pour créer l'unit, je vous renvoie une nouvelle fois vers le [tutoriel
-adéquat](../../../linux/advanced/systemd/create_unit.md). Amtool est un outil
+adéquat](../../linux/advanced/systemd/create_unit.md). Amtool est un outil
 permettant d'interagir directement avec l'API de AlertManager.
 
 #### alertmanager.yml
