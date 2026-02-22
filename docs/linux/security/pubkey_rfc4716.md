@@ -1,3 +1,7 @@
+---
+description: Exporter une clé publique SSH au format RFC 4716 pour la compatibilité avec certains systèmes
+---
+
 # Générer une clé SSH au format RFC 4716
 
 Dans certains cas, il peut-être utile de vouloir générer un format de

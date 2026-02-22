@@ -1,3 +1,7 @@
+---
+description: Simuler des conditions réseau — latence, perte de paquets et limitation de bande passante
+---
+
 # Simuler des conditions réseau sur Linux
 
 Il peut être intéressant de limiter sa bande passante pour simuler

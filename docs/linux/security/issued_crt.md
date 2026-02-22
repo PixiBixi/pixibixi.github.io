@@ -1,3 +1,7 @@
+---
+description: Lister tous les certificats SSL/TLS émis pour un domaine via Certificate Transparency (crt.sh)
+---
+
 # Lister tous les certificats émis
 
 Désormais, tous les certificats intégrant le _Certificate Transparency_ peuvent être facilement retrouvable.

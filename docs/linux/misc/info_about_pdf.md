@@ -1,3 +1,7 @@
+---
+description: Extraire les métadonnées d'un PDF avec exiftool — auteur, dates et informations de compression
+---
+
 # Obtenir des informations sur vos PDF
 
 Pour obtenir des infos utiles sur vos PDF, petit trick bien sympa,

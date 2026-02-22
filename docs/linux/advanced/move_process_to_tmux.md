@@ -1,3 +1,7 @@
+---
+description: Rattacher un processus en arrière-plan à un nouveau TTY avec reptyr et tmux
+---
+
 # Deplacer un processus dans un tmux
 
 Il peut être utile de déplacer un processus dans un tmux pour une

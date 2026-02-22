@@ -1,3 +1,7 @@
+---
+description: Collectif de commandes Linux avancées pour le debugging réseau, LVM, RAID, SMART et TLS
+---
+
 # Liste de commandes utiles assez avancées
 
 * Permet de tcpdump uniquement les IPv6 RA

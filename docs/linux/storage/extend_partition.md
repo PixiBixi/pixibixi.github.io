@@ -1,3 +1,7 @@
+---
+description: Étendre une partition root en ligne sans redémarrage avec growpart et resize2fs
+---
+
 # Etendre à chaud sa partition root
 
 Etendre une partition root à chaud sur son serveur requiert généralement

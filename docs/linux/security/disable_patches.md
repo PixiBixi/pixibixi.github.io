@@ -1,3 +1,7 @@
+---
+description: Désactiver les mitigations Meltdown/Spectre au démarrage du kernel pour retrouver les performances maximales
+---
+
 # Désactiver les patchs de sécurité Meltdown & co
 
 Suite à Meltdown & co, le kernel Linux a implémenté de nombreux patches

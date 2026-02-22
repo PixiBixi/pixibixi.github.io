@@ -1,3 +1,7 @@
+---
+description: Afficher l'espace disque de manière lisible et colorée avec la commande dfc
+---
+
 # DFC, la commande DF en plus
 
 ## Présentation

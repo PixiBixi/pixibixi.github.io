@@ -1,3 +1,7 @@
+---
+description: Accélérer les connexions SSH en réutilisant les sessions TCP avec ControlMaster
+---
+
 # Améliorer la vitesse de connexion à votre serveur SSH
 
 Dans la vie d'un sysadmin, nous devons nous connecter des dizaines de

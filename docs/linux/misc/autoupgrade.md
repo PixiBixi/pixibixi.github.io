@@ -1,3 +1,7 @@
+---
+description: Configurer les mises à jour automatiques avec unattended-upgrades sur Debian
+---
+
 # Mise à jour automatique de ses paquets
 
 ## Introduction

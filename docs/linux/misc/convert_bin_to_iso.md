@@ -1,3 +1,7 @@
+---
+description: Convertir des fichiers .bin ou .mdf en .iso avec l'outil iat
+---
+
 # Convertir des .bin en .iso
 
 Un .bin est souvent problématique sur Windows. Pour éviter ce problème,

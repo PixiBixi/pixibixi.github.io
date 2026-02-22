@@ -1,3 +1,7 @@
+---
+description: Mettre en place un serveur OpenVPN dual-stack pour fournir une connectivité IPv6 aux clients VPN
+---
+
 # Configurer son serveur OpenVPN pour de l'IPv6
 
 OpenVPN est un VPN dual-stack. Dans ce tutoriel, nous allons voir

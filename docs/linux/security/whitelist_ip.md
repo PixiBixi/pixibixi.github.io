@@ -1,3 +1,7 @@
+---
+description: Créer une allowlist d'IP avec ipset et iptables pour restreindre l'accès à des services spécifiques
+---
+
 # Whitelister une série d'IP à l'aide d'IPset et iptables
 
 Dans certains cas, il peut être utile de whitelister une série d'IP

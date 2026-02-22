@@ -1,3 +1,7 @@
+---
+description: Ajouter de la couleur aux pages de manuel avec most ou les variables LESS_TERMCAP
+---
+
 # Ajouter de la couleur à sa commande man
 
 Voilà une astuce pour ajouter de la couleur à sa commande **man**

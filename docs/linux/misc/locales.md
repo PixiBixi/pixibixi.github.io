@@ -1,3 +1,7 @@
+---
+description: Gagner de l'espace disque en supprimant les locales inutiles avec localepurge
+---
+
 # Gagner de la place en supprimant les locales inutiles
 
 Les locales sont des fichiers sous Linux prenant plus ou moins de place

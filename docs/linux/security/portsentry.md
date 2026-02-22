@@ -1,3 +1,7 @@
+---
+description: Détecter et bloquer les scans de ports malveillants avec PortSentry intégré à iptables
+---
+
 # Installer et configuer PortSentry
 
 portsentry est un programme de détection et de blocage de '"scan de

@@ -1,3 +1,7 @@
+---
+description: Astuces Bash pour l'historique, les variables d'environnement et les optimisations du shell interactif
+---
+
 # Astuces bash
 
 ## Historique bash

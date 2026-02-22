@@ -1,3 +1,7 @@
+---
+description: Remplacer netstat par ss — filtrer connexions TCP/UDP, états et statistiques avancées
+---
+
 # La commande ss
 
 La commande ss est aujourd'hui le nouveau *netstat*. *netstat* étant

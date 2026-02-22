@@ -1,3 +1,7 @@
+---
+description: Commandes git essentielles — gestion de branches, nettoyage et configuration .gitconfig
+---
+
 # Apprendre à se servir de git
 
 ## Commandes utiles

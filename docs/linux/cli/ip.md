@@ -1,3 +1,7 @@
+---
+description: Remplacer ifconfig par ip — configuration réseau, routes, ARP et statistiques
+---
+
 # Mémo sur la commande IP
 
 Comme vous le savez certainement, la commande **ifconfig** est

@@ -1,3 +1,7 @@
+---
+description: Template de script bash robuste avec gestion d'erreurs, cleanup automatique et parsing de paramètres
+---
+
 # Un template pour un script bash
 
 Ecrire un script bash, tout le monde peut le faire. Ecrire un bon script bash, c'est déjà plus compliqué.

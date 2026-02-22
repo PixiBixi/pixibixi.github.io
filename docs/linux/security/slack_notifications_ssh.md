@@ -1,3 +1,7 @@
+---
+description: Envoyer des alertes Slack en temps réel lors des connexions SSH via webhooks et PAM
+---
+
 # Configurer des notifications Slack pour SSH
 
 Slack est une plateforme de chat mondialement connu. Aujourd'hui, nous

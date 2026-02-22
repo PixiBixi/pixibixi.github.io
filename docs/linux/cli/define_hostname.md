@@ -1,3 +1,7 @@
+---
+description: Configurer le hostname et le FQDN — éditer /etc/hostname et /etc/hosts correctement
+---
+
 # Configurer correctement son hostname
 
 Dans cet article, nous allons voir comment configurer correctement notre

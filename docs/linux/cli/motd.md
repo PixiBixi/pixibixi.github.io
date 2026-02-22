@@ -1,3 +1,7 @@
+---
+description: Personnaliser le Message of the Day avec affichage d'infos système au connexion
+---
+
 # Personnaliser ton motd
 
 Voici un petit tutoriel qui permet de personnaliser le '"Message Of The

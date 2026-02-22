@@ -1,3 +1,7 @@
+---
+description: Configurer LogWatch pour générer et envoyer des rapports d'analyse de logs système par e-mail
+---
+
 # Installer et configurer LogWatch
 
 Logwatch est un petit utilitaire qui permet d'envoyer un rapport sur

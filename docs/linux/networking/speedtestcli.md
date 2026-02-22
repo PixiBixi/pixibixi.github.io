@@ -1,3 +1,7 @@
+---
+description: Mesurer la vitesse de connexion d'un serveur Linux avec speedtest-cli depuis la ligne de commande
+---
+
 # Effectuer un Speedtest depuis son serveur
 
 ## Introduction

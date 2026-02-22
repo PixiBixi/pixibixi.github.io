@@ -1,3 +1,7 @@
+---
+description: Créer et configurer des unités systemd (services) avec les bonnes pratiques pour le démarrage automatique
+---
+
 # Créer son service systemd
 
 ## Quelques explications

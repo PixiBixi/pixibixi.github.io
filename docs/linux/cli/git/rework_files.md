@@ -1,3 +1,7 @@
+---
+description: Réduire la taille d'un dépôt Git en supprimant les gros fichiers binaires
+---
+
 # Réduire la taille de son repository Git
 
 J'étais entrain de modifier un script bash puis m'est venu l'envie de voir la taille du repository

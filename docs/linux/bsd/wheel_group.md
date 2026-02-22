@@ -1,3 +1,7 @@
+---
+description: Ajouter un utilisateur au groupe wheel sous BSD pour accès à la commande su
+---
+
 # Ajouter un utilisateur au groupe wheel
 
 Sous BSD, notre utilisateur créé lors de l'installation ne peut pas

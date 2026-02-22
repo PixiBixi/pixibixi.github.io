@@ -1,3 +1,7 @@
+---
+description: Scanner et détecter les rootkits avec RKHunter en comparant les hashs des fichiers système
+---
+
 # Installer et configurer RKHunter
 
 rkhunter (pour Rootkit Hunter) est un petit programme UNIX permettant de

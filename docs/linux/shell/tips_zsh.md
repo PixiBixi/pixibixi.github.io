@@ -1,3 +1,7 @@
+---
+description: Astuces spécifiques à Zsh pour améliorer la productivité — alias, raccourcis et configuration avancée
+---
+
 # Astuces zsh
 
 Tout comme les astuces bash, mais des astuces spécifiques à zsh.

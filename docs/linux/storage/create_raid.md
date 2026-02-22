@@ -1,3 +1,7 @@
+---
+description: Créer et gérer des RAID logiciels (RAID0/1/5/10) avec mdadm sous Linux
+---
+
 # Création de RAID logiciels avec mdadm
 
 Créer son RAID avec mdadm est assez simple, cependant, il est toujours

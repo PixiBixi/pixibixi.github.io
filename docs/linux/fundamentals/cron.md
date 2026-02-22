@@ -1,3 +1,7 @@
+---
+description: Planifier des tâches avec cron — crontab, dossiers cron.* et variables d'environnement
+---
+
 # Rappel sur le cron
 
 !!! warning Systemd Equivalent

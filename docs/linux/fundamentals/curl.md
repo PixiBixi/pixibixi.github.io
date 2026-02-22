@@ -1,3 +1,7 @@
+---
+description: Utiliser cURL pour faire des requêtes HTTP avec en-têtes, authentification et métriques de performance
+---
+
 # cURL: La commande à tout faire
 
 * cURL détaillé

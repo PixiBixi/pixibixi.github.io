@@ -1,3 +1,7 @@
+---
+description: Réinitialiser le mot de passe root via GRUB et init=/bin/bash
+---
+
 # Réinitialiser son mot de passe root
 
 Pour réinitialiser son mot de passe root, une méthode simple existe.

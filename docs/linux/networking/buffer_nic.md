@@ -1,3 +1,7 @@
+---
+description: Augmenter les buffers RX/TX d'une carte réseau avec ethtool et udev pour optimiser les performances
+---
+
 # Augmenter le buffer de sa carte réseau
 
 Dans certains cas spécifiques, augmenter le buffer de sa carte réseau

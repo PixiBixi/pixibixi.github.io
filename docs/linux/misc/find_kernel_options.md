@@ -1,3 +1,7 @@
+---
+description: Récupérer les options de compilation du kernel depuis /proc/config.gz ou /boot
+---
+
 # Trouver les options de compilation du kernel
 
 Il est possible de trouver les options de compilation de notre kernel en

@@ -1,3 +1,7 @@
+---
+description: Guide complet pour écrire des scripts Bash robustes avec variables, boucles et bonnes pratiques
+---
+
 # Ecrire son script bash
 
 ## Introduction

@@ -1,3 +1,7 @@
+---
+description: Raccourcis essentiels de Vim — fenêtres, édition texte, copie/suppression et plugins
+---
+
 # VIM: L'editeur de texte de la mort
 
 Dans cet article, nous allons voir tous les raccourcis, afin d'utiliser

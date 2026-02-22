@@ -1,3 +1,7 @@
+---
+description: Installer et configurer les dépôts EPEL pour CentOS et Red Hat Enterprise Linux
+---
+
 # Ajouter les repositories EPEL
 
 Les repositories EPEL (Extra Packages for Enterprise Linux) sont

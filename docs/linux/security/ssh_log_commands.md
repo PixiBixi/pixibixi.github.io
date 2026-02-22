@@ -1,3 +1,7 @@
+---
+description: Logger toutes les commandes exécutées en SSH avec PROMPT_COMMAND et rsyslog pour l'audit
+---
+
 # Logger les actions SSH utilisateurs simplement
 
 Parfois, il peut-être utile de logger les action utilisateurs, que ce

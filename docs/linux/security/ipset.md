@@ -1,3 +1,7 @@
+---
+description: Utiliser ipset pour gérer des listes d'IP/réseaux et les intégrer avec iptables pour filtrer le trafic
+---
+
 # Apprendre à se servir d'ipset
 
 ipset est un produit magique qui va vous permettre de build des hashmap
