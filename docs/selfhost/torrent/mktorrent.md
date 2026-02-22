@@ -1,3 +1,7 @@
+---
+description: Créer des fichiers torrent en ligne de commande avec mktorrent — compilation et options de création
+---
+
 # mktorrent
 
 mktorrent est un puissant logiciel de création de torrent en ligne de

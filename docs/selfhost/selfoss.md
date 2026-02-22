@@ -1,3 +1,7 @@
+---
+description: Agréger ses flux RSS avec Selfoss — installation, configuration MySQL et gestion des sources
+---
+
 # Selfoss, son Reader RSS self-hosted
 
 ## Introduction

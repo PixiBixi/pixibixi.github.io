@@ -1,3 +1,7 @@
+---
+description: Télécharger des vidéos avec youtube-dl — installation, interface web et configuration Nginx
+---
+
 # Sauvegarder ses vidéos avec YoutubeDL et sa GUI
 
 youtube-dl est un outil formidable permettant de télécharger ses vidéos

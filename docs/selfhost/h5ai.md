@@ -1,3 +1,7 @@
+---
+description: Partager ses fichiers en ligne avec H5ai — installation, configuration Nginx et authentification basique
+---
+
 # Partager ses fichiers avec H5ai
 
 ![H5ai](./_img/h5ai.webp)

@@ -1,3 +1,7 @@
+---
+description: Accéder à des sessions RDP, SSH et VNC via navigateur avec Apache Guacamole — installation et reverse proxy
+---
+
 # Guacamole : l'outil idéal pour établir des sessions RDP, SSH et VNC
 
 !!! warning Deprecated

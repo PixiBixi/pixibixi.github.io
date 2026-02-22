@@ -1,3 +1,7 @@
+---
+description: Streamer sa musique auto-hébergée avec Koel — installation, configuration MySQL et transcodage FLAC
+---
+
 # Streamer sa musique depuis Koel
 
 ![Koel](koel.jpg)

@@ -1,3 +1,7 @@
+---
+description: Déployer son cloud personnel avec Nextcloud — installation, configuration Redis et gestion des fichiers
+---
+
 # NextCloud, son cloud personnel
 
 Nextcloud est une solution de stockage et de partage de fichiers en
