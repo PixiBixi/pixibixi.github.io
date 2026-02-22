@@ -1,3 +1,7 @@
+---
+description: Gérer les contrôleurs RAID HP Smart Array en CLI — configuration, état et opérations sur disques
+---
+
 # Commandes HP Smart Array en CLI (Utilisable pour un ESX...)
 
 De nombreuses commandes utiles pour l'utilistaire hpssacli

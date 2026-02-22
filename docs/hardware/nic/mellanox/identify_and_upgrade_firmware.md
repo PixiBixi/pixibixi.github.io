@@ -1,3 +1,7 @@
+---
+description: Identifier et mettre à jour le firmware des cartes réseau Mellanox avec mstflint et flint
+---
+
 # Identifier and upgrade son firmware Mellanox
 
 Dans certains cas, il peut être utile d'upgrade son firmware de sa NIC si vous rencontrez différents soucis, ou tout simplement pour obtenir des nouveautés firmware.

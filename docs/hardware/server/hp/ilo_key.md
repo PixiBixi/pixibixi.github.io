@@ -1,3 +1,7 @@
+---
+description: Clés de licence iLO Advanced pour les serveurs HP ProLiant
+---
+
 # Clé ILO Adavanced
 
 * 34RQQ-6D5R4-G8NW3-LBMG6-MLJXR
