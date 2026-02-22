@@ -1,3 +1,7 @@
+---
+description: Configurer GOMEMLIMIT et GOMAXPROCS dans les déploiements Kubernetes pour optimiser les applications Go
+---
+
 # Golang : Définir automatiquement son GOMEMLIMIT/GOMAXPROCS
 
 !!! info "Comportement à partir de Go 1.25"

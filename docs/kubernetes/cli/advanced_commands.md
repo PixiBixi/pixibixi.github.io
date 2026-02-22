@@ -1,3 +1,7 @@
+---
+description: Commandes kubectl avancées — jsonpath, jq, requêtes sur pods/nœuds et débogage de ressources Kubernetes
+---
+
 # Kubernetes : Commandes Avancées
 
 Quelques commandes avancées Kube toujours utile

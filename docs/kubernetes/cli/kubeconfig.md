@@ -1,3 +1,7 @@
+---
+description: Gérer plusieurs fichiers kubeconfig et contextes Kubernetes avec des variables d'environnement et kubectx
+---
+
 # Manage son $KUBECONFIG
 
 De base, kubectl va chercher sa configuration dans '~/.kube/config. Il

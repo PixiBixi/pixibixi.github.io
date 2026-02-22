@@ -1,3 +1,7 @@
+---
+description: Découvrir et installer les plugins Krew essentiels pour améliorer sa productivité avec kubectl
+---
+
 # Mes meilleurs plugins Krew
 
 Au quotidien, j'utilise mes différents plugins Krew. Ils me sont d'une importance vitale dans mon workflow. La liste exhaustive est [disponible dans mon Github](https://github.com/PixiBixi/dotfiles/blob/master/Plugins_Krew)

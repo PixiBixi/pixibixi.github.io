@@ -1,3 +1,7 @@
+---
+description: Redémarrer les composants Kafka Strimzi (brokers, ZooKeeper) via annotations de rolling update
+---
+
 # Comment rollout restart un composant Strimzi
 
 Restart un déploiement est une chose facile sur K8S.

@@ -1,3 +1,7 @@
+---
+description: Récupérer le fichier rkestate d'un cluster RKE depuis le master ou via kubectl
+---
+
 # Recuperer son fichier rkestate
 
 Le fichier rkestate est un fichier qui contient la description du cluster Kubernetes, il est indispensable si vous souhaitez ajouter ou supprimer un node.

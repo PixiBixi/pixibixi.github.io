@@ -1,3 +1,7 @@
+---
+description: Réinitialiser le mot de passe administrateur Rancher en une commande kubectl
+---
+
 # Reset son password Rancher
 
 Une seule commande suffit :

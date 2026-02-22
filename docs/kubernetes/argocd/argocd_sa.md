@@ -1,3 +1,7 @@
+---
+description: Créer et configurer un service account ArgoCD avec droits d'accès API via des politiques RBAC
+---
+
 # Creer son service account ArgoCD
 
 Un SA est toujours utile si l'on souhaite taper l'API pour une quelconque raison.

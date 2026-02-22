@@ -1,3 +1,7 @@
+---
+description: Déboguer les droits d'accès d'un service account Kubernetes avec des pods de test dédiés
+---
+
 # Debug son ServiceAccount Kubernetes
 
 Un ServiceAccount ? Kezako, encore une notion bizarre de Kube, mais super utile pour donner des droits spécifique à un Pod
