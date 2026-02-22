@@ -1,3 +1,7 @@
+---
+description: Générer automatiquement l'aide d'un Makefile avec grep et awk — auto-documentation des cibles
+---
+
 # Makefile : à quoi ça sert ?
 
 ## Bonus

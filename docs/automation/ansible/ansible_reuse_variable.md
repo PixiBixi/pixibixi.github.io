@@ -1,3 +1,7 @@
+---
+description: Accéder aux variables d'un hôte spécifique dans Ansible avec hostvars — partage de variables entre hôtes
+---
+
 # Réutilisation de variables ansible entre différentes tâches
 
 L'utilisation des variables dans ansible est parfois une plaie.

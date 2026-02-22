@@ -1,3 +1,7 @@
+---
+description: Astuces Ansible — hostvars, groups, group_names et gestion des boucles sur plusieurs serveurs
+---
+
 # Ansible : Tips
 
 Quelques tips où j'ai perdu beaucoup de temps dessus
