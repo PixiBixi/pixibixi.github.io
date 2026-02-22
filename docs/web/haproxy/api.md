@@ -1,3 +1,7 @@
+---
+description: Exploiter l'API de HAproxy pour consulter les statistiques et gérer les backends via le socket Unix
+---
+
 # HAproxy : Utiliser son API
 
 HAproxy est un puissant load-balancer pouvant être controlé via une API,

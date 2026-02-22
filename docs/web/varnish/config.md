@@ -1,3 +1,7 @@
+---
+description: Configuration VCL complète de Varnish — caching, compression, purge, cookies et optimisations WordPress
+---
+
 # Config varnish
 
 Bonne config trouvée de Git que je reposte ici si jamais : [Gist](https://gist.github.com/davidthingsaker/6b0997b641fdd370a395)

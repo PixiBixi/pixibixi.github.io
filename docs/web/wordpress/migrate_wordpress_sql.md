@@ -1,3 +1,7 @@
+---
+description: Migrer WordPress vers une nouvelle URL avec des requêtes SQL — mise à jour des posts, meta et options
+---
+
 # Requêtes SQL pour migrer son WordPress
 
 Quelques requêtes pour migrer son WordPress d'URL :

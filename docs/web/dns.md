@@ -1,3 +1,7 @@
+---
+description: Configurer un serveur DNS autoritaire et résolveur avec BIND9 — zones, enregistrements et sécurité
+---
+
 # Installer son NS ainsi que son resolveur DNS via BIND9
 
 ## Introduction

@@ -1,3 +1,7 @@
+---
+description: Guide complet de HAproxy — configuration, load balancing, ACLs, TLS et exemples pratiques
+---
+
 # Reverse proxy: HAproxy
 
 !!! warning "Version HAproxy"

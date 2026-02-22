@@ -1,3 +1,7 @@
+---
+description: Récupérer les vraies IPs des visiteurs derrière un reverse proxy avec X-Forwarded-For dans Nginx
+---
+
 # Obtenir les bonnes IP sur apache derrière un reverse proxy
 
 Sans configuration particulière, on aura 127.0.0.1 dans les logs apache

@@ -1,3 +1,7 @@
+---
+description: Résoudre l'erreur MOZILLA_PKIX_ERROR_REQUIRED_TLS_FEATURE_MISSING dans Nginx — OCSP Stapling et resolver
+---
+
 # MOZILLA_PKIX_ERROR_REQUIRED_TLS_FEATURE_MISSING
 
 Une erreur courante avec Mozilla Firefox est l'erreur

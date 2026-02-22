@@ -1,3 +1,7 @@
+---
+description: Mettre un serveur en maintenance avec HAproxy sans interruption — drain, maint et gestion des health checks
+---
+
 # HAproxy : Mettre un node en maintenance
 
 Dans le cadre de mise à jour ou autre, il est intéressant de mettre un

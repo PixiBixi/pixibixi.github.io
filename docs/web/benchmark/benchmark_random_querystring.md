@@ -1,3 +1,7 @@
+---
+description: Effectuer des tests de charge avec wrk en générant des query strings aléatoires pour simuler du trafic réaliste
+---
+
 # Benchmark avec une random query string
 
 Pour benchmark, nous utilisons généralement l'outil `wrk`, un équivalent à ab.

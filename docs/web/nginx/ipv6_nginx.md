@@ -1,3 +1,7 @@
+---
+description: Configurer Nginx pour écouter en IPv6 — directives listen, entrées DNS AAAA et vérification
+---
+
 # Configurer nginx pour utiliser IPv6
 
 Configurer l'IPv6 et nginx est un vrai casse-tête, et je ne vous parle

@@ -1,3 +1,7 @@
+---
+description: Installer Ruby avec rbenv ou ruby-build — gestion de versions et switch d'environnements
+---
+
 # Installer Ruby
 
 Installer Ruby, c'est chiant. Voici donc comment faire pour que ce soit

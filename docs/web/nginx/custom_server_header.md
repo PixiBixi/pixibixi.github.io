@@ -1,3 +1,7 @@
+---
+description: Personnaliser ou masquer le header Server de Nginx pour réduire la surface d'attaque
+---
+
 # Être encore plus safe en customisant son header Server NGINX
 
 Editer son header Server n'est pas une chose inutile. En effet, selon

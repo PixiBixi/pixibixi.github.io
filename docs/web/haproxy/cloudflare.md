@@ -1,3 +1,7 @@
+---
+description: Configurer HAproxy pour récupérer l'IP réelle des visiteurs derrière CloudFlare via headers HTTP
+---
+
 # HAproxy : Obtenir les vraies IPs depuis CloudFlare
 
 Assez simple, il faut jouer avec les headers. Concrêtement, ça nous
