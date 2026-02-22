@@ -87,7 +87,7 @@ Attention, pour rappel, Galera fonctionne **uniquement** en InnoDB. Le
 MyISAM est encore expérimental et est déconseillé en production.
 
 Toutes les informations sont diponibles sur
-[https://galeracluster.com/library/training/tutorials](le site Galera)
+[le site Galera](https://galeracluster.com/library/training/tutorials)
 
 ## Troubleshoting
 
