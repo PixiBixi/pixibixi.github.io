@@ -1,3 +1,7 @@
+---
+description: Référence des commandes AWS CLI — EC2, S3, IAM, EKS et autres services essentiels
+---
+
 # AWS : CLI
 
 ## EC2

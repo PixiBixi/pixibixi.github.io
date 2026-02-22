@@ -1,3 +1,7 @@
+---
+description: Suivre en temps réel l'upgrade d'un cluster GKE via la CLI gcloud
+---
+
 # Suivre l'upgrade de son cluster GKE
 
 Pour suivre l'upgrade de son cluster, rien de plus simple en CLI

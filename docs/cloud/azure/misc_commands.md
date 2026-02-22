@@ -1,3 +1,7 @@
+---
+description: Commandes utiles pour la CLI Azure — gestion des ressources, AKS, réseau et identités
+---
+
 # Commandes utiles pour la CLI Azure
 
 Quelques scripts/commandes qui peuvent être utiles pour mieux gérer ses resources Azure

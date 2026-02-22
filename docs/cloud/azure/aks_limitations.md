@@ -1,3 +1,7 @@
+---
+description: Inventaire des limitations connues d'AKS (Azure Kubernetes Service) à connaître avant de déployer
+---
+
 # Limitations AKS
 
 Probablement un article assez basique, mais rappelons tout de même les limitations que j'ai pu rencontrer :)

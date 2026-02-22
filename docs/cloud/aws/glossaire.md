@@ -1,3 +1,7 @@
+---
+description: Glossaire des services AWS courants — définitions et équivalences avec les concepts cloud standard
+---
+
 # Glossaire du vocabulaire AWS
 
 AWS c'est beaucoup de vocabulaire à maitriser pour au final des fonctionnalités basiques dans la plupart des cas. Voici donc un petit bout de papier (ou plutôt de code) pour expliquer les services courants que nous utilisons

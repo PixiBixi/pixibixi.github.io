@@ -1,3 +1,7 @@
+---
+description: Utiliser les disques éphémères Azure pour réduire les coûts sur les VMs Spot — configuration et contraintes
+---
+
 # EphemeralDisks : comment faire ?
 
 Les EphemeralDisks sur Azure peuvent être pratiques pour économiser de l'argent sur les VMs Spots.

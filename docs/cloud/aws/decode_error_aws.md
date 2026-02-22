@@ -1,3 +1,7 @@
+---
+description: Décoder les messages d'erreur AWS encodés en base64 avec la commande aws sts decode-authorization-message
+---
+
 # Decoder un message d'erreur AWS
 
 Dans Kubernetes ou autre, nous pouvons avoir un payload AWS encodé qui contient une erreur AWS, par exemple :
