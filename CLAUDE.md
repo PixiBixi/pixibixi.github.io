@@ -158,15 +158,32 @@ that are more specific than the directory defaults.
 
 ## mkdocs serve
 
-Before starting, check if already running:
+Always use this sequence — `pgrep` alone is not enough (zombie process can hold port 8000):
 
 ```bash
-pgrep -f "mkdocs serve"  # if a PID is returned, server is up
+# 1. Kill any existing mkdocs process
+pkill -f "mkdocs serve"; sleep 1
+
+# 2. Verify port is free (must return empty)
+lsof -i :8000
+
+# 3. Start
+source venv/bin/activate && nohup mkdocs serve --dirty >/tmp/mkdocs.log 2>&1 &
+
+# 4. Verify it's actually listening (must return a line after ~5s)
+sleep 5 && lsof -i :8000 | grep LISTEN
 ```
 
-If not running: `source venv/bin/activate && mkdocs serve --dirty &>/tmp/mkdocs.log &`
+If step 4 returns nothing, check `/tmp/mkdocs.log` — a crash on `server_bind()` means the port is still held by a zombie; find it with `lsof -i :8000` and `kill -9 <PID>`.
 
 ## Gotchas
+
+- **SVG diagrams — taille rendue**: un SVG scale à la largeur du contenu (~750px). La hauteur
+  rendue = viewBox_height × (750 / viewBox_width). Préférer un layout horizontal pour les
+  diagrammes séquentiels — un viewBox 580×110 donne ~143px de haut, un 520×390 donne ~563px.
+
+- **Blocs YAML fragmentés**: plusieurs petits blocs montrant le même pattern (ex: même annotation
+  sur 3 ressources différentes) → fusionner en un seul bloc avec `---` comme séparateur.
 
 - **External images**: the `privacy` plugin downloads external assets to self-host them.
   A 403/unreachable URL triggers a warning → fatal with `--strict`.
