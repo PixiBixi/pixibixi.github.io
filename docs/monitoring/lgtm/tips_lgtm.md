@@ -1,3 +1,7 @@
+---
+description: Astuces pour la stack LGTM — appels API Prometheus, Loki, Grafana et Tempo
+---
+
 # 2-3 tips pour la stack LGTM
 
 Quelques calls API à gauche à droite qui nous sont bien pratiques pour du Prometheus ou autre

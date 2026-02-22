@@ -1,3 +1,7 @@
+---
+description: Installer et utiliser eZ Server Monitor (SH et Web) pour superviser un serveur Linux
+---
+
 # Les outils eZ Server, des outils simple de supervision
 
 ## Préambule

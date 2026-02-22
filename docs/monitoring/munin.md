@@ -1,3 +1,7 @@
+---
+description: Installer et configurer Munin pour la supervision système — installation, plugins et tableaux de bord
+---
+
 # Munin : l'outil de supervision sans fioritures
 
 ## Installation sous Debian 8.0 Jessie

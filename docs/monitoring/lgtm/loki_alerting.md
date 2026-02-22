@@ -1,3 +1,7 @@
+---
+description: Configurer des règles d'alerting dans Loki et les remonter dans AlertManager
+---
+
 # Générer des alertes depuis Loki
 
 Avoir des logs c'est bien, les exploiter c'est mieux. Pour cela, nous pouvons générer des alertes et les remonter dans AlertManager, tout comme Prometheus.
