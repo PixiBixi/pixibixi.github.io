@@ -69,11 +69,19 @@
          <lastmod>2026-02-22</lastmod>
     </url>
     <url>
-         <loc>https://wiki.jdelgado.fr/cloud/gcloud/follow_gke_upgrade/</loc>
+         <loc>https://wiki.jdelgado.fr/cloud/gcloud/gcloud_commands/</loc>
          <lastmod>2026-02-22</lastmod>
     </url>
     <url>
-         <loc>https://wiki.jdelgado.fr/cloud/gcloud/misc_commands/</loc>
+         <loc>https://wiki.jdelgado.fr/cloud/gcloud/gke_upgrades/</loc>
+         <lastmod>2026-02-22</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/cloud/gcloud/spot_nodes/</loc>
+         <lastmod>2026-02-22</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/cloud/gcloud/workload_identity/</loc>
          <lastmod>2026-02-22</lastmod>
     </url>
     <url>
@@ -209,7 +217,15 @@
          <lastmod>2026-02-22</lastmod>
     </url>
     <url>
+         <loc>https://wiki.jdelgado.fr/kubernetes/argocd/applicationset/</loc>
+         <lastmod>2026-02-22</lastmod>
+    </url>
+    <url>
          <loc>https://wiki.jdelgado.fr/kubernetes/argocd/argocd_sa/</loc>
+         <lastmod>2026-02-22</lastmod>
+    </url>
+    <url>
+         <loc>https://wiki.jdelgado.fr/kubernetes/argocd/sync_waves/</loc>
          <lastmod>2026-02-22</lastmod>
     </url>
     <url>

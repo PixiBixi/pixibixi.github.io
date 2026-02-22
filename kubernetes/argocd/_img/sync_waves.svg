@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 108" font-family="Inter, Helvetica, sans-serif">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#94a3b8"/>
+    </marker>
+  </defs>
+
+  <!-- Badges (cx: 48, 138, 228, 318, 408, 498) -->
+  <rect x="14"  y="18" width="68" height="28" rx="5" fill="#1e293b"/>
+  <rect x="104" y="18" width="68" height="28" rx="5" fill="#1e293b"/>
+  <rect x="194" y="18" width="68" height="28" rx="5" fill="#1e293b"/>
+  <rect x="284" y="18" width="68" height="28" rx="5" fill="#1e293b"/>
+  <rect x="374" y="18" width="68" height="28" rx="5" fill="#1e293b"/>
+  <rect x="464" y="18" width="68" height="28" rx="5" fill="#1e293b"/>
+
+  <!-- Badge labels -->
+  <text x="48"  y="29" text-anchor="middle" font-size="8.5" fill="#94a3b8">wave</text>
+  <text x="138" y="29" text-anchor="middle" font-size="8.5" fill="#94a3b8">wave</text>
+  <text x="228" y="29" text-anchor="middle" font-size="8.5" fill="#94a3b8">wave</text>
+  <text x="318" y="29" text-anchor="middle" font-size="8.5" fill="#94a3b8">wave</text>
+  <text x="408" y="29" text-anchor="middle" font-size="8.5" fill="#94a3b8">wave</text>
+  <text x="498" y="29" text-anchor="middle" font-size="8.5" fill="#94a3b8">wave</text>
+
+  <text x="48"  y="42" text-anchor="middle" font-size="13" font-weight="700" fill="white">-1</text>
+  <text x="138" y="42" text-anchor="middle" font-size="13" font-weight="700" fill="white">0</text>
+  <text x="228" y="42" text-anchor="middle" font-size="13" font-weight="700" fill="white">1</text>
+  <text x="318" y="42" text-anchor="middle" font-size="13" font-weight="700" fill="white">2</text>
+  <text x="408" y="42" text-anchor="middle" font-size="13" font-weight="700" fill="white">3</text>
+  <text x="498" y="42" text-anchor="middle" font-size="13" font-weight="700" fill="white">4</text>
+
+  <!-- Arrows between badges -->
+  <line x1="84"  y1="32" x2="102" y2="32" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="174" y1="32" x2="192" y2="32" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="264" y1="32" x2="282" y2="32" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="354" y1="32" x2="372" y2="32" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="444" y1="32" x2="462" y2="32" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Vertical connectors badge → resource -->
+  <line x1="48"  y1="46" x2="48"  y2="64" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="3,2"/>
+  <line x1="138" y1="46" x2="138" y2="64" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="3,2"/>
+  <line x1="228" y1="46" x2="228" y2="64" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="3,2"/>
+  <line x1="318" y1="46" x2="318" y2="64" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="3,2"/>
+  <line x1="408" y1="46" x2="408" y2="64" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="3,2"/>
+  <line x1="498" y1="46" x2="498" y2="64" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="3,2"/>
+
+  <!-- Resource pills (y=66, height=30) -->
+  <!-- Wave -1: Namespace -->
+  <rect x="10"  y="66" width="76" height="30" rx="5" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1.5"/>
+  <text x="48"  y="85" text-anchor="middle" font-size="11" fill="#334155">Namespace</text>
+
+  <!-- Wave 0: ConfigMap + Secret -->
+  <rect x="100" y="66" width="76" height="30" rx="5" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1.5"/>
+  <text x="138" y="78" text-anchor="middle" font-size="10" fill="#334155">ConfigMap</text>
+  <text x="138" y="91" text-anchor="middle" font-size="10" fill="#334155">Secret</text>
+
+  <!-- Wave 1: StatefulSet postgres -->
+  <rect x="190" y="66" width="76" height="30" rx="5" fill="#fff7ed" stroke="#fb923c" stroke-width="1.5"/>
+  <text x="228" y="78" text-anchor="middle" font-size="10" fill="#334155">StatefulSet</text>
+  <text x="228" y="91" text-anchor="middle" font-size="10" fill="#334155">postgres</text>
+
+  <!-- Wave 2: Job migration DB -->
+  <rect x="280" y="66" width="76" height="30" rx="5" fill="#faf5ff" stroke="#a855f7" stroke-width="1.5"/>
+  <text x="318" y="78" text-anchor="middle" font-size="10" fill="#334155">Job</text>
+  <text x="318" y="91" text-anchor="middle" font-size="10" fill="#334155">migration DB</text>
+
+  <!-- Wave 3: Deployment backend -->
+  <rect x="370" y="66" width="76" height="30" rx="5" fill="#eff6ff" stroke="#60a5fa" stroke-width="1.5"/>
+  <text x="408" y="78" text-anchor="middle" font-size="10" fill="#334155">Deployment</text>
+  <text x="408" y="91" text-anchor="middle" font-size="10" fill="#334155">backend</text>
+
+  <!-- Wave 4: Ingress -->
+  <rect x="460" y="66" width="76" height="30" rx="5" fill="#f0fdf4" stroke="#4ade80" stroke-width="1.5"/>
+  <text x="498" y="85" text-anchor="middle" font-size="11" fill="#334155">Ingress</text>
+</svg>
