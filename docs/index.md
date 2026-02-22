@@ -191,6 +191,8 @@ Cette magnifique documentation a été faite avec MkDocs Material.
 
 * [Suivre l'upgrade de son cluster GKE](./cloud/gcloud/gke_upgrades.md)
 * [Commandes utiles pour la CLI GCP](./cloud/gcloud/gcloud_commands.md)
+* [GKE Spot Nodes](./cloud/gcloud/spot_nodes.md)
+* [GKE Workload Identity](./cloud/gcloud/workload_identity.md)
 
 ### Azure
 
@@ -237,6 +239,8 @@ Cette magnifique documentation a été faite avec MkDocs Material.
 ### ArgoCD
 
 * [Creer un service account](./kubernetes/argocd/argocd_sa.md)
+* [Générer ses Applications ArgoCD avec ApplicationSet](./kubernetes/argocd/applicationset.md)
+* [Sync Waves & Hooks](./kubernetes/argocd/sync_waves.md)
 
 ### Troubleshooting K8S
 
