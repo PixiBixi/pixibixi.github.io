@@ -1,3 +1,7 @@
+---
+description: Optimiser sa CI GitLab — buildah, fastzip, cache par langage et skip Docker pour des pipelines plus rapides
+---
+
 # Optimiser sa CI Gitlab
 
 Les CI c'est bien, une CI optimisée c'est mieux. Voici quelques tips
