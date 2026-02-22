@@ -1,3 +1,7 @@
+---
+description: Configurer iSCSI sur Windows Server — démarrer le service, ajouter des cibles et monter les LUN
+---
+
 # Initier des connexions iSCSi en CLI
 
 Pour initier une connexion iSCSi en PowerShell, quelques étapes sont

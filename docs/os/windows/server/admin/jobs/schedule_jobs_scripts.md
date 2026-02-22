@@ -1,3 +1,7 @@
+---
+description: Planifier l'exécution de scripts PowerShell avec le Planificateur de tâches Windows
+---
+
 # Exécuter un script PowerShell via une tâche planifiée
 
 **1)** Ouvrir le Planificateur de tâches Panneau de configuration -

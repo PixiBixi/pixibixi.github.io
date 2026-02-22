@@ -1,3 +1,7 @@
+---
+description: Modifier le fichier hosts Windows pour bloquer publicités et services indésirables
+---
+
 # Hosts File
 
 Diverses entrées dans le fichier hosts à mettre pour bloquer des pubs ou

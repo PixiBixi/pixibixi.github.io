@@ -1,3 +1,7 @@
+---
+description: Installer MindView sur macOS — notes d'installation pour le logiciel de mind mapping
+---
+
 # MindView
 
 Un petit mémo pour me rappeler que l'on peut utiliser MindView sur MAC.

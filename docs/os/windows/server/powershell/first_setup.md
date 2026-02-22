@@ -1,3 +1,7 @@
+---
+description: Configuration initiale d'un Windows Server — renommer le serveur et l'intégrer à un domaine AD
+---
+
 # Setup de base d'un Windows 2012R2
 
 Lorsque nous installons un serveur Windows 2012R2, certaines étapes sont

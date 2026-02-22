@@ -1,3 +1,7 @@
+---
+description: Installer Homebrew sans Xcode en utilisant uniquement les CLI tools pour économiser de l'espace disque
+---
+
 # Brew : L'installer sans XCode
 
 Normalement, pour installer brew, nous devons passer par XCode.

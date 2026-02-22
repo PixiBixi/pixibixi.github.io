@@ -1,3 +1,7 @@
+---
+description: Clés de registre Windows utiles — Shutdown Event Tracker, DHCP, autologon et paramètres de dépannage
+---
+
 # Clés de Registre Utiles
 
 Il arrive parfois que nous ayons des problèmes avec une VM, ou autre.

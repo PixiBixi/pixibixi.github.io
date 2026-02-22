@@ -1,3 +1,7 @@
+---
+description: Configurer Sublime Text 3 — thèmes Material, plugins essentiels et raccourcis pour développeurs
+---
+
 <!-- markdownlint-disable -->
 # SublimeText : Le codage Efficace
 

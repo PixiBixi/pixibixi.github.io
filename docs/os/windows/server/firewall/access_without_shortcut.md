@@ -1,3 +1,7 @@
+---
+description: Ouvrir le Pare-feu Windows avec sécurité avancée (wf.msc) sans raccourci
+---
+
 # Accéder au Firewall sans Icône ni raccourci
 
 Si pour une quelconque raison, vous êtes administrateur d'un poste mais

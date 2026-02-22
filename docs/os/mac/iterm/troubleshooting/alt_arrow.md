@@ -1,3 +1,7 @@
+---
+description: Corriger le raccourci Alt+Flèche dans iTerm2 — activer le preset Natural Text Editing
+---
+
 # Remap le Alt+Arrow de iTerm
 
 Par défaut, Alt+Arrow est map bizarrement et bug sur zsh, voici comment

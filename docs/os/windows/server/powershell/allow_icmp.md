@@ -1,3 +1,7 @@
+---
+description: Activer les réponses ICMP (ping) sur Windows Server via une règle de pare-feu PowerShell
+---
+
 # Autoriser l'ICMP sur un serveur Windows 2012R2 en PowerShell
 
 Par défaut, l'ICMP est disable sur les produits Windows ce qui n'est

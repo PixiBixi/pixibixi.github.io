@@ -1,3 +1,7 @@
+---
+description: Installer et utiliser Homebrew sur macOS — paquets, casks, bundles et commandes essentielles
+---
+
 # Brew, le package manager de MacOS
 
 ## Présentation

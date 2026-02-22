@@ -1,3 +1,7 @@
+---
+description: Désactiver TLS 1.0 et 1.1 sur Windows Server avec PowerShell pour renforcer la sécurité TLS
+---
+
 # Désactiver TLSv1 et TLSv1.1
 
 Ces 2 protocoles sont mort et devraient être désactivés depuis

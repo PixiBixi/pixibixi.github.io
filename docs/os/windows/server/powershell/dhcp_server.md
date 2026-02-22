@@ -1,3 +1,7 @@
+---
+description: Configurer un serveur DHCP complet avec PowerShell — pools, exclusions, réservations et failover
+---
+
 # Installer et configurer un serveur DHCP en PowerShell
 
 Pour rappel, un serveur DHCP vous fournit une IP de manière automatique.
