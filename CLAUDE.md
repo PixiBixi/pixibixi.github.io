@@ -127,6 +127,16 @@ Example admonition:
 All article content is written in **French**. This overrides the global
 English rule. Code, commands, and commit messages stay in English.
 
+## Before committing
+
+Always run `mkdocs build --strict` before committing file renames or new articles:
+
+```bash
+source venv/bin/activate && mkdocs build --strict 2>&1 | grep -E "WARNING|ERROR"
+```
+
+`index.md` contains hardcoded links — renames break the build silently until CI catches it.
+
 ## Article Rewrite Workflow
 
 When rewriting an article:
