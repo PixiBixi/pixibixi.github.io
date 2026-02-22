@@ -1,3 +1,7 @@
+---
+description: Activer et configurer un serveur SSH sur Cisco IOS pour remplacer Telnet
+---
+
 # Serveur SSH
 
 Un serveur SSH est désormais indispensable, voici donc comment en

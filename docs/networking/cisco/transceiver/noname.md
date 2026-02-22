@@ -1,3 +1,7 @@
+---
+description: Autoriser les transceivers génériques (no-name) sur Cisco IOS pour réduire les coûts d'infrastructure
+---
+
 # Autoriser les transceiver no-name
 
 Pour éviter de payer une fortune le transceiver 1XG LC LR, il est

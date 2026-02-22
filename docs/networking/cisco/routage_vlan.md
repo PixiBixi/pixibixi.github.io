@@ -1,3 +1,7 @@
+---
+description: Mettre en place le routage inter-VLAN sur Cisco IOS — router-on-a-stick et sous-interfaces
+---
+
 # Cisco : Routage Inter-VLAN
 
 Une fois les VLAN fait, ceux-ci sont isolés logiquement, et ne peuvent

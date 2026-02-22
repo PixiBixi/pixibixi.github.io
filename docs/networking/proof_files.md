@@ -1,3 +1,7 @@
+---
+description: Tester la bande passante réelle d'un serveur avec des fichiers de preuve (proof files) HTTP
+---
+
 # Tester la bande passante effective de son serveur avec des proofs files
 
 ## Préambule

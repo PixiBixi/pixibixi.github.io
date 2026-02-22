@@ -1,3 +1,7 @@
+---
+description: Référence des commandes de base Cisco IOS — navigation, configuration et administration des switches et routeurs
+---
+
 # Commandes de base Cisco IOS
 
 Voici toutes les commandes de base à connaitre pour un équipement Cisco

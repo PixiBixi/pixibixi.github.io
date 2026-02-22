@@ -1,3 +1,7 @@
+---
+description: Configurer une gateway hors du réseau local sur pfSense — cas typique des IP Failover OVH/Online
+---
+
 # Ajouter une gateway en dehors de son réseau
 
 Il est désormais commun d'avoir une gateway en dehors de son réseau

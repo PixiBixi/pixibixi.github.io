@@ -1,3 +1,7 @@
+---
+description: Renforcer la sécurité d'un switch ou routeur Cisco — désactiver les services inutiles et sécuriser l'accès
+---
+
 # Switch Cisco : Accroitre la sécurité
 
 Etant donner que le routeur est au coeur d'un réseau, il est très

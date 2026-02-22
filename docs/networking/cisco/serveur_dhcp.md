@@ -1,3 +1,7 @@
+---
+description: Configurer un serveur DHCP directement sur un routeur Cisco IOS — pools, exclusions et options
+---
+
 # Installer un serveur DHCP sur un routeur Cisco
 
 Il peut être utile dans certains cas d'installer un serveur DHCP sur un

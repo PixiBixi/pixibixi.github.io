@@ -1,3 +1,7 @@
+---
+description: Mettre à jour manuellement la liste des bogons dans pfSense via l'interface de diagnostic
+---
+
 # Mise à jour de la bogon list via l'interface graphique
 
 Pour mettre à jour la liste des [Bogons List]{.underline} via

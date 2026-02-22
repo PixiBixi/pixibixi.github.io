@@ -1,3 +1,7 @@
+---
+description: Présentation et commandes du protocole CDP (Cisco Discovery Protocol) pour la découverte de voisins réseau
+---
+
 # Le Protocole CDP
 
 ## Présentation
