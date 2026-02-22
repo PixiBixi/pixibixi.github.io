@@ -189,8 +189,8 @@ Cette magnifique documentation a été faite avec MkDocs Material.
 
 ### Google Cloud
 
-* [Suivre l'upgrade de son cluster GKE](./cloud/gcloud/follow_gke_upgrade.md)
-* [Commandes utiles pour la CLI GCP](./cloud/gcloud/misc_commands.md)
+* [Suivre l'upgrade de son cluster GKE](./cloud/gcloud/gke_upgrades.md)
+* [Commandes utiles pour la CLI GCP](./cloud/gcloud/gcloud_commands.md)
 
 ### Azure
 
