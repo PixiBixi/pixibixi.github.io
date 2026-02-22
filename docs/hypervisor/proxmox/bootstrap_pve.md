@@ -1,3 +1,7 @@
+---
+description: Installer et configurer un Proxmox propre — suppression des dépôts payants, certificats et paramètres système
+---
+
 # Avoir un Proxmox clean
 
 Avoir un serveur Proxmox c'est bien, avoir un proxmox clean c'est mieux :)

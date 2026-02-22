@@ -1,3 +1,7 @@
+---
+description: Télécharger et ajouter une image ISO dans Proxmox depuis une URL en ligne de commande
+---
+
 # Ajouter une ISO depuis une URL
 
 Depuis la WebUI de Proxmox, il n'est pas possible d'ajouter une ISO

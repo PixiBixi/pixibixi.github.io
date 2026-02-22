@@ -1,3 +1,7 @@
+---
+description: Activer et accéder au shell ESXi en SSH pour les opérations d'administration avancées
+---
+
 # Acceder à la console de l'ESXi
 
 Accéder à la console de l'ESXi peut-être pratique pour les

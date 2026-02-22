@@ -1,3 +1,7 @@
+---
+description: Résoudre l'erreur 'VM is locked' dans Proxmox avec qm unlock ou en supprimant le fichier de verrou
+---
+
 # Résoudre l'erreur '"VM is locked'"
 
 Sous promxox, de ma faible expérience, il est fréquent d'avoir un

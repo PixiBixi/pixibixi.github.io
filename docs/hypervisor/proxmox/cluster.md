@@ -1,3 +1,7 @@
+---
+description: Créer et gérer un cluster Proxmox — redondance réseau, quorum et migration de VMs
+---
+
 # Gérer son cluster Proxmox
 
 Imaginons l'infrastructure suivante
