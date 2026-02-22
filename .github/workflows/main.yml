@@ -3,6 +3,9 @@ name: ci
 on:
   push:
     branches: [master, main]
+    paths:
+      - 'docs/**/*.md'
+      - 'mkdocs.yml'
 jobs:
   lint:
     runs-on: ubuntu-latest
