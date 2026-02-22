@@ -1,3 +1,7 @@
+---
+description: Mettre à jour PostgreSQL vers une nouvelle version majeure avec pg_upgrade — migration des données et configuration
+---
+
 # Upgrade sa version de PostgreSQL
 
 Upgrade PostreSQL, c'est vraiment une plaie. Petit tuto du coup sur

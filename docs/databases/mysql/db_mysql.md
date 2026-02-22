@@ -1,3 +1,7 @@
+---
+description: Restaurer la base de données système MySQL — recréer la structure initiale après une suppression accidentelle
+---
+
 # Restaurer la DB système MySQL
 
 Si par très grosse inadvertance, vous effectuez un *rm -Rf

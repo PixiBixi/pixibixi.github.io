@@ -1,3 +1,7 @@
+---
+description: Gérer les comptes utilisateurs MySQL — créer, renommer, authentifier et attribuer les privilèges d'accès
+---
+
 # Gérer ses users MySQL
 
 Quelques trucs basiques pour les users MySQL :

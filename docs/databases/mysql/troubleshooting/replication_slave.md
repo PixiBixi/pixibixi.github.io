@@ -1,3 +1,7 @@
+---
+description: Déboguer et réparer une réplication MySQL primaire/réplica — résoudre les erreurs de relay log et relancer la synchronisation
+---
+
 # Debug sa replication Master-Slave
 
 ## Introduction
