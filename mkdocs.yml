@@ -17,6 +17,8 @@ theme:
     - navigation.prune
     - navigation.top
     - content.code.copy
+    - search.suggest
+    - search.highlight
   name: material
   language: fr
   palette:

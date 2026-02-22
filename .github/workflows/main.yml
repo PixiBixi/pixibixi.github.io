@@ -32,6 +32,10 @@ jobs:
         with:
           python-version: 3.x
           cache: 'pip'
+      - uses: actions/cache@v4
+        with:
+          key: mkdocs-privacy-${{ hashFiles('docs/**/*.md') }}
+          path: .cache/plugin/privacy
       - run: pip3 install -r requirements.txt
       - run: mkdocs build --strict
       - run: mkdocs gh-deploy --force -d site/
