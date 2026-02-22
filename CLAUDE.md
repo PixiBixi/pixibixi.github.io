@@ -79,9 +79,6 @@ Sidebar navigation is **auto-generated** from the `docs/` directory structure (n
 
 ## Commit Convention
 
-Always run `git status` before committing — pre-staged changes from unrelated work
-may exist. Stage and commit only the specific file(s) you modified.
-
 Scoped conventional commits following the content path:
 
 ```text
@@ -137,21 +134,41 @@ source venv/bin/activate && mkdocs build --strict 2>&1 | grep -E "WARNING|ERROR"
 
 `index.md` contains hardcoded links — renames break the build silently until CI catches it.
 
+## Article Writing Style
+
+- Short punchy intro — 1-3 sentences, blunt observation ("c'est la galère", "c'est pas génial")
+- Use "on" throughout, not "vous" or passive
+- Skip concept explanations — jump straight to how
+- Minimal admonitions, only for truly critical warnings
+- Bullet lists over tables when possible
+- No "## Prérequis" or "## Conclusion" sections
+- Stop when content is done, no wrap-up paragraph
+- **Never use ASCII box diagrams** (┌─┐│└─┘) — looks AI-generated
+- No exhaustive warning/tip boxes on every section
+
+Language patterns:
+
+- Prefer "sont" over "c'est des": "Les Spot VMs sont des instances..." not "c'est des instances..."
+- No formal French technical vocabulary → plain language
+- Mix English tech terms naturally in French: "inmaintenable at scale", `rotate` as a verb
+- Use numbers at sentence start: "2 solutions s'offrent ici à nous..."
+- Present alternatives explicitly: "on fait X ou on fait Y"
+- Trailing `...` to cut a sentence short
+- Prefer ratio/multiplier over percentages: "gain entre 4-5x" not "60% moins cher"
+
 ## Article Rewrite Workflow
 
 When rewriting an article:
 
 1. Read the existing file first
 2. Fetch external sources if needed (dotfiles repo, upstream docs)
-3. Write: practical examples, tables for options, real-world use cases
-4. Lint: `markdownlint-cli2 "path/to/file.md"`
-5. Preview: run `mkdocs serve --dirty` (background) and open the article in the browser
+3. Write: practical examples, real-world use cases — commands copy-pasteable on the spot
+4. **Update `docs/index.md`** if it's a new file — hardcoded links, always
+5. Lint: `markdownlint-cli2 "path/to/file.md"`
+6. Preview: run `mkdocs serve --dirty` (background) and open the article in the browser
    - URL pattern: `http://127.0.0.1:8000/<path-without-docs-prefix-and-md>/`
    - Example: `docs/linux/cli/sed.md` → `open http://127.0.0.1:8000/linux/cli/sed/`
-6. Commit + push — CI validates automatically
-
-Quality bar: prefer examples over prose, tables over lists, one-liners
-over paragraphs. A good article has commands you can copy-paste on the spot.
+7. Commit + push — CI validates automatically
 
 After writing, add YAML front matter to the article:
 
@@ -165,26 +182,6 @@ tags:
 
 Directory-level tags come from `.meta.yml` files — add per-article tags
 that are more specific than the directory defaults.
-
-## mkdocs serve
-
-Always use this sequence — `pgrep` alone is not enough (zombie process can hold port 8000):
-
-```bash
-# 1. Kill any existing mkdocs process
-pkill -f "mkdocs serve"; sleep 1
-
-# 2. Verify port is free (must return empty)
-lsof -i :8000
-
-# 3. Start
-source venv/bin/activate && nohup mkdocs serve --dirty >/tmp/mkdocs.log 2>&1 &
-
-# 4. Verify it's actually listening (must return a line after ~5s)
-sleep 5 && lsof -i :8000 | grep LISTEN
-```
-
-If step 4 returns nothing, check `/tmp/mkdocs.log` — a crash on `server_bind()` means the port is still held by a zombie; find it with `lsof -i :8000` and `kill -9 <PID>`.
 
 ## Gotchas
 
