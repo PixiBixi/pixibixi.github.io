@@ -11,7 +11,7 @@ Ce wiki me permet d'apprendre de nombreuses choses mais également de
 vous en faire apprendre. Je reste disponible sur mon mail personnel pour
 toute question contact+wiki[at]jdelgado[dot]fr
 
-Cette magnifique documentation a été faites avec MkDocs
+Cette magnifique documentation a été faite avec MkDocs Material.
 
 ## Linux GNU
 
@@ -25,7 +25,7 @@ Cette magnifique documentation a été faites avec MkDocs
 * [Memo sur la commande ip](linux/cli/ip.md)
 * [Mes fichiers de configuration](linux/cli/confrc.md)
 * [Mise à jour automatique de ses paquets](linux/misc/autoupgrade.md)
-* [La commande ss (le nouveau netstat.md)](linux/cli/ss.md)
+* [La commande ss (le nouveau netstat)](linux/cli/ss.md)
 * [Configurer correctement son hostname](linux/cli/define_hostname.md)
 * [Personnaliser son motd](linux/cli/motd.md)
 * [Simuler des conditions réseau sur Linux](linux/cli/limit_bandwidth.md)
@@ -51,6 +51,7 @@ Cette magnifique documentation a été faites avec MkDocs
 * [Améliorer la vitesse de connexion à votre serveur SSH](linux/security/ssh_improve_speed.md)
 * [Améliorer la sécurité des mots de passe par défaut avec PAM](linux/security/password_pam.md)
 * [Configurer des notifications SSH Slack](linux/security/slack_notifications_ssh.md)
+* [Configurer des notifications SSH Telegram](linux/security/telegram_notifications_ssh.md)
 * [Lister tous les certificats émis](./linux/security/issued_crt.md)
 
 ### Supervision
@@ -245,6 +246,7 @@ Cette magnifique documentation a été faites avec MkDocs
 
 * [Reset son password Rancher](kubernetes/rancher/reset_password.md)
 * [Bootstrap rapidement son cluster](kubernetes/rke/bootstrap_cluster.md)
+* [Récupérer son fichier rkestate](./kubernetes/rke/recover_rkestate.md)
 
 ## Gitlab
 
@@ -321,7 +323,7 @@ Cette magnifique documentation a été faites avec MkDocs
 ## Networking
 
 * [Tester la bande passante effective de son serveur avec des "proofs files"](networking/proof_files.md)
-* [Vérifié l'état du réseau avec la Weathermap](networking/weathermap.md)
+* [Vérifier l'état du réseau avec la Weathermap](networking/weathermap.md)
 * [Lister les préfixes annoncés par un ASN](networking/list_prefix_asn.md)
 
 ## pfSense
