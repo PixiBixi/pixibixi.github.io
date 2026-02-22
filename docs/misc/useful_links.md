@@ -1,3 +1,7 @@
+---
+description: Collection de liens utiles sans catégorie définie — outils, ressources et références techniques
+---
+
 # Bordel de lien
 
 Beaucoup de liens avec des informations importantes mais qui n'ont pas

@@ -1,3 +1,7 @@
+---
+description: Liens de référence pour optimiser les performances de NGINX, MySQL, PHP et d'autres logiciels
+---
+
 # Optimisations
 
 Liens d'optimisations vers pas mal de logiciels

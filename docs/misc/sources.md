@@ -1,3 +1,7 @@
+---
+description: Sources et références utilisées pour la rédaction de ce wiki
+---
+
 # Mes sources
 
 Evidemment, je me base sur beaucoup de sites internet ou autre pour

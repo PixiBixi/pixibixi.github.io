@@ -1,3 +1,7 @@
+---
+description: Référence sur les dénominations fibre optique — longueurs d'onde, monomode, multimode et connecteurs
+---
+
 # Informations utile sur les dénominations fibre optique
 
 ## Longeur d'onde

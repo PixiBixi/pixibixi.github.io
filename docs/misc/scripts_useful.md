@@ -1,3 +1,7 @@
+---
+description: Collection de scripts utiles pour Windows, Linux et macOS — nettoyage, maintenance et automatisation
+---
+
 # Scripts utiles
 
 ## Windows
