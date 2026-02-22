@@ -55,6 +55,8 @@ plugins:
   - privacy
   - redirects:
       redirect_maps:
+        'cloud/gcloud/follow_gke_upgrade.md': 'cloud/gcloud/gke_upgrades.md'
+        'cloud/gcloud/misc_commands.md': 'cloud/gcloud/gcloud_commands.md'
         'mess/useful_links.md': 'misc/useful_links.md'
         'mess/linux_performances.md': 'misc/linux_performances.md'
         'mess/optimization.md': 'misc/optimization.md'
