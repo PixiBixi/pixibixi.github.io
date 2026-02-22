@@ -1,3 +1,7 @@
+---
+description: Configurer un proxy HTTP pour le daemon Docker afin de puller des images depuis un réseau restreint
+---
+
 # Utiliser un proxy pour pull les images Docker
 
 Utiliser un proxy avec le daemon Docker est tout sauf intuitif, nous ne

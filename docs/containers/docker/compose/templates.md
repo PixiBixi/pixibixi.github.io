@@ -1,3 +1,7 @@
+---
+description: Templates Docker Compose — exemples de configuration pour les services courants
+---
+
 # docker-compose.yml
 
 !!! error "Deprecated"
