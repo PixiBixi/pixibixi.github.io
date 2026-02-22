@@ -14,7 +14,7 @@ theme:
     - navigation.instant
     - navigation.tabs
     - navigation.sections
-    - navigation.expand
+    - navigation.prune
     - navigation.top
     - content.code.copy
   name: material
