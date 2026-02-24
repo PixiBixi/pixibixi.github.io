@@ -94,7 +94,7 @@ plugins:
         'linux/selfhost/nextcloud.md': 'selfhost/nextcloud.md'
         'linux/selfhost/selfoss.md': 'selfhost/selfoss.md'
         'linux/selfhost/sonerezh.md': 'selfhost/sonerezh.md'
-        'linux/selfhost/subsonic.md': 'selfhost/subsonic.md'
+
         'linux/selfhost/youtubedl.md': 'selfhost/youtubedl.md'
         'linux/selfhost/torrent/mktorrent.md': 'selfhost/torrent/mktorrent.md'
         'linux/selfhost/torrent/rutorrent.md': 'selfhost/torrent/rutorrent.md'
@@ -136,11 +136,11 @@ plugins:
         'windows/desktop/tips/hosts_file.md': 'os/windows/desktop/tips/hosts_file.md'
         'windows/desktop/tips/improve_privacy.md': 'os/windows/desktop/tips/improve_privacy.md'
         'windows/desktop/tips/install_main_softwares.md': 'os/windows/desktop/tips/install_main_softwares.md'
-        'windows/desktop/tips/long_path.md': 'os/windows/desktop/tips/long_path.md'
+
         'windows/server/admin/jobs/schedule_jobs_scripts.md': 'os/windows/server/admin/jobs/schedule_jobs_scripts.md'
         'windows/server/core/setup_default_powershell.md': 'os/windows/server/core/setup_default_powershell.md'
         'windows/server/firewall/access_without_shortcut.md': 'os/windows/server/firewall/access_without_shortcut.md'
-        'windows/server/powershell/ad_server.md': 'os/windows/server/powershell/ad_server.md'
+
         'windows/server/powershell/allow_icmp.md': 'os/windows/server/powershell/allow_icmp.md'
         'windows/server/powershell/command_time_execution.md': 'os/windows/server/powershell/command_time_execution.md'
         'windows/server/powershell/dhcp_server.md': 'os/windows/server/powershell/dhcp_server.md'
@@ -155,7 +155,7 @@ plugins:
         'windows/server/registry/useful_keys.md': 'os/windows/server/registry/useful_keys.md'
         'code/st3.md': 'os/misc/st3.md'
         # Phase 5 — containers/ and ci-cd/ sections
-        'docker.md': 'containers/docker.md'
+
         'docker/use_proxy.md': 'containers/docker/use_proxy.md'
         'docker/compose/templates.md': 'containers/docker/compose/templates.md'
         'kafka/kafkactl.md': 'containers/kafka/kafkactl.md'
@@ -174,8 +174,7 @@ plugins:
         'linux/misc/create_raid.md': 'linux/storage/create_raid.md'
         'ssh/pubkey_rfc4716.md': 'linux/security/pubkey_rfc4716.md'
         # Phase 7 — networking/ consolidation
-        'networking/mkt/install_ipsec.md': 'networking/mikrotik/install_ipsec.md'
-        'networking/mkt/netflix_vpn.md': 'networking/mikrotik/netflix_vpn.md'
+
         'pfsense/update_bogon_list.md': 'networking/pfsense/update_bogon_list.md'
         'pfsense/network/gateway_outside_network.md': 'networking/pfsense/network/gateway_outside_network.md'
   - minify:

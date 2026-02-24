@@ -48,7 +48,7 @@ Cette magnifique documentation a été faite avec MkDocs Material.
 * [Installer et configurer LogWatch](linux/security/logwatch.md)
 * [Hardening de son serveur SSH](linux/security/hardening_sshd.md)
 * [Installer et configuer PortSentry](linux/security/portsentry.md)
-* [Bloquer tous les préfixes d'un pays entier](linux/security/iptables_country.md)
+
 * [Whitelister une série d'IP à l'aide d'IPset et iptables](linux/security/whitelist_ip.md)
 * [Logger les actions SSH utilisateurs simplement](linux/security/ssh_log_commands.md)
 * [Accès sécurisé via sFTP (Chroot SSH.md)](linux/security/sftp.md)
@@ -122,7 +122,7 @@ Cette magnifique documentation a été faite avec MkDocs Material.
 * [Selfoss, son Reader RSS self-hosted](selfhost/selfoss.md)
 * [NextCloud, son cloud personnel](selfhost/nextcloud.md)
 * [Stream sa propre music avec Sonerezh, un produit français !](selfhost/sonerezh.md)
-* [Subsonic, le couteau Suisse de la musique](selfhost/subsonic.md)
+
 * [Sauvegarder ses vidéos avec YoutubeDL et sa GUI](selfhost/youtubedl.md)
 * [Gérer son serveur en ligne via Ajenti](selfhost/ajenti.md)
 * [Streamer sa musique depuis Koel](selfhost/koel.md)
@@ -132,7 +132,7 @@ Cette magnifique documentation a été faite avec MkDocs Material.
 
 * [Installer et configurer son VPN OpenVPN](linux/networking/openvpn.md)
 * [Configurer son serveur OpenVPN pour de l'IPv6](linux/networking/openvpn_v6.md)
-* [Configurer l'IPv6 sur son serveur Online](linux/networking/ipv6/setup_online.md)
+
 * [Augmenter le buffer de sa carte réseau](linux/networking/buffer_nic.md)
 * [Effectuer un Speedtest depuis son serveur](linux/networking/speedtestcli.md)
 
@@ -266,7 +266,6 @@ Cette magnifique documentation a été faite avec MkDocs Material.
 
 ### Docker
 
-* [Docker: l'indispensable](containers/docker.md)
 * [Utiliser un proxy pour pull les images Docker](containers/docker/use_proxy.md)
 * [Templates docker-compose](containers/docker/compose/templates.md)
 
@@ -364,11 +363,6 @@ Cette magnifique documentation a été faite avec MkDocs Material.
 * [Enlever le premier caractère bizarre de iTerm](os/mac/iterm/troubleshooting/first_chat.md)
 * [Remap le Alt+Arrow de iTerm](os/mac/iterm/troubleshooting/alt_arrow.md)
 
-## Mikrotik
-
-* [Installer son tunnel IPSec](./networking/mikrotik/install_ipsec.md)
-* [Ne pas router Netflix à travers son tunnel IPSEC](./networking/mikrotik/netflix_vpn.md)
-
 ## ESXi
 
 * [Acceder à la console de l'ESXi](./hypervisor/esxi/misc/shell_access.md)
@@ -386,7 +380,7 @@ Cette magnifique documentation a été faite avec MkDocs Material.
 * [Setup de base d'un Windows 2012 R2](os/windows/server/powershell/first_setup.md)
 * [Monter un ISO directement via PowerShell](os/windows/server/powershell/mount_iso.md)
 * [Installer et configurer un serveur DHCP en PowerShell](os/windows/server/powershell/dhcp_server.md)
-* [Installer et configurer un serveur AD en PowerShell](os/windows/server/powershell/ad_server.md)
+
 * [Creer un pool de stockage en PowerShell](os/windows/server/powershell/storage/pool.md)
 * [Autoriser l'ICMP sur un serveur Windows 2012R2 en PowerShell](os/windows/server/powershell/allow_icmp.md)
 * [Importer des utilisateurs CSV dans un AD via PowerShell](os/windows/server/powershell/import_csv_users.md)
@@ -402,7 +396,6 @@ Cette magnifique documentation a été faite avec MkDocs Material.
 
 ### Desktop
 
-* [Windows 10 : Comment activer la gestion des chemins trop long ?](os/windows/desktop/tips/long_path.md)
 * [Améliorer sa vie privée et les performances avec Blackbird](os/windows/desktop/tips/improve_privacy.md)
 * [Bloquer les serveurs d'activation via le fichiers hosts](os/windows/desktop/tips/hosts_file.md)
 * [Installer tous les logiciels de base via un simple installateur](os/windows/desktop/tips/install_main_softwares.md)
