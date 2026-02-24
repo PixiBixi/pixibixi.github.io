@@ -1,5 +1,5 @@
 site_name: Jérémy Wiki
-site_description: "Tous les trucs & astuces de Jerem"
+site_description: "Tous les trucs & astuces de Jérémy"
 site_author: "Jérémy DELGADO"
 site_url: "https://wiki.jdelgado.fr/"
 
@@ -102,7 +102,8 @@ plugins:
         'linux/automatisation/ansible/ansible_reuse_variable.md': 'automation/ansible/ansible_reuse_variable.md'
         'linux/automatisation/ansible/ansible_tips.md': 'automation/ansible/ansible_tips.md'
         'linux/automatisation/ansible/ansible.md': 'automation/ansible/ansible.md'
-        'linux/automatisation/misc/Makefile.md': 'automation/misc/Makefile.md'
+        'linux/automatisation/misc/Makefile.md': 'automation/misc/makefile.md'
+        'automation/misc/Makefile.md': 'automation/misc/makefile.md'
         'linux/automatisation/terraform/cheatsheet.md': 'automation/terraform/cheatsheet.md'
         'linux/automatisation/terraform/speedup.md': 'automation/terraform/speedup.md'
         'linux/automatisation/terraform/tools.md': 'automation/terraform/tools.md'

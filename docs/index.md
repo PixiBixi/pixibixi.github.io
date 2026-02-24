@@ -1,3 +1,7 @@
+---
+description: Wiki SRE/Platform Engineer — Linux, Kubernetes, Cloud, CI/CD, Monitoring. 200+ articles pratiques en français.
+---
+
 # Sommaire
 
 Bienvenue sur mon wiki personnel où j'écris toutes mes astuces, ainsi
@@ -216,7 +220,7 @@ Cette magnifique documentation a été faite avec MkDocs Material.
 
 ### Divers
 
-* [Makefile : à quoi ça sert ?](./automation/misc/Makefile.md)
+* [Makefile : à quoi ça sert ?](./automation/misc/makefile.md)
 
 ## Kubernetes
 
