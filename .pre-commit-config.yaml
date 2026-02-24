@@ -4,3 +4,13 @@ repos:
   hooks:
   - id: markdownlint-cli2
 
+- repo: local
+  hooks:
+  - id: convert-images-to-webp
+    name: Convert images to WebP
+    entry: .pre-commit-hooks/convert_to_webp.sh
+    language: script
+    files: ^docs/
+    types_or: [jpeg, png]
+    pass_filenames: true
+
