@@ -43,6 +43,7 @@ theme:
         name: Switch to system preference
 
 plugins:
+  - social
   - meta
   - git-revision-date-localized:
       type: date
