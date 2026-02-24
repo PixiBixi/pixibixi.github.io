@@ -15,7 +15,7 @@ Ce wiki me permet d'apprendre de nombreuses choses mais également de
 vous en faire apprendre. Je reste disponible sur mon mail personnel pour
 toute question contact+wiki[at]jdelgado[dot]fr
 
-Cette magnifique documentation a été faite avec MkDocs Material.
+Cette magnifique documentation a été faite avec MkDocs Material. [→ À propos](about.md)
 
 ## Linux GNU
 
