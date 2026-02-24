@@ -20,6 +20,7 @@ theme:
     - search.suggest
     - search.highlight
   name: material
+  custom_dir: overrides
   language: fr
   palette:
     # Palette toggle for automatic mode
