@@ -4,7 +4,7 @@ description: Streamer sa musique auto-hébergée avec Koel — installation, con
 
 # Streamer sa musique depuis Koel
 
-![Koel](koel.jpg)
+![Koel](koel.webp)
 
 ## Présentation
 
