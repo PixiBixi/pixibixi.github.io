@@ -188,12 +188,15 @@ extra:
     provider: google
     property: G-NHG8VK60NB
   social:
-    - icon: fontawesome/brands/twitter
-      link: https://twitter.com/Pixel__Art
+    - icon: fontawesome/solid/house
+      link: https://jdelgado.fr
+      name: jdelgado.fr
+    - icon: fontawesome/brands/x-twitter
+      link: https://x.com/Pixel__Art
     - icon: fontawesome/brands/github
       link: https://github.com/PixiBixi
     - icon: fontawesome/brands/linkedin
-      link: https://fr.linkedin.com/in/je-delgado
+      link: https://www.linkedin.com/in/je-delgado
 
 markdown_extensions:
   - pymdownx.highlight:
