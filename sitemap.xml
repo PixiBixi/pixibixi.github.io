@@ -85,10 +85,6 @@
          <lastmod>2026-02-24</lastmod>
     </url>
     <url>
-         <loc>https://wiki.jdelgado.fr/containers/docker/</loc>
-         <lastmod>2026-02-24</lastmod>
-    </url>
-    <url>
          <loc>https://wiki.jdelgado.fr/containers/docker/use_proxy/</loc>
          <lastmod>2026-02-24</lastmod>
     </url>
@@ -429,10 +425,6 @@
          <lastmod>2026-02-24</lastmod>
     </url>
     <url>
-         <loc>https://wiki.jdelgado.fr/linux/networking/ipv6/setup_online/</loc>
-         <lastmod>2026-02-24</lastmod>
-    </url>
-    <url>
          <loc>https://wiki.jdelgado.fr/linux/security/disable_patches/</loc>
          <lastmod>2026-02-24</lastmod>
     </url>
@@ -442,10 +434,6 @@
     </url>
     <url>
          <loc>https://wiki.jdelgado.fr/linux/security/ipset/</loc>
-         <lastmod>2026-02-24</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/linux/security/iptables_country/</loc>
          <lastmod>2026-02-24</lastmod>
     </url>
     <url>
@@ -661,14 +649,6 @@
          <lastmod>2026-02-24</lastmod>
     </url>
     <url>
-         <loc>https://wiki.jdelgado.fr/networking/mikrotik/install_ipsec/</loc>
-         <lastmod>2026-02-24</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/networking/mikrotik/netflix_vpn/</loc>
-         <lastmod>2026-02-24</lastmod>
-    </url>
-    <url>
          <loc>https://wiki.jdelgado.fr/networking/pfsense/update_bogon_list/</loc>
          <lastmod>2026-02-24</lastmod>
     </url>
@@ -713,10 +693,6 @@
          <lastmod>2026-02-24</lastmod>
     </url>
     <url>
-         <loc>https://wiki.jdelgado.fr/os/windows/desktop/tips/long_path/</loc>
-         <lastmod>2026-02-24</lastmod>
-    </url>
-    <url>
          <loc>https://wiki.jdelgado.fr/os/windows/server/admin/jobs/schedule_jobs_scripts/</loc>
          <lastmod>2026-02-24</lastmod>
     </url>
@@ -726,10 +702,6 @@
     </url>
     <url>
          <loc>https://wiki.jdelgado.fr/os/windows/server/firewall/access_without_shortcut/</loc>
-         <lastmod>2026-02-24</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/os/windows/server/powershell/ad_server/</loc>
          <lastmod>2026-02-24</lastmod>
     </url>
     <url>
@@ -806,10 +778,6 @@
     </url>
     <url>
          <loc>https://wiki.jdelgado.fr/selfhost/sonerezh/</loc>
-         <lastmod>2026-02-24</lastmod>
-    </url>
-    <url>
-         <loc>https://wiki.jdelgado.fr/selfhost/subsonic/</loc>
          <lastmod>2026-02-24</lastmod>
     </url>
     <url>
