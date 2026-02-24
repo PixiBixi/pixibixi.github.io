@@ -310,7 +310,6 @@ Appabar](https://github.com/equinusocio/material-theme-appbar), celle-ci
 completera votre thème avec une couleur originale pour la liste des
 fichiers.
 
-Voici un aperçu des couleurs : **A FAIRE**
 
 <https://github.com/equinusocio/material-theme-appbar>'
 <https://github.com/jamiewilson/predawn>'
