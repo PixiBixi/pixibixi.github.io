@@ -32,6 +32,8 @@ theme:
     # Palette toggle for light mode
     - media: "(prefers-color-scheme: light)"
       scheme: default
+      primary: custom
+      accent: custom
       toggle:
         icon: material/toggle-switch
         name: Switch to dark mode
@@ -39,6 +41,8 @@ theme:
     # Palette toggle for dark mode
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
+      primary: custom
+      accent: custom
       toggle:
         icon: material/toggle-switch-off
         name: Switch to system preference
@@ -197,6 +201,9 @@ extra:
       link: https://github.com/PixiBixi
     - icon: fontawesome/brands/linkedin
       link: https://www.linkedin.com/in/je-delgado
+
+extra_css:
+  - stylesheets/jdelgado.css
 
 markdown_extensions:
   - pymdownx.highlight:

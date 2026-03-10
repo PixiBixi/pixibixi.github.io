@@ -1,0 +1,15 @@
+/* Custom primary color — teal jdelgado.fr */
+[data-md-color-primary="custom"] {
+  --md-primary-fg-color:        #5C98A0;
+  --md-primary-fg-color--light: rgba(92, 152, 160, 0.54);
+  --md-primary-fg-color--dark:  #4A8088;
+  --md-primary-bg-color:        #fff;
+  --md-primary-bg-color--light: rgba(255, 255, 255, 0.7);
+}
+
+[data-md-color-accent="custom"] {
+  --md-accent-fg-color:              #7AB5BD;
+  --md-accent-fg-color--transparent: rgba(122, 181, 189, 0.1);
+  --md-accent-bg-color:              #fff;
+  --md-accent-bg-color--light:       rgba(255, 255, 255, 0.7);
+}
