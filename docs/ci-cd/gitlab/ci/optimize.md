@@ -1,5 +1,5 @@
 ---
-description: Optimiser sa CI GitLab — buildah, fastzip, cache par langage et skip Docker pour des pipelines plus rapides
+description: Optimiser sa CI GitLab — buildah, fastzip, GIT_DEPTH, interruptible, cache policy, feature flags et DAG pour des pipelines plus rapides
 ---
 
 # Optimiser sa CI Gitlab
@@ -7,6 +7,34 @@ description: Optimiser sa CI GitLab — buildah, fastzip, cache par langage et s
 Les CI c'est bien, une CI optimisée c'est mieux. Voici quelques tips
 pour l'optimiser. Il y a également des optimisations spécifiques aux
 différents langages.
+
+## Clone superficiel
+
+Sur un gros repo, le `git clone` peut représenter 30-50% du temps d'un job. `GIT_DEPTH: 1` ne récupère que le dernier commit — suffisant dans 95% des cas.
+
+```yaml
+variables:
+  GIT_DEPTH: 1
+```
+
+Si un job a besoin de l'historique (génération de changelog, `git describe`...), on surcharge localement :
+
+```yaml
+release-job:
+  variables:
+    GIT_DEPTH: 0  # historique complet pour ce job uniquement
+```
+
+## Annuler les pipelines obsolètes
+
+Quand on push plusieurs commits rapprochés, les vieux pipelines continuent de tourner pour rien. `interruptible: true` les annule dès qu'un nouveau pipeline démarre sur la même branche.
+
+```yaml
+default:
+  interruptible: true
+```
+
+On peut aussi le définir job par job. Les jobs de deploy restent souvent non-interruptibles pour éviter un rollback partiel.
 
 ## Skip Docker
 
@@ -31,16 +59,25 @@ Docker Build:
 
 ## Optimisation niveau runner
 
-Le runner Gitlab est hautement configurable. Nous pouvons le
-personnaliser pour augmenter la vitesse de mise en cache ou autre. A
-partir de la version 13.6, nous avons la feature Fastzip qui nous permet
-de compresser/décompresser bien plus rapidement les potentiels artefacts
-ou fichiers de cache
+Le runner GitLab expose des feature flags via des variables CI. À partir de la version 13.6, Fastzip compresse/décompresse bien plus vite les artefacts et le cache.
 
 ```yaml
 variables:
   FF_USE_FASTZIP: "true"
-  # These can be specified per job or per pipeline
+  ARTIFACT_COMPRESSION_LEVEL: "fast"
+  CACHE_COMPRESSION_LEVEL: "fast"
+```
+
+2 autres feature flags utiles :
+
+- **`FF_TIMESTAMPS: "true"`** — ajoute des timestamps dans les logs, pratique pour identifier où un job rame
+- **`FF_ENABLE_BASH_EXIT_CODE_CHECK: "true"`** — force la détection d'erreur dans les pipes bash (`cmd1 | cmd2` masque sinon l'exit code de `cmd1`)
+
+```yaml
+variables:
+  FF_USE_FASTZIP: "true"
+  FF_TIMESTAMPS: "true"
+  FF_ENABLE_BASH_EXIT_CODE_CHECK: "true"
   ARTIFACT_COMPRESSION_LEVEL: "fast"
   CACHE_COMPRESSION_LEVEL: "fast"
 ```
@@ -67,7 +104,7 @@ test-job:
 
 Cet exemple basique nous permet de mettre plusieurs éléments en avant :
 
-* `GIT_STRATEGY` : Ici, nous ne clonons par le repository Git. Nul nécessaire de le cloner si nous n'en avons pas besoin
+- `GIT_STRATEGY` : Ici, nous ne clonons par le repository Git. Nul nécessaire de le cloner si nous n'en avons pas besoin
 
 Nous allons utiliser un artifact, expirant dans 1h pour stocker le
 résultat d'une commande
@@ -116,3 +153,63 @@ cache:
 D'autres caches sont possibles pour d'autres langages (Go, Ruby...),
 je vous laisse consulter la [documentation
 officielle](https://docs.gitlab.com/ee/ci/caching/index.html#cache-nodejs-dependencies)
+
+## Cache policy
+
+Par défaut, chaque job fait un pull + push du cache. Les jobs de test ou de lint n'ont pas besoin de repusher — ils consomment juste le cache généré par le build.
+
+```yaml
+build-job:
+  cache:
+    key: $CI_COMMIT_REF_SLUG
+    paths:
+      - vendor/
+    policy: pull-push  # default, génère le cache
+
+test-job:
+  cache:
+    key: $CI_COMMIT_REF_SLUG
+    paths:
+      - vendor/
+    policy: pull  # consomme uniquement, pas de re-upload
+```
+
+Sur un pipeline avec 5 jobs de test en parallèle, on économise 4 uploads inutiles.
+
+## Héritage des variables
+
+Tous les jobs héritent par défaut de toutes les variables globales. Sur un pipeline avec beaucoup de secrets ou de variables d'env, ça pollue et ça ralentit. On peut couper l'héritage et être explicite :
+
+```yaml
+test-job:
+  inherit:
+    variables: false  # n'hérite d'aucune variable globale
+  variables:
+    NODE_ENV: test  # uniquement ce dont on a besoin
+```
+
+## DAG — parallélisme réel
+
+Les stages s'exécutent en séquence même si les jobs sont indépendants. Avec `needs:`, on court-circuite les stages et on lance un job dès que ses dépendances sont terminées.
+
+```yaml
+lint:
+  stage: test
+  script: eslint .
+
+unit-tests:
+  stage: test
+  script: jest
+
+build:
+  stage: build
+  needs: [lint, unit-tests]  # démarre sans attendre les autres jobs du stage test
+  script: docker build .
+
+deploy:
+  stage: deploy
+  needs: [build]
+  script: kubectl apply -f k8s/
+```
+
+`needs: []` (liste vide) = le job démarre immédiatement, sans attendre aucun autre job.
