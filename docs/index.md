@@ -245,6 +245,7 @@ Cette magnifique documentation a été faite avec MkDocs Material. [→ À propo
 * [Creer un service account](./kubernetes/argocd/argocd_sa.md)
 * [Générer ses Applications ArgoCD avec ApplicationSet](./kubernetes/argocd/applicationset.md)
 * [Sync Waves & Hooks](./kubernetes/argocd/sync_waves.md)
+* [Sync Options](./kubernetes/argocd/sync_options.md)
 
 ### Troubleshooting K8S
 
