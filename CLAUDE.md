@@ -10,16 +10,14 @@ Personal knowledge base / wiki built with **MkDocs Material**, hosted at <https:
 
 ```bash
 # First-time setup
-python3 -m venv venv
-source ./venv/bin/activate
-pip install -r requirements.txt
+uv sync
 pre-commit install   # install git hook for markdown linting
 
 # Live preview (hot reload at http://127.0.0.1:8000)
-mkdocs serve
+uv run mkdocs serve
 
 # Static build (validates without serving)
-mkdocs build --strict
+uv run mkdocs build --strict
 ```
 
 ## Linting
@@ -129,7 +127,7 @@ English rule. Code, commands, and commit messages stay in English.
 Always run `mkdocs build --strict` before committing file renames or new articles:
 
 ```bash
-source venv/bin/activate && mkdocs build --strict 2>&1 | grep -E "WARNING|ERROR"
+uv run mkdocs build --strict 2>&1 | grep -E "WARNING|ERROR"
 ```
 
 `index.md` contains hardcoded links — renames break the build silently until CI catches it.
