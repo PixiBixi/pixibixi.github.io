@@ -1,4 +1,9 @@
 repos:
+- repo: https://github.com/astral-sh/uv-pre-commit
+  rev: 0.10.9
+  hooks:
+  - id: uv-lock
+
 - repo: https://github.com/DavidAnson/markdownlint-cli2
   rev: v0.18.1
   hooks:
