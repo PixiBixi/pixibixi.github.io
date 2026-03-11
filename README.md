@@ -1,10 +1,20 @@
-# wiki.jdelgado.fr source
+# wiki.jdelgado.fr
 
-To use this repo :
+Personal knowledge base built with [MkDocs Material](https://squidfunk.github.io/mkdocs-material/), hosted at <https://wiki.jdelgado.fr/>.
+
+## Setup
 
 ```sh
-python3 -m venv venv
-source ./venv/bin/activate
-pip install -r requirements.txt
-mkdocs serve
+uv sync
+uv run mkdocs serve
 ```
+
+## Lint
+
+```sh
+pre-commit run --all-files
+```
+
+## Deploy
+
+Push to `master` — GitHub Actions handles lint + deploy automatically.
