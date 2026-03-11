@@ -149,6 +149,7 @@ Language patterns:
 - Prefer "sont" over "c'est des": "Les Spot VMs sont des instances..." not "c'est des instances..."
 - No formal French technical vocabulary → plain language
 - Mix English tech terms naturally in French: "inmaintenable at scale", `rotate` as a verb
+- **Never translate K8s/infra nouns**: registry, policy, limits, requests, namespace, label, binding — always left in English in French prose
 - Use numbers at sentence start: "2 solutions s'offrent ici à nous..."
 - Present alternatives explicitly: "on fait X ou on fait Y"
 - Trailing `...` to cut a sentence short
