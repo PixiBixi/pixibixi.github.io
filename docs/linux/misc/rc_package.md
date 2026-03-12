@@ -1,5 +1,8 @@
 ---
 description: Supprimer complètement les paquets 'rc' en dpkg qui n'ont pas été désinstallés
+tags:
+  - dpkg
+  - Package
 ---
 
 # Enlever les paquets '"rc'" sur dpkg

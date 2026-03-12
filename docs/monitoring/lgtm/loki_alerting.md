@@ -1,5 +1,8 @@
 ---
 description: Configurer des règles d'alerting dans Loki et les remonter dans AlertManager
+tags:
+  - Loki
+  - Alerting
 ---
 
 # Générer des alertes depuis Loki

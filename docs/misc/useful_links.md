@@ -1,5 +1,7 @@
 ---
 description: Collection de liens utiles sans catégorie définie — outils, ressources et références techniques
+tags:
+  - Resources
 ---
 
 # Bordel de lien

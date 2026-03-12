@@ -1,5 +1,8 @@
 ---
 description: Installer des pilotes sur Windows Server Core sans interface graphique avec PNPUtil et PowerShell
+tags:
+  - PowerShell
+  - Drivers
 ---
 
 # Installer des drivers via PowerShell

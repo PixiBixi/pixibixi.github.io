@@ -1,5 +1,9 @@
 ---
 description: Exploration en profondeur de /proc et /sys — fichiers système, hardening et sécurité
+tags:
+  - sysfs
+  - procfs
+  - Kernel
 ---
 
 # Exploration poussée des systèmes de fichiers sysfs & procfs

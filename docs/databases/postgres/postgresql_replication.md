@@ -1,5 +1,8 @@
 ---
 description: Configurer la réplication streaming PostgreSQL — setup primary/replica, pg_hba.conf et surveillance de la réplication.
+tags:
+  - PostgreSQL
+  - Replication
 ---
 
 # PostgreSQL Replication

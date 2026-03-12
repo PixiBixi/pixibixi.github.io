@@ -1,5 +1,8 @@
 ---
 description: Effectuer des tests de charge avec wrk en générant des query strings aléatoires pour simuler du trafic réaliste
+tags:
+  - ab
+  - Benchmark
 ---
 
 # Benchmark avec une random query string

@@ -1,5 +1,9 @@
 ---
 description: Configurer OSPFv3 en IPv6 sur Cisco IOS — différences avec OSPFv2 et commandes essentielles
+tags:
+  - Cisco
+  - OSPF
+  - IPv6
 ---
 
 # OSPF en IPv6

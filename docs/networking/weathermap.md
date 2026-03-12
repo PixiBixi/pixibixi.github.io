@@ -1,5 +1,8 @@
 ---
 description: Visualiser l'état et l'encombrement du réseau avec Weathermap pour Cacti
+tags:
+  - Weathermap
+  - Network
 ---
 
 # Les weathermaps

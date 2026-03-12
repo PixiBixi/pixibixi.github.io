@@ -1,5 +1,7 @@
 ---
 description: Accéder et dumper le contenu de Memcached — commandes utiles pour explorer et vider les données en cache
+tags:
+  - Memcached
 ---
 
 # Commandes diverses avec memcached

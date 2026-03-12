@@ -1,5 +1,7 @@
 ---
 description: Installer Ruby avec rbenv ou ruby-build — gestion de versions et switch d'environnements
+tags:
+  - Ruby
 ---
 
 # Installer Ruby

@@ -1,5 +1,7 @@
 ---
 description: Générer des requêtes INSERT INTO depuis une sélection MySQL avec mysqldump pour extraire des lignes filtrées
+tags:
+  - MySQL
 ---
 
 # Générer des INSERT INTO depuis un SELECT

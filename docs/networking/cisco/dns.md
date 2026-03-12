@@ -1,5 +1,8 @@
 ---
 description: Désactiver la résolution DNS automatique sur Cisco IOS pour éviter les timeouts lors d'erreurs de saisie
+tags:
+  - Cisco
+  - DNS
 ---
 
 # Cisco : Désactiver la résolution DNS

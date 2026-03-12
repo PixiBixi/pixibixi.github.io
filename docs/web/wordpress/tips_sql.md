@@ -1,5 +1,8 @@
 ---
 description: Optimiser les performances de WordPress avec des index MySQL et la gestion de l'autoload
+tags:
+  - WordPress
+  - MySQL
 ---
 
 # Requêtes SQL afin d'optimiser son site

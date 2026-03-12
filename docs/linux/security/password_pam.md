@@ -1,5 +1,8 @@
 ---
 description: Renforcer la politique de mots de passe Linux avec PAM et pam-cracklib pour imposer des critères de complexité
+tags:
+  - PAM
+  - Authentication
 ---
 
 # Améliorer la sécurité des mots de passe par défaut

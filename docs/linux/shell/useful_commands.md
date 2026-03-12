@@ -1,5 +1,7 @@
 ---
 description: Collectif de commandes Linux avancées pour le debugging réseau, LVM, RAID, SMART et TLS
+tags:
+  - Shell
 ---
 
 # Liste de commandes utiles assez avancées

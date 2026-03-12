@@ -1,5 +1,8 @@
 ---
 description: Déployer Spegel comme cache de registre OCI local sur Kubernetes pour accélérer les pulls d'images
+tags:
+  - Docker
+  - Registry
 ---
 
 # Spegel : Un OCI registry cache stateless

@@ -1,5 +1,7 @@
 ---
 description: Déployer un cluster Kubernetes avec RKE via cluster.yaml — bootstrap et configuration initiale
+tags:
+  - RKE
 ---
 
 # Bootstrap rapidement son cluster

@@ -1,5 +1,7 @@
 ---
 description: Référence des commandes de base Cisco IOS — navigation, configuration et administration des switches et routeurs
+tags:
+  - Cisco
 ---
 
 # Commandes de base Cisco IOS

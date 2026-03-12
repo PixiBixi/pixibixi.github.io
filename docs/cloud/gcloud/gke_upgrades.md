@@ -1,5 +1,7 @@
 ---
 description: Suivre en temps réel l'upgrade d'un cluster GKE via la CLI gcloud
+tags:
+  - GKE
 ---
 
 # Suivre l'upgrade de son cluster GKE

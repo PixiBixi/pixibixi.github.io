@@ -1,5 +1,7 @@
 ---
 description: Créer des templates de Pull Request et d'Issue GitHub pour standardiser les contributions
+tags:
+  - GitHub
 ---
 
 # Générer un template pour ses Pull Request et ses Issues

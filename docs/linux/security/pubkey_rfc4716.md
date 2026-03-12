@@ -1,5 +1,8 @@
 ---
 description: Exporter une clé publique SSH au format RFC 4716 pour la compatibilité avec certains systèmes
+tags:
+  - SSH
+  - PKI
 ---
 
 # Générer une clé SSH au format RFC 4716

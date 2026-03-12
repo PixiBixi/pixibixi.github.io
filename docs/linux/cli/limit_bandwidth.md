@@ -1,5 +1,8 @@
 ---
 description: Simuler des conditions réseau — latence, perte de paquets et limitation de bande passante
+tags:
+  - tc
+  - Bandwidth
 ---
 
 # Simuler des conditions réseau sur Linux

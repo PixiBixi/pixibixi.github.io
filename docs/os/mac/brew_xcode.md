@@ -1,5 +1,9 @@
 ---
 description: Installer Homebrew sans Xcode en utilisant uniquement les CLI tools pour économiser de l'espace disque
+tags:
+  - Homebrew
+  - Xcode
+  - macOS
 ---
 
 # Brew : L'installer sans XCode

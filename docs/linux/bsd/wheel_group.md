@@ -1,5 +1,8 @@
 ---
 description: Ajouter un utilisateur au groupe wheel sous BSD pour accès à la commande su
+tags:
+  - BSD
+  - sudo
 ---
 
 # Ajouter un utilisateur au groupe wheel

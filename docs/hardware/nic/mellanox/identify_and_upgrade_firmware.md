@@ -1,5 +1,9 @@
 ---
 description: Identifier et mettre à jour le firmware des cartes réseau Mellanox avec mstflint et flint
+tags:
+  - Mellanox
+  - NIC
+  - Firmware
 ---
 
 # Identifier and upgrade son firmware Mellanox

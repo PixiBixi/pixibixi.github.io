@@ -1,5 +1,7 @@
 ---
 description: Lister et inspecter les fonctions Lua stockées dans Redis avec FUNCTION LIST WITHCODE
+tags:
+  - Redis
 ---
 
 # Decoder une fonction redis

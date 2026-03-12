@@ -1,5 +1,7 @@
 ---
 description: Planifier des tâches avec cron — crontab, dossiers cron.* et variables d'environnement
+tags:
+  - cron
 ---
 
 # Rappel sur le cron

@@ -1,5 +1,8 @@
 ---
 description: Télécharger les sous-titres d'une vidéo Netflix via le débogueur Chrome
+tags:
+  - Netflix
+  - Subtitles
 ---
 
 # Télécharger les sous-titres Netflix simplement

@@ -1,5 +1,7 @@
 ---
 description: Réinitialiser le mot de passe root via GRUB et init=/bin/bash
+tags:
+  - Recovery
 ---
 
 # Réinitialiser son mot de passe root

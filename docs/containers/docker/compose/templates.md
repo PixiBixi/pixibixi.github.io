@@ -1,5 +1,8 @@
 ---
 description: Templates Docker Compose — exemples de configuration pour les services courants
+tags:
+  - Docker
+  - Docker Compose
 ---
 
 # docker-compose.yml

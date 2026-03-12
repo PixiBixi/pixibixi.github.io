@@ -1,5 +1,8 @@
 ---
 description: Streamer sa musique comme Spotify avec Sonerezh — installation, Nginx et conversion de formats audio
+tags:
+  - Sonerezh
+  - Music
 ---
 
 # Sonerezh

@@ -1,5 +1,8 @@
 ---
 description: Décoder les messages d'erreur AWS encodés en base64 avec la commande aws sts decode-authorization-message
+tags:
+  - AWS
+  - IAM
 ---
 
 # Decoder un message d'erreur AWS

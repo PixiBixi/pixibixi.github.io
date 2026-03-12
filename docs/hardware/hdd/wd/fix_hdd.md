@@ -1,5 +1,8 @@
 ---
 description: Désactiver la technologie IntelliPark sur les disques WD Green/Red pour prévenir le vieillissement prématuré
+tags:
+  - HDD
+  - Western Digital
 ---
 
 # WD Green HDD, Comment prémunir le old_age prématuré

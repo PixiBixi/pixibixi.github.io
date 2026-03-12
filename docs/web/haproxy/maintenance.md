@@ -1,5 +1,7 @@
 ---
 description: Mettre un serveur en maintenance avec HAproxy sans interruption — drain, maint et gestion des health checks
+tags:
+  - HAProxy
 ---
 
 # HAproxy : Mettre un node en maintenance

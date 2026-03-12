@@ -1,5 +1,7 @@
 ---
 description: Récupérer les options de compilation du kernel depuis /proc/config.gz ou /boot
+tags:
+  - Kernel
 ---
 
 # Trouver les options de compilation du kernel

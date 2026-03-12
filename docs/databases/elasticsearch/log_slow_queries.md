@@ -1,5 +1,7 @@
 ---
 description: Configurer les logs des slow queries sur Elasticsearch — définir les seuils de performance et analyser les requêtes lentes
+tags:
+  - Elasticsearch
 ---
 
 # Log des slow queries de ElasticSearch

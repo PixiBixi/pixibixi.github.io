@@ -1,5 +1,9 @@
 ---
 description: Déployer un cluster Galera MySQL haute disponibilité — réplication synchrone multi-maître avec détection de défaillance
+tags:
+  - MySQL
+  - Galera
+  - HA
 ---
 
 # Créer son cluster Galera

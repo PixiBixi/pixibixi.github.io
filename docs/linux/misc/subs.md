@@ -1,5 +1,7 @@
 ---
 description: Télécharger les sous-titres en ligne de commande avec addic7ed-cli depuis Addic7ed
+tags:
+  - Subscriptions
 ---
 
 # Télécharger ses sous-titres en ligne de commande

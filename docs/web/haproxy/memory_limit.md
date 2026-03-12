@@ -1,5 +1,7 @@
 ---
 description: Comprendre l'impact d'une limite mémoire sur les performances et la capacité de connexion de HAproxy
+tags:
+  - HAProxy
 ---
 
 # HAproxy : Comportement d'une limite mémoire

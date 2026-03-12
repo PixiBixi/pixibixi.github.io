@@ -1,5 +1,9 @@
 ---
 description: Envoyer des alertes Slack en temps réel lors des connexions SSH via webhooks et PAM
+tags:
+  - SSH
+  - Slack
+  - Notification
 ---
 
 # Configurer des notifications Slack pour SSH

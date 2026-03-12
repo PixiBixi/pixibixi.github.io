@@ -1,5 +1,7 @@
 ---
 description: Convertir des fichiers .bin ou .mdf en .iso avec l'outil iat
+tags:
+  - ISO
 ---
 
 # Convertir des .bin en .iso

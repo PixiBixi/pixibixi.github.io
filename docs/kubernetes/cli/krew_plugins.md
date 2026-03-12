@@ -1,5 +1,8 @@
 ---
 description: Découvrir et installer les plugins Krew essentiels pour améliorer sa productivité avec kubectl
+tags:
+  - kubectl
+  - krew
 ---
 
 # Mes meilleurs plugins Krew

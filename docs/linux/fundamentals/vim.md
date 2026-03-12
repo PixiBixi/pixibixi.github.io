@@ -1,5 +1,7 @@
 ---
 description: Raccourcis essentiels de Vim — fenêtres, édition texte, copie/suppression et plugins
+tags:
+  - vim
 ---
 
 # VIM: L'editeur de texte de la mort

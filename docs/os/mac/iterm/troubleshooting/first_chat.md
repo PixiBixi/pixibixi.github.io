@@ -1,5 +1,8 @@
 ---
 description: Désactiver les marqueurs de shell bleus dans iTerm2 — décocher Show Mark Indicators
+tags:
+  - iTerm2
+  - macOS
 ---
 
 # Enlever le premier caractère bizarre de iTerm

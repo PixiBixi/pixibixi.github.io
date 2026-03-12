@@ -1,5 +1,8 @@
 ---
 description: Modifier le fichier hosts Windows pour bloquer publicités et services indésirables
+tags:
+  - Windows
+  - DNS
 ---
 
 # Hosts File

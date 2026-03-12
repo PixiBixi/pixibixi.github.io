@@ -1,5 +1,8 @@
 ---
 description: Déployer Redis en haute disponibilité — configurer Sentinel, HAproxy et réplication pour la redondance complète
+tags:
+  - Redis
+  - HA
 ---
 
 # Déployer un Redis en High Availability

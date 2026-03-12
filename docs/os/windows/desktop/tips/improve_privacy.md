@@ -1,5 +1,8 @@
 ---
 description: Renforcer la confidentialité sous Windows 10 avec Blackbird, Privacy Tweaker et HardenTools
+tags:
+  - Windows
+  - Privacy
 ---
 
 # Ameliorer sa privacy sous Windows

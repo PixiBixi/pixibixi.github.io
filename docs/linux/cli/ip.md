@@ -1,5 +1,8 @@
 ---
 description: Remplacer ifconfig par ip — configuration réseau, routes, ARP et statistiques
+tags:
+  - ip
+  - Network
 ---
 
 # Mémo sur la commande IP

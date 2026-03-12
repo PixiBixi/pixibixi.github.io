@@ -1,5 +1,8 @@
 ---
 description: Configurer LogWatch pour générer et envoyer des rapports d'analyse de logs système par e-mail
+tags:
+  - logwatch
+  - Logs
 ---
 
 # Installer et configurer LogWatch

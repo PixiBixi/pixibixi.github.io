@@ -1,5 +1,7 @@
 ---
 description: Configurer le hostname et le FQDN — éditer /etc/hostname et /etc/hosts correctement
+tags:
+  - hostname
 ---
 
 # Configurer correctement son hostname

@@ -1,5 +1,8 @@
 ---
 description: Installer une version spécifique de PHP sur Debian/Ubuntu avec le dépôt Sury
+tags:
+  - nginx
+  - PHP
 ---
 
 # Installer une version custom de PHP

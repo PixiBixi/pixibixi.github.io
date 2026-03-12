@@ -1,5 +1,7 @@
 ---
 description: Gagner de l'espace disque en supprimant les locales inutiles avec localepurge
+tags:
+  - locale
 ---
 
 # Gagner de la place en supprimant les locales inutiles

@@ -1,5 +1,8 @@
 ---
 description: Gérer les Storage Spaces et pools de stockage sur Windows Server avec PowerShell
+tags:
+  - PowerShell
+  - Storage
 ---
 
 # Manipuler les HDD en Powershell

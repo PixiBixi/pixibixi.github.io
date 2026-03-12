@@ -1,5 +1,8 @@
 ---
 description: Détecter et bloquer les scans de ports malveillants avec PortSentry intégré à iptables
+tags:
+  - portsentry
+  - IDS
 ---
 
 # Installer et configuer PortSentry

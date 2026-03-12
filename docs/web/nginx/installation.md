@@ -1,5 +1,7 @@
 ---
 description: Installer une stack LEMP sous Linux — NGINX, PHP-FPM et MariaDB en version récente. Configuration et optimisation d'un serveur web performant.
+tags:
+  - nginx
 ---
 
 # Installer son Serveur Web : NGINX, PHP-FPM et MariaDB

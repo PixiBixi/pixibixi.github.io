@@ -1,5 +1,8 @@
 ---
 description: Récupérer le fichier rkestate d'un cluster RKE depuis le master ou via kubectl
+tags:
+  - RKE
+  - Recovery
 ---
 
 # Recuperer son fichier rkestate

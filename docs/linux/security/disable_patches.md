@@ -1,5 +1,7 @@
 ---
 description: Désactiver les mitigations Meltdown/Spectre au démarrage du kernel pour retrouver les performances maximales
+tags:
+  - Patch Management
 ---
 
 # Désactiver les patchs de sécurité Meltdown & co

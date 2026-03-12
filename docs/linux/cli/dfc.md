@@ -1,5 +1,8 @@
 ---
 description: Afficher l'espace disque de manière lisible et colorée avec la commande dfc
+tags:
+  - dfc
+  - Disk
 ---
 
 # DFC, la commande DF en plus

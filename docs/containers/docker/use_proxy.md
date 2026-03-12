@@ -1,5 +1,8 @@
 ---
 description: Configurer un proxy HTTP pour le daemon Docker afin de puller des images depuis un réseau restreint
+tags:
+  - Docker
+  - Proxy
 ---
 
 # Utiliser un proxy pour pull les images Docker

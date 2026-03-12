@@ -1,5 +1,7 @@
 ---
 description: Installer et configurer un Proxmox propre — suppression des dépôts payants, certificats et paramètres système
+tags:
+  - Proxmox
 ---
 
 # Avoir un Proxmox clean

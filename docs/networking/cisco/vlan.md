@@ -1,5 +1,8 @@
 ---
 description: Créer et gérer des VLANs sur Cisco IOS — configuration, trunk et access ports
+tags:
+  - Cisco
+  - VLAN
 ---
 
 # Cisco : Créér son VLAN

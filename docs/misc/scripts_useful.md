@@ -1,5 +1,8 @@
 ---
 description: Collection de scripts utiles pour Windows, Linux et macOS — nettoyage, maintenance et automatisation
+tags:
+  - Shell
+  - Scripting
 ---
 
 # Scripts utiles

@@ -1,5 +1,7 @@
 ---
 description: Personnaliser le Message of the Day avec affichage d'infos système au connexion
+tags:
+  - motd
 ---
 
 # Personnaliser ton motd

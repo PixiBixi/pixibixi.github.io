@@ -1,5 +1,8 @@
 ---
 description: Lister tous les préfixes IPv4/IPv6 annoncés par un numéro d'AS via les outils BGP
+tags:
+  - BGP
+  - ASN
 ---
 
 # Lister les préfixes annoncés par un AS

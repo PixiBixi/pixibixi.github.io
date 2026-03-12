@@ -1,5 +1,7 @@
 ---
 description: Mettre à jour manuellement la liste des bogons dans pfSense via l'interface de diagnostic
+tags:
+  - pfSense
 ---
 
 # Mise à jour de la bogon list via l'interface graphique

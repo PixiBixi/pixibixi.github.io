@@ -1,5 +1,7 @@
 ---
 description: Outils essentiels Terraform — tfswitch, terraform-docs, tfsec et checkov pour versionning et sécurité
+tags:
+  - Terraform
 ---
 
 # Tools Terraform indispensables

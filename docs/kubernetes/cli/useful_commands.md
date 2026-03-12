@@ -1,5 +1,7 @@
 ---
 description: Référence des commandes kubectl pour Kubernetes — gestion des pods, déploiements, services, ConfigMaps, debugging et commandes avancées.
+tags:
+  - kubectl
 ---
 
 # Commandes utiles pour K8S

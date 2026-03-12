@@ -1,5 +1,8 @@
 ---
 description: Forcer le HTTPS avec Nginx via redirection HTTP 301 et configuration SSL/TLS
+tags:
+  - nginx
+  - TLS
 ---
 
 # Forcer le SSL sous NGINX

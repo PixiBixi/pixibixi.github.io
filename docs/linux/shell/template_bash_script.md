@@ -1,5 +1,8 @@
 ---
 description: Template de script bash robuste avec gestion d'erreurs, cleanup automatique et parsing de paramètres
+tags:
+  - Bash
+  - Scripting
 ---
 
 # Un template pour un script bash

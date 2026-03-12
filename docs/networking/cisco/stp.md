@@ -1,5 +1,8 @@
 ---
 description: Commandes utiles du Spanning Tree Protocol (STP) sur Cisco — vérification, priorité et protection
+tags:
+  - Cisco
+  - STP
 ---
 
 # STP : Spanning Tree Protocol

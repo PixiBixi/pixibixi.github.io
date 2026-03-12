@@ -1,5 +1,8 @@
 ---
 description: Logger toutes les commandes exécutées en SSH avec PROMPT_COMMAND et rsyslog pour l'audit
+tags:
+  - SSH
+  - Audit
 ---
 
 # Logger les actions SSH utilisateurs simplement

@@ -1,5 +1,8 @@
 ---
 description: Déployer une stack mail complète avec Postfix, Dovecot et rspamd via Docker Compose
+tags:
+  - Mail
+  - SMTP
 ---
 
 # Postfix/Dovecot/DKIM/Postgrey et plus encore

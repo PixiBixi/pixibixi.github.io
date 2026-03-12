@@ -1,5 +1,8 @@
 ---
 description: Étendre une partition root en ligne sans redémarrage avec growpart et resize2fs
+tags:
+  - LVM
+  - Storage
 ---
 
 # Etendre à chaud sa partition root

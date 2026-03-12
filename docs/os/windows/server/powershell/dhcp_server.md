@@ -1,5 +1,8 @@
 ---
 description: Configurer un serveur DHCP complet avec PowerShell — pools, exclusions, réservations et failover
+tags:
+  - PowerShell
+  - DHCP
 ---
 
 # Installer et configurer un serveur DHCP en PowerShell

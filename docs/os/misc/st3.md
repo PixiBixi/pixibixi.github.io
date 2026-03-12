@@ -1,5 +1,7 @@
 ---
 description: Configurer Sublime Text 3 — thèmes Material, plugins essentiels et raccourcis pour développeurs
+tags:
+  - Sublime Text
 ---
 
 <!-- markdownlint-disable -->

@@ -1,5 +1,7 @@
 ---
 description: Accélérer Terraform — parallélisme, cache des providers et optimisations CI pour des déploiements plus rapides
+tags:
+  - Terraform
 ---
 
 # Accélerer Terraform

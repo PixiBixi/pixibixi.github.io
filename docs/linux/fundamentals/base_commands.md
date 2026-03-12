@@ -1,5 +1,7 @@
 ---
 description: Mémo des commandes Linux essentielles — gestion de fichiers, processus, réseau, permissions et archivage. Référence rapide pour administrateurs système.
+tags:
+  - Shell
 ---
 
 # Rappel des commandes de base

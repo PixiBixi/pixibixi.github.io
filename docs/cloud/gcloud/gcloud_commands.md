@@ -1,5 +1,8 @@
 ---
 description: Commandes utiles pour la CLI gcloud — Cloud SQL, GKE, IAM et gestion de projets
+tags:
+  - GCP
+  - gcloud
 ---
 
 # Commandes utiles pour la CLI Gcloud

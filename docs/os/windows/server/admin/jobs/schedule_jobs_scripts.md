@@ -1,5 +1,8 @@
 ---
 description: Planifier l'exécution de scripts PowerShell avec le Planificateur de tâches Windows
+tags:
+  - Windows Server
+  - PowerShell
 ---
 
 # Exécuter un script PowerShell via une tâche planifiée

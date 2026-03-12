@@ -1,5 +1,8 @@
 ---
 description: Désactiver la propagation du TTL en MPLS sur Cisco pour masquer la topologie interne aux traceroutes
+tags:
+  - Cisco
+  - MPLS
 ---
 
 # Désactiver la propagation du TTL en MPLS

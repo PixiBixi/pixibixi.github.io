@@ -1,5 +1,8 @@
 ---
 description: Autoriser les transceivers génériques (no-name) sur Cisco IOS pour réduire les coûts d'infrastructure
+tags:
+  - Cisco
+  - Hardware
 ---
 
 # Autoriser les transceiver no-name

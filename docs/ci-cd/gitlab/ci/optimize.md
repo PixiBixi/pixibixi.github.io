@@ -1,5 +1,8 @@
 ---
 description: Optimiser sa CI GitLab — buildah, fastzip, GIT_DEPTH, interruptible, cache policy, feature flags et DAG pour des pipelines plus rapides
+tags:
+  - GitLab CI
+  - CI/CD
 ---
 
 # Optimiser sa CI Gitlab

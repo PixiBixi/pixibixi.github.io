@@ -1,5 +1,8 @@
 ---
 description: Localiser un disque dur défaillant sur un système NetApp en le faisant clignoter via la CLI
+tags:
+  - NetApp
+  - SAN
 ---
 
 # Repérer un disque dur défaillant en le faisant clignoter

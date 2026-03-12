@@ -1,5 +1,8 @@
 ---
 description: Lancer la console iLO ou iDRAC depuis macOS via Java Web Start
+tags:
+  - HP
+  - iLO
 ---
 
 # Lancer la console iLO depuis un Mac

@@ -1,5 +1,9 @@
 ---
 description: Générer et configurer les clés DKIM pour signer les emails sortants avec Exim
+tags:
+  - Exim
+  - DKIM
+  - Mail
 ---
 
 # Configurer DKIM avec Exim

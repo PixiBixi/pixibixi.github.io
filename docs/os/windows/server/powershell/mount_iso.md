@@ -1,5 +1,8 @@
 ---
 description: Monter et démonter des images ISO sur Windows Server avec Mount-DiskImage et Dismount-DiskImage
+tags:
+  - PowerShell
+  - ISO
 ---
 
 # Monter un ISO directement via PowerShell

@@ -1,5 +1,8 @@
 ---
 description: Lister tous les certificats SSL/TLS émis pour un domaine via Certificate Transparency (crt.sh)
+tags:
+  - TLS
+  - Certificate
 ---
 
 # Lister tous les certificats émis

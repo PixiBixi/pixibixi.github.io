@@ -1,5 +1,8 @@
 ---
 description: Présentation et commandes du protocole LLDP (Link Layer Discovery Protocol) pour la découverte de voisins multi-constructeurs
+tags:
+  - Cisco
+  - LLDP
 ---
 
 # Le Protocole LLDP

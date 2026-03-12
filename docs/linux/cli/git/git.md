@@ -1,5 +1,7 @@
 ---
 description: Commandes git essentielles — gestion de branches, nettoyage et configuration .gitconfig
+tags:
+  - git
 ---
 
 # Apprendre à se servir de git

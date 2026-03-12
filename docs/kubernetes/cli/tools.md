@@ -1,5 +1,8 @@
 ---
 description: Outils et utilitaires essentiels pour améliorer l'expérience utilisateur et la gestion de clusters Kubernetes
+tags:
+  - Kubernetes
+  - CLI
 ---
 
 # Outils pour mieux gérer K8S

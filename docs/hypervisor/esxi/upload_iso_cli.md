@@ -1,5 +1,8 @@
 ---
 description: Télécharger des images ISO dans un datastore ESXi via SSH et wget depuis une URL
+tags:
+  - ESXi
+  - ISO
 ---
 
 # Uploader ses ISO en ligne de commande

@@ -1,5 +1,7 @@
 ---
 description: Réduire la taille d'un dépôt Git en supprimant les gros fichiers binaires
+tags:
+  - git
 ---
 
 # Réduire la taille de son repository Git

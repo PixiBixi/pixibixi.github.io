@@ -1,5 +1,8 @@
 ---
 description: Configurer un accès SFTP sécurisé avec chroot pour restreindre les utilisateurs à leur répertoire home
+tags:
+  - SFTP
+  - SSH
 ---
 
 # Accès sécurisé via sFTP (Chroot SSH)

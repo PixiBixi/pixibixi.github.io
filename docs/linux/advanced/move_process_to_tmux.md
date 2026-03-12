@@ -1,5 +1,8 @@
 ---
 description: Rattacher un processus en arrière-plan à un nouveau TTY avec reptyr et tmux
+tags:
+  - tmux
+  - Process
 ---
 
 # Deplacer un processus dans un tmux

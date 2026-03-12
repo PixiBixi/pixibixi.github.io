@@ -1,5 +1,8 @@
 ---
 description: Déboguer les droits d'accès d'un service account Kubernetes avec des pods de test dédiés
+tags:
+  - RBAC
+  - ServiceAccount
 ---
 
 # Debug son ServiceAccount Kubernetes

@@ -1,5 +1,8 @@
 ---
 description: Télécharger et ajouter une image ISO dans Proxmox depuis une URL en ligne de commande
+tags:
+  - Proxmox
+  - ISO
 ---
 
 # Ajouter une ISO depuis une URL

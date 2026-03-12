@@ -1,5 +1,9 @@
 ---
 description: Configurer les notifications Slack dans Check_MK pour recevoir les alertes de supervision en temps réel
+tags:
+  - CheckMK
+  - Slack
+  - Notification
 ---
 
 # Configurer des notifications Slack pour check_mk

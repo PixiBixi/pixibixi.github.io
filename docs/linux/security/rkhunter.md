@@ -1,5 +1,7 @@
 ---
 description: Scanner et détecter les rootkits avec RKHunter en comparant les hashs des fichiers système
+tags:
+  - rkhunter
 ---
 
 # Installer et configurer RKHunter

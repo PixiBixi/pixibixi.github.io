@@ -1,5 +1,8 @@
 ---
 description: Ouvrir le Pare-feu Windows avec sécurité avancée (wf.msc) sans raccourci
+tags:
+  - Windows Server
+  - Firewall
 ---
 
 # Accéder au Firewall sans Icône ni raccourci

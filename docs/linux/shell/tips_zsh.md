@@ -1,5 +1,7 @@
 ---
 description: Astuces spécifiques à Zsh pour améliorer la productivité — alias, raccourcis et configuration avancée
+tags:
+  - zsh
 ---
 
 # Astuces zsh

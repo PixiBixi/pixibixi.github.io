@@ -1,5 +1,7 @@
 ---
 description: Télécharger des vidéos avec youtube-dl — installation, interface web et configuration Nginx
+tags:
+  - yt-dlp
 ---
 
 # Sauvegarder ses vidéos avec YoutubeDL et sa GUI

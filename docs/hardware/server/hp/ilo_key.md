@@ -1,5 +1,8 @@
 ---
 description: Clés de licence iLO Advanced pour les serveurs HP ProLiant
+tags:
+  - HP
+  - iLO
 ---
 
 # Clé ILO Adavanced

@@ -1,5 +1,7 @@
 ---
 description: Guide complet de HAproxy — configuration, load balancing, ACLs, TLS et exemples pratiques
+tags:
+  - HAProxy
 ---
 
 # Reverse proxy: HAproxy

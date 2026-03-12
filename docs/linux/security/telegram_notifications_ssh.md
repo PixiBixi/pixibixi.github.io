@@ -1,5 +1,9 @@
 ---
 description: Envoyer des alertes Telegram lors des connexions SSH via bot Telegram et PAM
+tags:
+  - SSH
+  - Telegram
+  - Notification
 ---
 
 # Configurer des notifications Telegram pour SSH

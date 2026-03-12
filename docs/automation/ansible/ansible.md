@@ -1,5 +1,7 @@
 ---
 description: Introduction à Ansible pour l'automatisation des tâches serveur — installation, configuration, écriture de playbooks et modules essentiels.
+tags:
+  - Ansible
 ---
 
 # Automatisation des taches avec ansible

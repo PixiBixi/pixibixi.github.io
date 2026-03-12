@@ -1,5 +1,7 @@
 ---
 description: Cheatsheet Terraform — commandes essentielles pour gérer l'infrastructure as code, les workspaces, l'état Terraform et les modules.
+tags:
+  - Terraform
 ---
 
 # Cheatsheet terraform

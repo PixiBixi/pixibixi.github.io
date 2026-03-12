@@ -1,5 +1,7 @@
 ---
 description: Restaurer la base de données système MySQL — recréer la structure initiale après une suppression accidentelle
+tags:
+  - MySQL
 ---
 
 # Restaurer la DB système MySQL

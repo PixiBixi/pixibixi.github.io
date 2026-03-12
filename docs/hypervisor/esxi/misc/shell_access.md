@@ -1,5 +1,7 @@
 ---
 description: Activer et accéder au shell ESXi en SSH pour les opérations d'administration avancées
+tags:
+  - ESXi
 ---
 
 # Acceder à la console de l'ESXi

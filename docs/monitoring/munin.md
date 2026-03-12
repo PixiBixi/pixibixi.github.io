@@ -1,5 +1,8 @@
 ---
 description: Installer et configurer Munin pour la supervision système — installation, plugins et tableaux de bord
+tags:
+  - Munin
+  - Monitoring
 ---
 
 # Munin : l'outil de supervision sans fioritures

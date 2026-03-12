@@ -1,5 +1,7 @@
 ---
 description: Glossaire des services AWS courants — définitions et équivalences avec les concepts cloud standard
+tags:
+  - AWS
 ---
 
 # Glossaire du vocabulaire AWS

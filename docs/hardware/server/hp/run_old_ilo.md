@@ -1,5 +1,8 @@
 ---
 description: Accéder à une ancienne interface iLO HP en téléchargeant le client Java M2.JAR
+tags:
+  - HP
+  - iLO
 ---
 
 # Lancer une ancienne console iLO

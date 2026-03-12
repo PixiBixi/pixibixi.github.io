@@ -1,5 +1,7 @@
 ---
 description: Sources et références utilisées pour la rédaction de ce wiki
+tags:
+  - Resources
 ---
 
 # Mes sources

@@ -1,5 +1,7 @@
 ---
 description: Personnaliser ou masquer le header Server de Nginx pour réduire la surface d'attaque
+tags:
+  - nginx
 ---
 
 # Être encore plus safe en customisant son header Server NGINX

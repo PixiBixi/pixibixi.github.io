@@ -1,5 +1,8 @@
 ---
 description: Installer et configurer un serveur VPN OpenVPN sous Linux — génération des certificats PKI, configuration serveur et client, support IPv6.
+tags:
+  - OpenVPN
+  - VPN
 ---
 
 # Installer et configurer son VPN OpenVPN

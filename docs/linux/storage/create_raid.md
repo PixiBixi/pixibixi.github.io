@@ -1,5 +1,8 @@
 ---
 description: Créer et gérer des RAID logiciels (RAID0/1/5/10) avec mdadm sous Linux
+tags:
+  - RAID
+  - Storage
 ---
 
 # Création de RAID logiciels avec mdadm

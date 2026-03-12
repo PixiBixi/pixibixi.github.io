@@ -1,5 +1,7 @@
 ---
 description: Mesurer le temps d'exécution de commandes PowerShell avec Get-History ou Measure-Command
+tags:
+  - PowerShell
 ---
 
 # Connaitre le temps d'exécution d'une commande PowerShell

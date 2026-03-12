@@ -1,5 +1,8 @@
 ---
 description: Créer des métriques personnalisées pour node_exporter via le module textfile
+tags:
+  - Prometheus
+  - node_exporter
 ---
 
 # Ecrire une métrique custom pour node_exporter

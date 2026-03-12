@@ -1,5 +1,8 @@
 ---
 description: Créer et configurer une machine virtuelle Proxmox en ligne de commande avec cloud-init
+tags:
+  - Proxmox
+  - CLI
 ---
 
 # Créer sa VM en CLI avec cloud-init

@@ -1,5 +1,7 @@
 ---
 description: Conserver l'IP réelle du client avec HAproxy en amont d'un backend web via la directive forwardfor
+tags:
+  - HAProxy
 ---
 
 # Conserver l'IP de son visiteur sur un reverse-proxy

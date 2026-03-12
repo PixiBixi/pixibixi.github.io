@@ -1,5 +1,8 @@
 ---
 description: Créer une allowlist d'IP avec ipset et iptables pour restreindre l'accès à des services spécifiques
+tags:
+  - Firewall
+  - Allowlist
 ---
 
 # Whitelister une série d'IP à l'aide d'IPset et iptables

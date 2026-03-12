@@ -1,5 +1,7 @@
 ---
 description: Déployer son cloud personnel avec Nextcloud — installation, configuration Redis et gestion des fichiers
+tags:
+  - Nextcloud
 ---
 
 # NextCloud, son cloud personnel

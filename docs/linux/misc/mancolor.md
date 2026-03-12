@@ -1,5 +1,7 @@
 ---
 description: Ajouter de la couleur aux pages de manuel avec most ou les variables LESS_TERMCAP
+tags:
+  - man
 ---
 
 # Ajouter de la couleur à sa commande man

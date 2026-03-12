@@ -1,5 +1,8 @@
 ---
 description: Configurer la QoS (Quality of Service) sur Cisco IOS — marquage, classification et politiques de file d'attente
+tags:
+  - Cisco
+  - QoS
 ---
 
 # QOS Cisco

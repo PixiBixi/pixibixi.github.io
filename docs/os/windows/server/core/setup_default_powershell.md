@@ -1,5 +1,8 @@
 ---
 description: Définir PowerShell comme shell par défaut sur Windows Server Core
+tags:
+  - Windows Server
+  - PowerShell
 ---
 
 # Définir PowerShell en temps que shell par défaut

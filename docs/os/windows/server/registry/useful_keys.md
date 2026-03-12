@@ -1,5 +1,8 @@
 ---
 description: Clés de registre Windows utiles — Shutdown Event Tracker, DHCP, autologon et paramètres de dépannage
+tags:
+  - Windows
+  - Registry
 ---
 
 # Clés de Registre Utiles

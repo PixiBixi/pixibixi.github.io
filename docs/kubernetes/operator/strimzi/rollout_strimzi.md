@@ -1,5 +1,8 @@
 ---
 description: Redémarrer les composants Kafka Strimzi (brokers, ZooKeeper) via annotations de rolling update
+tags:
+  - Strimzi
+  - Kafka
 ---
 
 # Comment rollout restart un composant Strimzi

@@ -1,5 +1,8 @@
 ---
 description: Intégrer Trivy dans la CI GitLab pour scanner les vulnérabilités des images Docker
+tags:
+  - GitLab CI
+  - Security
 ---
 
 # Intégrer un scan d'image à sa CI

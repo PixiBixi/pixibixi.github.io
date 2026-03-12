@@ -1,5 +1,7 @@
 ---
 description: Administrer son serveur via l'interface web Ajenti — reboot, configuration, firewall et gestion système
+tags:
+  - Ajenti
 ---
 
 # Gérer son serveur en ligne via Ajenti

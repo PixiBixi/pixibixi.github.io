@@ -1,5 +1,8 @@
 ---
 description: Gérer plusieurs fichiers kubeconfig et contextes Kubernetes avec des variables d'environnement et kubectx
+tags:
+  - kubeconfig
+  - kubectl
 ---
 
 # Manage son $KUBECONFIG

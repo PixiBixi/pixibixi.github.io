@@ -1,5 +1,8 @@
 ---
 description: Renforcer la sécurité d'un switch ou routeur Cisco — désactiver les services inutiles et sécuriser l'accès
+tags:
+  - Cisco
+  - Security
 ---
 
 # Switch Cisco : Accroitre la sécurité

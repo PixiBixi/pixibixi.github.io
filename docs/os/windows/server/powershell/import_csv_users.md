@@ -1,5 +1,8 @@
 ---
 description: Importer des comptes utilisateurs en masse dans Active Directory depuis un fichier CSV avec PowerShell
+tags:
+  - PowerShell
+  - Active Directory
 ---
 
 # Importer des utilisateurs CSV dans un AD via PowerShell

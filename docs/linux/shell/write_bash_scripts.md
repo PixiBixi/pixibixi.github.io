@@ -1,5 +1,8 @@
 ---
 description: Guide complet pour écrire des scripts Bash robustes avec variables, boucles et bonnes pratiques
+tags:
+  - Bash
+  - Scripting
 ---
 
 # Ecrire son script bash
