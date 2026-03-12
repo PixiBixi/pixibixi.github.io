@@ -12,7 +12,7 @@ dans les WD Green ainsi que les RED. Cette technologie défaillante
 provoque un vieillissement prématuré du disque dur.
 
 Pour la désactiver, nous allons utiliser l'outil **idle3-tools**
-disponible [ici](http://idle3-tools.sourceforge.net/) ou alors dans les
+disponible [ici](https://idle3-tools.sourceforge.net/) ou alors dans les
 repos Debian/Ubuntu :
 
 ```bash

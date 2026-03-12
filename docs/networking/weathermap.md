@@ -28,8 +28,7 @@ les weathermap montrent le réseau Internet d'une entreprise
 |  OVH | [Ici](http://weathermap.ovh.net/) |
 | France-IX | [Ici](https://tools.franceix.net/weathermap/par) |
 |  K-Net | [Ici](https://as24904.kwaoo.net/) et [Ici](https://k-net-stats.lafibre.info/) |
-| Renater      |   [Ici IPv4](http://pasillo.renater.fr/weathermap/weathermap_metropole.html), [ici IPv6](https://pasillo.renater.fr/weathermap/weathermap_metropole_ipv6.html) et [Ici](https://pasillo.renater.fr/weathermap/weathermap_idf.html) |
-|  Hivane Network | [Ici](http://www.hivane.net/info/weathermap.html) |
+|  Hivane Network | [Ici](https://www.hivane.net/info/weathermap.html) |
 |  Hosteur| [Ici](http://www.hosteur.com/infos/infrastructures-reseaux.php) |
 |  France-IX| [Ici](https://tools.franceix.net/stats/aggregated) |
 
@@ -54,7 +53,7 @@ A notre niveau, nous ne pouvons pas vraiment diagnostiquer ce qui se
 passe chez notre ISP. Cependant, grace à un outil appelé Looking Glass,
 on peut cependant faire des diagnostics plus poussés.
 
-**[Liste complète](http://www.bgplookingglass.com/)**
+**[Liste complète](https://www.bgplookingglass.com/)**
 
 **[Traceroute depuis différents pays + RS...](http://www.traceroute.org/)**
 

@@ -22,11 +22,11 @@ Ceux-ci ont été développés par un jeune français du pseudo de
 Pour l'installer, rien de plus simple, on télécharge la paquet
 
 ```bash
-wget -O ezservercli.zip http://www.ezservermonitor.com/esm-sh/downloads/version/2.3
+wget -O ezservercli.zip https://www.ezservermonitor.com/esm-sh/downloads/version/2.3
 ```
 
 Ne pas oublier de se rendre sur [le site du
-projet](http://www.ezservermonitor.com/esm-sh/downloads) pour vérifier
+projet](https://www.ezservermonitor.com/esm-sh/downloads) pour vérifier
 les mises à jour ainsi que le
 [GitHub](https://github.com/shevabam/ezservermonitor-sh)
 

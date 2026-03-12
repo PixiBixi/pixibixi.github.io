@@ -10,7 +10,7 @@ tags:
 
 Afin de se séparer au maximum des services proposés par différents
 tiers, il est possible d'installer son propre [resolveur
-DNS](http://www.bortzmeyer.org/son-propre-resolveur-dns.html), ainsi que
+DNS](https://www.bortzmeyer.org/son-propre-resolveur-dns.html), ainsi que
 de paramétrer son serveur DNS (Ici BIND9) afin d'avoir ses propre
 serveurs autoritaires.
 

@@ -27,4 +27,4 @@ Pour configurer le paquet, voici comment procéder :
 dpkg-reconfigure localepurge
 ```
 
-<http://memo-linux.com/localepurge-faire-de-la-place-sur-son-disque-en-supprimant-les-locales/>
+<https://memo-linux.com/localepurge-faire-de-la-place-sur-son-disque-en-supprimant-les-locales/>

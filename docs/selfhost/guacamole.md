@@ -42,9 +42,9 @@ sudo apt install build-essential tomcat10 libjpeg62-turbo-dev libjpeg62-dev libp
     Il est possible d'obtenir la dernière dernière version en utilisant le [repository Git](https://github.com/apache/guacamole-server)
 
 ```bash
-wget --content-disposition -O - http://apache.org/dyn/closer.cgi?action=download&filename=guacamole/1.5.2/source/guacamole-client-1.5.2.tar.gz | tar xfvz -
-wget --content-disposition -O - http://apache.org/dyn/closer.cgi?action=download&filename=guacamole/1.5.2/source/guacamole-server-1.5.2.tar.gz | tar xfvz -
-wget -O guacamole-1.5.2.war "http://apache.org/dyn/closer.cgi?action=download&filename=guacamole/1.5.2/binary/guacamole-1.5.2.war"
+wget --content-disposition -O - https://apache.org/dyn/closer.cgi?action=download&filename=guacamole/1.5.2/source/guacamole-client-1.5.2.tar.gz | tar xfvz -
+wget --content-disposition -O - https://apache.org/dyn/closer.cgi?action=download&filename=guacamole/1.5.2/source/guacamole-server-1.5.2.tar.gz | tar xfvz -
+wget -O guacamole-1.5.2.war "https://apache.org/dyn/closer.cgi?action=download&filename=guacamole/1.5.2/binary/guacamole-1.5.2.war"
 ```
 
 ## Compilation et installation du serveur
@@ -97,7 +97,7 @@ Le fichier `guacamole.properties` à **éditer ou vérifier avant de redémarrer
 ```
 
 Pour le fichier user-mapping.xml, référez-vous à la [documentation
-officielle.](http://guac-dev.org/doc/0.9.1/gug/configuring-guacamole.html)
+officielle.](https://guacamole.apache.org/doc/gug/configuring-guacamole.html)
 
 * [Démarrage]{.underline}
 

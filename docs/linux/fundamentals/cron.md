@@ -69,7 +69,7 @@ sera envoyé à cet utilisateur/son alias
 
 ## Divers
 
-Le site [crontab.guru](http://crontab.guru/) nous permet de voir
+Le site [crontab.guru](https://crontab.guru/) nous permet de voir
 visuellement à quel moment une tâche va se déclencher sans avoir à
 réfléchir. Toutes les règles cron pour tous les utilisateurs sont
 accessibles dans le dossier **/var/spool/cron**

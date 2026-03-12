@@ -170,7 +170,7 @@ d'éditer, selon ses besoins :
     Last.FM dans Koel
 
 Pour obtenir ces identifiants LastFM, rendez-vous
-[ici](http://www.last.fm/api/account/create)
+[ici](https://www.last.fm/api/account/create)
 
 * `FFMPEG_PATH` : Chemin absolu vers le bin de ffmpeg, afin de
     pouvoir transcoder
