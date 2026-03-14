@@ -4,19 +4,23 @@ site_author: "Jérémy DELGADO"
 site_url: "https://wiki.jdelgado.fr/"
 
 repo_url: https://github.com/PixiBixi/pixibixi.github.io
+edit_uri: edit/master/docs/
 remote_branch: docs
 
 theme:
   features:
     - toc.integrate
+    - toc.follow
     - header.autohide
     - navigation.tracking
     - navigation.instant
     - navigation.tabs
+    - navigation.indexes
     - navigation.sections
     - navigation.prune
     - navigation.top
     - content.code.copy
+    - content.action.edit
     - search.suggest
     - search.highlight
   name: material
