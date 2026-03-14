@@ -1,19 +1,16 @@
 ---
-description: Déployer une stack de monitoring avec Prometheus, Grafana et Loki sous Linux — installation, configuration des exporters et alerting.
+description: Déployer une stack de monitoring avec Prometheus, Grafana et Netdata sous Linux — installation, configuration des exporters et alerting.
 tags:
   - Prometheus
   - Grafana
-  - Loki
 ---
 
 # Netdata, Prometheus et Grafana : une stack de monitoring simple et puissante
 
 ![Global image](./_img/monitoring_stack.webp)
 
-## Introduction
-
-!!! info Versions des logiciels
-    Cette documentation contient utilise des versions des logiciels qui peuvent ne pas être les dernières sur le marché. N'oubliez pas de vérifier
+!!! info "Versions des logiciels"
+    Cette documentation utilise des versions des logiciels qui peuvent ne pas être les dernières sur le marché. N'oubliez pas de vérifier avant d'appliquer.
 
 Ces derniers temps, j'ai cherché quelques stacks de monitoring simples
 à mettre en place mais également efficaces avec des métriques
@@ -22,8 +19,7 @@ pertinentes. Je suis passé par beaucoup de systèmes de monitoring
 les métriques n'étaient pas pertinentes ; soit l'installation était
 trop complexe... Bref, il y avait toujours quelque chose qui ne me
 convenait pas, c'est là que j'ai découvert Netdata, puis peu de temps
-après, Prometheus et Grafana. Pour bien comprendre ce tutoriel, voici un
-lexique avec les notions de base :
+après, Prometheus et Grafana.
 
 ## Lexique
 
@@ -142,13 +138,13 @@ méthodes seront présentées :
 
 ??? note "Netdata : Running with docker"
     ```bash
-    $ docker run -d --name=netdata '
-       -p 19999:19999 '
-       -v /proc:/host/proc:ro '
-       -v /sys:/host/sys:ro '
-       -v /etc/os-release:/host/etc/os-release:ro '
-       --cap-add SYS_PTRACE '
-       --security-opt apparmor=unconfined '
+    docker run -d --name=netdata \
+       -p 19999:19999 \
+       -v /proc:/host/proc:ro \
+       -v /sys:/host/sys:ro \
+       -v /etc/os-release:/host/etc/os-release:ro \
+       --cap-add SYS_PTRACE \
+       --security-opt apparmor=unconfined \
        netdata/netdata
     ```
 
@@ -209,9 +205,9 @@ Toujours selon les 2 méthodes, via docker run ou docker-compose :
 
 ??? note "Prometheus : Running with docker"
     ```bash
-    $ docker run -d --name prometheus '
-       -p 9090:9090 '
-       -v /etc/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml '
+    docker run -d --name prometheus \
+       -p 9090:9090 \
+       -v /etc/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml \
        prom/prometheus --config.file=/etc/prometheus/prometheus.yml
     ```
 
@@ -240,27 +236,20 @@ mkdir /etc/prometheus && touch /etc/prometheus/prometheus.yml
 
 #### From scratch
 
-Même sur un système récent, le binaire de Prometheus est dans une
-version archaïque (A l'heure actuelle, version 2.7.1 sur Debian Buster
-datant de début 2019... soit 1 an et demi de retard). Il conviendra
-donc de télécharger manuellement et de créer l'unit systemd adéquate
-pour Prometheus. Sur Ubuntu 20.04, le binaire est récent, cependant, je
-vous conseille tout de même de l'installer manuellement. Il ne faudra
-donc pas négliger les mises à jours de prometheus et ne pas oublier
-qu'elles ne seront pas effectuées via votre gestionnaire de packet.
+Le binaire dans les dépôts système est généralement en retard de plusieurs versions. Il vaut
+mieux l'installer manuellement pour garder la main sur les mises à jour.
 
-Tout d'abord, rendons-nous sur la [page
-officielle](https://prometheus.io/download/) pour trouver la dernière
-version de Prometheus. A l'heure où j'écris, il s'agit de la 2.40.7.
+Rendons-nous sur la [page officielle](https://prometheus.io/download/) pour trouver la dernière
+version de Prometheus. A l'heure où j'écris, il s'agit de la **3.10.0**.
 
 ```bash
-cd ~ ; wget https://github.com/prometheus/prometheus/releases/download/v2.40.7/prometheus-2.40.7.linux-amd64.tar.gz
+cd ~ ; wget https://github.com/prometheus/prometheus/releases/download/v3.10.0/prometheus-3.10.0.linux-amd64.tar.gz
 ```
 
 On extrait les fichiers
 
 ```bash
-tar xzvf prometheus-2.40.7.linux-amd64.tar.gz
+tar xzvf prometheus-3.10.0.linux-amd64.tar.gz
 ```
 
 On crée notre utilisateur Prometheus :
@@ -274,8 +263,8 @@ prévus :
 
 ```bash
 mkdir /etc/prometheus && chown -R prometheus:prometheus /etc/prometheus
-mv ~/prometheus-2-40.7.linux-amd64/{console*,prometheus.yml} /etc/prometheus
-mv ~/prometheus-2-40.7.linux-amd64/{prom*,tsdb} /usr/bin/
+mv ~/prometheus-3.10.0.linux-amd64/{console*,prometheus.yml} /etc/prometheus
+mv ~/prometheus-3.10.0.linux-amd64/{prom*,tsdb} /usr/bin/
 ```
 
 Dans nos 2 fichiers exécutables, nous avons bien évidemment Prometheus
@@ -460,8 +449,8 @@ Grafana.
 
 ??? note "Grafana : Running with docker"
     ```bash
-    $ docker run -d --name prometheus '
-       -p 3000:3000 '
+    docker run -d --name grafana \
+       -p 3000:3000 \
        grafana/grafana
     ```
 
@@ -484,9 +473,11 @@ nous devons donc ajouter ses propres dépôts avant de pouvoir
 l'installer :
 
 ```bash
-sudo apt-get install -y apt-transport-https
-echo "deb https://packages.grafana.com/oss/deb stable main" | sudo tee -a /etc/apt/sources.list.d/grafana.list
-wget -q -O - https://packages.grafana.com/gpg.key | sudo apt-key add -
+curl -fsSL https://apt.grafana.com/gpg.key \
+  | gpg --dearmor \
+  | sudo tee /usr/share/keyrings/grafana.gpg > /dev/null
+echo "deb [signed-by=/usr/share/keyrings/grafana.gpg] https://apt.grafana.com stable main" \
+  | sudo tee /etc/apt/sources.list.d/grafana.list
 apt update && apt install -y grafana
 ```
 
@@ -502,7 +493,7 @@ systemctl enable --now grafana-server.service
 
 Une fois toute la stack installée, nous devons configurer Grafana afin
 qu'il utilise Prometheus comme source de données. Par défaut, Grafana
-écoute sur le port **3030** et ses identifiants par défauts sont
+écoute sur le port **3000** et ses identifiants par défauts sont
 **admin** / **admin**.
 
 ![grafana_datasources_1.webp](./_img/grafana_datasources_1.webp)
@@ -805,13 +796,13 @@ Il faut toujours se rendre sur la page Github afin de s'assurer que
 nous disposons de la dernière version de notre logiciel :
 
 ```bash
-cd ~ ; wget https://github.com/prometheus/blackbox_exporter/releases/download/v0.24.0/blackbox_exporter-0.24.0.linux-amd64.tar.gz
+cd ~ ; wget https://github.com/prometheus/blackbox_exporter/releases/download/v0.28.0/blackbox_exporter-0.28.0.linux-amd64.tar.gz
 ```
 
 Et on extrait toujours les fichiers :
 
 ```bash
-tar xzvf blackbox_exporter-0.24.0.linux-amd64.tar.gz
+tar xzvf blackbox_exporter-0.28.0.linux-amd64.tar.gz
 ```
 
 Et on les déplace dans le dossier adéquate. Attention à bien mettre le
@@ -819,8 +810,8 @@ bon username (prometheus ou celui que vous aurez décidés)
 
 ```bash
 mkdir /etc/blackbox && chown -R prometheus:prometheus /etc/blackbox
-mv ~/blackbox_exporter-0.24.0.linux-amd64/blackbox_exporter /usr/bin
-mv ~/blackbox_exporter-0.24.0.linux-amd64/blackbox.yml /etc/blackbox
+mv ~/blackbox_exporter-0.28.0.linux-amd64/blackbox_exporter /usr/bin
+mv ~/blackbox_exporter-0.28.0.linux-amd64/blackbox.yml /etc/blackbox
 ```
 
 Si nous souhaitons utiliser le test ICMP de blackbox et que nous avons
@@ -953,17 +944,17 @@ greffe directement à prometheus. La procédure d'installation reste la
 même que tous les autres produits créés par Prometheus :
 
 Rendons-nous sur la [page officielle](https://prometheus.io/download/)
-pour trouver la dernière version de alermanager . A l'heure où
-j'écris, il s'agit de la 0.20.0.
+pour trouver la dernière version d'alertmanager. A l'heure où
+j'écris, il s'agit de la **0.31.1**.
 
 ```bash
-cd ~ ; wget https://github.com/prometheus/alertmanager/releases/download/v0.25.0/alertmanager-0.25.0.linux-amd64.tar.gz
+cd ~ ; wget https://github.com/prometheus/alertmanager/releases/download/v0.31.1/alertmanager-0.31.1.linux-amd64.tar.gz
 ```
 
 On extrait les fichiers
 
 ```bash
-tar xzvf alertmanager-0.25.0.linux-amd64.tar.gz
+tar xzvf alertmanager-0.31.1.linux-amd64.tar.gz
 ```
 
 cette archive contient, comme les autres, des exécutables et un fichier
@@ -973,8 +964,8 @@ configuration dans ce répertoire, sinon, nous créerons le répertoire
 **/etc/alertmanager**
 
 ```bash
-mv ~/alertmanager-0.25.0.linux-amd64/{amtool,alertmanager} /usr/bin/
-mv ~/alertmanager-0.25.0.linux-amd64/alertmanager.yml /etc/alertmanager
+mv ~/alertmanager-0.31.1.linux-amd64/{amtool,alertmanager} /usr/bin/
+mv ~/alertmanager-0.31.1.linux-amd64/alertmanager.yml /etc/alertmanager
 chown -R prometheus:prometheus /etc/alertmanager
 ```
 
@@ -1151,8 +1142,7 @@ Enormement d'exemples sont disponibles [ici](https://awesome-prometheus-alerts.g
 
 Pour avoir nos alertes sur Telegram, j'utilise le bot de
 [metalmatze](https://github.com/metalmatze/alertmanager-bot) qui répond
-juste à nos besoins. Dernière version au jour de l'écriture de cet
-article : 0.4.3
+juste à nos besoins. Dernière version : 0.4.3 (projet stable, plus de releases actives depuis 2021)
 
 ```bash
 cd ~ ; wget https://github.com/metalmatze/alertmanager-bot/releases/download/0.4.3/alertmanager-bot-0.4.3-linux-amd64
@@ -1277,28 +1267,14 @@ De plus, VictoriaMetrics n'est pas un système monolithique comme l'est Promethe
 Voici une liste d'exporter pour divers équipements/logiciels.
 Cependant, je n'ai pas testé ces derniers :
 
-|  **Matériel/Logiciel** |   **Lien** |
-|-------------|:-------------:|
-|  JunOS      | [JunOS](https://github.com/czerwonk/junos_exporter) |
-|  Cisco      | [Cisco](https://github.com/lwlcom/cisco_exporter) |
-|  Mikrotik   | [Mikrotik](https://github.com/nshttpd/mikrotik-exporter) |
-|  Windows    | [WMI](https://github.com/martinlindhe/wmi_exporter) |
-|  VMWare     | [VMWare](https://github.com/pryorda/vmware_exporter) |
-|  Proxmox    | [Promxox](https://github.com/znerol/prometheus-pve-exporter) |
-|  CloudFlare | [CloudFlare](https://github.com/wehkamp/docker-prometheus-cloudflare-exporter) |
+| Matériel/Logiciel | Lien |
+| --- | --- |
+| JunOS | [junos_exporter](https://github.com/czerwonk/junos_exporter) |
+| Cisco | [cisco_exporter](https://github.com/lwlcom/cisco_exporter) |
+| MikroTik | [mikrotik-exporter](https://github.com/nshttpd/mikrotik-exporter) |
+| Windows | [wmi_exporter](https://github.com/martinlindhe/wmi_exporter) |
+| VMware | [vmware_exporter](https://github.com/pryorda/vmware_exporter) |
+| Proxmox | [prometheus-pve-exporter](https://github.com/znerol/prometheus-pve-exporter) |
+| CloudFlare | [docker-prometheus-cloudflare-exporter](https://github.com/wehkamp/docker-prometheus-cloudflare-exporter) |
 
-Une [liste officielle](https://github.com/prometheus/prometheus/wiki/Default-port-allocations) de tous les exporters Prometheus officielle est disponible, vous permettant de choisir l'exporter qu'il vous faut
-
-## Conclusion
-
-J'ai pris plaisir à écrire cet article malgré sa complexité et sa
-longueur. Creuser à travers toutes les documentations et autres sources
-a été un vrai plaisir.
-
-Toutes les formes de configuration n'ont pas été explorés. Par exemple,
-aucun de nos nodes sont en HA ou autre. J'espère pouvoir faire
-d'autres articles sur Prometheus en HA ou autre.
-
-Évidemment, il s'agit ici de la stack de monitoring que j'ai exploré,
-mais rien ne nous empêche de faire votre propre expérience sur d'autres
-exporters ou d'autres TSDB.
+Une [liste officielle](https://github.com/prometheus/prometheus/wiki/Default-port-allocations) de tous les exporters Prometheus est disponible, vous permettant de choisir l'exporter qu'il vous faut.
