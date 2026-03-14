@@ -65,6 +65,7 @@ Cette magnifique documentation a été faite avec MkDocs Material. [→ À propo
 * [Netdata, Prometheus et Grafana : Une stack de monitoring simple et puissante](monitoring/lgtm/simple_monitoring_stack.md)
 * [Générer des alertes depuis Loki](monitoring/lgtm/loki_alerting.md)
 * [Tips sur la stack LGTM](monitoring/lgtm/tips_lgtm.md)
+* [Grafana Alloy — remplacer Promtail](monitoring/lgtm/alloy.md)
 * [Métrique custom pour node_exporter](./monitoring/lgtm/custom_metrics_nodeexporter.md)
 * [Configurer des notifications Slack pour check_mk](monitoring/check_mk/add_slack_notification.md)
 
