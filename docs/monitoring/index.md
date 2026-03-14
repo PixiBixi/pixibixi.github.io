@@ -18,6 +18,7 @@ Sans monitoring, on debug à l'aveugle. Cette section couvre la stack LGTM (Loki
 - [LGTM — Métriques custom Node Exporter](lgtm/custom_metrics_nodeexporter.md) — exposer des métriques personnalisées
 - [LGTM — Alerting Loki](lgtm/loki_alerting.md) — créer des alertes sur les logs
 - [LGTM — Tips](lgtm/tips_lgtm.md) — astuces et patterns pour la stack
+- [LGTM — Grafana Alloy](lgtm/alloy.md) — remplacer Promtail, pipelines logs/métriques/traces
 - [check_mk — Notifications Slack](check_mk/add_slack_notification.md) — envoyer les alertes check_mk dans Slack
 - [Munin](munin.md) — configuration et plugins Munin
 - [Eztools](eztools.md) — outils de monitoring légers
