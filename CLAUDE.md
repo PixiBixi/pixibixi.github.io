@@ -134,6 +134,10 @@ uv run mkdocs build --strict 2>&1 | grep -E "WARNING|ERROR"
 
 ## Article Writing Style
 
+> ⚠️ These rules apply to **short reference articles**. For full tutorials (step-by-step
+> install guides, multi-section walkthroughs), preserve pedagogical content:
+> Lexique sections, concept explanations, and intro context — they are intentional.
+
 - Short punchy intro — 1-3 sentences, blunt observation ("c'est la galère", "c'est pas génial")
 - Use "on" throughout, not "vous" or passive
 - Skip concept explanations — jump straight to how
