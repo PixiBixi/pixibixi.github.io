@@ -7,6 +7,9 @@ tags:
 
 # Lancer la console iLO depuis un Mac
 
+!!! warning "Obsolète"
+    Java Web Start (`javaws`) a été supprimé dans Oracle JDK 11+ et OpenJDK. Cette méthode ne fonctionne plus sur les macOS récents. Préférer l'accès HTML5 intégré aux iLO récents ou [iLOrest](https://github.com/HewlettPackard/python-ilorest-library).
+
 Depuis un Mac, il ne faut pas double cliquer sur le .jnlp, cela ne
 marche pas.
 

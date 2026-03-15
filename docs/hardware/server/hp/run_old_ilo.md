@@ -7,6 +7,9 @@ tags:
 
 # Lancer une ancienne console iLO
 
+!!! warning "Obsolète"
+    Cette méthode nécessite Windows 7 et une ancienne version de Java. Elle ne fonctionne plus sur les systèmes modernes. Pour les vieilles générations d'iLO sans HTML5, la seule alternative viable est une VM Windows 7 avec Java 6/7.
+
 Quel calvère pour lancer un vieil ILO... Outre le fait qu'il faille
 obligatoirement un Windows 7, j'obtenais un message étonnant
 *JavaScript has been disabled or is not supported by your web browser

@@ -7,6 +7,9 @@ tags:
 
 # Setup de base d'un Windows 2012R2
 
+!!! warning "EOL"
+    Windows Server 2012 R2 est en fin de vie depuis octobre 2023 (fin du support étendu). Les commandes PowerShell restent valables sur les versions récentes (2016, 2019, 2022).
+
 Lorsque nous installons un serveur Windows 2012R2, certaines étapes sont
 indispensables, les voici
 

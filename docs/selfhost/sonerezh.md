@@ -7,6 +7,9 @@ tags:
 
 # Sonerezh
 
+!!! warning "Projet abandonné"
+    Le dépôt GitHub Sonerezh est archivé depuis 2019 et n'est plus maintenu. Pour le self-hosting de musique, préférer [Navidrome](https://www.navidrome.org/) ou [Koel](https://koel.dev/).
+
 ![Sonerezh](./_img/sonerezh.webp)
 
 ## Introduction

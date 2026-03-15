@@ -6,6 +6,9 @@ tags:
 
 # Gérer son serveur en ligne via Ajenti
 
+!!! warning "Projet abandonné"
+    Ajenti v1 n'est plus maintenu. Le projet a tenté une réécriture en v2 mais le développement est quasi-inactif. Préférer [Cockpit](https://cockpit-project.org/) qui est activement maintenu et disponible dans les dépôts Debian/Ubuntu.
+
 ![Ajenti Dashboard](./_img/ajenti_dashboard.webp)
 
 A l'instar de Webmin ou encore Vesta, Ajenti est un panel
