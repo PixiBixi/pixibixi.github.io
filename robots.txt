@@ -13,4 +13,19 @@ Disallow: /
 User-agent: Bytespider
 Disallow: /
 
+User-agent: Google-Extended
+Disallow: /
+
+User-agent: PerplexityBot
+Disallow: /
+
+User-agent: anthropic-ai
+Disallow: /
+
+User-agent: Diffbot
+Disallow: /
+
+User-agent: cohere-ai
+Disallow: /
+
 Sitemap: https://wiki.jdelgado.fr/sitemap.xml
