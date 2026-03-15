@@ -206,3 +206,8 @@ that are more specific than the directory defaults.
 
 - **Shallow clones**: `mkdocs serve` requires full git history due to `git-revision-date-localized`.
   Shallow clones (`--depth 1`) will cause errors. Use `git fetch --unshallow` if needed.
+
+## Local Working Files
+
+`.claude/` directory (gitignored) — local session files, plans, notes.
+Example: `.claude/rewrite-plan.md` tracks article rewrite progress.
