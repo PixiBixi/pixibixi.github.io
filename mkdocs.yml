@@ -138,7 +138,7 @@ plugins:
         # Phase 4 — os/ section (mac + windows + code)
         'mac/brew.md': 'os/mac/brew.md'
         'mac/brew_xcode.md': 'os/mac/brew_xcode.md'
-        'mac/mind-view.md': 'os/mac/mind-view.md'
+
         'mac/iterm/troubleshooting/alt_arrow.md': 'os/mac/iterm/troubleshooting/alt_arrow.md'
         'mac/iterm/troubleshooting/first_chat.md': 'os/mac/iterm/troubleshooting/first_chat.md'
         'windows/desktop/tips/hosts_file.md': 'os/windows/desktop/tips/hosts_file.md'

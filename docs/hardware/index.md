@@ -16,7 +16,7 @@ Le hardware, on y touche rarement, mais quand on y touche c'est souvent en urgen
 - [Mellanox — Identifier et mettre à jour le firmware](nic/mellanox/identify_and_upgrade_firmware.md) — identifier la carte et flasher le firmware
 - [NetApp — Faire clignoter un disque](san/netapp/blink_led_hdd.md) — localiser un disque physiquement
 - [HP — CLI SAS](server/hp/cli_sas.md) — gérer le contrôleur SAS en ligne de commande
-- [HP — Clés iLO Advanced](server/hp/ilo_key.md) — licences iLO
+
 - [HP — Accéder à iLO](server/hp/run_ilo.md) — ouvrir une console iLO
 - [HP — iLO ancienne génération](server/hp/run_old_ilo.md) — contournements pour les vieilles versions
 - [WD — Réparer un HDD](hdd/wd/fix_hdd.md) — diagnostic et réparation disque Western Digital

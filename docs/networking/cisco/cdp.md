@@ -9,71 +9,75 @@ tags:
 
 ## Présentation
 
-Le protocole CDP (**C**isco **D**iscover **P**rotocol) est un protocole
-de découverte de périphériques réseau qui fonctionne au L2. Comme son
-nom l'indique est développé par Cisco dans le but de '"signaler sa
-présence'" à ses voisins, afin d'obtenir différentes informations
-intrinsèque à l'équipement tel que son nom, modèle...
+Le protocole CDP (**C**isco **D**iscovery **P**rotocol) est un protocole
+de découverte de périphériques réseau qui fonctionne au L2. Développé par Cisco,
+il permet de "signaler sa présence" aux voisins afin d'obtenir des informations
+intrinsèques à l'équipement : nom, modèle...
 
 ## Utilité
 
-Comme nous avons pu le dire précédemment, le protocole CDP permet de
-retrouver des propriétés intrinsèque à chaque équipemment, mais nous
-pouvons également en tirer d'autres utilités :
+Le protocole CDP permet de retrouver des propriétés intrinsèques à chaque équipement :
 
-* **Vérifier l'état physique d'une connexion**. Si le CDP passe,
-    c'est que l'interface et la couche de liaison est opérationnelle.
-    L'interface concernée sera donc en *Up/Up*.
-* **Obtenir des informations sur son voisin** telle que son adresse
-    IP, numéro de version...
-* **Découvrir la topologie du réseau** en passant de machine à
-    machine...
+* **Vérifier l'état physique d'une connexion** — si le CDP passe, l'interface est en *Up/Up*
+* **Obtenir des informations sur son voisin** — adresse IP, version...
+* **Découvrir la topologie du réseau** en passant de machine en machine
 
 ## Condition d'utilisation
 
-Comme son nom l'indique **C**isco **D**iscover **P**rotocol est un
-protocole Cisco, il est donc impératif que les matériels utilisés soient
-de marque Cisco. Toutefois, étant donner que l'iOS est basé sur un
-noyau Linux, il est possible de l'implémenter sur des machines Linux,
-ce qui peut être pratique pour un inventaire réseau par exemple.
+CDP est un protocole Cisco — les équipements doivent être de marque Cisco.
+L'interface physique doit être up et les deux machines doivent être voisines.
 
-A part cela, il n'y a aucun réel pré-requis pour utiliser le procole
-CDP. A noter cependant que l'interface physique doit être up, que les
-deux machines doivent être voisines.
+Étant donné que l'IOS est basé sur un noyau Linux, il est possible d'implémenter CDP
+sur des machines Linux via `lldpd` avec compatibilité CDP, ce qui peut être pratique
+pour un inventaire réseau.
 
 ## Utilisation
 
 ### Informations de base
 
+```ios
 show cdp
+```
 
 ### Informations CDP sur les interfaces
 
 #### Toutes les interfaces
 
+```ios
 show cdp interface
+```
 
 #### Une interface précise
 
-show cdp interface '<type'> '<numero'> show cdp interface Fa 0/0
+```ios
+show cdp interface Fa 0/0
+```
 
-### Informations Voisines
+### Informations voisines
 
 #### Basique
 
+```ios
 show cdp neighbors
+```
 
 #### Détaillée
 
+```ios
 show cdp neighbors detail
+```
 
 ### Détail sur une entrée précise
 
-show cdp entry '<id'>
+```ios
+show cdp entry <id>
+```
 
 ### Effacer la table CDP
 
+```ios
 clear cdp table
+```
 
 ### Activer ou désactiver CDP
 
@@ -81,26 +85,37 @@ clear cdp table
 
 ##### Globalement
 
+```ios
 no cdp run
+```
 
 ##### Sur une interface
 
-interface Fa0/0 no cdp enable exit
+```ios
+interface Fa0/0
+ no cdp enable
+exit
+```
 
 #### Activer
 
 ##### Globalement
 
+```ios
 cdp run
+```
 
 ##### Sur une interface
 
-interface Fa0/0 cdp enable exit
+```ios
+interface Fa0/0
+ cdp enable
+exit
+```
 
-### Packets CDP
+### Timers CDP
 
-cdp holdtime '<x'> : Durée de vie de l'information envoyée (10 - 255)
-cdp timer '<x'> : Définit la période à laquelle l'équipement doit
-renvoyer les informations (5-254)
+* `cdp holdtime <x>` — durée de vie de l'information envoyée (10-255)
+* `cdp timer <x>` — période de renvoi des informations (5-254)
 
-<https://www.ciscomadesimple.be/2010/03/09/cdp-cisco-discovery-protocol/>
+Source : [ciscomadesimple.be](https://www.ciscomadesimple.be/2010/03/09/cdp-cisco-discovery-protocol/)

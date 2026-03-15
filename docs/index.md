@@ -362,7 +362,7 @@ Cette magnifique documentation a été faite avec MkDocs Material. [→ À propo
 
 * [Brew, l'apt-get d'Apple](os/mac/brew.md)
 * [Brew: L'installer sans XCode](os/mac/brew_xcode.md)
-* [Informations sur MindView](os/mac/mind-view.md)
+
 * [Enlever le premier caractère bizarre de iTerm](os/mac/iterm/troubleshooting/first_chat.md)
 * [Remap le Alt+Arrow de iTerm](os/mac/iterm/troubleshooting/alt_arrow.md)
 
@@ -413,7 +413,7 @@ Cette magnifique documentation a été faite avec MkDocs Material. [→ À propo
 * [Générer un template pour ses Pull Request et ses Issues](misc/github_template.md)
 * [Lancer la console iLO/iDRAC depuis un Mac](hardware/server/hp/run_ilo.md)
 * [Lancer une ancienne console iLO](hardware/server/hp/run_old_ilo.md)
-* [ILO Advanced Key](hardware/server/hp/ilo_key.md)
+
 * [Western Digital Green HDD, Comment prémunir le old_age prématuré](hardware/hdd/wd/fix_hdd.md)
 * [Informations utile sur les dénominations fibre optique](misc/fibre_optique/info_transceiver.md)
 * [Télécharger les sous-titres Netflix simplement](misc/download/netflix_subs.md)

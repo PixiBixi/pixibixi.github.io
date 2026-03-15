@@ -6,11 +6,30 @@ tags:
 
 # Trouver les options de compilation du kernel
 
-Il est possible de trouver les options de compilation de notre kernel en
-observant le fichier **/proc/config.gz**
+## Via /proc/config.gz
 
-Cependant, celui-ci n'est disponible uniquement si le kernel a été
-compilé avec les options CONFIG_IKCONFIG et CONFIG_IKCONFIG_PROC
+Disponible uniquement si le kernel a été compilé avec `CONFIG_IKCONFIG` et `CONFIG_IKCONFIG_PROC` :
 
-Si ce fichier n'est pas disponible, les options de compilation seront
-disponibles dans **/boot**
+```bash
+zcat /proc/config.gz | grep CONFIG_IKCONFIG
+```
+
+Pour chercher une option spécifique :
+
+```bash
+zcat /proc/config.gz | grep CONFIG_BPF
+```
+
+## Via /boot
+
+Si `/proc/config.gz` n'existe pas, le fichier de config est dans `/boot` :
+
+```bash
+cat /boot/config-$(uname -r) | grep CONFIG_BPF
+```
+
+Pour lister toutes les options activées (=y ou =m) :
+
+```bash
+grep -E "=y|=m" /boot/config-$(uname -r)
+```

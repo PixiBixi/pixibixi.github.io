@@ -15,7 +15,7 @@ Ce qui tourne sur le poste de travail et les serveurs Windows. macOS avec Homebr
 
 - [macOS — Homebrew](mac/brew.md) — package manager, casks et bundles
 - [macOS — Xcode CLI Tools](mac/brew_xcode.md) — installer les outils de développement
-- [macOS — Mind View](mac/mind-view.md) — application de mind mapping
+
 - [macOS — iTerm alt+flèche](mac/iterm/troubleshooting/alt_arrow.md) — fix pour les raccourcis clavier
 - [macOS — iTerm first chat](mac/iterm/troubleshooting/first_chat.md) — configuration initiale iTerm2
 - [Sublime Text 3](misc/st3.md) — configuration et tips ST3
