@@ -8,71 +8,67 @@ tags:
 
 # Créer son cluster Galera
 
-## Introduction
+Réseau high speed (Gbps minimum) non routé, latence minimale, disques SSD — c'est la base.
+Chaque nœud est master : réplication multi-master synchrone. On ne load-balance **pas** les écritures,
+uniquement les lectures.
 
-On va faire simple, sans trop de rédaction.
+## Résolution de noms
 
-Tout d'abord, bien évidemment, il faut privilégier un réseau high speed
-(Gbps minimum) non routé, avec le moins de latence possible, sur des
-disques SSD.
-
-L'intérêt d'un cluster Galera est que chaque noeud est master, il
-s'agit donc d'une replication master-master. Cependant, pour garantir
-une intégrité des données, attention à ne pas load-balancer les
-écritures. Les lectures peuvent quant à elles balanced entre tous les
-noeuds de votre cluster.
-
-## Pré-requis
-
-2 solutions, soit on utilise un domaine, soit un fichier hosts.
+2 solutions : DNS ou `/etc/hosts`. Même fichier sur tous les nœuds.
 
 ```bash
-    node1$ cat /etc/hosts
-    10.0.0.1 node1
-    10.0.0.2 node2
-    10.0.0.3 node2
+# /etc/hosts
+10.0.0.1 node1
+10.0.0.2 node2
+10.0.0.3 node3
 ```
 
-Penser à bien avoir le même fichier hosts sur vos différents hosts
+## Ports firewall
+
+Ouvrir entre tous les nœuds :
+
+| Port | Proto | Usage |
+| ---- | ----- | ----- |
+| 3306 | TCP | MySQL client |
+| 4444 | TCP | SST (State Snapshot Transfer) |
+| 4567 | TCP+UDP | Galera replication |
+| 4568 | TCP | IST (Incremental State Transfer) |
 
 ## Configuration MariaDB
 
-Une fois que ceci est fait, 2-3 réglages sont nécessaires. Il faut bien
-évidemment installe le package galera. Par défaut, les modifications
-s'effectueront dans le fichier
-**/etc/mysql/mariadb.conf.d/60-galera.cnf**
-
-Voilà à quoi ce dernier doit ressembler (pour le node1)
+Installer le package galera, puis créer `/etc/mysql/mariadb.conf.d/60-galera.cnf` sur chaque nœud :
 
 ```ini
-    binlog_format=ROW
-    bind-address=10.0.0.1
-    default_storage_engine=innodb
-    innodb_autoinc_lock_mode=2
-    innodb_flush_log_at_trx_commit=0
-    wsrep_provider=/usr/lib/libgalera_smm.so
-    wsrep_cluster_name="MyCluster"
-    wsrep_cluster_address="gcomm://node1,node2,node3"
-    wsrep_node_address="10.0.0.1"
-    wsrep_sst_method=rsync
+[mysqld]
+binlog_format=ROW
+bind-address=10.0.0.1
+default_storage_engine=innodb
+innodb_autoinc_lock_mode=2
+innodb_flush_log_at_trx_commit=0
+wsrep_on=ON
+wsrep_provider=/usr/lib/libgalera_smm.so
+wsrep_cluster_name="MyCluster"
+wsrep_cluster_address="gcomm://node1,node2,node3"
+wsrep_node_address="10.0.0.1"
+wsrep_sst_method=rsync
 ```
 
-Le wsrep_node_address n'est pas obligatoire, cependant, il se peut que
-l'adresse soit mal '"devinée'", je préfère donc la fixer manuellement.
+`wsrep_node_address` n'est pas obligatoire mais évite que Galera devine la mauvaise IP.
+Adapter `bind-address` et `wsrep_node_address` sur chaque nœud.
 
-Une fois que ce fichier est bon sur votre cluster, il faut créer le
-cluster depuis le serveur qui sera primaire.
+## Bootstrap
+
+On initialise le cluster depuis node1 :
 
 ```bash
-    node1$ galera_new_cluster
+node1$ galera_new_cluster
 ```
 
-Une fois l'initialisation passée, on vérife sur MySQL la variable
-qu'il faut
+On vérifie que le cluster est bien démarré :
 
 <!-- markdownlint-disable MD046 -->
 ```sql
-SHOW STATUS LIKE wsrep_cluster_size;
+SHOW STATUS LIKE 'wsrep_cluster_size';
 
 +--------------------+-------+
 | Variable_name      | Value |
@@ -82,31 +78,44 @@ SHOW STATUS LIKE wsrep_cluster_size;
 ```
 <!-- markdownlint-enable MD046 -->
 
-Et on ajoute les autres nodes
+Puis on démarre les autres nœuds :
 
 ```bash
 node2$ systemctl start mariadb
+node3$ systemctl start mariadb
 ```
 
-Si tout s'est bien passé, on revérifie la valeur de cette variable,
-elle devrait passer a 3.
+`wsrep_cluster_size` doit passer à 3.
 
-Attention, pour rappel, Galera fonctionne **uniquement** en InnoDB. Le
-MyISAM est encore expérimental et est déconseillé en production.
+!!! warning "InnoDB uniquement"
+    Galera fonctionne **uniquement** en InnoDB. MyISAM est encore expérimental — à éviter en production.
 
-Toutes les informations sont diponibles sur
-[le site Galera](https://galeracluster.com/library/training/tutorials)
+## Troubleshooting
 
-## Troubleshoting
+### Reset d'un nœud
 
-Si pour quelconque raison on a un problème sur un node Galera, il peut
-être plus rapide de le recréér de 0. Il faut bien évidemment regarder
-les logs Galera et vérifier que les entrées FW soit OK.
-
-Pour reset un node d'un cluster Galera :
+Si un nœud est trop désynchronisé, on le recrée de 0 :
 
 ```bash
-λ yann ~ →  rm -rf /var/lib/mysql && service mysql start
+rm -rf /var/lib/mysql && systemctl start mariadb
 ```
 
-Tout sera re-importé depuis le master actuel
+Tout est re-importé depuis le nœud primary actuel via SST.
+
+### Cluster arrêté proprement — safe_to_bootstrap
+
+Si tous les nœuds sont arrêtés proprement (ex: maintenance), Galera refuse de redémarrer
+sans savoir quel nœud a les données les plus récentes.
+
+```bash
+# Identifier le dernier nœud arrêté (seqno le plus élevé)
+node1$ cat /var/lib/mysql/grastate.dat
+# safe_to_bootstrap: 0  ← si tous les nœuds ont 0, en forcer un
+
+node1$ sed -i 's/safe_to_bootstrap: 0/safe_to_bootstrap: 1/' /var/lib/mysql/grastate.dat
+node1$ galera_new_cluster
+```
+
+Puis redémarrer les autres nœuds normalement.
+
+Toutes les infos sur [le site Galera](https://galeracluster.com/library/training/tutorials).
