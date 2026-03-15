@@ -23,20 +23,20 @@ les weathermap montrent le réseau Internet d'une entreprise
 
 ## Liste des Weathermap disponibles
 
-|  Service               |  Lien |
-|----------|:-------------:|
-|  OVH | [Ici](http://weathermap.ovh.net/) |
-| France-IX | [Ici](https://tools.franceix.net/weathermap/par) |
-|  K-Net | [Ici](https://as24904.kwaoo.net/) et [Ici](https://k-net-stats.lafibre.info/) |
-|  Hivane Network | [Ici](https://www.hivane.net/info/weathermap.html) |
-|  Hosteur| [Ici](http://www.hosteur.com/infos/infrastructures-reseaux.php) |
-|  France-IX| [Ici](https://tools.franceix.net/stats/aggregated) |
+| Service        | Lien                                                                          |
+| -------------- | :---------------------------------------------------------------------------: |
+| OVH            | [Ici](https://weathermap.ovh.net/)                                            |
+| France-IX      | [Ici](https://tools.franceix.net/weathermap/par)                              |
+| K-Net          | [Ici](https://as24904.kwaoo.net/) et [Ici](https://k-net-stats.lafibre.info/) |
+| Hivane Network | [Ici](https://www.hivane.net/info/weathermap.html)                            |
+| Hosteur        | [Ici](https://www.hosteur.com/infos/infrastructures-reseaux.php)              |
+| France-IX      | [Ici](https://tools.franceix.net/stats/aggregated)                            |
 
 ## Connaitre son réseau
 
 Pour savoir par quels routeurs passe sa connexion, il suffit de faire un
 **traceroute** avec l'outil **mtr** sous Linux ou bien
-**[WinMTR](http://winmtr.net/)** sous Windows. Voici des informations
+**[WinMTR](https://winmtr.net/)** sous Windows. Voici des informations
 qui nous intéressent :
 
 ![MTR Screenshot](./_img/winmtr.webp)
@@ -55,64 +55,64 @@ on peut cependant faire des diagnostics plus poussés.
 
 **[Liste complète](https://www.bgplookingglass.com/)**
 
-**[Traceroute depuis différents pays + RS...](http://www.traceroute.org/)**
+**[Traceroute depuis différents pays + RS...](https://www.traceroute.org/)**
 
-|  Opérateur(s)               |  Lien |
-|----------|:-------------:|
-|  3T Systmes                  | [ici](http://lg.3tsystems.net/cgi-bin/bgplg) |
-|  Adeli                       | [ici](https://lg.adeli.biz/) |
-|  Bell MTS                    | [ici](http://lg.mtsdatacentres.com/cgi-bin/bgplg) |
-|  Blizzard                    | [ici](http://us-looking-glass.battle.net/) |
-|  Bussola                     | [ici](http://bussola.as21034.net/) |
-|  ClearFly                    | [ici](https://lg.clearfly.net/cgi-bin/bgplg/) |
-|  Cogent                      | [ici](http://cogentco.com/fr/network/looking-glass) |
-|  Colt                        | [Ici](https://portal.colt.net/lg/private/lookingGlassExec.do) |
-|  Core Backbone               | [ici](http://lg.core-backbone.com/) |
-|  DataUtama                   | [ici](http://lg.datautama.net.id/cgi-bin) |
-|  Deutsche Telekom            | [ici](https://f-lga1.f.de.net.dtag.de/index.php) |
-|  Feral                       | [ici](https://network.feral.io/looking-glass) |
-|  HE                          | [ici](https://lg.he.net/) |
-|  HKIX                        | [ici](https://www.hkix.net/hkix/hkixlg.htm) |
-|  Hafey                       | [ici](http://www.hafey.org/cgi-bin/bgplg) |
-|  Hivane                      | [ici](https://lg.hivane.net/) |
-|  Hopus                       | [Ici](http://lg.hopus.net/) |
-|  Ikoula                      | [ici](http://lg.ikoula.com/) |
-|  IndoCyber                   | [ici](http://bgplg.indocyber.net.id/) |
-|  IpTel                       | [ici](https://lg.iptel.by/cgi-bin/bgplg) |
-|  K-Net                       | [ici](https://lg.kwaoo.net/) |
-|  LES                         | [ici](http://lg.les.net/cgi-bin/bgplg) |
-|  Level3                      | [Ici](http://lookingglass.level3.net/) |
-|  Lux Network                 | [ici](https://lg.luxnetwork.eu/) |
-|  Milkywan                    | [ici](https://lg.milkywan.fr/) |
-|  NLNOG                       | [ici](http://lg.ring.nlnog.net/) |
-|  NTT                         | [ici](https://www.us.ntt.net/support/looking-glass/) |
-|  Neide Telecom               | [ici](http://lg.neidetelecom.com/) |
-|  OVH                         | [Ici](https://lg.ovh.net/) |
-|  OpenTransit/Orange          | [Ici](https://looking-glass.opentransit.net/) |
-|  RamNode                     | [Ici](http://lg.nl.ramnode.com/) |
-|  Retn                        | [ici](http://lg.retn.net/) |
-|  Root SA                     | [ici](http://lg.root.lu/) |
-|  SFMIX                       | [ici](http://lg.sfmix.org/cgi-bin) |
-|  SFR (Altice)                | [ici](http://peering.sfr.net/index.php?task=lg) |
-|  Serverius                   | [ici](http://lg.serverius.net/) |
-|  Silicon Valley Web Hosting  | [ici](http://lg.sjc02.svwh.net/cgi-bin/bgplg) |
-|  Solnet                      | [ici](http://lg.solnet.ch/) |
-|  Sprint                      | [ici](https://www.sprint.net/lg/lg_start.php) |
-|  Syringa Network             | [ici](http://lg.syringanetworks.net/cgi-bin/bgplg) |
-|  TW Telecom                  | [ici](http://lglass.twtelecom.net/) |
-|  Tata                        | [Ici](http://lg.as6453.net/lg/) |
-|  Telefonica                  | [ici](https://www.business-solutions.telefonica.com/fr/looking-glass/) |
-|  TelekomRS                   | [ici](http://lg.telekom.rs/cgi-bin) |
-|  Telia                       | [ici](http://lg.telia.net/) |
-|  Trit                        | [ici](http://lg.trit.net/cgi-bin/bgplg) |
-|  Vienna IX                   | [ici](https://www.vix.at/vix_lookingglass.html) |
-|  WorldStream                 | [ici](https://lg.worldstream.nl) |
-|  Zayo                        | [Ici](http://lg.as8218.eu/) |
+| Opérateur(s)               | Lien                                                                   |
+| -------------------------- | :--------------------------------------------------------------------: |
+| 3T Systmes                 | [ici](https://lg.3tsystems.net/cgi-bin/bgplg)                          |
+| Adeli                      | [ici](https://lg.adeli.biz/)                                           |
+| Bell MTS                   | [ici](https://lg.mtsdatacentres.com/cgi-bin/bgplg)                     |
+| Blizzard                   | [ici](https://us-looking-glass.battle.net/)                            |
+| Bussola                    | [ici](https://bussola.as21034.net/)                                    |
+| ClearFly                   | [ici](https://lg.clearfly.net/cgi-bin/bgplg/)                          |
+| Cogent                     | [ici](https://cogentco.com/fr/network/looking-glass)                   |
+| Colt                       | [Ici](https://portal.colt.net/lg/private/lookingGlassExec.do)          |
+| Core Backbone              | [ici](https://lg.core-backbone.com/)                                   |
+| DataUtama                  | [ici](https://lg.datautama.net.id/cgi-bin)                             |
+| Deutsche Telekom           | [ici](https://f-lga1.f.de.net.dtag.de/index.php)                       |
+| Feral                      | [ici](https://network.feral.io/looking-glass)                          |
+| HE                         | [ici](https://lg.he.net/)                                              |
+| HKIX                       | [ici](https://www.hkix.net/hkix/hkixlg.htm)                            |
+| Hafey                      | [ici](https://www.hafey.org/cgi-bin/bgplg)                             |
+| Hivane                     | [ici](https://lg.hivane.net/)                                          |
+| Hopus                      | [Ici](https://lg.hopus.net/)                                           |
+| Ikoula                     | [ici](https://lg.ikoula.com/)                                          |
+| IndoCyber                  | [ici](https://bgplg.indocyber.net.id/)                                 |
+| IpTel                      | [ici](https://lg.iptel.by/cgi-bin/bgplg)                               |
+| K-Net                      | [ici](https://lg.kwaoo.net/)                                           |
+| LES                        | [ici](https://lg.les.net/cgi-bin/bgplg)                                |
+| Level3                     | [Ici](https://lookingglass.level3.net/)                                |
+| Lux Network                | [ici](https://lg.luxnetwork.eu/)                                       |
+| Milkywan                   | [ici](https://lg.milkywan.fr/)                                         |
+| NLNOG                      | [ici](https://lg.ring.nlnog.net/)                                      |
+| NTT                        | [ici](https://www.us.ntt.net/support/looking-glass/)                   |
+| Neide Telecom              | [ici](https://lg.neidetelecom.com/)                                    |
+| OVH                        | [Ici](https://lg.ovh.net/)                                             |
+| OpenTransit/Orange         | [Ici](https://looking-glass.opentransit.net/)                          |
+| RamNode                    | [Ici](https://lg.nl.ramnode.com/)                                      |
+| Retn                       | [ici](https://lg.retn.net/)                                            |
+| Root SA                    | [ici](https://lg.root.lu/)                                             |
+| SFMIX                      | [ici](https://lg.sfmix.org/cgi-bin)                                    |
+| SFR (Altice)               | [ici](https://peering.sfr.net/index.php?task=lg)                       |
+| Serverius                  | [ici](https://lg.serverius.net/)                                       |
+| Silicon Valley Web Hosting | [ici](https://lg.sjc02.svwh.net/cgi-bin/bgplg)                         |
+| Solnet                     | [ici](https://lg.solnet.ch/)                                           |
+| Sprint                     | [ici](https://www.sprint.net/lg/lg_start.php)                          |
+| Syringa Network            | [ici](https://lg.syringanetworks.net/cgi-bin/bgplg)                    |
+| TW Telecom                 | [ici](https://lglass.twtelecom.net/)                                   |
+| Tata                       | [Ici](https://lg.as6453.net/lg/)                                       |
+| Telefonica                 | [ici](https://www.business-solutions.telefonica.com/fr/looking-glass/) |
+| TelekomRS                  | [ici](https://lg.telekom.rs/cgi-bin)                                   |
+| Telia                      | [ici](https://lg.telia.net/)                                           |
+| Trit                       | [ici](https://lg.trit.net/cgi-bin/bgplg)                               |
+| Vienna IX                  | [ici](https://www.vix.at/vix_lookingglass.html)                        |
+| WorldStream                | [ici](https://lg.worldstream.nl)                                       |
+| Zayo                       | [Ici](https://lg.as8218.eu/)                                           |
 
 Il est également possible de se renseigner via les route-servers
 (Disponible via telnet)
 
-|  Opérateur(s) |  Lien |
-|----------|:-------------|
-|  OTI     |      telnet route-server.opentransit.net |
-|  HE      |      telnet route-server.he.net |
+| Opérateur(s) | Lien                                  |
+| ------------ | ------------------------------------- |
+| OTI          | telnet route-server.opentransit.net   |
+| HE           | telnet route-server.he.net            |
