@@ -6,17 +6,11 @@ tags:
 
 # Bootstrap rapidement son cluster
 
-Pour bootstrap rapidement un cluster, on peut utiliser RKE, un outil
-Rancher. A noter que nous allons utiliser RKE et non RKEv2 car ce
-dernier se base sur K3S et non K8S, qui nous apporte beaucoup moins de
-fonctionnalités.
+Pour bootstrap rapidement un cluster, on peut utiliser RKE, un outil Rancher. À noter qu'on utilise RKE et non RKEv2 car ce dernier se base sur K3S et non K8S, ce qui apporte beaucoup moins de fonctionnalités.
 
-Pour faire simple, RKE c'est un binary et un fichier cluster.yaml. RKE
-est initialement un simple binaire pouvant être exécuté depuis le
-serveur lui même, ou bien en remote. Vous trouverez la dernière version
-[ici](https://github.com/rancher/rke/#latest-release).
+RKE c'est un binaire et un fichier `cluster.yaml`. Il peut être exécuté depuis le serveur lui-même ou en remote. La dernière version est disponible [ici](https://github.com/rancher/rke/#latest-release).
 
-Voici un exemple de fichier cluster.yml
+Voici un exemple de fichier `cluster.yaml` :
 
 <!-- markdownlint-disable MD046 -->
 ```yaml
@@ -108,33 +102,23 @@ ingress:
 ```
 <!-- markdownlint-enable MD046 -->
 
-Une fois toute l'infrastructure décrite, une simple commande suffit : _rke up_
+Une fois l'infrastructure décrite, une simple commande suffit : `rke up`
 
-Ce cluster.yaml est compatible avec Kubernetes 1.22.
+On spécifie l'user **mgmt-rancher** pour le déploiement et on distingue les nœuds master des workers. L'adresse spécifiée doit idéalement être sur un réseau privé et être résolvable.
 
-Comme vous pouvez le voir, nous spécifions à rancher que nous souhaitons
-utiliser l'user **mgmt-rancher** pour déployer Rancher. Nous discernons
-ici les noeuds master de worker.
-
-L'adresse spécifiée doit idéalement être sur un réseau privé et être
-résolvable.
-
-Voici un fichier hosts idéal pour faire fonctionner notre cluster K8S
+Voici un fichier hosts adapté :
 
 <!-- markdownlint-disable MD046 -->
 ```ini
-    # K8S
-    192.168.1.220   master01.vlan master01.rancher.k8s    master01.rancher.k8s.local
-    192.168.1.221   master02.vlan master02.rancher.k8s    master02.rancher.k8s.local
-    192.168.1.222   master03.vlan master03.rancher.k8s    master03.rancher.k8s.local
+# K8S
+192.168.1.220   master01.vlan master01.rancher.k8s    master01.rancher.k8s.local
+192.168.1.221   master02.vlan master02.rancher.k8s    master02.rancher.k8s.local
+192.168.1.222   master03.vlan master03.rancher.k8s    master03.rancher.k8s.local
 
-    192.168.1.210   node01.vlan node01.rancher.k8s    node01.rancher.k8s.local
-    192.168.1.211   node02.vlan node02.rancher.k8s    node02.rancher.k8s.local
-    192.168.1.212   node03.vlan node03.rancher.k8s    node03.rancher.k8s.local
+192.168.1.210   node01.vlan node01.rancher.k8s    node01.rancher.k8s.local
+192.168.1.211   node02.vlan node02.rancher.k8s    node02.rancher.k8s.local
+192.168.1.212   node03.vlan node03.rancher.k8s    node03.rancher.k8s.local
 ```
+<!-- markdownlint-enable MD046 -->
 
-Nous activons également quelques options supplémentaires tel que le
-snapshot automatique de l'etcd toutes les 6h. Des
-[examples](https://rancher.com/docs/rke/latest/en/example-yamls/) sont
-dispoibles sur le site officiel de Rancher. Il est possible par exemple
-d'envoyer les snapshot automatiquement dans un S3
+On active également quelques options supplémentaires comme le snapshot automatique d'etcd toutes les 6h. Des [exemples](https://rancher.com/docs/rke/latest/en/example-yamls/) sont disponibles sur le site officiel de Rancher — il est possible par exemple d'envoyer les snapshots automatiquement dans un S3.

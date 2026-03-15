@@ -5,19 +5,15 @@ tags:
   - Recovery
 ---
 
-# Recuperer son fichier rkestate
+# Récupérer son fichier rkestate
 
-Le fichier rkestate est un fichier qui contient la description du cluster Kubernetes, il est indispensable si vous souhaitez ajouter ou supprimer un node.
-
-Pour de quelconques raisons, il est possible que vous ne l'ayez plus. Pas de panique, il est possible de le récuperer via de multiples manières :
+Le fichier rkestate contient la description complète du cluster Kubernetes — indispensable pour ajouter ou supprimer un node. Si on ne l'a plus, pas de panique, plusieurs méthodes permettent de le récupérer.
 
 ## Depuis le master
 
-Depuis un master, plusieurs manières de le récuperer
-
 ### Master - K8S (1.19 et +)
 
-A lancer depuis un noeud controlplane, utilise n'importe quel image hyperkube
+À lancer depuis un nœud controlplane, utilise n'importe quelle image hyperkube :
 
 ```bash
 docker run --rm --net=host -v $(docker inspect kubelet --format '{{ range .Mounts }}{{ if eq .Destination "/etc/kubernetes" }}{{ .Source }}{{ end }}{{ end }}')/ssl:/etc/kubernetes/ssl:ro --entrypoint bash $(docker inspect $(docker images -q --filter=label=org.label-schema.vcs-url=https://github.com/rancher/hyperkube-base.git) --format='{{index .RepoTags 0}}' | tail -1) -c 'kubectl --kubeconfig /etc/kubernetes/ssl/kubecfg-kube-node.yaml -n kube-system get configmap full-cluster-state -o json | jq -r .data.\"full-cluster-state\" | jq -r .' > cluster.rkestate
@@ -46,4 +42,4 @@ kubectl get configmap -n kube-system full-cluster-state -o "jsonpath={.data.full
 rke util get-state-file
 ```
 
-Pour information, je n'ai absolument rien inventé sur cet article. Il s'agit simplement d'un mémo pour regrouper l'information. La source originelle est [ce gist](https://gist.github.com/superseb/e9f2628d1033cb20e54f6ee268683a7a)
+Source originelle : [ce gist](https://gist.github.com/superseb/e9f2628d1033cb20e54f6ee268683a7a)
