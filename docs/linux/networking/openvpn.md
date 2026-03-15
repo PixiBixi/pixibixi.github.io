@@ -1,5 +1,5 @@
 ---
-description: Installer et configurer un serveur VPN OpenVPN sous Linux — génération des certificats PKI, configuration serveur et client, support IPv6.
+description: Installer et configurer un serveur VPN OpenVPN sous Linux — génération des certificats PKI avec easy-rsa v3, configuration serveur et client.
 tags:
   - OpenVPN
   - VPN
@@ -7,231 +7,173 @@ tags:
 
 # Installer et configurer son VPN OpenVPN
 
-## Préambule
+Pourquoi installer un serveur VPN ? Éviter la surveillance, contourner les géo-restrictions (Netflix, Hulu...), ou être un peu plus anonyme. La connexion étant chiffrée, on parle de **tunnel VPN**.
 
-Pourquoi installer un serveur VPN ? Il existe une multitude raisons
-d'installer un serveur VPN, la première est d'éviter la surveillance.
-La connexion via un VPN étant cryptée, nous ne pouvons pas savoir ce
-qu'y passe sur le réseau, nous parlons alors de **tunnel VPN**.
+Les VPN français ont l'obligation de conserver les logs de connexion au moins **1 an** — rien ne garantit que les logs sont désactivés sur un VPN à 2$ par mois.
 
-Il est également possible d'utiliser un VPN afin d'éviter les
-géo-restrictions (Netflix, Hulu...)
+Le serveur VPN ne doit pas être sur la machine physique, sinon il est totalement inutile. Un petit VPS chez [Scaleway](https://www.scaleway.com/) fait très bien l'affaire, ou chez [YourServer](https://www.yourserver.se/) si on veut être encore plus discret (excellent petit hébergeur, staff facilement accessible).
 
-Et enfin, nous pouvons utiliser un VPN pour être un petit peu plus
-anonyme sur la toile. **Attention**, les VPN français ont pour
-obligation de conserver les logs de connexion au moins **1 an**, et rien
-ne vous dit que les logs sont désactivés sur votre VPN à 2'$ par mois.
-
-Le serveur VPN ne doit pas être sur votre machine physique, ou celui-ci
-serait totalement inutile.
-
-Le but d'un serveur VPN est de faire croire aux serveurs sur Internet
-que vous n'êtes pas localisés à votre adresse, mais à l'adresse de
-votre serveur VPN.
-
-Vous pouvez prendre un petit VPS chez
-[Scaleway](https://www.scaleway.com/) par exemple, ou alors si vous avez
-vraiment peur de Hadopi & co, chez
-[YourServer](https://www.yourserver.se/) (Excellent petit hébergeur,
-staff facilement accessible).
+OpenVPN + easy-rsa v3 sur Debian/Ubuntu. PKI complète, config serveur et client `.ovpn` prêt à l'emploi.
 
 ## Installation
 
-Pour installer OpenVPN, rien de plus simple:
+Pour installer OpenVPN, rien de plus simple. On installe aussi easy-rsa pour la gestion des certificats — il reste ensuite quelques étapes avant d'avoir quelque chose de fonctionnel :
 
 ```bash
-apt install openvpn
+apt install openvpn easy-rsa
 ```
 
-Nous allons installer la brique de base de notre serveur VPN, cependant,
-il nous reste de nombreuses étapes avant d'avoir un VPN fonctionnel.
+## PKI — Génération des certificats
 
-Nous allons copier les fichiers utiles à la création des futures
-certificats :
+Attention, easy-rsa v3 — fini les `source vars` et `build-ca` de la v2, ça ne marche plus.
 
 ```bash
-cp -a /usr/share/easy-rsa /etc/openvpn/ && cd /etc/openvpn/easy-rsa
-source vars
-./clean-all
-```
-
-## Création des certificats
-
-Afin d'être sécuriser, un VPN a besoin de certificats SSL. Ceux-ci sont
-très facile à build via easy-rsa
-
-```bash
+make-cadir /etc/openvpn/easy-rsa
 cd /etc/openvpn/easy-rsa
-./build-ca
+./easyrsa init-pki
+./easyrsa build-ca nopass
+./easyrsa gen-dh
+./easyrsa build-server-full server nopass
+openvpn --genkey secret /etc/openvpn/ta.key
 ```
 
-Spammez la touche '"Entree'" de votre clavier jusqu'à revenir sur votre
-terminal de base
+Les fichiers générés :
 
-Puis on creer le Diffie-Hellman
+| Fichier | Rôle |
+| ------- | ---- |
+| `pki/ca.crt` | Autorité de certification |
+| `pki/issued/server.crt` | Certificat serveur |
+| `pki/private/server.key` | Clé privée serveur |
+| `pki/dh.pem` | Diffie-Hellman |
+| `/etc/openvpn/ta.key` | Clé TLS (HMAC) |
 
-```bash
-openvpn --genkey --secret /etc/openvpn/ta.key
+## Configuration serveur
+
+`/etc/openvpn/server.conf` :
+
+```ini
+port 1194
+proto udp
+dev tun
+sndbuf 0
+rcvbuf 0
+
+ca /etc/openvpn/easy-rsa/pki/ca.crt
+cert /etc/openvpn/easy-rsa/pki/issued/server.crt
+key /etc/openvpn/easy-rsa/pki/private/server.key
+dh /etc/openvpn/easy-rsa/pki/dh.pem
+tls-crypt /etc/openvpn/ta.key
+
+topology subnet
+server 10.8.0.0 255.255.255.0
+ifconfig-pool-persist ipp.txt 0
+
+push "redirect-gateway def1 bypass-dhcp"
+push "dhcp-option DNS 1.1.1.1"
+push "dhcp-option DNS 1.0.0.1"
+
+keepalive 10 120
+data-ciphers AES-256-GCM:AES-128-GCM:CHACHA20-POLY1305
+tls-version-min 1.2
+user nobody
+group nogroup
+persist-key
+persist-tun
+
+status /var/log/openvpn-status.log
+log /var/log/openvpn.log
+verb 3
 ```
 
-Et enfin, le certificat côté serveur, que l'on n'oublie pas de signer
-!
+!!! warning "comp-lzo"
+    `comp-lzo` est déprécié depuis OpenVPN 2.5 — ne pas l'utiliser. Ça trigger des warnings et ça expose à des attaques de type VORACLE.
+
+## Ports firewall
+
+Ouvrir le port suivant côté serveur :
+
+| Port | Proto | Usage |
+| ---- | ----- | ----- |
+| 1194 | UDP | Tunnel OpenVPN clients |
+
+## Configuration du serveur Linux
+
+Maintenant qu'OpenVPN est configuré, il faut que la distribution Linux route correctement le trafic VPN.
+
+On active l'IP Forwarding — sans ça, les paquets entrant sur le tunnel ne sont pas retransmis vers Internet :
 
 ```bash
-./build-key-server srvcert
-```
-
-Une fois ceci fait, nous avons tous nos certificats pour configurer
-correctement notre OpenVPN
-
-## Configuration de OpenVPN
-
-OpenVPN fournit des fichiers de configurations exemple relativement bien
-complet, nous allons donc les réutiliser
-
-```bash
-gunzip -c /usr/share/doc/openvpn/examples/sample-config-files/server.conf.gz > /etc/openvpn/server.conf
-```
-
-Puis on l'édite afin qu'il concorde à notre installation
-
-```bash
-vim /etc/openvpn/server.conf
-```
-
-Voici les valeurs que nous devons avoir dans server.conf :
-
-* user nobody
-* group nogroup
-* ca /etc/openvpn/easy-rsa/keys/ca.crt
-* cert /etc/openvpn/easy-rsa/keys/srvcert.crt
-* key /etc/openvpn/easy-rsa/keys/srvcert.key '# This file should be
-    kept secret
-* dh /etc/openvpn/easy-rsa/keys/dh2048.pem
-* cipher AES-256-CBC
-
-Et on ajoute en bas du fichier ces lignes:
-
-* push '"redirect-gateway def1 bypass-dhcp'"
-* push '"dhcp-option DNS 4.2.2.1'"
-* push '"dhcp-option DNS 4.2.2.2'"
-* sndbuf 0
-* rcvbuf 0
-
-Voici à quoi doit ressembler le fichier final
-
-```bash
-    port 42600
-    proto udp
-    dev tun
-    sndbuf 0
-    rcvbuf 0
-    ca ca.crt
-    cert server.crt
-    key server.key
-    dh dh.pem
-    tls-auth ta.key 0
-    topology subnet
-    server 10.1.2.0 255.255.255.0
-    ifconfig-pool-persist ipp.txt 0
-    push "redirect-gateway def1 bypass-dhcp"
-    push "dhcp-option DNS 10.0.0.106"
-    push "dhcp-option DNS 10.0.0.14"
-    keepalive 10 120
-    cipher AES-128-CBC
-    comp-lzo
-    user nobody
-    group nogroup
-    persist-key
-    persist-tun
-    status openvpn-status.log
-    log /var/log/openvpn.log
-    verb 3
-```
-
-## Configuration du Serveur
-
-Maintenant qu'OpenVPN est correctement configurer, nous devons
-configurer notre distribution Linux afin que celle-ci route correctement
-notre serveur VPN
-
-Tout d'abord, on active l'IP Forwarding
-
-```bash
-echo net.ipv4.ip_forward=1 >> /etc/sysctl.conf
+echo "net.ipv4.ip_forward=1" >> /etc/sysctl.conf
 sysctl -p
 ```
 
-Et on active le NAT via IPTables
+Et on active le NAT via IPTables pour que le trafic des clients VPN sorte avec l'IP du serveur :
 
 ```bash
-    iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-    iptables -t nat -A POSTROUTING -s 10.8.0.0/24 -o eth0 -j MASQUERADE
+iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
 ```
 
-Par défaut, OpenVPN utilise le réseau 10.8.0.0/24
+Adapter `eth0` à l'interface de sortie (`ip route get 1.1.1.1` pour la trouver). Par défaut, OpenVPN utilise le réseau `10.8.0.0/24`.
 
-## Configuration du client OpenVPN
+## Démarrage
 
-Maintenant que notre OpenVPN est correctement configuré côté server,
-nous devons nous occuper de la partie client.
-
-Tout d'abord, il faut génerer les certificats pour notre client (Votre
-PC).
+Une fois la config en place, on démarre et on active au boot. Le `@server` correspond au nom du fichier de conf — ici `/etc/openvpn/server.conf` :
 
 ```bash
-cd /etc/openvpn/easy-rsa/
-source vars
-./build-key jeremy
+systemctl enable --now openvpn@server
 ```
 
-Et on créer le fichier de conf :
+On vérifie que tout est bien parti :
 
 ```bash
-# Client
+systemctl status openvpn@server
+tail -f /var/log/openvpn.log
+```
+
+## Client
+
+On génère les certificats côté serveur :
+
+```bash
+cd /etc/openvpn/easy-rsa
+./easyrsa build-client-full client1 nopass
+```
+
+Dans `client1.ovpn`, on peut tout embarquer directement, ce qui est plus simple que de se balader avec 4 fichiers :
+
+```ini
 client
 dev tun
 proto udp
-remote ip port
+remote <ip-serveur> 1194
 resolv-retry infinite
-cipher AES-256-CBC
-; client-config-dir ccd
-# Cles
-ca ca.crt
-cert jeremy.crt
-key jeremy.key
-tls-auth ta.key 1
-key-direction 1
-# Securite
 nobind
 persist-key
 persist-tun
-comp-lzo
+data-ciphers AES-256-GCM:AES-128-GCM:CHACHA20-POLY1305
+tls-version-min 1.2
 verb 3
-# Set manual buffers
 sndbuf 0
 rcvbuf 0
+
+<ca>
+# Contenu de pki/ca.crt
+</ca>
+<cert>
+# Contenu de pki/issued/client1.crt
+</cert>
+<key>
+# Contenu de pki/private/client1.key
+</key>
+<tls-crypt>
+# Contenu de /etc/openvpn/ta.key
+</tls-crypt>
 ```
 
-N'oubliez pas de télécharger les fichiers suivants sur votre PC :
+Ou en fichiers séparés à copier sur le client : `pki/ca.crt`, `pki/issued/client1.crt`, `pki/private/client1.key`, `ta.key`.
 
-* ca.crt
-* ta.key
-* jeremy.crt
-* jeremy.key
-* client.ovpn
+## Scripts d'auto-installation
 
-Et voilà, vous avez votre propre VPN fonctionnel :)
+[OpenVPN-Install](https://github.com/Angristan/OpenVPN-install) — script Angristan, multi-distro (Debian, Ubuntu, CentOS), bonne sécu par défaut. C'est le plus maintenu.
 
-## Script d'auto-installation
-
-[piVPN](https://github.com/pivpn/pivpn) est un petit script permettant
-d'installer un serveur OVPN en nous permettant de setup port utilisé,
-DNS...
-
-En plus de cela, pivpn nous fournit un petit script de gestion
-d'utilisateur. Il est compatible Debian et Ubuntu
-
-[OpenVPN-Install](https://github.com/Angristan/OpenVPN-install) est un
-script simple développé par Angristan multi-plateforme (CentOs, Debian
-et Ubuntu) apportant une sécurité accrue.
+[piVPN](https://github.com/pivpn/pivpn) — interface de gestion des utilisateurs en plus, pratique sur Raspberry Pi.
