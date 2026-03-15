@@ -42,7 +42,7 @@ PoolAlloc_bytes: 43437648
 MaxconnReached: 0
 ```
 
-Etant donné que je n'avais que 7 pods, nous étions sur une limit de 81K connections mais surtout d'un connrate à la seconde de 5446, pas énorme pour gérer les peaks :)
+Étant donné qu'on n'avait que 7 pods, on était sur une limit de 81K connections mais surtout d'un connrate à la seconde de 5446, pas énorme pour gérer les peaks.
 
 Avec 12500mi, on a déjà des résultats un peu plus probants :
 
@@ -63,7 +63,4 @@ MaxconnReached: 0
 
 65000 maxconn avec un maxconnrate à 1600, déjà un peu mieux pour gérer les peaks.
 
-Conclusion de ce bout de documentation :
-
-* Ne négligez pas la mémoire allouée à HAproxy, vous risqueriez d'avoir des surprises inattendues.
-* Soyez sur que la documentation que vous regardez est à jour par rapport à votre version de HAproxy
+Ne pas négliger la mémoire allouée à HAproxy sous peine de surprises. S'assurer aussi que la documentation consultée correspond bien à la version de HAproxy en production.

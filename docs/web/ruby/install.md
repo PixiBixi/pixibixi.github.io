@@ -6,13 +6,9 @@ tags:
 
 # Installer Ruby
 
-Installer Ruby, c'est chiant. Voici donc comment faire pour que ce soit
-un peu moins chiant :-)
+Installer Ruby, c'est chiant. Voici donc comment faire pour que ce soit un peu moins chiant.
 
-2 méthodes sont possibles. **rbenv** ou **ruby-build**. Il est également
-possible d'utiliser **ruby-build** en tant que plugin de rbenv. Je
-conseille **ruby-build** si vous êtes en monolithique et rbenv si vous
-souhaitez pouvoir switch entre les environnements.
+2 méthodes sont possibles : **rbenv** ou **ruby-build**. Il est également possible d'utiliser **ruby-build** en tant que plugin de rbenv. On conseille **ruby-build** si on est en monolithique et rbenv si on souhaite pouvoir switch entre les environnements.
 
 ## rbenv
 
@@ -23,13 +19,11 @@ apt install rbenv
 rbenv init
 ```
 
-Attention, ruby sera installé dans ~/.rbenv/xxx.
+Attention, ruby sera installé dans `~/.rbenv/xxx`.
 
-On check après les versions disponibles avec un **rbenv install
-'--list-all**. Il y en a une tonne.
+On check après les versions disponibles avec un `rbenv install --list-all`. Il y en a une tonne.
 
-Installez celle que vous voulez (par ex: 2.7.4) puis définissez là par
-défaut :
+On installe la version voulue (par ex: 2.7.4) puis on la définit par défaut :
 
 ```bash
 rbenv install 2.7.4
@@ -38,8 +32,7 @@ rbenv global 2.7.4
 
 ### Troubleshooting
 
-Si vous n'avez pas la version désirée, n'hésitez pas à installer
-**ruby-build** en plugin de rbenv :
+Si on n'a pas la version désirée, installer **ruby-build** en plugin de rbenv :
 
 ```bash
 # As an rbenv plugin
@@ -58,17 +51,15 @@ $ git clone https://github.com/rbenv/ruby-build.git
 $ PREFIX=/usr/local ./ruby-build/install.sh
 ```
 
-Puis comme rbenv, on liste les versions dispo, et on installe celle
-qu'on veut :
+Puis comme rbenv, on liste les versions dispo, et on installe celle qu'on veut :
 
 ```bash
 ruby-build --definitions
 ruby-build 2.7.4 /usr/local/ruby-2.7.4
 ```
 
-Et voilà, on a un ruby tout beau
+Et voilà, on a un ruby tout beau.
 
 ### Troubleshooting
 
-Si **ruby-build** ne vous propose pas les bonnes versions, il faut
-l'upgrade pour reload sa liste de versions dispos.
+Si **ruby-build** ne propose pas les bonnes versions, il faut l'upgrade pour reload sa liste de versions dispos.

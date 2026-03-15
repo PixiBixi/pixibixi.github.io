@@ -7,9 +7,7 @@ tags:
 
 # Optimiser sa CI Gitlab
 
-Les CI c'est bien, une CI optimisée c'est mieux. Voici quelques tips
-pour l'optimiser. Il y a également des optimisations spécifiques aux
-différents langages.
+Les CI c'est bien, une CI optimisée c'est mieux. Voici quelques tips pour l'optimiser. Il y a également des optimisations spécifiques aux différents langages.
 
 ## Clone superficiel
 
@@ -41,9 +39,7 @@ On peut aussi le définir job par job. Les jobs de deploy restent souvent non-in
 
 ## Skip Docker
 
-Pour gagner du temps, il est possible de ne pas utiliser Docker afin de
-ne pas attendre que le daemon Docker soit prêt. Nous pouvons à la place
-utiliser buildah. La syntaxe est identique à celle de Docker :
+Pour gagner du temps, on peut ne pas utiliser Docker afin de ne pas attendre que le daemon Docker soit prêt. On peut à la place utiliser buildah. La syntaxe est identique à celle de Docker :
 
 ```yaml
 Docker Build:
@@ -105,23 +101,19 @@ test-job:
     - cat hello-world.txt
 ```
 
-Cet exemple basique nous permet de mettre plusieurs éléments en avant :
+Cet exemple basique met plusieurs éléments en avant :
 
-- `GIT_STRATEGY` : Ici, nous ne clonons par le repository Git. Nul nécessaire de le cloner si nous n'en avons pas besoin
+- `GIT_STRATEGY` : on ne clone pas le repository Git. Pas besoin de le cloner si on n'en a pas besoin.
 
-Nous allons utiliser un artifact, expirant dans 1h pour stocker le
-résultat d'une commande
+On utilise un artifact, expirant dans 1h, pour stocker le résultat d'une commande.
 
 ## Optimisations par langages
 
-Nous pouvons également faire des optimisations des CI en fonction des
-langages (généralement en jouant sur les caches)
+On peut également faire des optimisations de CI en fonction des langages (généralement en jouant sur les caches).
 
 ### PHP
 
-Dans le cadre de l'utilisation de composer, il peut être intéressant de
-mettre en cache le résultat d'un composer install. Il faut l'indiquer
-de cette manière dans votre YAML
+Dans le cadre de l'utilisation de composer, il peut être intéressant de mettre en cache le résultat d'un composer install. Il faut l'indiquer de cette manière dans le YAML :
 
 ```yaml
 # Cache libraries in between jobs
@@ -133,8 +125,7 @@ cache:
 
 ### Python
 
-De la même manière qu'avec PHP & composer, nous pouvons mettre en cache
-le .pip d'un projet en Python mais également le dossier venv :
+De la même manière qu'avec PHP & composer, on peut mettre en cache le `.pip` d'un projet Python mais également le dossier venv :
 
 ```yaml
 # Change pips cache directory to be inside the project directory since we can
@@ -153,9 +144,7 @@ cache:
     - venv/
 ```
 
-D'autres caches sont possibles pour d'autres langages (Go, Ruby...),
-je vous laisse consulter la [documentation
-officielle](https://docs.gitlab.com/ee/ci/caching/index.html#cache-nodejs-dependencies)
+D'autres caches sont possibles pour d'autres langages (Go, Ruby...), voir la [documentation officielle](https://docs.gitlab.com/ee/ci/caching/index.html#cache-nodejs-dependencies).
 
 ## Cache policy
 

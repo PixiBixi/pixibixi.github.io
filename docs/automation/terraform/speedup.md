@@ -6,13 +6,13 @@ tags:
 
 # Accélerer Terraform
 
-Pour accélerer Terraform, quelques bonnes pratiques
+Pour accélerer Terraform, quelques bonnes pratiques.
 
 ## Parallélisme
 
-Par défaut, si vous dispoez d'un large nombre de ressource, le parallélisme de Terraform est seulement de 10. C'est à dire que Terraform ne va pas effectuer plus de 10 opérations en parallèle.
+Par défaut, si on dispose d'un large nombre de ressources, le parallélisme de Terraform est seulement de 10 — Terraform ne va pas effectuer plus de 10 opérations en parallèle.
 
-Pour cela, augmenter le `-parallelism` à une valeur supérieur.
+Pour ça, augmenter le `-parallelism` à une valeur supérieure.
 
 !!! warning "Danger"
     Attention à ne pas spam les API provider et provoquer d'autres bugs
@@ -21,19 +21,19 @@ Pour cela, augmenter le `-parallelism` à une valeur supérieur.
 
 Un comportement pas vraiment intelligent de Terraform est le pull systématique des providers.
 
-Imaginons que nous avons 10 repos utilisant les mêmes 4 providers, Terraform va les pull 10 fois alors qu'il s'agit des mêmes. Cela peut également couteux en terme d'espace disque
+Imaginons qu'on a 10 repos utilisant les mêmes 4 providers, Terraform va les pull 10 fois alors qu'il s'agit des mêmes. Ça peut être également coûteux en terme d'espace disque.
 
-Pour cela, la bonne pratique est de définir la variable `TF_PLUGIN_CACHE_DIR`. Cette variable va indiquer à Terraform de e référer à un dossier pour les providers plutôt que de les re-télécharger à chaque fois
+Pour ça, la bonne pratique est de définir la variable `TF_PLUGIN_CACHE_DIR`. Cette variable va indiquer à Terraform de se référer à un dossier pour les providers plutôt que de les re-télécharger à chaque fois.
 
-En pratique, il existe 2 manières d'effectuer cette opération :
+En pratique, il existe 2 manières d'effectuer cette opération.
 
-Dans votre configuration de la CLI Terraform, vous pouvez ajouter cette ligne
+Dans la configuration de la CLI Terraform :
 
 ```ini
 plugin_cache_dir = "${HOME}/.terraform.d/plugin-cache"
 ```
 
-La seconde manière que je conseille est d'ajouter directement une variable d'environnement
+La seconde manière, conseillée, est d'ajouter directement une variable d'environnement :
 
 ```bash
 export TF_PLUGIN_CACHE_DIR="${HOME}/.terraform.d/plugin-cache"
@@ -41,9 +41,9 @@ export TF_PLUGIN_CACHE_DIR="${HOME}/.terraform.d/plugin-cache"
 
 ## Bonus : Gitlab-CI
 
-Il est également possible de setup du cache sur une pipeline Gitlab
+Il est également possible de setup du cache sur une pipeline Gitlab.
 
-Comme pour Terraform sur notre poste, il est nécessaire de définir la même variable puis nous allons utiliser le keyword cache de Terrraform pour activer ce dernier
+Comme pour Terraform en local, il est nécessaire de définir la même variable puis on va utiliser le keyword cache de Terraform pour activer ce dernier :
 
 ```yaml
 .terraform:
@@ -65,16 +65,16 @@ Comme pour Terraform sur notre poste, il est nécessaire de définir la même va
     when: always
 ```
 
-Puis sur les étapes suivantes, nous allons étendre ce template
+Puis sur les étapes suivantes, on étend ce template :
 
 ```yaml
 terraform-init:
   extends: .terraform
 ```
 
-Nous disposons maintenant d'un cache commun aux différentes stages
+On dispose maintenant d'un cache commun aux différentes stages.
 
-Pour confirmer que l'init est correctement load depuis le cache, nous devons avoir l'output suivant :
+Pour confirmer que l'init est correctement load depuis le cache, on devrait avoir l'output suivant :
 
 ```bash
 time terraform init
