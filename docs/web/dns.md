@@ -6,115 +6,70 @@ tags:
 
 # Installer son NS ainsi que son resolveur DNS via BIND9
 
-## Introduction
-
-Afin de se séparer au maximum des services proposés par différents
-tiers, il est possible d'installer son propre [resolveur
-DNS](https://www.bortzmeyer.org/son-propre-resolveur-dns.html), ainsi que
-de paramétrer son serveur DNS (Ici BIND9) afin d'avoir ses propre
-serveurs autoritaires.
-
-[Ne pas oublier DHCPD pour les DNS (CF Article Bortz)]{.underline}
+Pour se séparer au maximum des services tiers, on peut installer son propre [résolveur
+DNS](https://www.bortzmeyer.org/son-propre-resolveur-dns.html) et paramétrer BIND9 comme serveur autoritaire.
 
 ## Comment fonctionne un NS
 
-Un NS est un enregistrement DNS afin d'avoir son propre autoritaire :
-Prenons l'exemple avec ce nom de domaine : **wiki.jdelgado.fr**.
+Un NS est un enregistrement DNS permettant d'avoir son propre serveur autoritaire.
+Prenons l'exemple avec **wiki.jdelgado.fr** :
 
-1. Tout d'abord, nous allons intérroger les ***root servers***, par
-    exemple *g.root-servers.net*
-2. Ce serveur nous indique le serveur à contacter, ici, les serveurs
-    autoritaires **du TLD .eu** : *x.dns.eu*
-3. Ces serveurs nous disent quel serveur autoritaires **du nom de
-    domaine**, dans notre cas, **ns1.jdelgado.fr**
-4. Et enfin, nous obtenons enfin l'IP du serveur.
+1. On interroge les ***root servers***, par exemple *g.root-servers.net*
+2. Ce serveur indique le serveur à contacter — ici les serveurs autoritaires **du TLD .fr** : *x.dns.fr*
+3. Ces serveurs indiquent quel serveur autoritaire **du nom de domaine**, dans notre cas **ns1.jdelgado.fr**
+4. Et on obtient enfin l'IP du serveur.
 
-Le serveur que nous allons installer correspond à l'étape **3**
+Le serveur qu'on installe correspond à l'étape **3**.
 
-## Comment fonctionne un resolveur DNS
+## Comment fonctionne un résolveur DNS
 
-Un *Resolveur DNS* agit d'une manière extremement simple : Il va
-simplement résoudre n'importe quel nom de domaine que vous cherchez, et
-retourner son adresse IP.
+Un *résolveur DNS* agit simplement : il résout n'importe quel nom de domaine et retourne son adresse IP.
 
-Un des intérets à avoir son propre resolveur DNS est d'évité le *DNS
-Hijacking*, c'est à dire de modifier la résolution DNS. Exemple
-flagrant avec le nom de domaine **t411.io**.
+L'intérêt d'avoir son propre résolveur DNS est d'éviter le *DNS Hijacking* (modification de la résolution DNS)
+et l'espionnage du FAI.
 
-Un autre intéret à avoir son propre resolveur DNS est d'éviter
-l'espionnage de notre FAI ou autre.
-
-**Si vous voulez tout de même éviter le flicage,** mais que vous n'avez
-les compétences, ou tout simplement l'envie, il existe des projets tel
-que [OpenNIC](https://www.opennicproject.org/) qui vous indique le
-resolveur DNS libre le plus proche de chez vous, pour ainsi minimiser le
-ping, et donc le temps de résolution DNS. Il y a également le projet
-[DNS Watch](https://dns.watch/index) qui est un résolveur libre
-IPV4/IPV6 sans log et qui supporte le DNSSEC.
+Si on veut éviter le flicage sans monter son propre résolveur, il existe des projets comme
+[OpenNIC](https://www.opennicproject.org/) qui liste le résolveur DNS libre le plus proche, ou
+[DNS Watch](https://dns.watch/index) — résolveur libre IPv4/IPv6 sans log avec support DNSSEC.
 
 ## Installation
 
 ### Résolveur DNS
 
-De base, BIND9 est correctement configuré afin de résoudre les noms de
-domaine sur vos interfaces locales, soit `127.0.0.1, ::1` si vous disposez
-d'IPv6, et enfin, votre IP locale fournie par le DHCP de votre, soit
-`192.168.1.2` par exemple.
-
-Nous verrons par la suite comment le configurer.
-
-Afin qu'il résolve les requêtes DNS sur votre ordinateur locale, voici
-la ligne à écrire :
+De base, BIND9 est correctement configuré pour résoudre les noms de domaine sur les interfaces locales :
+`127.0.0.1`, `::1` et l'IP locale fournie par le DHCP.
 
 ```bash
-apt-get -y install bind9
+apt install bind9
 ```
 
-Pour être certain que votre BIND9 soit bien installé, `dig +short
-google.fr` doit vous renvoyez une IP appartenant à Google.
+Pour vérifier que BIND9 est bien installé, `dig +short google.fr` doit retourner une IP Google.
 
-Dans le dossier de configuration BIND9, vous y retrouverez 4 fichiers de
-configuration :
+Le dossier de configuration BIND9 contient 4 fichiers :
 
-* `named.conf` recense tous les fichiers de configuration. Au lieu
-    d'écrire la configuration dans un seul fichier, celle-ci est
-    partagée en plusieurs fichiers.
-* `named.conf.default-zones` est un fichier contenant toutes les
-    zones par défaut, comme son nom l'indique.
-* `named.conf.local` est vide par défaut, et c'est normal, il
-    s'agit du fichier où l'on effectuera toutes nos modifications
-* `named.conf.options` est le configuration de base par défaut, il
-    contient toutes les options nécéssaires pour bien paramétrer notre
-    BIND9
+* `named.conf` — recense tous les fichiers de configuration
+* `named.conf.default-zones` — zones par défaut
+* `named.conf.local` — vide par défaut, c'est ici qu'on fait toutes les modifications
+* `named.conf.options` — configuration de base avec toutes les options
 
-N'oubliez pas d'editer votre `resolv.conf` sous un système UNIX afin
-d'utiliser votre resolveur, ou bien vos paramètres de votre carte
-réseau sous Windows
+Ne pas oublier d'éditer `/etc/resolv.conf` sous Linux pour utiliser le résolveur local.
 
 ### Serveur autoritaire
 
-Un serveur autoritaire est un serveur faisant "autorité" sur une zone
-donnée. Celui-ci permet de toutes les redirections nécéssaires (MX, A,
-CNAME...)
+Un serveur autoritaire fait "autorité" sur une zone donnée et gère toutes les redirections (MX, A, CNAME...).
 
-Généralement, votre registrar fait également serveur DNS, mais il
-s'agit très souvent d'une usine à gaz, lorsqu'un simple BIND fait
-l'affaire, et est très simple à mettre en oeuvre
+Généralement le registrar fait aussi serveur DNS, mais c'est souvent une usine à gaz — un simple BIND fait
+l'affaire et est simple à mettre en œuvre.
 
-Tout d'abord, il vous faudra mettre à jour votre liste de NS sur votre
-registrar, par exemple, pour mon cas :
+Il faut d'abord mettre à jour la liste des NS chez le registrar :
 
 ![InternetBS NS List](./_img/internetbs_ns_list.webp)
 
-Ici, nous disons à notre registrar que notre serveur autoritaire sera
-`ns1.jdelgado.fr` soit `195.154.226.173`
-
-Repassons désormais à notre BIND9, et regardons les fichiers à éditer
+Ici on indique que le serveur autoritaire sera `ns1.jdelgado.fr` soit `195.154.226.173`.
 
 #### named.conf.local
 
-Dans ce fichier, nous allons ajouter la zone à gérer par BIND9. Voici un
-exemple de zone à rajouter au fichier
+On ajoute la zone à gérer par BIND9 :
 
 ```bash
 zone "jdelgado.fr" IN {
@@ -131,33 +86,21 @@ zone "jdelgado.fr" IN {
         # On autorise tout le monde à envoyer des requêtes vers cette zone
         allow-query { any; };
 
-        # Prévenir les serveurs DNS secondaires quun changement a été effectué dans la zone maître
+        # Prévenir les serveurs DNS secondaires qu'un changement a été effectué dans la zone maître
         notify yes;
 
 };
 ```
 
-Au final, ce fichier comporte assez peu d'instructions, je vous invite
-à aller regarder les commentaires afin de savoir à quoi correspondent
-chacunes d'entrent-elles
-
-Au final, ce fichier comporte assez peu d'instructions, je vous invite
-à aller regarder les commentaires afin de savoir à quoi correspondent
-chacunes d'entrent-elles
-
 #### named.conf
 
-Nous ajoutons un include dans ce fichier, afin de pouvoir faire des logs
-corrects, au lieu de tout log dans syslog par défaut
+On ajoute un include pour avoir des logs propres plutôt que tout dans syslog :
 
 ```bash
 include "/etc/bind/named.conf.logging";
 ```
 
 #### named.conf.logging
-
-Et voici le fichier de logging :
-[named.conf.logging](http://pastebin.com/raw/Xt2KVVL8)
 
 ```bash
 logging {
@@ -184,8 +127,6 @@ logging {
 ```
 
 #### named.conf.options
-
-Le fichier de base étant totalement inutile, en voici un plus utile
 
 ```bash
 acl allowQueried {
