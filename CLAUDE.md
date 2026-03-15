@@ -158,6 +158,9 @@ Language patterns:
 - Present alternatives explicitly: "on fait X ou on fait Y"
 - Trailing `...` to cut a sentence short
 - Prefer ratio/multiplier over percentages: "gain entre 4-5x" not "60% moins cher"
+- **Always add a sentence before a code block** — a section title followed directly by a code block with no context feels abrupt
+- **Avoid `—` as a connector in flowing sentences** — feels AI-generated, prefer "which is", "so", or rephrase
+- **Avoid meta-technical phrasing** : "the API changed completely compared to v2" → rephrase naturally ("no more `source vars`, it doesn't work anymore")
 
 ## Article Rewrite Workflow
 
