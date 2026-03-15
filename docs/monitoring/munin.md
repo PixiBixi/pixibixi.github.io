@@ -17,29 +17,20 @@ parties :
 1. Munin (master pour les systèmes BSD qui sont plus explicites) qui se
     charge de générer les pages web et de réaliser les graphiques à
     partir des données...
-2. fournies par Munin node qui se charge à l'aide de '"sondes'"
+2. fournies par Munin node qui se charge à l'aide de "sondes"
     écrites en perl ou en shell script de générer les fichiers RRD qui
     vont bien. Le démon écoute par défaut sur le port TCP 4949.
 
-### Prérequis
+### Installation
 
-Il faut posséder une **Debian Jessie** à jour. Veuillez noter que, si
-vous n'avez pas modifié le fichier *Preferences* pour APT, installer
-munin revient à installer munin (master) et munin-node. Pour ce
-bloc-notes, nous nous positionnerons sur un schéma de fonctionnement le
-plus simple possible : munin et munin-node sont sur la même machine
-(physique ou virtuelle). Si vous disposez d'un **Debian Wheezy**,
-remplacez simplement les commandes **apt** par **apt-get**, et remplacez
-**systemctl** par **service**
+Il faut posséder une **Debian Jessie** à jour. Sans modification du fichier *Preferences* pour APT, installer munin revient à installer munin (master) et munin-node. On se positionne sur un schéma le plus simple possible : munin et munin-node sur la même machine. Sur **Debian Wheezy**, remplacer **apt** par **apt-get** et **systemctl** par **service**.
 
 ```sh
 sudo apt install munin
 sudo apt install munin-plugins-extra
 ```
 
-Veuillez noter que certains plugins tiers peuvent nécessiter des
-programmes additionnels (bien souvent en perl tels ceux requis pour
-surveiller nginx).
+Certains plugins tiers peuvent nécessiter des programmes additionnels (bien souvent en perl, comme ceux requis pour surveiller nginx).
 
 ### Configuration basique
 
@@ -54,7 +45,7 @@ affichera monfqdn.demondomaine.grd :
 
 Oui, IPv6 roulaize.
 
-[Petit moment sécurité]{.underline}
+**Sécurité :**
 
 La configuration par défaut du paquet Debian fait écouter le démon
 munin-node sur toutes les interfaces réseaux. Il serait peut-être
@@ -101,35 +92,30 @@ sudo wget http://files.julienschmidt.com/public/cfg/munin/spawn-fcgi-munin-graph
 wget "https://wiki.mirtouf.fr/lib/exe/fetch.php?media=munin:munin-cgi.tar.gz" -O munin-cgi.tar.gz
 ```
 
-Le premier est optionnel mais si vous êtes suffisamment malin, vous
-pourrez mettre en place une génération dynamique des pages web (c'est
-le même principe).
+Le premier est optionnel mais permet de mettre en place une génération dynamique des pages web (c'est le même principe).
 
-A modifier dans le fichier spawn-fcgi-munin-graph
+À modifier dans le fichier spawn-fcgi-munin-graph :
 
 ```sh
-       PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-       NAME=spawn-fcgi-munin-graph
-       PID_FILE=/var/run/munin/$NAME.pid
-       SOCK_FILE=/var/run/munin/$NAME.sock
-       SOCK_USER=www-data
-       FCGI_USER=www-data
-       FCGI_GROUP=www-data
-       FCGI_WORKERS=2
-       DAEMON=/usr/bin/spawn-fcgi
-       DAEMON_OPTS="-s $SOCK_FILE -F $FCGI_WORKERS -U $SOCK_USER -u $FCGI_USER -g $FCGI_GROUP -P $PID_FILE -- /usr/lib/munin/cgi/munin-cgi-graph"
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+NAME=spawn-fcgi-munin-graph
+PID_FILE=/var/run/munin/$NAME.pid
+SOCK_FILE=/var/run/munin/$NAME.sock
+SOCK_USER=www-data
+FCGI_USER=www-data
+FCGI_GROUP=www-data
+FCGI_WORKERS=2
+DAEMON=/usr/bin/spawn-fcgi
+DAEMON_OPTS="-s $SOCK_FILE -F $FCGI_WORKERS -U $SOCK_USER -u $FCGI_USER -g $FCGI_GROUP -P $PID_FILE -- /usr/lib/munin/cgi/munin-cgi-graph"
 ```
 
-Veuillez noter que l'utilisateur de script doit être le même que celui
-de votre serveur web et la configuration de munin.conf doit être en
-accord avec la dernière ligne.
+L'utilisateur du script doit être le même que celui du serveur web et la configuration de munin.conf doit être en accord avec la dernière ligne.
 
-N'oubliez pas d'activer le ou les scripts et rendre persistant leur
-démarrage.
+Ne pas oublier d'activer le ou les scripts et rendre persistant leur démarrage.
 
 * **Configuration du vhost nginx**
 
-Je suppose que vous accéderez à l'adresse suivante :
+Exemple pour l'adresse suivante :
 <http://munin.fqdn.grd>
 
 ```nginx
@@ -193,5 +179,4 @@ sudo systemctl restart spawn-fcgi-munin-html.service
 
 ### Test grandeur nature
 
-Aller faire un tour sur la page <http://munin.fqdn.grd> et vous devriez
-voir apparaître sous peu de jolis graphiques cliquables.
+Aller faire un tour sur la page <http://munin.fqdn.grd> — des jolis graphiques cliquables devraient apparaître sous peu.

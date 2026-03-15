@@ -8,36 +8,29 @@ tags:
 
 # Configurer des notifications Slack pour check_mk
 
-À l'heure actuelle où tout est convergé, la communication interne via
-des outils comme Slack ou Mattermost, le mail semble presque dépassé.
-Dans cette optique, nous pouvons envoyer les notifications sur un
-channel Slack (ou bien Mattermost).
+À l'heure actuelle où tout est convergé sur la communication interne via des outils comme Slack ou Mattermost, le mail semble presque dépassé. Dans cette optique, on peut envoyer les notifications sur un channel Slack (ou bien Mattermost).
 
 ## Configuration Slack
 
-Tout d'abord, il faut créer votre **Webhook** sur le panneau de
-configuration de votre Workspace. Pour cela, il faut choisir (ou créer)
-un chan où les messages du bot seront envoyés ainsi que le nom du bot.
-Une fois cela fait, penser à copier votre **Webhook URL** (De cette
-forme :
+Tout d'abord, il faut créer un **Webhook** sur le panneau de configuration du Workspace. Pour ça, il faut choisir (ou créer) un chan où les messages du bot seront envoyés ainsi que le nom du bot. Une fois cela fait, penser à copier la **Webhook URL** (de cette forme :
 <https://hooks.slack.com/services/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>)
 
 ## Configuration check_mk (CLI)
 
-Pour check_mk, nous allons utiliser un plugin disponible sur
+Pour check_mk, on va utiliser un plugin disponible sur
 [Github](https://github.com/rmblake/check_mk-slack)
 (rmblake/check_mk-slack) écrit en python.
 
 Dans le cas d'une installation via le package, il faudra placer le
-plugin dans */omd/sites/**'<monsite'>**/share/check_mk/notifications*
-sans oublier de rendre le script exécutable
+plugin dans `/omd/sites/<monsite>/share/check_mk/notifications`
+sans oublier de rendre le script exécutable :
 
 ```bash
-λ jeremy ~ → wget -O /omd/sites/**<monsite>**/share/check_mk/notifications https://raw.githubusercontent.com/rmblake/check_mk-slack/master/slack && chmod +x /omd/sites/**<monsite>**/share/check_mk/notifications
+wget -O /omd/sites/<monsite>/share/check_mk/notifications https://raw.githubusercontent.com/rmblake/check_mk-slack/master/slack
+chmod +x /omd/sites/<monsite>/share/check_mk/notifications
 ```
 
-Dans ce script, il faudra modifier quelques variables pour que celui-ci
-fonctionne
+Dans ce script, il faudra modifier quelques variables pour que celui-ci fonctionne :
 
 ```bash
 slack_path = "/services/T6AE8D9QU/BE8UA9LUE/2DtDzTQ61UpURxc4kfMK74JF"
@@ -45,44 +38,34 @@ bot_name = "Monitoring"
 proxies = {}
 ```
 
-Si tout vous semble correct, il est possible de tester le script en
-ligne de commande :
+Si tout semble correct, il est possible de tester le script en ligne de commande :
 
 ```bash
-λ jeremy ~ → export NOTIFY_HOSTNAME=TestHost
-λ jeremy ~ → export NOTIFY_WHAT=""
-λ jeremy ~ → export NOTIFY_HOSTACKCOMMENT=false
-λ jeremy ~ → export NOTIFY_NOTIFICATIONAUTHOR=""
-λ jeremy ~ → export NOTIFY_HOSTSTATE=DOWN
-λ jeremy ~ → export NOTIFY_NOTIFICATIONTYPE="WARNING"
-λ jeremy ~ → ./slack
+export NOTIFY_HOSTNAME=TestHost
+export NOTIFY_WHAT=""
+export NOTIFY_HOSTACKCOMMENT=false
+export NOTIFY_NOTIFICATIONAUTHOR=""
+export NOTIFY_HOSTSTATE=DOWN
+export NOTIFY_NOTIFICATIONTYPE="WARNING"
+./slack
 ```
 
-Si l'output de la commande est autre que **200** alors votre
-configuration est incorrecte
+Si l'output de la commande est autre que **200** alors la configuration est incorrecte.
 
 ## Configuration check_mk (GUI)
 
-Pour que notre nouveau '"service de notification'" soit vu par Check_MK,
-il faut redémarrer le site
+Pour que le nouveau service de notification soit vu par Check_MK, il faut redémarrer le site :
 
 ```bash
-λ jeremy ~ → omd restart <monsite>
+omd restart <monsite>
 ```
 
-Une fois la partie CLI correcte, nous allons maintenant configurer notre
-partie graphique afin de recevoir nos notifications via Slack.
+Une fois la partie CLI correcte, on configure la partie graphique afin de recevoir les notifications via Slack.
 
-Pour cela, rendez-vous dans la partie **Notifications** de Check_MK et
-cliquer sur **New Rule**
+Pour cela, rendez-vous dans la partie **Notifications** de Check_MK et cliquer sur **New Rule**.
 
-Dans la partie **Notification method** : Nous allons choisir **CMK-Slack
-Websocket Notification** en tant que **Notification method** avec comme
-option **Call with the following parameters** avec comme paramètre le
-nom de votre channel (Dans notre cas monitoring)
+Dans la partie **Notification method** : choisir **CMK-Slack Websocket Notification** en tant que **Notification method** avec comme option **Call with the following parameters** avec comme paramètre le nom du channel (dans notre cas `monitoring`).
 
-Dans la partie **Contact Selection**, nous envoyons les notifications
-uniquement pour le contact **cmkadmin** (ou celui que vous souhaitez)
+Dans la partie **Contact Selection**, on envoie les notifications uniquement pour le contact **cmkadmin** (ou celui de son choix).
 
-Et voilà, nous avons désormais un système de notification Slack
-fonctionnel
+On dispose désormais d'un système de notification Slack fonctionnel.

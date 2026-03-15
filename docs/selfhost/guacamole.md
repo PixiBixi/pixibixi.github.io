@@ -7,7 +7,7 @@ tags:
 
 # Guacamole : l'outil idéal pour établir des sessions RDP, SSH et VNC
 
-!!! warning Deprecated
+!!! warning "Deprecated"
     Avec l'arrivée de [GoTeleport](https://goteleport.com/) (Bastion SSH/K8S via RBAC, recording de session...), je trouve l'usage de Guacamole démodé.
 
 ## Installation sous Debian
@@ -23,16 +23,16 @@ tags:
 3. fournis par Guacamole client (le fichier guacamole.war qui peut être
     construit à partir des sources du client ou directement téléchargé)
 
-Si vous être réfractaire au Java, passez votre chemin.
+Si on est réfractaire au Java, passez votre chemin.
 
-## Prérequis
+## Installation des dépendances
 
-Il faut posséder une Debian à jour. Comme il n'y a plus de paquets officiels, nous devons donc le compiler à la main.
+Il faut posséder une Debian à jour. Comme il n'y a plus de paquets officiels, on doit le compiler à la main.
 
-!!! warning Package Name
-    Certains noms de dépendances changent si vous êtes sous Ubuntu ou Debian, veuillez consulter la [documentation](https://guacamole.apache.org/doc/gug/installing-guacamole.html)
+!!! warning "Package Name"
+    Certains noms de dépendances changent selon Ubuntu ou Debian, consulter la [documentation](https://guacamole.apache.org/doc/gug/installing-guacamole.html)
 
-Vous devez installer Tomcat 9/10 comme décrit dans cette page.
+Installer Tomcat 9/10 comme décrit dans cette page.
 
 ```bash
 sudo apt install build-essential tomcat10 libjpeg62-turbo-dev libjpeg62-dev libpng-dev libtool-bin uuid-dev libossp-uuid-dev libpulse-dev libcairo2-dev libssl-dev libvncserver-dev libvorbis-dev libtelnet-dev libssh2-1-dev libpango1.0-dev freerdp2-dev libwebsockets-dev libwebp-dev
@@ -67,7 +67,7 @@ sudo ldconfig
 sudo cp guacamole-1.5.2.war /var/lib/tomcat10/webapps/guacamole.war
 ```
 
-Vous pouvez en lieu et place utiliser maven à partir des sources du
+On peut en lieu et place utiliser maven à partir des sources du
 client pour compiler le fichier war.
 
 ## Installation des fichiers de configuration
@@ -91,7 +91,7 @@ Le fichier `guacamole.properties` à **éditer ou vérifier avant de redémarrer
      guacd-hostname: localhost
      guacd-port:     4822
      # Auth provider class (authenticates user/pass combination, needed if using the provided login screen)
-     # Le chemin vers user-mapping.xml doit être un chein complet et non relatif !
+     # Le chemin vers user-mapping.xml doit être un chemin complet et non relatif !
      auth-provider: net.sourceforge.guacamole.net.basic.BasicFileAuthenticationProvider
      basic-user-mapping: /etc/guacamole/user-mapping.xml
 ```
@@ -99,21 +99,20 @@ Le fichier `guacamole.properties` à **éditer ou vérifier avant de redémarrer
 Pour le fichier user-mapping.xml, référez-vous à la [documentation
 officielle.](https://guacamole.apache.org/doc/gug/configuring-guacamole.html)
 
-* [Démarrage]{.underline}
+### Démarrage
 
 ```bash
 sudo systemctl tomcat10.service restart
 sudo systemctl guacd.service restart
 ```
 
-L'url <http://fqdn:8080/guacamole> doit vous permettre d'accéder à
+L'url <http://fqdn:8080/guacamole> doit permettre d'accéder à
 l'application. Toutefois, tout transite en clair sur le réseau et rien
 n'est sécurisé.
 
-* [Reverse proxy avec nginx]{.underline}
+### Reverse proxy avec nginx
 
-Le reverse proxy en question, je vous épargne la partie liée à **TLS qui
-est indispensable**.
+Le reverse proxy en question — la partie TLS est indispensable.
 
 ```nginx
        location / {
@@ -127,7 +126,7 @@ est indispensable**.
 
 ## Accès et utilisation
 
-Rendez-vous sur la page <https://fqdn/> et insérez le nom d'utilisateur
-et votre mot de passe (préférez le hash MD5, ce n'est mieux que rien).
+Rendez-vous sur la page <https://fqdn/> et insérer le nom d'utilisateur
+et le mot de passe (préférer le hash MD5, c'est mieux que rien).
 Il est également possible de gérer de façon avancée les utilisateurs
-avec mysql ou pgsql, chose que je ne traite pas ici.
+avec mysql ou pgsql.

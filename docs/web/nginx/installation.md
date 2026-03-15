@@ -6,19 +6,15 @@ tags:
 
 # Installer son Serveur Web : NGINX, PHP-FPM et MariaDB
 
-## Préambule
+On va voir comment installer et configurer correctement NGINX,
+PHP-FPM et MariaDB en ajoutant des sources pour obtenir des versions à jour.
+Pour les sources de nginx, remplacer *codename* par sa distribution.
 
-Nous allons voir comment installer et configurer correctement NGINX,
-PHP-FPM et MariaDB. Pour cela, nous allons ajouter des sources afin
-d'obtenir des versions plus à jour de ces différents logiciels Pour les
-sources de nginx, il faudra remplacer *codename* par sa distribution
-(Wheezy, Jessie...)
-
-| **Sites officiels**               | **Liens utiles** |
-| --------------------------------- |-------------------------------------------------------------------|
-| [NGINX](https://nginx.com/)       |[Doc NGINX](http://nginx.org/en/docs/) |
-| [PHP](http://php.net/)           |[Manuel PHP](http://php.net/manual/fr/) |
-| [MariaDB](https://mariadb.org/)  |[Documentation MariaDB](https://mariadb.com/kb/en/documentation/) |
+| **Sites officiels**              | **Liens utiles**                                                   |
+| -------------------------------- | ------------------------------------------------------------------ |
+| [NGINX](https://nginx.com/)      | [Doc NGINX](http://nginx.org/en/docs/)                             |
+| [PHP](http://php.net/)           | [Manuel PHP](http://php.net/manual/fr/)                            |
+| [MariaDB](https://mariadb.org/)  | [Documentation MariaDB](https://mariadb.com/kb/en/documentation/)  |
 
 ## Installer et configurer NGINX
 
@@ -36,14 +32,9 @@ nginx:
         500 http://security.debian.org/debian-security buster/updates/main amd64 Packages
 ```
 
-Si l'on utilise les repositories de base de Debian Buster, ceux-ci nous
-installent la version **1.14.2** de NGINX. Actuellement, nous en sommes
-à la **1.21.2**. C'est pour cela que nous ajoutons des repositories
-afin d'obtenir une version à jour (Dans notre cas, les repositories du
-site officiel)
-
-Cela nous évite bon nombres de failles, et nous permet également de
-profiter de toutes les dernières nouveautés.
+Si on utilise les repositories de base de Debian Buster, ceux-ci installent
+la version **1.14.2** de NGINX. Actuellement on en est à la **1.21.2**. C'est pour ça
+qu'on ajoute les repositories du site officiel pour obtenir une version à jour.
 
 Tout d'abord, on commence par ajouter le depot NGINX à Debian
 
@@ -61,8 +52,7 @@ $ curl https://nginx.org/keys/nginx_signing.key | gpg --dearmor '
     | sudo tee /usr/share/keyrings/nginx-archive-keyring.gpg >/dev/null
 ```
 
-Afin d'être sûr que nous allons utiliser les repository Debian, on
-ajoute un Pinning :
+Afin d'être sûr qu'on va utiliser les repository Debian, on ajoute un Pinning :
 
 ```bash
 echo -e "Package: *\nPin: origin nginx.org\nPin: release o=nginx\nPin-Priority: 900\n" | sudo tee /etc/apt/preferences.d/99nginx
@@ -71,8 +61,7 @@ echo -e "Package: *\nPin: origin nginx.org\nPin: release o=nginx\nPin-Priority: 
 Et enfin, on effectue un `apt-get update` pour mettre à jour nos
 packets disponibles.
 
-Si tout marche bien, voici ce que nous devrions obtenir lorsque l'on
-fait la commande `apt-cache policy nginx`
+Si tout marche bien, voici ce qu'on devrait obtenir avec `apt-cache policy nginx` :
 
 ```bash
     └─# apt-cache policy nginx
@@ -116,12 +105,11 @@ Voici les options de compilations du paquet **nginx**
     --with-ipv6
     ```
 
-Désormais, nginx est quasiment prêt à être utilisé, il nous reste plus
-qu'à le configurer.
+Désormais, nginx est quasiment prêt à être utilisé, il reste à le configurer.
 
-Voici ma configuration personnel que j'utilise
+Voici une configuration personnelle :
 
-<!-- markdownlint-disable -->
+<!-- markdownlint-disable MD046 MD034 -->
 ??? example "File: /etc/nginx/nginx.conf"
     ```nginx
     user www-data;
@@ -199,22 +187,20 @@ Voici ma configuration personnel que j'utilise
         include /etc/nginx/sites-enabled/*;
     }
     ```
-<!-- markdownlint-enable -->
+<!-- markdownlint-enable MD046 MD034 -->
 
 Évidemment, ce fichier n'est pas à recopier tel quel, mais il y a tout
 de même certains points importants à conserver :
 
 * `user` qui sera l'utilisateur qui exécutera les instances nginx
 * `worker_processes` qui définira combien d'instances seront
-    exécutées en simultanées (Ce nombre doit correspondre au nombre de
-    coeurs `logiques` dont dispose votre CPU). Vous pouvez disposez de
-    cette information via la commande *nproc*. La valeur `auto` est
-    censée définir le bon nombre de workers automatiquement
+    exécutées en simultanées (ce nombre doit correspondre au nombre de
+    coeurs `logiques` du CPU). La commande *nproc* donne cette info.
+    La valeur `auto` est censée définir le bon nombre de workers automatiquement
 * `include` qui permet d'inclure différents éléments de
-    configuration à votre `nginx.conf` afin de rendre celui-ci plus
-    clair. Nous pouvons voir dans notre exemple que nos sites se
-    trouvent dans le répertoire *sites-enabled* et que certains éléments
-    de configuration se trouvent dans le répertoire //conf.d/static/ //
+    configuration à `nginx.conf` pour le rendre plus clair. Les sites
+    se trouvent dans *sites-enabled* et certains éléments
+    de configuration dans *conf.d/static/*
 * `server_tokens` une valeur très importante, celle-ci doit être
     mise à `off`. Cette valeur évite à nginx de montrer des éléments
     importants tel que son numéro de version. Ces éléments peuvent être
@@ -222,14 +208,12 @@ de même certains points importants à conserver :
 * `ignore_invalid_headers` est également une directive assez
     intéréssante. Si des bots tentent de se connecter avec un header
     incorrect, nginx leur retourne une erreur 404.
-* `resolver` nous permet de spécifier les DNS qui vont être utilisés
-    dans les logs pour résoudre les différents noms de domaines
+* `resolver` permet de spécifier les DNS utilisés dans les logs pour résoudre les noms de domaines
 
 La directive *more_set_headers* permet de ne pas dévoiler son serveur
-web, et n'est disponible que via le package **nginx-extras**
+web, et n'est disponible que via le package **nginx-extras**.
 
-Comme vous pouvez le voir, on inclut également différents fichiers, les
-voici :
+On inclut également différents fichiers :
 
 ??? example "File: /etc/nginx/conf.d/filecache.conf"
     ```nginx
@@ -276,20 +260,13 @@ internet.
     `Attention` plus la compression gzip sera forte (9), plus le CPU
     va être sollicité.
 * `gzip_disable` permet de désactiver la compression GZip selon
-    l'User-Agent (Par exemple, ici, nous désactivons la compression
-    gzip pour `IE4 à IE6`)
-* `gzip_min_length` spécifie quelle est la longueur minimale d'un
-    élément qui doit être '"gzippé'". Il dépend du header
-    *Content-Length*
-* `gzip_proxied` spécifie les éléments qui doivent être '"gzippé'"
-    lorsque nginx agit comme reverse-proxy
-* `gzip_types` est également une autre ligne importante. C'est ici
-    que l'on doit spécifié les `MIME-Types` des différents éléments
-    qui vont être '"gzippés'"
-* `gzip_vary` indique si un ajout va être effectué dans le header si
-    le fichier a été '"gzippé'"
+    l'User-Agent (par exemple, ici on désactive la compression gzip pour `IE4 à IE6`)
+* `gzip_min_length` spécifie la longueur minimale d'un élément qui doit être gzippé. Il dépend du header *Content-Length*
+* `gzip_proxied` spécifie les éléments qui doivent être gzippés lorsque nginx agit comme reverse-proxy
+* `gzip_types` est également une autre ligne importante. C'est ici qu'on spécifie les `MIME-Types` des différents éléments qui vont être gzippés
+* `gzip_vary` indique si un ajout va être effectué dans le header si le fichier a été gzippé
 
-<!-- markdownlint-disable -->
+<!-- markdownlint-disable MD046 MD034 -->
 ??? example "File: /etc/nginx/snippets/ssl.conf"
     ```nginx
     ###
@@ -316,7 +293,7 @@ internet.
     ssl_certificate /etc/nginx/ssl/server.crt;
     ssl_certificate_key /etc/nginx/ssl/server.key;
     ```
-<!-- markdownlint-enable -->
+<!-- markdownlint-enable MD046 MD034 -->
 
 Le fichier **ssl.conf** est à inclure seulement si l'on souhaite du SSL
 sur ses sites web
@@ -333,17 +310,14 @@ voir carrément entrainer **un refus du navigateur**. Nous activons
 également le protocole **HSTS** (Plus d'informations
 [ici](http://www.bortzmeyer.org/6797.html))
 
-Pour avoir une bonne cipher list, et de bons paramètres SSL, je vous
-recommande d'aller voir le [Wiki
-Mozilla](https://wiki.mozilla.org/Security/Server_Side_TLS)
+Pour avoir une bonne cipher list et de bons paramètres SSL, voir le [Wiki
+Mozilla](https://wiki.mozilla.org/Security/Server_Side_TLS).
 
-Je n'ai volontairement pas mis une configuration CSP (Content Security
-Protocol) car il s'agit d'un protocole délicat à mettre en place, et
-je vous renvoie vers l'[article de préférence](https://content-security-policy.com/)
+La configuration CSP (Content Security Policy) n'est pas couverte ici — c'est un protocole délicat à mettre en place, voir [content-security-policy.com](https://content-security-policy.com/).
 
 Voici désormais des snippets utiles pour ses différents blocks nginx :
 
-<!-- markdownlint-disable -->
+<!-- markdownlint-disable MD046 MD034 -->
 ??? example "File: /etc/nginx/snippets/protect.conf"
     ```nginx
     ###
@@ -360,7 +334,7 @@ Voici désormais des snippets utiles pour ses différents blocks nginx :
         deny all;
     }
     ```
-<!-- markdownlint-enable -->
+<!-- markdownlint-enable MD046 MD034 -->
 
 Ce fichier nous permet d'éviter que des fichiers de configuration ou
 autres soient accessible par tout le monde. Il s'agit d'un fichier
@@ -370,9 +344,9 @@ cas-là, il faut les ajouter manuellement.
 
 ### Snippets
 
-Snippets utiles pour vos vhosts (snippets/letsencrypt.conf)
+Snippets utiles pour les vhosts (`snippets/letsencrypt.conf`) :
 
-<!-- markdownlint-disable -->
+<!-- markdownlint-disable MD046 MD034 -->
 ??? example "File: /etc/nginx/snippets/letsencrypt.conf"
     ```nginx
     location ^~ /.well-known/acme-challenge/ {
@@ -384,23 +358,20 @@ Snippets utiles pour vos vhosts (snippets/letsencrypt.conf)
         root /var/www/letsencrypt;
     }
     ```
-<!-- markdownlint-enable -->
+<!-- markdownlint-enable MD046 MD034 -->
 
 ## Installer et configurer PHP7-FPM
 
-Commande à adapter selon les modules que vous souhaitez. Généralement,
-ces derniers sont suffisant pour 99% des installations.
+Commande à adapter selon les modules souhaités. Généralement suffisant pour 99% des installations :
 
-<!-- markdownlint-disable MD013 -->
 ```bash
 apt-get -y install php-common php8.2 php8.2-bz2 php8.2-cli php8.2-common php8.2-curl php8.2-fpm php8.2-gd php8.2-geoip php8.2-gmp php8.2-igbinary php8.2-imagick php8.2-intl php8.2-json php8.2-mbstring php8.2-mcrypt php8.2-memcached php8.2-msgpack php8.2-mysql php8.2-opcache php8.2-readline php8.2-sqlite3 php8.2-xml php8.2-xmlrpc php8.2-zip
 ```
 
-Nous allons maintenant passer à la configuration de base de **PHP-FPM**,
-tout se situe dans le répertoire /etc/php/8.2/fpm/ et ses
-sous-répertoires. (8.2 a remplacer par votre numéro de version)
+La configuration de base de **PHP-FPM** se situe dans `/etc/php/8.2/fpm/`
+et ses sous-répertoires (adapter 8.2 à la version installée).
 
-Nous allons éditer le fichier php.ini :
+Éditer le fichier `php.ini` :
 
 * `expose_php` : Désactivation afin de ne pas exposer la version de
     PH
@@ -432,9 +403,8 @@ pour la configuration de l'OPcache. La variable
 5165
 ```
 
-Pour notre exemple, 10000 fichiers sont largement suffiants. Aucune
-astuce existe pour calculer *opcache.memory_consumption*. Il faudra
-surveiller votre monitoring.
+Pour cet exemple, 10000 fichiers sont largement suffisants. Aucune
+astuce n'existe pour calculer *opcache.memory_consumption* — il faut surveiller le monitoring.
 
 ## Installer et configurer MariaDB
 
@@ -469,12 +439,9 @@ Si tout se passe comme il faut, on lance l'installation du serveur SQL
 apt-get install mariadb-server
 ```
 
-Pendant l'installation de **mariadb-server**, vous allez obtenir une fenêtre vous demandant de spécifier un password
+Pendant l'installation de **mariadb-server**, une fenêtre demande de spécifier un password.
 
-Cette fenêtre est **très importante**, elle va vous permettre de définir
-votre **root password** pour gérer vos bases de données, il faut
-utiliser un mot de passe relativement puissant pour qu'il ne puisse pas
-être découvert ou cracké, sans quoi, tous vos sites sont à nus.
+Cette fenêtre est **très importante** — elle permet de définir le **root password** pour gérer les bases de données. Utiliser un mot de passe solide, sans quoi tous les sites sont exposés.
 
 Et on finit par le script made in MariaDB pour sécuriser le tout
 
