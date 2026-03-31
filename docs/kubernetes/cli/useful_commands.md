@@ -108,3 +108,57 @@ Permet de forcer le refresh de tous les ExternalSecrets qui sont en erreur
         kubectl annotate es -n $NS $ES_NAME force-sync=$(date +%s) --overwrite
     done < <(kubectl get es -A|grep -i SecretSyncedError|awk {'print $1 " " $2'})
     ```
+
+---
+
+Le Cluster Autoscaler publie son état dans un ConfigMap `cluster-autoscaler-status` dans `kube-system`. On lit ça avec `kubectl describe configmap` (alias `kdcm`) — utile pour savoir si le CA est en bonne santé, s'il y a un scale-up/down en cours, ou s'il est en backoff sur un node group.
+
+??? note "cluster-autoscaler-status"
+    ```bash
+    kubectl describe configmap cluster-autoscaler-status -n kube-system
+    # ou avec l'alias kdcm :
+    kdcm cluster-autoscaler-status -n kube-system
+    ```
+
+    Output typique :
+
+    ```
+    Name:         cluster-autoscaler-status
+    Namespace:    kube-system
+    Annotations:  cluster-autoscaler.kubernetes.io/last-updated: 2024-01-15 10:30:00 +0000 UTC
+
+    Data
+    ====
+    status:
+    ----
+    Cluster-wide:
+      Health:      Healthy (ready=10 unready=0 notStarted=0 longNotStarted=0 registered=10 longUnregistered=0)
+                   LastProbeTime:      2024-01-15 10:30:00 +0000 UTC
+                   LastTransitionTime: 2024-01-14 08:00:00 +0000 UTC
+      ScaleUp:     NoActivity (ready=10 registered=10)
+                   LastProbeTime:      2024-01-15 10:30:00 +0000 UTC
+                   LastTransitionTime: 2024-01-15 10:00:00 +0000 UTC
+      ScaleDown:   NoCandidates (candidates=0)
+                   LastProbeTime:      2024-01-15 10:30:00 +0000 UTC
+                   LastTransitionTime: 2024-01-15 10:00:00 +0000 UTC
+
+    NodeGroups:
+      Name:        eks-node-group-abc123
+      Health:      Healthy (ready=5 unready=0 notStarted=0 longNotStarted=0 registered=5 longUnregistered=0 cloudProviderTarget=5 (minSize=2, maxSize=10))
+                   LastProbeTime:      2024-01-15 10:30:00 +0000 UTC
+                   LastTransitionTime: 2024-01-14 08:00:00 +0000 UTC
+      ScaleUp:     NoActivity (ready=5 cloudProviderTarget=5)
+                   LastProbeTime:      2024-01-15 10:30:00 +0000 UTC
+                   LastTransitionTime: 2024-01-15 10:00:00 +0000 UTC
+      ScaleDown:   NoCandidates (candidates=0)
+                   LastProbeTime:      2024-01-15 10:30:00 +0000 UTC
+                   LastTransitionTime: 2024-01-15 10:00:00 +0000 UTC
+    ```
+
+    Les champs clés à surveiller :
+
+    - **`Health`** — `Healthy` = tout va bien ; `Unhealthy` = des nodes ne s'enregistrent pas
+    - **`ScaleUp`** — `NoActivity` = pas de scale-up en cours ; `InProgress` = scale-up déclenché
+    - **`ScaleDown`** — `NoCandidates` = rien à supprimer ; si on voit un candidat et que ça dure, le CA est peut-être en backoff
+    - **`cloudProviderTarget`** = taille cible du node group côté cloud provider
+    - **`minSize` / `maxSize`** = bornes configurées sur le node group
