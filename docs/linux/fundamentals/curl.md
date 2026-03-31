@@ -58,6 +58,35 @@ curl --write-out %{json} https://google.com -o saved
 Toutes les options de '--write-out sont disponibles
 [ici](https://curl.se/docs/manpage.html#-w)
 
+### Résolution DNS forcée
+
+Pratique pour tester un backend avant propagation DNS, ou cibler un nœud précis derrière un load balancer sans toucher `/etc/hosts`.
+
+`--resolve` force curl à mapper `host:port` vers une IP spécifique, tout en conservant le bon `Host` header et la validation SNI/TLS :
+
+```bash
+# Tester le nouveau serveur avant de changer le DNS
+curl --resolve example.com:443:1.2.3.4 https://example.com
+
+# Cibler un nœud précis derrière un LB (avec headers et statut HTTP)
+curl -sI --resolve api.example.com:443:10.0.1.42 https://api.example.com/health
+```
+
+On peut enchaîner plusieurs `--resolve` dans la même commande pour des redirections cross-domaines :
+
+```bash
+curl --resolve origin.example.com:443:10.0.1.10 \
+     --resolve cdn.example.com:443:10.0.1.11 \
+     https://origin.example.com
+```
+
+Pour une variante sans port, `--connect-to` fait la même chose mais s'applique à tous les ports d'un coup :
+
+```bash
+# Redirige tout le trafic vers example.com vers staging.internal
+curl --connect-to example.com::staging.internal: https://example.com
+```
+
 ### Détails CRT
 
 On peut avoir quelques détails sur le CRT en utilisant cURL et un peu de
