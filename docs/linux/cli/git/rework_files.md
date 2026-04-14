@@ -63,7 +63,34 @@ On regarde le fichier `Analyze/blob-shas-and-paths.txt` pour voir ce qui nous pr
 
 Les 3 premiers fichiers occupent donc une grande majorité de notre repository, sans que ceux-ci ne nous soit utiles... Nous pouvons donc économiser près de 99% d'espace.
 
-Pour les supprimer
+Pour les supprimer, deux méthodes sont possibles.
+
+## Méthode moderne : `git filter-repo` (recommandée)
+
+`git filter-repo` est la méthode recommandée depuis Git 2.24+. Elle est bien plus rapide que `filter-branch` et réécrit l'historique proprement en une seule commande.
+
+```bash
+root~ git filter-repo --path my/path1/rescue.gz --invert-paths
+```
+
+Pour supprimer plusieurs fichiers en une passe :
+
+```bash
+root~ git filter-repo \
+  --path my/path1/rescue.gz \
+  --path my/path2/jessie.gz \
+  --path my/path3/wheezy.gz \
+  --invert-paths
+```
+
+> **Note :** `git filter-repo` supprime automatiquement le remote `origin`. Il faut le ré-ajouter avant de force-pusher.
+
+```bash
+root~ git remote add origin <url>
+root~ git push --force origin main
+```
+
+## Méthode historique : `git filter-branch` (dépréciée)
 
 ```bash
 ~root git:(master) git filter-branch --force --index-filter \
