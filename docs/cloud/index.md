@@ -21,6 +21,7 @@ tags:
 - [Azure — Disques éphémères](azure/ephemeral_disks.md) — configuration et cas d'usage
 - [Azure — Commandes misc](azure/misc_commands.md) — one-liners utiles
 - [GCP — Commandes](gcloud/gcloud_commands.md) — CLI gcloud pour le quotidien
+- [GKE — Capacité réelle des nodes](gcloud/gke_node_capacity.md) — CPU et RAM allouables après réservations système
 - [GKE — Spot Nodes](gcloud/spot_nodes.md) — réduire les coûts avec les Spot VMs (gain 4-5x)
 - [GKE — Upgrades](gcloud/gke_upgrades.md) — process de mise à jour des clusters
 - [GCP — Workload Identity](gcloud/workload_identity.md) — fédération d'identité sans clés de service
