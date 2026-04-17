@@ -39,7 +39,7 @@ Source : [GKE — Plan node sizes / Resource reservations](https://docs.cloud.go
 Valeurs calculées pour des nodes avec autant de GiB que de vCPU (ex: 4 GiB / 4 vCPU) :
 
 | Node (GiB / vCPU) | RAM réservée (GiB) | RAM allouable (GiB) | CPU réservé (vCPU) | CPU allouable (vCPU) | Efficacité RAM |
-| --- | --- | --- | --- | --- | --- |
+| --: | --: | --: | --: | --: | --: |
 | 4 | 1,10 | 2,90 | 0,08 | 3,92 | 72,5% |
 | 8 | 1,90 | 6,10 | 0,09 | 7,91 | 76,3% |
 | 16 | 2,70 | 13,30 | 0,11 | 15,89 | 83,1% |
