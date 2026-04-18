@@ -184,6 +184,10 @@ Cette magnifique documentation a été faite avec MkDocs Material. [→ À propo
 
 * [Log des slow queries de ElasticSearch](databases/elasticsearch/log_slow_queries.md)
 
+### MongoDB
+
+* [Dump et import d'indexes](databases/mongodb/dump-import-indexes.md)
+
 ## Cloud
 
 ### AWS

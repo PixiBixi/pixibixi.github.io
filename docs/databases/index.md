@@ -1,10 +1,11 @@
 ---
-description: MySQL, PostgreSQL, Redis, Elasticsearch et Memcached — administration, réplication et troubleshooting.
+description: MySQL, PostgreSQL, Redis, Elasticsearch, Memcached et MongoDB — administration, réplication et troubleshooting.
 tags:
   - MySQL
   - PostgreSQL
   - Redis
   - Elasticsearch
+  - MongoDB
 ---
 
 # Databases
@@ -26,3 +27,4 @@ Les bases de données, c'est là où tout se passe quand ça plante. Cette secti
 - [Redis — Decode function](redis/decode_function.md) — décoder les données sérialisées
 - [Elasticsearch — Slow queries](elasticsearch/log_slow_queries.md) — activer et lire les slow logs
 - [Memcached — Commandes](memcached/misc_commands.md) — stats et debug via telnet
+- [MongoDB — Dump et import d'indexes](mongodb/dump-import-indexes.md) — exporter/réimporter les indexes avec mongosh
