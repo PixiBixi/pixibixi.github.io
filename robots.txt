@@ -28,4 +28,6 @@ Disallow: /
 User-agent: cohere-ai
 Disallow: /
 
+Content-Signal: ai-train=no, search=yes, ai-input=no
+
 Sitemap: https://wiki.jdelgado.fr/sitemap.xml
