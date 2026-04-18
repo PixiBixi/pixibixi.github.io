@@ -12,7 +12,7 @@ Déployant des HAproxy sur K8S, j'ai décidé (à mauvais titre) de mettre une l
 
 La documentation de HAproxy étant ce qu'elle est, voilà ce que j'ai vu au tout début dans celle-ci. Rien n'indiquant explicitement que cap la mémoire allait hardcode le maxconn ou autre paramètre.
 
-??? note "-m parameter HAproxy"
+!!! note "-m parameter HAproxy"
     ```cfg
       -m <limit> : limit the total allocatable memory to <limit> megabytes across
         all processes. This may cause some connection refusals or some slowdowns
