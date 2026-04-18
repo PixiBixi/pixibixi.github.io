@@ -63,4 +63,5 @@ MaxconnReached: 0
 
 65000 maxconn avec un maxconnrate à 1600, déjà un peu mieux pour gérer les peaks.
 
-Ne pas négliger la mémoire allouée à HAproxy sous peine de surprises. S'assurer aussi que la documentation consultée correspond bien à la version de HAproxy en production.
+!!! warning
+    Ne pas négliger la mémoire allouée à HAproxy sous peine de surprises. S'assurer aussi que la documentation consultée correspond bien à la version de HAproxy en production.
