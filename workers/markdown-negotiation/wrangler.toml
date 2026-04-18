@@ -1,0 +1,8 @@
+name            = "wiki-markdown-negotiation"
+main            = "src/index.js"
+compatibility_date = "2024-09-23"
+
+# Route: intercept all requests to the wiki
+[[routes]]
+pattern   = "wiki.jdelgado.fr/*"
+zone_name = "jdelgado.fr"
