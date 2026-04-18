@@ -202,6 +202,7 @@ Cette magnifique documentation a été faite avec MkDocs Material. [→ À propo
 * [Commandes utiles pour la CLI GCP](./cloud/gcloud/gcloud_commands.md)
 * [GKE Spot Nodes](./cloud/gcloud/spot_nodes.md)
 * [GKE Workload Identity](./cloud/gcloud/workload_identity.md)
+* [Capacité réelle des nodes GKE](./cloud/gcloud/gke_node_capacity.md)
 
 ### Azure
 
