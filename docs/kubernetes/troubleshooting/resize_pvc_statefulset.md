@@ -15,6 +15,10 @@ Heureusement, tout est possible eheh
 
 * On commence par modifier la taille de ses PVC sur les pods : `kubectl edit pvc`
 * On delete le statefulset **sans** toucher les pods associés : `kubectl delete sts my-statefulset --cascade=orphan`
+
+!!! warning
+    Le flag `--cascade=orphan` est critique — sans lui, les pods sont supprimés avec le StatefulSet.
+
 * On modifie le template PVC dans le statefulset : `kubectl edit sts my-statefulset`
 
 Hoplà, on aura notre templace PVC modifié pour nos STS

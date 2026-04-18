@@ -83,7 +83,8 @@ root~ git filter-repo \
   --invert-paths
 ```
 
-> **Note :** `git filter-repo` supprime automatiquement le remote `origin`. Il faut le ré-ajouter avant de force-pusher.
+!!! warning
+    `git filter-repo` supprime automatiquement le remote `origin`. Il faut le ré-ajouter avant de force-pusher.
 
 ```bash
 root~ git remote add origin <url>

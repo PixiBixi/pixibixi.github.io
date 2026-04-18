@@ -18,14 +18,12 @@ Pour y parvenir, plusieurs méthodes sont disponibles :
 * Filtre IP sur le reverse-proxy
 * Ajout d'une règle IPTables et création d'une liste ipset
 
-Dans ce tutoriel, nous allons appliquer la dernière règle qui est la
-plus optimisée. iptables charge un module appelé *xt_conntrack* qui
-s'occupe d'analyser les trames. Cependant, un trop grand nombre de
-règle iptables entraine une **importante** dégradation de la stack
-TCP/IP (Ce phénomène a été observé de nombreuses fois).
+Dans ce tutoriel, nous allons appliquer la dernière règle qui est la plus optimisée. iptables charge un module appelé *xt_conntrack* qui s'occupe d'analyser les trames.
 
-C'est pour cela que nous utilisons ipset qui nous permet de créer de
-listes d'IP.
+!!! warning
+    Un trop grand nombre de règles iptables entraine une **importante** dégradation de la stack TCP/IP — phénomène observé de nombreuses fois.
+
+C'est pour cela que nous utilisons ipset qui nous permet de créer des listes d'IP.
 
 ## Requirements
 

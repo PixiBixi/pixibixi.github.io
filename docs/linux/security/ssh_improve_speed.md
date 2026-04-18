@@ -68,12 +68,8 @@ considérable.
 
 ## Précautions
 
-Attention, même si l'option ControlMaster du client SSH semble magique,
-celle-ci à quelques limitations. Par exemple, si nous souhaitons passer
-une large quantité de donnée via un rsync ou un scp, il se peut que
-celles-ci fail, il s'agit d'un point à ne pas négliger. Il est
-possible de désactiver l'utilisation de ControlMaster en le passant à
-none ponctuellement.
+!!! warning
+    ControlMaster a des limitations — les transferts `rsync` ou `scp` volumineux peuvent échouer. Désactiver ponctuellement avec `ControlMaster none` pour ces opérations.
 
 ## Troubleshooting
 

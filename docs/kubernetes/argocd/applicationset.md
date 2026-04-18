@@ -134,7 +134,7 @@ generators:
 ## Variables utiles dans le template
 
 | Variable | Description |
-|----------|-------------|
+| -------- | ----------- |
 | `{{name}}` | Nom du cluster |
 | `{{server}}` | URL du cluster |
 | `{{metadata.labels.env}}` | Label du cluster |
@@ -152,7 +152,8 @@ spec:
     preserveResourcesOnDeletion: true
 ```
 
-Sans ça, un `kubectl delete applicationset` en prod c'est un incident.
+!!! danger
+    Sans ça, un `kubectl delete applicationset` en prod c'est un incident.
 
 ## Pattern App of Apps
 

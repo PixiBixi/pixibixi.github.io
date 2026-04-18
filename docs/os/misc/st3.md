@@ -334,10 +334,8 @@ comme l'*apt-get* pour SublimeText, il en convient donc qu'il s'agit
 actuellement d'un plugin indispensable pour un usage convenable de
 SublimeText
 
-**Attention, même si Package Control s'avère très pratique, il est
-avéré que la plupart des versions ne sont plus mises à jour, il en
-conviendra donc d'installer la plupart du temps les plugins via leur
-dépot Git, ou bien toute autre source officielle**
+!!! warning
+    La plupart des plugins Package Control ne sont plus maintenus — préférer l'installation depuis le dépôt Git officiel du plugin.
 
 ### PHP
 

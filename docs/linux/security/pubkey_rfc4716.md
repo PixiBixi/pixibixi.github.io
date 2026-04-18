@@ -18,7 +18,8 @@ Voici donc la commande à faire :
 ssh-keygen -e -f privkey
 ```
 
-Attention à bien mettre la privkey en chmod 400
+!!! warning
+    Mettre la privkey en `chmod 400` — une clé privée world-readable est rejetée par ssh.
 
 Il est également possible de faire la même commande pour la clé publique
 

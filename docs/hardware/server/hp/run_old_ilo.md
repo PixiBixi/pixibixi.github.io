@@ -23,6 +23,7 @@ main page).
 Il faut télécharger un JAR ici :
 [http://IP_ILO/M2.JAR](http://IP_ILO/M2.JAR)
 
-**Attention** : Il s'agit d'une URl case-sensitive.
+!!! warning
+    L'URL est case-sensitive.
 
 On rentre alors son IP ILO et son identifiant, et tout est ok :)

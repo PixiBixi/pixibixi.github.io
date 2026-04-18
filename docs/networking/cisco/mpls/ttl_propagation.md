@@ -14,5 +14,5 @@ routeurs de son infra.
 
     no mpls ip propagate-ttl
 
-**Attention** si vous faites la commande sur un routeur de la chaine
-MPLS, il faut le faire sur toute la chaine pour garder une cohérence
+!!! warning
+    Si on fait la commande sur un routeur de la chaîne MPLS, il faut la faire sur toute la chaîne pour garder une cohérence.

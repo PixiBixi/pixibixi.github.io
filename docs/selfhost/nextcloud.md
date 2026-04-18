@@ -6,13 +6,10 @@ tags:
 
 # NextCloud, son cloud personnel
 
-Nextcloud est une solution de stockage et de partage de fichiers en
-ligne. Il s'agit d'un logiciel gratuit se basant sur MySQL / PHP (et
-accessoirement redis). Attention, si beaucoup d'entre vous se servent
-de NextCloud en tant que sauvegarde '"cloud'", il ne faut pas oublier de
-répliquer ses données sur un autre support de stockage et à minima
-installer NextCloud sur un RAID1 afin de se prémunir d'éventuels
-problèmes hardware.
+Nextcloud est une solution de stockage et de partage de fichiers en ligne. Il s'agit d'un logiciel gratuit se basant sur MySQL / PHP (et accessoirement redis).
+
+!!! danger
+    NextCloud n'est **pas** une solution de backup. Répliquer ses données sur un autre support de stockage, et a minima installer NextCloud sur un RAID1 pour se prémunir d'une défaillance hardware.
 
 Nous sommes à ce jour à la version 23, vous pouvez consulter le
 [changelog](https://nextcloud.com/changelog/)

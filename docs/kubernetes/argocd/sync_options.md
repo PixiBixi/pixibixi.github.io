@@ -102,8 +102,8 @@ metadata:
     argocd.argoproj.io/sync-options: Replace=true
 ```
 
-À éviter en global sur l'Application — un `Replace` sur un Service supprime et recrée l'objet,
-ce qui change le ClusterIP et casse les connexions en cours.
+!!! warning
+    À éviter en global sur l'Application — un `Replace` sur un Service supprime et recrée l'objet, ce qui change le ClusterIP et casse les connexions en cours.
 
 Si `Replace=true` et `ServerSideApply=true` sont tous les deux définis, `Replace` a la priorité.
 
@@ -119,7 +119,8 @@ metadata:
     argocd.argoproj.io/sync-options: Replace=true,Force=true
 ```
 
-Cas d'usage : un Job qu'on veut ré-exécuter à chaque déploiement. **Destructif** — interruption de service garantie sur les Deployments.
+!!! danger
+    **Destructif** — interruption de service garantie sur les Deployments. Réserver aux Jobs uniquement.
 
 ---
 
@@ -207,8 +208,8 @@ syncOptions:
   - ApplyOutOfSyncOnly=true
 ```
 
-À utiliser avec précaution : si une ressource est `Synced` dans ArgoCD mais corrompue en
-dehors (quelqu'un a édité à la main), elle ne sera pas recorrigée avant le prochain diff complet.
+!!! warning
+    À utiliser avec précaution : si une ressource est `Synced` dans ArgoCD mais corrompue en dehors (quelqu'un a édité à la main), elle ne sera pas recorrigée avant le prochain diff complet.
 
 ---
 

@@ -90,11 +90,13 @@ Nous allons configurer redis2/3 afin qu'il soit slave de redis1. Nous
 allons également les configurer pour qu'ils écoutent sur notre
 interface privée. Par défaut, redis n'écoute que sur 127.0.0.1.
 
-Selon votre version de redis, il se peut que **replicaof** ne fonctionne
-pas. Dans ces cas-là, remplacer par la directive **slaveof**
+!!! note
+    Selon la version de Redis, `replicaof` peut ne pas fonctionner. Utiliser `slaveof` à la place.
 
-Exemple pour redis2, à adapter pour redis3. Attention à ne pas
-configurer replicaof pour redis1 :
+!!! danger
+    Ne pas configurer `replicaof` pour redis1 — redis1 est le master.
+
+Exemple pour redis2, à adapter pour redis3 :
 
 ```bash
 $ cat /etc/redis/redis.conf
@@ -238,6 +240,5 @@ Le '"2'" est le nombre de replica que l'on souhaite. On élit un nouveau
 master après 1s de down. On désactive le *protected-mode* afin de
 pouvoir se connecter depuis tous les noeuds.
 
-Attention à vérifier que sentinel écoute bien sur toutes les interfaces
-(du moins, à minima celle que nous désirons) mais également que les
-ports 6379 et 26379 soit bien ouverts
+!!! warning
+    Vérifier que sentinel écoute sur toutes les interfaces désirées et que les ports 6379 et 26379 sont bien ouverts.

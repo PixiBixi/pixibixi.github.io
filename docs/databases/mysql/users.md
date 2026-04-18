@@ -19,8 +19,8 @@ SELECT PASSWORD(password); -- Création du Hash du mot de passe
 CREATE USER user@localhost IDENTIFIED BY PASSWORD *2470C0C06DEE42FD1618BB9900DFG1E6Y89F4;
 ```
 
-**Attention**, *localhost* et *127.0.0.1* n'ont pas la même définition
-en MySQL. IL faut activer *skip-name-resolve* pour cela
+!!! warning
+    `localhost` et `127.0.0.1` n'ont pas la même définition en MySQL. Il faut activer `skip-name-resolve` pour cela.
 
 Différentes méthodes d'authentification sont disponibles, par exemple,
 **IDENTIFIED VIA unix_socket** nous permettra d'être authentifié via
@@ -61,8 +61,8 @@ utilisateur, il vous suffit deffectuer la requête suivante :
 GRANT ALL ON `database`.* TO user@localhost;
 ```
 
-Maintenant, pour que les nouveaux droits attribués soient pris en
-compte, il est nécessaire de lancer la requête FLUSH.
+!!! warning
+    Pour que les nouveaux droits soient pris en compte, lancer `FLUSH PRIVILEGES`.
 
 ```sql
 FLUSH PRIVILEGES;

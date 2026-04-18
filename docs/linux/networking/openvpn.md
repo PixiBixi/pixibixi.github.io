@@ -9,9 +9,11 @@ tags:
 
 Pourquoi installer un serveur VPN ? Éviter la surveillance, contourner les géo-restrictions (Netflix, Hulu...), ou être un peu plus anonyme. La connexion étant chiffrée, on parle de **tunnel VPN**.
 
-Les VPN français ont l'obligation de conserver les logs de connexion au moins **1 an** — rien ne garantit que les logs sont désactivés sur un VPN à 2$ par mois.
+!!! warning "VPN commerciaux français"
+    Les VPN français ont l'obligation de conserver les logs de connexion au moins **1 an** — rien ne garantit que les logs sont désactivés sur un VPN à 2$ par mois.
 
-Le serveur VPN ne doit pas être sur la machine physique, sinon il est totalement inutile. Un petit VPS chez [Scaleway](https://www.scaleway.com/) fait très bien l'affaire, ou chez [YourServer](https://www.yourserver.se/) si on veut être encore plus discret (excellent petit hébergeur, staff facilement accessible).
+!!! warning "Architecture"
+    Le serveur VPN ne doit pas être sur la machine physique, sinon il est totalement inutile. Un petit VPS chez [Scaleway](https://www.scaleway.com/) fait très bien l'affaire, ou chez [YourServer](https://www.yourserver.se/) si on veut être encore plus discret.
 
 OpenVPN + easy-rsa v3 sur Debian/Ubuntu. PKI complète, config serveur et client `.ovpn` prêt à l'emploi.
 

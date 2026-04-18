@@ -256,9 +256,7 @@ internet.
 * `gzip` permet d'activer la compression gzip
 * `gzip_buffers` permet de spécifier le nombre de buffers qui vont
     être utilisés, ainsi que leur taille
-* `gzip_comp_level` spécifie lagressivité de la compression gzip.
-    `Attention` plus la compression gzip sera forte (9), plus le CPU
-    va être sollicité.
+* `gzip_comp_level` spécifie l'agressivité de la compression gzip. Plus la valeur est forte (max 9), plus le CPU est sollicité — 4 est un bon compromis.
 * `gzip_disable` permet de désactiver la compression GZip selon
     l'User-Agent (par exemple, ici on désactive la compression gzip pour `IE4 à IE6`)
 * `gzip_min_length` spécifie la longueur minimale d'un élément qui doit être gzippé. Il dépend du header *Content-Length*
@@ -441,7 +439,8 @@ apt-get install mariadb-server
 
 Pendant l'installation de **mariadb-server**, une fenêtre demande de spécifier un password.
 
-Cette fenêtre est **très importante** — elle permet de définir le **root password** pour gérer les bases de données. Utiliser un mot de passe solide, sans quoi tous les sites sont exposés.
+!!! danger
+    Cette fenêtre définit le **root password** MariaDB. Utiliser un mot de passe solide — tous les sites hébergés sont exposés si ce mot de passe est faible ou vide.
 
 Et on finit par le script made in MariaDB pour sécuriser le tout
 

@@ -42,8 +42,8 @@ quelques clés plus bas.
 
 ## Activer l'Autologon
 
-**Attention, l'autologon est une faille de sécurité, mais il peut être
-utile dans certains cas**
+!!! danger
+    L'autologon est une faille de sécurité — les credentials sont stockés en clair dans le registre. À utiliser uniquement sur des postes physiquement sécurisés.
 
 Pour l'activité, voici la clé à modifier :
 

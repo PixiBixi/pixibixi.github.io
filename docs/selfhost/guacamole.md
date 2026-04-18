@@ -72,7 +72,8 @@ client pour compiler le fichier war.
 
 ## Installation des fichiers de configuration
 
-Important, les droits de l'utilisateur tomcat10 sur le fichier `user-mapping.xml` sont indispensables.
+!!! warning
+    Les droits de l'utilisateur tomcat10 sur le fichier `user-mapping.xml` sont indispensables.
 
 ```bash
 sudo mkdir {/etc/guacamole,/usr/share/tomcat10/.guacamole}
@@ -84,7 +85,8 @@ sudo chmod 600 /etc/guacamole/user-mapping.xml
 
 ## Configuration
 
-Le fichier `guacamole.properties` à **éditer ou vérifier avant de redémarrer les services** :
+!!! warning
+    Éditer ou vérifier `guacamole.properties` **avant** de redémarrer les services.
 
 ```ini
      # Hostname and port of guacamole proxy
@@ -106,9 +108,10 @@ sudo systemctl tomcat10.service restart
 sudo systemctl guacd.service restart
 ```
 
-L'url <http://fqdn:8080/guacamole> doit permettre d'accéder à
-l'application. Toutefois, tout transite en clair sur le réseau et rien
-n'est sécurisé.
+L'url `http://fqdn:8080/guacamole` doit permettre d'accéder à l'application.
+
+!!! danger
+    À ce stade, tout transite en clair sur le réseau. Mettre en place le reverse proxy TLS avant d'exposer Guacamole.
 
 ### Reverse proxy avec nginx
 
