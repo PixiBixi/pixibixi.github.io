@@ -1,12 +1,14 @@
 User-agent: *
 Allow: /
 
+# AI search bots — allowed (search/citation)
 User-agent: GPTBot
-Disallow: /
+Allow: /
 
-User-agent: ClaudeBot
-Disallow: /
+User-agent: PerplexityBot
+Allow: /
 
+# AI training bots — blocked
 User-agent: CCBot
 Disallow: /
 
@@ -14,9 +16,6 @@ User-agent: Bytespider
 Disallow: /
 
 User-agent: Google-Extended
-Disallow: /
-
-User-agent: PerplexityBot
 Disallow: /
 
 User-agent: anthropic-ai
