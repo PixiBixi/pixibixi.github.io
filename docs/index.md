@@ -101,6 +101,7 @@ Cette magnifique documentation a été faite avec MkDocs Material. [→ À propo
 * [HAproxy : Utiliser son API](web/haproxy/api.md)
 * [HAproxy : Conserver l'IP de son utilisateur](./web/haproxy/keep_real_ip.md)
 * [HAproxy : Comportement d'une limite mémoire](./web/haproxy/memory_limit.md)
+* [HAproxy : Performance tuning](./web/haproxy/performance_tuning.md)
 
 #### FTP
 

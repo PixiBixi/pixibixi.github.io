@@ -26,6 +26,7 @@ La couche entre internet et les applications. nginx pour servir, HAProxy pour lo
 - [HAProxy — IP réelle client](haproxy/keep_real_ip.md) — propager l'IP source
 - [HAProxy — Page de maintenance](haproxy/maintenance.md) — basculer en maintenance sans redémarrage
 - [HAProxy — Limite mémoire](haproxy/memory_limit.md) — configurer maxconn et buffers
+- [HAProxy — Performance tuning](haproxy/performance_tuning.md) — threads, buffers, SSL, timeouts et tuning noyau
 - [Varnish](varnish/config.md) — configuration VCL et cache HTTP
 - [DNS](dns.md) — zones, enregistrements et outils de diagnostic
 - [Mail](mail.md) — configuration serveur mail
