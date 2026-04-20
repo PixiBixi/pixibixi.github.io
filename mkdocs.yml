@@ -206,6 +206,9 @@ extra:
     - icon: fontawesome/brands/linkedin
       link: https://www.linkedin.com/in/je-delgado
 
+extra_javascript:
+  - javascripts/copy-llm.js
+
 extra_css:
   - stylesheets/jdelgado.css
 
