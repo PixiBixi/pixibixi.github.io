@@ -61,8 +61,6 @@ décidé d'utiliser les alias du .gitconfig disponible sur
     l'URL du repository Git
 * `git-quick-stats` pour extraire les stats simplement d'un repository
 
----
-
 ## Voir aussi
 
-- [Réduire la taille de son repository Git](rework_files.md) — techniques avancées pour nettoyer un dépôt trop volumineux
+* [Réduire la taille de son repository Git](rework_files.md) — techniques avancées pour nettoyer un dépôt trop volumineux

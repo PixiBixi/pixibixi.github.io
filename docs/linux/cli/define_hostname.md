@@ -97,4 +97,4 @@ Si tout se passe correctement, alleluia, sinon, il faut répeter les
 
 ## Voir aussi
 
-- [Mémo sur la commande IP](ip.md) — configuration réseau avancée au-delà du simple hostname
+* [Mémo sur la commande IP](ip.md) — configuration réseau avancée au-delà du simple hostname

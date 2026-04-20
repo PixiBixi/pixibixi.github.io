@@ -132,8 +132,6 @@ exécutons la commande sur tous ces fichiers. La différence avec la
 première est qu'ici nous **cumulons** les résultats (Avec le + (Qui
 n'a pas besoin d'être echaper))
 
----
-
 ## Voir aussi
 
-- [Remplacer les commandes de base](replace_base_commands.md) — alternative fd, plus rapide et respectant `.gitignore`
+* [Remplacer les commandes de base](replace_base_commands.md) — alternative fd, plus rapide et respectant `.gitignore`
