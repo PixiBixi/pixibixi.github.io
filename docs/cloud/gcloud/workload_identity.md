@@ -13,7 +13,7 @@ tags:
 
 Les SA contiennent des secrets et doivent être rotate en cas de compromission...
 
-Workload Identity règle ça : on lie un service account K8s (KSA) à un service account GCP (GSA), et les SDK GCP récupèrent automatiquement un token depuis la metadata API du nœud.
+Workload Identity règle ça : on lie un service account K8s (KSA) à un service account GCP (GSA), et les SDK GCP récupèrent automatiquement un token depuis la metadata API du nœud. Cette approche marche sur tous les types de nodes, y compris les [Spot Nodes](spot_nodes.md).
 
 ![Schéma Workload Identity : Pod → KSA → GSA → services GCP](./_img/workload_identity.svg)
 
@@ -124,3 +124,8 @@ gcloud iam service-accounts get-iam-policy \
 curl -H "Metadata-Flavor: Google" \
   "http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/"
 ```
+
+## Voir aussi
+
+- [GKE Spot Nodes](spot_nodes.md) — Accorder des permissions IAM aux pods Spot
+- [Commandes utiles pour la CLI Gcloud](gcloud_commands.md) — Commandes de diagnostic gcloud

@@ -53,3 +53,7 @@ La RAM, en revanche, pique sur les petits nodes : sur un 4 GiB, on perd 27,5% av
 !!! tip "Implication FinOps"
     Privilégier des nodes plus grands améliore l'efficacité RAM (72% → 92%).
     Sur des clusters avec beaucoup de petits nodes, on paye pour de la RAM que K8S ne peut pas utiliser.
+
+## Voir aussi
+
+- [GKE Spot Nodes](spot_nodes.md) — Réduire les coûts en complément du dimensionnement

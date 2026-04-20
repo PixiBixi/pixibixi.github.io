@@ -23,3 +23,7 @@ operation-1711458817372-c0195207-cfe4-4043-b42c-ce7f1a213154  UPGRADE_NODES   eu
 ```
 
 Il peut être important de préciser le `CLOUDSDK_CORE_PROJECT` si nous souhaitons follow plusieurs projects Google au même moment
+
+## Voir aussi
+
+- [Commandes utiles pour la CLI Gcloud](gcloud_commands.md) — Autres opérations GKE

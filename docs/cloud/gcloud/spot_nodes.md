@@ -24,6 +24,8 @@ On ne met jamais uniquement des Spot Nodes. Le pattern standard c'est deux pools
 * Pool `system` — On-Demand, pour kube-system, ingress, monitoring, ArgoCD
 * Pool `spot` — Spot VM, pour les workloads applicatifs, batch, CI runners
 
+Le choix du type de machine (machine_type) impacte la capacité réelle allouable — voir [GKE — Capacité réelle des nodes](gke_node_capacity.md) pour bien dimensionner.
+
 ```hcl
 resource "google_container_node_pool" "system" {
   name    = "system"
@@ -147,3 +149,8 @@ kubectl get nodes -o custom-columns=\
 # Simuler la reprise d'un nœud par GCP
 kubectl drain <node-name> --ignore-daemonsets --delete-emptydir-data --grace-period=25
 ```
+
+## Voir aussi
+
+* [GKE — Capacité réelle des nodes](gke_node_capacity.md) — Dimensionner les nodes pour optimiser le ROI
+* [GKE Workload Identity](workload_identity.md) — Accorder les bonnes permissions aux pods sur Spot nodes

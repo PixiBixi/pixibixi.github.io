@@ -24,3 +24,8 @@ gcloud compute ssh <NODE_NAME> --zone <ZONE>
 Pour se connecter a un noeud GKE en SSH, possible de faire un `gcloud compute instances list` avant pour lister les noeuds
 
 Petit bonus, dans un noeud GKE nous avons une petite commande appelée `toolbox` qui permet de troubleshoot un noeud
+
+## Voir aussi
+
+- [Suivre l'upgrade de son cluster GKE](gke_upgrades.md)
+- [GKE Spot Nodes](spot_nodes.md)
