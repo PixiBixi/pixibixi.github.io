@@ -5,7 +5,7 @@ tags:
   - IDS
 ---
 
-# Installer et configuer PortSentry
+# Installer et configurer PortSentry
 
 portsentry est un programme de détection et de blocage de '"scan de
 ports'" (Généralement programme qui scanne votre machine à le recherche

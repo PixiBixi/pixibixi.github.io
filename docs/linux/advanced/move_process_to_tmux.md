@@ -5,7 +5,7 @@ tags:
   - Process
 ---
 
-# Deplacer un processus dans un tmux
+# Déplacer un processus dans un tmux
 
 Il peut être utile de déplacer un processus dans un tmux pour une
 opération qui peut être plus longue que prévue. Techniquement, c'est

@@ -5,7 +5,7 @@ tags:
   - Storage
 ---
 
-# Etendre à chaud sa partition root
+# Étendre à chaud sa partition root
 
 Etendre une partition root à chaud sur son serveur requiert généralement
 un redémarrage de ce dernier sur un système rescue (hors système

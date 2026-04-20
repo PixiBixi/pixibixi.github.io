@@ -5,7 +5,7 @@ tags:
   - Security
 ---
 
-# Switch Cisco : Accroitre la sécurité
+# Switch Cisco : Accroître la sécurité
 
 Etant donner que le routeur est au coeur d'un réseau, il est très
 important de ne pas négliger la sécurité de celui-ci, et voici comment

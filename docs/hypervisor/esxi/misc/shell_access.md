@@ -4,7 +4,7 @@ tags:
   - ESXi
 ---
 
-# Acceder à la console de l'ESXi
+# Accéder à la console de l'ESXi
 
 Accéder à la console de l'ESXi peut-être pratique pour les
 configurations de base. Cependant, celle-ci est désactivée par défaut..
