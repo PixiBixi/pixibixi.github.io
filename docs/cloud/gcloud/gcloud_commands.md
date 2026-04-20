@@ -29,3 +29,4 @@ Petit bonus, dans un noeud GKE nous avons une petite commande appelée `toolbox`
 
 - [Suivre l'upgrade de son cluster GKE](gke_upgrades.md)
 - [GKE Spot Nodes](spot_nodes.md)
+- [GKE Workload Identity](workload_identity.md) — authentification IAM sans clé JSON pour les pods GKE

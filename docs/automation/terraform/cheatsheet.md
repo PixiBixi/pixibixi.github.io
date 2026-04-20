@@ -22,3 +22,4 @@ J'ai simplement repris les commandes qui me sont utiles de ce [magnifique PDF](h
 
 * [Outils essentiels Terraform](tools.md) — tfswitch, tfsec, checkov et autres utilitaires
 * [Accélerer Terraform](speedup.md) — parallélisme et cache des providers pour des déploiements plus rapides
+* [GKE Workload Identity](../../cloud/gcloud/workload_identity.md) — exemple concret de ressources Terraform pour GCP/GKE

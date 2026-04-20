@@ -495,3 +495,4 @@ Les erreurs courantes :
 - [Générer des alertes depuis Loki](loki_alerting.md) — alerting basé sur les logs collectés
 - [Ecrire une métrique custom pour node_exporter](custom_metrics_nodeexporter.md) — métriques complémentaires via textfile
 - [2-3 tips pour la stack LGTM](tips_lgtm.md) — API calls pratiques
+- [Commandes utiles pour K8S](../../kubernetes/cli/useful_commands.md) — kubectl pour déboguer les pods Alloy en DaemonSet

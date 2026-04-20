@@ -195,3 +195,8 @@ Puis nous pouvons utiliser comme ceci la variable :
 Dans cet exemple, nous transformons notre variable en item afin d'utiliser plus facilement la clé.
 
 Nous souhaitons boucler  autour du nom d'utilisateur, qui sera dans notre cas la clé.
+
+## Voir aussi
+
+* [Ecrire son script bash](../../linux/shell/write_bash_scripts.md) — boucles `for`, variables et bonnes pratiques pour les scripts shell utilisés avec Ansible
+* [Ansible : Tips](ansible_tips.md) — hostvars, groups et gestion des groupes en Jinja2

@@ -363,3 +363,7 @@ validationActions: [Deny]
 - `Ignore` — l'erreur est ignorée, la requête passe
 
 En général, `Fail` est le bon choix pour du security enforcement. `Ignore` peut servir pendant la phase de test sur des policies expérimentales.
+
+## Voir aussi
+
+- [HAProxy : Reverse proxy](../../web/haproxy/overview.md) — load balancer L4/L7 en production, alternative aux Services NodePort
