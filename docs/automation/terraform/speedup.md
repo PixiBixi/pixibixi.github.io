@@ -6,7 +6,7 @@ tags:
 
 # Accélerer Terraform
 
-Pour accélerer Terraform, quelques bonnes pratiques.
+Pour accélerer Terraform, quelques bonnes pratiques. Complémentaire aux [commandes essentielles](cheatsheet.md) et aux [outils disponibles](tools.md).
 
 ## Parallélisme
 
@@ -105,3 +105,8 @@ Initializing provider plugins...
 
 terraform init  0.35s user 0.12s system 15% cpu 3.078 total
 ```
+
+## Voir aussi
+
+* [Cheatsheet Terraform](cheatsheet.md) — commandes essentielles (plan, apply, etc.)
+* [Tools Terraform indispensables](tools.md) — tfswitch, tfsec et checkov

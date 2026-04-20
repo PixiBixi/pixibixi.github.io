@@ -24,3 +24,8 @@ outils :
 * `checkov` est un équivalent à tfsec mais est générique, il peut
     également scanner les YAML K8S...
     [checkov](https://github.com/bridgecrewio/checkov)
+
+## Voir aussi
+
+* [Cheatsheet Terraform](cheatsheet.md) — commandes essentielles à connaître
+* [Accélerer Terraform](speedup.md) — parallélisme et optimisations de performance

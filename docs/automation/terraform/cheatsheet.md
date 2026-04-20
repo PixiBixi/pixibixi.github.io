@@ -13,7 +13,12 @@ J'ai simplement repris les commandes qui me sont utiles de ce [magnifique PDF](h
 * `terraform version` : Obtenir la version de terraform
 * `terraform get -update=true` : Update les modules d'un projet
 * `terraform validate` : Valide la syntaxe d'un Terraform
-* `terraform fmt` : Formate notre terraform (très pratique pour avoir une uniformité entre collaborateurs)
+* `terraform fmt` : Formate notre terraform (très pratique pour avoir une uniformité entre collaborateurs) — utile pour maintenir la cohérence avant de pousser du code
 * `terraform plan` : Montre les modifications
 * `terraform apply` : Applique les modifications
   * `-auto-approve` applique automatiquement les modifs
+
+## Voir aussi
+
+* [Outils essentiels Terraform](tools.md) — tfswitch, tfsec, checkov et autres utilitaires
+* [Accélerer Terraform](speedup.md) — parallélisme et cache des providers pour des déploiements plus rapides
