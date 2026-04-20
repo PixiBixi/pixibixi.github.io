@@ -65,3 +65,8 @@ MaxconnReached: 0
 
 !!! warning
     Ne pas négliger la mémoire allouée à HAproxy sous peine de surprises. S'assurer aussi que la documentation consultée correspond bien à la version de HAproxy en production.
+
+## Voir aussi
+
+* [HAproxy : Performance tuning](performance_tuning.md)
+* [Reverse proxy: HAproxy](overview.md)

@@ -114,7 +114,7 @@ exemple simple qu'on retrouve dans un grand nombre de configurations HAproxy :
 * `maxconn` permet de limiter le nombre de connexions acceptées
 par HAproxy pour prémunir un manque de mémoire. Attention à ne pas
 faire un sizing trop juste, ce qui induirait un drop de
-connexions légitimes.
+connexions légitimes. Voir [Performance tuning](performance_tuning.md) et [limite mémoire](memory_limit.md) pour les détails.
 * `log` permet de spécifier où sont renvoyés les logs. Dans
 ce cas, on les logue dans rsyslog (/dev/log) en tant que
 local0. rsyslog s'occupe de traiter les logs. (par défaut,
@@ -123,7 +123,7 @@ local0. rsyslog s'occupe de traiter les logs. (par défaut,
 en tant que root, mais en tant qu'haproxy.
 * `stats socket` permet de définir un socket afin d'y extraire les stats ou autre. Il est également possible d'écrire la configuration de HAproxy via ce moyen. Attention à bien restreindre les privilèges.
     <!-- markdownlint-disable-next-line -->
-    * SleepLessBeastie a écrit [un excellent article](https://sleeplessbeastie.eu/2020/01/29/how-to-use-haproxy-stats-socket/) sur la définition des privilèges et comment interagir avec l'API.
+    * SleepLessBeastie a écrit [un excellent article](https://sleeplessbeastie.eu/2020/01/29/how-to-use-haproxy-stats-socket/) sur la définition des privilèges et comment interagir avec l'API. Voir aussi [HAproxy : Utiliser son API](api.md) et [Mettre un node en maintenance](maintenance.md).
 * `nbthread` permet à HAproxy de scaler sur plusieurs threads. Utiliser `auto` pour détecter automatiquement le nombre de threads disponibles, ou spécifier un entier.
     <!-- markdownlint-disable-next-line -->
     * `nbproc` (multi-processus) est **déprécié depuis HAProxy 2.5** et **supprimé en 2.9**. Ne plus utiliser cette directive.
@@ -241,7 +241,7 @@ définir et HAproxy renverra une erreur 421 de lui même.
 
 HAproxy peut terminer le TLS directement sur le `bind`. La méthode recommandée est
 le répertoire de certificats : HAproxy charge automatiquement tous les fichiers `.pem`
-qu'il contient et sélectionne le bon certificat via SNI.
+qu'il contient et sélectionne le bon certificat via SNI. Pour l'optimisation des handshakes TLS en charge, voir [Performance tuning](performance_tuning.md).
 
 Chaque fichier `.pem` doit contenir le certificat (fullchain) **et** la clé privée
 concaténés :
@@ -434,3 +434,10 @@ Et le contenu du fichier redirect.map :
 $ cat redirect.map
 uri1.html https://monsite.fr/coucou
 ```
+
+## Voir aussi
+
+* [HAproxy : Performance tuning](performance_tuning.md)
+* [HAproxy : Utiliser son API](api.md)
+* [Conserver l'IP de son visiteur sur un reverse-proxy](keep_real_ip.md)
+* [HAproxy : Obtenir les vraies IPs depuis CloudFlare](cloudflare.md)

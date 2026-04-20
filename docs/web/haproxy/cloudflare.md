@@ -7,8 +7,9 @@ tags:
 
 # HAproxy : Obtenir les vraies IPs depuis CloudFlare
 
-Assez simple, il faut jouer avec les headers. Concrêtement, ça nous
-donne ça niveau frontend HAproxy :
+Assez simple, il faut jouer avec les headers. Cette approche fonctionne avec [option forwardfor](keep_real_ip.md) pour passer l'IP réelle au backend.
+
+Concrêtement, ça nous donne ça niveau frontend HAproxy :
 
 ```bash
 frontend    https
@@ -18,6 +19,7 @@ frontend    https
 
     acl from_cf    src -f /etc/haproxy/acl/cloudflare_ips.lst
     http-request set-src req.hdr(CF-Connecting-IP) if from_cf
+    option forwardfor
 ```
 
 Pour le fichier cloudflare_ips.lst, CloudFlare maintient une liste
@@ -25,3 +27,8 @@ publique de ses IPs :
 
 * [IPv4](https://www.cloudflare.com/ips-v4)
 * [IPv6](https://www.cloudflare.com/ips-v6)
+
+## Voir aussi
+
+* [Conserver l'IP de son visiteur sur un reverse-proxy](keep_real_ip.md)
+* [Reverse proxy: HAproxy](overview.md)

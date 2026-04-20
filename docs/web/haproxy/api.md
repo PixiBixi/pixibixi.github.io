@@ -7,7 +7,7 @@ tags:
 # HAproxy : Utiliser son API
 
 HAproxy est un puissant load-balancer pouvant être controlé via une API,
-je vais noter ici les principales fonctions de son API
+je vais noter ici les principales fonctions de son API. L'API se configure dans la [section global](./overview.md#global) via `stats socket`.
 
 ```bash
 echo "show stat" | socat stdio /run/haproxy/monitoring.sock | cut -d "," -f 1-2,5-10,34-36 | column -s, -t
@@ -23,4 +23,9 @@ cluster_bo              custbo1           0     11    605      1294617     55224
 ```
 
 On obtient les principales stats de HAproxy (On filtre sur les colonnes
-pour garder ce qu'on souhaite)
+pour garder ce qu'on souhaite).
+
+## Voir aussi
+
+* [HAproxy : Mettre un node en maintenance](maintenance.md)
+* [Reverse proxy: HAproxy](overview.md)

@@ -20,3 +20,8 @@ frontend proxy
 ```
 
 Cette option va override un quelconque header `X-Forwarded-For` existant et y mettre l'adresse IP du client.
+
+## Voir aussi
+
+* [HAProxy : Obtenir les vraies IPs depuis CloudFlare](cloudflare.md)
+* [Reverse proxy: HAproxy](overview.md)

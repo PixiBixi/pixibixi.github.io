@@ -7,8 +7,9 @@ tags:
 # HAproxy : Mettre un node en maintenance
 
 Dans le cadre de mise à jour ou autre, il est intéressant de mettre un
-node en maintenance. L'opération est extrêmement simple avec l'API de
-HAproxy.
+node en maintenance. L'opération est extrêmement simple avec [l'API de HAproxy](api.md).
+
+Le socket doit être configuré dans la [section global](overview.md#global) avec `stats socket`.
 
 Voici les quelques commandes à passer :
 
@@ -28,4 +29,9 @@ echo "disable health backend_name/svc_name" | socat stdio /var/run/haproxy/admin
 echo "enable health backend_name/svc_name" | socat stdio /var/run/haproxy/admin.sock
 ```
 
-On peut également taper ces commandes directement dans HAtop
+On peut également taper ces commandes directement dans HAtop.
+
+## Voir aussi
+
+* [HAproxy : Utiliser son API](api.md)
+* [Reverse proxy: HAproxy](overview.md)

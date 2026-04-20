@@ -159,7 +159,7 @@ global
     maxconn 100000
 ```
 
-Si `-m` est défini (limite mémoire), HAproxy calcule automatiquement le `maxconn` en fonction de la RAM disponible. C'est ce qui explique le comportement décrit dans l'article sur la [limite mémoire](memory_limit.md).
+Si `-m` est défini (limite mémoire), HAproxy calcule automatiquement le `maxconn` en fonction de la RAM disponible. C'est ce qui explique le comportement décrit dans l'article sur la [limite mémoire](memory_limit.md) — une surprise fréquente en environnement conteneurisé.
 
 ### Frontend
 
@@ -819,6 +819,11 @@ Les alertes les plus pertinentes pour le tuning :
 | `HAproxyProcessDroppedLogs` | >0 | Socket syslog saturé — passer en `dontlog-normal` |
 
 Les recording rules pré-calculent les ratios d'erreurs (4xx/5xx par backend), le trafic, les sessions et les retries pour que les alertes soient rapides sans surcharger Prometheus.
+
+## Voir aussi
+
+- [HAproxy : Comportement d'une limite mémoire](memory_limit.md)
+- [Reverse proxy: HAproxy](overview.md)
 
 ## Diagnostic
 
