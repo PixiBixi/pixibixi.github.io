@@ -4,4 +4,98 @@
   <meta name="google-site-verification" content="qZ1L3_oqDstaUZ-aoXa5IGd6A_ZzxunPo6tFJYPv984" />
   <meta property="og:locale" content="fr_FR" />
   <meta property="og:type" content="article" />
+
+  {# ── Schema.org JSON-LD: WebSite + Person + TechArticle + BreadcrumbList ── #}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "{{ config.site_url }}#website",
+        "url": "{{ config.site_url }}",
+        "name": {{ config.site_name | default('', true) | tojson }},
+        "description": {{ config.site_description | default('', true) | tojson }},
+        "publisher": { "@id": "{{ config.site_url }}about/#author" },
+        "inLanguage": "fr-FR"
+      },
+      {
+        "@type": "Person",
+        "@id": "{{ config.site_url }}about/#author",
+        "name": "Jérémy Delgado",
+        "url": "https://jdelgado.fr",
+        "jobTitle": "Senior Platform Engineer",
+        "worksFor": {
+          "@type": "Organization",
+          "name": "Equativ",
+          "url": "https://equativ.com"
+        },
+        "sameAs": [
+          "https://github.com/PixiBixi",
+          "https://fr.linkedin.com/in/je-delgado",
+          "https://x.com/Pixel__Art"
+        ]
+      }
+      {%- if not page.is_homepage and page.title %},
+      {
+        "@type": "TechArticle",
+        "@id": "{{ page.canonical_url }}#article",
+        "headline": {{ page.title | tojson }},
+        "url": "{{ page.canonical_url }}",
+        {% if page.meta.description %}"description": {{ page.meta.description | tojson }},
+        {% endif %}"author": { "@id": "{{ config.site_url }}about/#author" },
+        "publisher": { "@id": "{{ config.site_url }}about/#author" },
+        "isPartOf": { "@id": "{{ config.site_url }}#website" },
+        "inLanguage": "fr-FR"
+        {%- if page.meta.git_creation_date_localized_raw_iso_date %},
+        "datePublished": "{{ page.meta.git_creation_date_localized_raw_iso_date }}"
+        {%- endif %}
+        {%- if page.meta.git_revision_date_localized_raw_iso_date %},
+        "dateModified": "{{ page.meta.git_revision_date_localized_raw_iso_date }}"
+        {%- endif %}
+      }
+      {%- endif %}
+    ]
+  }
+  </script>
+
+  {%- if not page.is_homepage and page.title %}
+  {%- set parts = page.url.strip('/').split('/') %}
+  {%- if parts[0] %}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Accueil",
+        "item": "{{ config.site_url }}"
+      }
+      {%- set ns = namespace(path='', pos=2) %}
+      {%- for part in parts %}
+      {%- if not loop.last %}
+      {%- set ns.path = ns.path ~ part ~ '/' %},
+      {
+        "@type": "ListItem",
+        "position": {{ ns.pos }},
+        "name": {{ part | replace('_', ' ') | replace('-', ' ') | title | tojson }},
+        "item": "{{ config.site_url }}{{ ns.path }}"
+      }
+      {%- set ns.pos = ns.pos + 1 %}
+      {%- else %},
+      {
+        "@type": "ListItem",
+        "position": {{ ns.pos }},
+        "name": {{ page.title | tojson }},
+        "item": "{{ page.canonical_url }}"
+      }
+      {%- endif %}
+      {%- endfor %}
+    ]
+  }
+  </script>
+  {%- endif %}
+  {%- endif %}
 {% endblock %}
