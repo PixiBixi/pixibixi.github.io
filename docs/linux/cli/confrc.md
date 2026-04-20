@@ -116,6 +116,13 @@ alias ls='lsd'
 Voir [Remplacer les commandes de base](replace_base_commands.md) pour
 le détail de chaque outil.
 
+---
+
+## Voir aussi
+
+- [tmux](tmux.md) — configuration de session persistante
+- [Remplacer les commandes de base](replace_base_commands.md) — alternatives modernes à df, rm, ls, cat, etc.
+
 ### Kubernetes
 
 ```zsh

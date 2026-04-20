@@ -98,3 +98,9 @@ via un alias dans le .bashrc
 ```bash
 echo "alias df=dfc" >> ~/.bashrc
 ```
+
+---
+
+## Voir aussi
+
+- [Remplacer les commandes de base](replace_base_commands.md) — alternatives modernes à df et autres utilitaires Unix

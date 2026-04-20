@@ -225,3 +225,9 @@ set mouse=a
 ```
 
 Avec neovim, `set mouse=a` suffit — `ttymouse` n'est pas nécessaire.
+
+---
+
+## Voir aussi
+
+- [Dotfiles](confrc.md) — configuration tmux et autres outils de l'environnement de travail

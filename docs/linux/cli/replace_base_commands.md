@@ -300,3 +300,11 @@ glow                    # naviguer dans les .md du répertoire
 | `gzip` | `pigz` | C | — |
 | `git diff` | `delta` | Rust | (pager git) |
 | `vim` | `nvim` | C | `alias vim='nvim'` |
+
+---
+
+## Voir aussi
+
+- [Dotfiles](confrc.md) — configuration des aliases et intégration dans le shell
+- [La commande find](find.md) — syntaxe complète de find (avant de migrer vers fd)
+- [DFC, la commande DF en plus](dfc.md) — alternative légère à du/df

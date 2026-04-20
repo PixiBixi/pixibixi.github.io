@@ -85,3 +85,9 @@ wondershaper eth0 1024 1024
 ```
 
 On bride ici le traffic de eth0 en DL/UL a 1mbps
+
+---
+
+## Voir aussi
+
+- [Mémo sur la commande IP](ip.md) — configuration des interfaces réseau

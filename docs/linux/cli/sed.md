@@ -241,3 +241,9 @@ sed 's/^/PREFIX: /' file
 ```bash
 sed -E 's/\x1B\[[0-9;]*[mK]//g' file
 ```
+
+---
+
+## Voir aussi
+
+- [Remplacer les commandes de base](replace_base_commands.md) — alternatives Rust pour la recherche et le traitement de texte

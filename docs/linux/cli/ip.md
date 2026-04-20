@@ -156,3 +156,10 @@ ip neigh add 192.168.0.1 lladdr 00:11:22:33:44:55 nud permanent dev eth0
 ```bash
 ip link set dev eth0 arp off
 ```
+
+---
+
+## Voir aussi
+
+- [La commande ss](ss.md) — inspecter les connexions réseau (remplace netstat)
+- [Simuler des conditions réseau sur Linux](limit_bandwidth.md) — utilise les interfaces ip pour contrôler la bande passante

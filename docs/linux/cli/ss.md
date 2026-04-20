@@ -193,3 +193,10 @@ Vous observez que nous avons ici beaucoup plus d'informations qu'en temps normal
 * `mss` est la taille maximum du payload d'un paquet (hors entête)
 
 Si vous voulez plus d'informations sur ss, n'hésitez pas à consulter le wiki Archlinux ou directement dman7.org
+
+---
+
+## Voir aussi
+
+- [Mémo sur la commande IP](ip.md) — configuration réseau et gestion des interfaces
+- [Remplacer les commandes de base](replace_base_commands.md) — autres alternatives modernes aux outils Unix historiques

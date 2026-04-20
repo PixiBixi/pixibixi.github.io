@@ -82,3 +82,9 @@ pour voir le résultat :)
 
 Ce script est loin d'être parfait (Et n'a pas la prétention de
 l'être), mais il fait ce qu'on lui demande.
+
+---
+
+## Voir aussi
+
+- [Dotfiles](confrc.md) — configuration centralisée de l'environnement de travail

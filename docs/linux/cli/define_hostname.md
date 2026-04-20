@@ -92,3 +92,9 @@ Doit retourner l'hostname
 
 Si tout se passe correctement, alleluia, sinon, il faut répeter les
 étapes précédentes
+
+---
+
+## Voir aussi
+
+- [Mémo sur la commande IP](ip.md) — configuration réseau avancée au-delà du simple hostname

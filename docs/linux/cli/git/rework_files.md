@@ -126,3 +126,9 @@ root~ du -sh myscripts
 ```
 
 En supprimant ces gros fichiers binaires, nous sommes passés de 242MB à 1.5MB ! ;)
+
+---
+
+## Voir aussi
+
+- [Apprendre à se servir de git](git.md) — commandes essentielles et gestion de branches

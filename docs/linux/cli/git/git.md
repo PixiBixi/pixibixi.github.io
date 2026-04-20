@@ -60,3 +60,9 @@ décidé d'utiliser les alias du .gitconfig disponible sur
 * `giturl` qui est une Gem Ruby afin d'ouvrir dans le navigateur
     l'URL du repository Git
 * `git-quick-stats` pour extraire les stats simplement d'un repository
+
+---
+
+## Voir aussi
+
+- [Réduire la taille de son repository Git](rework_files.md) — techniques avancées pour nettoyer un dépôt trop volumineux
