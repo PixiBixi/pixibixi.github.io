@@ -107,3 +107,9 @@ Ces commandes proviennent d'un peu partout, principalement la documentation Kube
     ```
     Deployment_release-name-testjd.yml  ExternalSecret_pullsecret.yml  Ingress_release-name-testjd-app-private.yml  Ingress_release-name-testjd-app-public.yml  Ingress_release-name-testjd-app.yml  Service_release-name-testjd.yml
     ```
+
+## Voir aussi
+
+* [Commandes utiles](useful_commands.md) — gestion des pods, déploiements et débogage courant
+* [Outils pour K8S](tools.md) — kubectx, stern, kubecolor et autres utilitaires d'optimisation
+* [Plugins Krew](krew_plugins.md) — plugins essentiels pour étendre kubectl

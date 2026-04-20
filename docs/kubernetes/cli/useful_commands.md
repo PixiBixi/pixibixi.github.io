@@ -162,3 +162,9 @@ Le Cluster Autoscaler publie son état dans un ConfigMap `cluster-autoscaler-sta
     - **`ScaleDown`** — `NoCandidates` = rien à supprimer ; si on voit un candidat et que ça dure, le CA est peut-être en backoff
     - **`cloudProviderTarget`** = taille cible du node group côté cloud provider
     - **`minSize` / `maxSize`** = bornes configurées sur le node group
+
+## Voir aussi
+
+* [Commandes avancées](advanced_commands.md) — requêtes jsonpath, jq, et débogage avancé
+* [Plugins Krew](krew_plugins.md) — outils essentiels pour améliorer la productivité
+* [Outils pour K8S](tools.md) — kubectx, stern, kubecolor et autres utilities

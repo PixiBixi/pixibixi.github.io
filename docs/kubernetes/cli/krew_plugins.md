@@ -34,3 +34,9 @@ Voici en détail à quoi servent-ils :
 * `view-utilization`  est plus ou moins redondant avec `resource-capacity`
 
 N'hésitez pas à voir la [liste des plugins Krew](https://krew.sigs.k8s.io/plugins/) et de dénicher quelques pépites
+
+## Voir aussi
+
+* [Commandes utiles](useful_commands.md) — gestion courante des pods et ressources
+* [Commandes avancées](advanced_commands.md) — requêtes jsonpath et débogage poussé
+* [Outils pour K8S](tools.md) — kubectx, stern, kubecolor et alternatives à kubectl natif

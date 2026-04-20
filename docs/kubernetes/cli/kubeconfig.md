@@ -59,3 +59,7 @@ Pour split, n'oubliez pas [konfig](https://github.com/corneliusweig/konfig). Par
 ```bash
 konfig split tools > tools.yaml
 ```
+
+## Voir aussi
+
+* [Outils pour K8S](tools.md) — kubectx, kubeswitch et konfig pour gérer plusieurs clusters
