@@ -4,7 +4,7 @@ tags:
   - PostgreSQL
 ---
 
-# Commandes utiles Postgres
+# Postgres : les commandes qui servent
 
 ```sql
  SELECT i.relname "Table Name",indexrelname "Index Name",

@@ -5,7 +5,7 @@ tags:
   - Network
 ---
 
-# NAT
+# NAT pour les VMs Proxmox
 
 Pour ajouter un NAT sur Proxmox :
 

@@ -5,7 +5,7 @@ tags:
   - Observability
 ---
 
-# strace
+# strace : tracer les appels système
 
 strace intercepte et trace les appels système effectués par un processus.
 Indispensable pour déboguer un processus qui bloque, échoue silencieusement,
@@ -34,7 +34,7 @@ strace -c commande
 ## Options essentielles
 
 | Option | Effet |
-|--------|-------|
+| ------ | ----- |
 | `-p <PID>` | Attacher à un processus en cours |
 | `-f` | Suivre les forks et threads |
 | `-c` | Afficher un résumé statistique à la fin |
@@ -195,7 +195,7 @@ grep "openat" /tmp/service_debug.log | grep -v " = [0-9]"
 ## Alternatives
 
 | Outil | Usage |
-|-------|-------|
+| ----- | ----- |
 | `ltrace` | Trace les appels aux bibliothèques partagées (libc, etc.) |
 | `perf trace` | Alternative plus performante à strace (moins d'overhead) |
 | `bpftrace` | Traçage avancé via eBPF — scripts personnalisables |

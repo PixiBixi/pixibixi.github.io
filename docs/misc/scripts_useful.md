@@ -5,7 +5,7 @@ tags:
   - Scripting
 ---
 
-# Scripts utiles
+# Scripts utiles multi-OS
 
 ## Windows
 

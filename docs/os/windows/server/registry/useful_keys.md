@@ -5,7 +5,7 @@ tags:
   - Registry
 ---
 
-# Clés de Registre Utiles
+# Windows : clés de registre utiles
 
 Il arrive parfois que nous ayons des problèmes avec une VM, ou autre.
 Voici donc quelques clés de registre bien utiles :

@@ -5,7 +5,7 @@ tags:
   - Docker Compose
 ---
 
-# docker-compose.yml
+# Templates docker-compose
 
 !!! error "Deprecated"
     **Article plus mis à jour, images potentiellement dead également**

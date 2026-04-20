@@ -113,7 +113,7 @@ Cette magnifique documentation a été faite avec MkDocs Material. [À propos](a
 
 #### Troubleshooting
 
-* [MOZILLA_PKIX_ERROR_REQUIRED_TLS_FEATURE_MISSING](web/troubleshooting.md)
+* [Troubleshooting TLS : MOZILLA_PKIX_ERROR](web/troubleshooting.md)
 
 #### Misc
 
@@ -150,7 +150,7 @@ Cette magnifique documentation a été faite avec MkDocs Material. [À propos](a
 * [Debug ses lenteurs de ohmyzsh](./linux/shell/debug_slowness_ohmyzsh.md)
 * [Un template pour un script bash](./linux/shell/template_bash_script.md)
 * [Config varnish](web/varnish/config.md)
-* [strace](linux/advanced/strace.md)
+* [strace : tracer les appels système](linux/advanced/strace.md)
 * [Mitigation DDoS L7](linux/advanced/lock_ddos.md)
 * [Déplacer un processus dans un tmux](linux/advanced/move_process_to_tmux.md)
 * [Troubleshooting GRUB](linux/advanced/troubleshooting_grub.md)
@@ -170,7 +170,7 @@ Cette magnifique documentation a été faite avec MkDocs Material. [À propos](a
 
 * [Upgrade sa version de PostgreSQL](databases/postgres/upgrade_version.md)
 * [PostgreSQL Replication](databases/postgres/postgresql_replication.md)
-* [Commandes utiles Postgres](./databases/postgres/commands.md)
+* [Postgres : les commandes qui servent](./databases/postgres/commands.md)
 
 ### Redis
 
@@ -179,7 +179,7 @@ Cette magnifique documentation a été faite avec MkDocs Material. [À propos](a
 
 ### Memcached
 
-* [Commandes diverses avec memcached](databases/memcached/misc_commands.md)
+* [Memcached : debug et commandes utiles](databases/memcached/misc_commands.md)
 
 ### ElasticSearch
 
@@ -276,7 +276,7 @@ Cette magnifique documentation a été faite avec MkDocs Material. [À propos](a
 ### Docker
 
 * [Utiliser un proxy pour pull les images Docker](containers/docker/use_proxy.md)
-* [docker-compose.yml](containers/docker/compose/templates.md)
+* [Templates docker-compose](containers/docker/compose/templates.md)
 
 ### Kafka
 
@@ -292,7 +292,7 @@ Cette magnifique documentation a été faite avec MkDocs Material. [À propos](a
 * [Réinitialiser son mot de passe root](linux/misc/forgot_root_password.md)
 * [Convertir des .bin en .iso](linux/misc/convert_bin_to_iso.md)
 * [DFC, la commande DF en plus](linux/cli/dfc.md)
-* [sed](linux/cli/sed.md)
+* [sed : chercher et remplacer en CLI](linux/cli/sed.md)
 * [Obtenir des informations sur vos PDF](linux/misc/info_about_pdf.md)
 
 ## Web
@@ -318,7 +318,7 @@ Cette magnifique documentation a été faite avec MkDocs Material. [À propos](a
 
 * [Ajouter une ISO depuis une URL](./hypervisor/proxmox/insert_iso_from_url.md)
 * [Résoudre l'erreur '"VM is locked'"](./hypervisor/proxmox/troubleshooting/vm_locked.md)
-* [NAT](./hypervisor/proxmox/networking/nat.md)
+* [NAT pour les VMs Proxmox](./hypervisor/proxmox/networking/nat.md)
 * [Gérer son cluster Proxmox](./hypervisor/proxmox/cluster.md)
 * [Créer sa VM en CLI avec cloud-init](./hypervisor/proxmox/vm_as_cli.md)
 * [Avoir un Proxmox clean](./hypervisor/proxmox/bootstrap_pve.md)
@@ -330,7 +330,7 @@ Cette magnifique documentation a été faite avec MkDocs Material. [À propos](a
 ## Torrent
 
 * [ruTorrent, WebUI rTorrent](./selfhost/torrent/rutorrent.md)
-* [mktorrent](./selfhost/torrent/mktorrent.md)
+* [Créer ses torrents avec mktorrent](./selfhost/torrent/mktorrent.md)
 
 ## Accès à distance
 
@@ -375,7 +375,7 @@ Cette magnifique documentation a été faite avec MkDocs Material. [À propos](a
 ## ESXi
 
 * [Accéder à la console de l'ESXi](./hypervisor/esxi/misc/shell_access.md)
-* [Commandes ESXi Network](./hypervisor/esxi/commands/network.md)
+* [ESXi : commandes réseau en vrac](./hypervisor/esxi/commands/network.md)
 * [Uploader ses ISO en ligne de commande](./hypervisor/esxi/upload_iso_cli.md)
 
 ### NetApp
@@ -393,12 +393,12 @@ Cette magnifique documentation a été faite avec MkDocs Material. [À propos](a
 * [Manipuler les HDD en Powershell](os/windows/server/powershell/storage/pool.md)
 * [Autoriser l'ICMP sur un serveur Windows 2012R2 en PowerShell](os/windows/server/powershell/allow_icmp.md)
 * [Importer des utilisateurs CSV dans un AD via PowerShell](os/windows/server/powershell/import_csv_users.md)
-* [Clés de Registre Utiles](os/windows/server/registry/useful_keys.md)
+* [Windows : clés de registre utiles](os/windows/server/registry/useful_keys.md)
 * [Exécuter un script PowerShell via une tâche planifiée](os/windows/server/admin/jobs/schedule_jobs_scripts.md)
 * [Désactiver TLSv1 et TLSv1.1](os/windows/server/powershell/disable_tlsv1.md)
 * [Connaitre le temps d'exécution d'une commande PowerShell](os/windows/server/powershell/command_time_execution.md)
 * [Accéder au Firewall sans Icône ni raccourci](os/windows/server/firewall/access_without_shortcut.md)
-* [Variables built-in utiles](os/windows/server/powershell/useful_vars.md)
+* [PowerShell : variables built-in utiles](os/windows/server/powershell/useful_vars.md)
 * [Initier des connexions iSCSi en CLI](os/windows/server/powershell/initiate_iscsi.md)
 * [Installer des drivers via PowerShell](os/windows/server/powershell/install_drivers.md)
 * [Définir PowerShell en temps que shell par défaut](os/windows/server/core/setup_default_powershell.md)
@@ -414,8 +414,8 @@ Cette magnifique documentation a été faite avec MkDocs Material. [À propos](a
 * [Mes sources](misc/sources.md)
 * [Bordel de lien](misc/useful_links.md)
 * [Performances Linux](misc/linux_performances.md)
-* [Optimisations](misc/optimization.md)
-* [Scripts utiles](misc/scripts_useful.md)
+* [Optimisations Linux : liens de référence](misc/optimization.md)
+* [Scripts utiles multi-OS](misc/scripts_useful.md)
 * [Générer un template pour ses Pull Request et ses Issues](misc/github_template.md)
 * [Lancer la console iLO depuis un Mac](hardware/server/hp/run_ilo.md)
 * [Lancer une ancienne console iLO](hardware/server/hp/run_old_ilo.md)

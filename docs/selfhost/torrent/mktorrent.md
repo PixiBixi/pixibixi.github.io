@@ -5,7 +5,7 @@ tags:
   - BitTorrent
 ---
 
-# mktorrent
+# Créer ses torrents avec mktorrent
 
 mktorrent est un puissant logiciel de création de torrent en ligne de
 commande. Même si la ligne de commande peut vous faire peur, son

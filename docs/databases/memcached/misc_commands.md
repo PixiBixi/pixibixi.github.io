@@ -4,7 +4,7 @@ tags:
   - Memcached
 ---
 
-# Commandes diverses avec memcached
+# Memcached : debug et commandes utiles
 
     exec {memcache}<>/dev/tcp/localhost/11211
     printf "stats items\nquit\n" >&${memcache}

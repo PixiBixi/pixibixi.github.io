@@ -5,7 +5,7 @@ tags:
   - HAProxy
 ---
 
-# MOZILLA_PKIX_ERROR_REQUIRED_TLS_FEATURE_MISSING
+# Troubleshooting TLS : MOZILLA_PKIX_ERROR
 
 Une erreur courante avec Mozilla Firefox est l'erreur
 MOZILLA_PKIX_ERROR_REQUIRED_TLS_FEATURE_MISSING.

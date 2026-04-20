@@ -5,7 +5,7 @@ tags:
   - Network
 ---
 
-# Commandes ESXi Network
+# ESXi : commandes réseau en vrac
 
 ```bash
 esxcli network nic down vmnicX

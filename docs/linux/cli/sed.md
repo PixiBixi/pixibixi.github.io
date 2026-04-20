@@ -5,7 +5,7 @@ tags:
   - Text Processing
 ---
 
-# sed
+# sed : chercher et remplacer en CLI
 
 !!! warning "Mac / BSD sed"
     Sur macOS, `sed` est la version BSD. Installer **gnu-sed** via Homebrew :
@@ -23,7 +23,7 @@ sed [options] 'expression' fichier
 ## Options essentielles
 
 | Option | Rôle |
-|--------|------|
+| ------ | ---- |
 | `-i` | Édition en place (modifie le fichier) |
 | `-i.bak` | Édition en place avec backup `.bak` |
 | `-n` | Supprime l'affichage automatique (print explicite avec `p`) |
@@ -43,7 +43,7 @@ s/pattern/remplacement/flags
 ### Flags de substitution
 
 | Flag | Effet |
-|------|-------|
+| ---- | ----- |
 | `g` | Remplace toutes les occurrences (global) |
 | `N` (chiffre) | Remplace la N-ième occurrence |
 | `I` | Insensible à la casse |
