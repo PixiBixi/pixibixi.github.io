@@ -10,7 +10,7 @@ tags:
 Par défaut ArgoCD applique tout en parallèle. En pratique ça pose problème : un Deployment
 qui démarre avant sa ConfigMap, une migration qui tourne pendant que l'appli reçoit du trafic...
 
-2 solutions s'offrent ici à nous : on attend le retry d'ArgoCD où on gère ça proprement avec les _waves_ et les _hooks_.
+2 solutions s'offrent ici à nous : on attend le retry d'ArgoCD où on gère ça proprement avec les _waves_ et les _hooks_. Pour contrôler d'autres aspects du sync (comme `PruneLast` ou `ServerSideApply`), voir [Sync Options](sync_options.md).
 
 ## Sync Waves
 
@@ -195,3 +195,8 @@ argocd app get my-app --show-operation
 kubectl get jobs -n my-app
 kubectl logs -n my-app job/db-migrate
 ```
+
+## Voir aussi
+
+- [Sync Options](sync_options.md) — `PruneLast`, `ServerSideApply` et autres comportements de sync
+- [ApplicationSet](applicationset.md) — déployer la même app sur plusieurs clusters avec les waves

@@ -39,3 +39,8 @@ On génère le token associé :
 ```bash
 argocd account generate-token --account mysuperSA
 ```
+
+## Voir aussi
+
+- [ApplicationSet](applicationset.md) — déployer la même app sur plusieurs clusters
+- [Sync Options](sync_options.md) — contrôler le comportement lors du déploiement

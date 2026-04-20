@@ -155,6 +155,8 @@ spec:
 !!! danger
     Sans ça, un `kubectl delete applicationset` en prod c'est un incident.
 
+Pour les autres options de sync (CreateNamespace, ServerSideApply, etc.), voir [sync options](sync_options.md).
+
 ## Pattern App of Apps
 
 Structure de repo :
@@ -229,3 +231,8 @@ kubectl get applications -n argocd -l app.kubernetes.io/managed-by=applicationse
 kubectl annotate applicationset my-appset -n argocd \
   argocd.argoproj.io/refresh=normal --overwrite
 ```
+
+## Voir aussi
+
+- [Sync Options](sync_options.md) — contrôler le comportement du déploiement
+- [Sync Waves & Hooks](sync_waves.md) — ordonner les ressources sur plusieurs clusters

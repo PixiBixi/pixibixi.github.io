@@ -127,7 +127,7 @@ metadata:
 ## PruneLast
 
 Par défaut, ArgoCD prune les ressources obsolètes pendant le sync, en parallèle des
-créations/mises à jour. Avec `PruneLast`, la suppression se fait après la dernière wave,
+créations/mises à jour. Avec `PruneLast`, la suppression se fait après la dernière [sync wave](sync_waves.md),
 une fois que tout le reste est `Healthy`.
 
 ```yaml
@@ -137,6 +137,8 @@ syncOptions:
 
 Cas concret : migration d'un Deployment vers un StatefulSet pour le même composant. Sans
 `PruneLast`, ArgoCD peut supprimer le Deployment avant que le StatefulSet soit prêt.
+
+Pour un contrôle plus fin de l'ordre de déploiement, voir [Sync Waves & Hooks](sync_waves.md).
 
 ---
 
@@ -292,3 +294,8 @@ Kubernetes utilisant `RawExtension` (ex : ServiceCatalog).
 syncOptions:
   - Validate=false
 ```
+
+## Voir aussi
+
+- [Sync Waves & Hooks](sync_waves.md) — contrôler l'ordre de déploiement avec les waves
+- [ApplicationSet](applicationset.md) — déployer automatiquement sur plusieurs clusters
