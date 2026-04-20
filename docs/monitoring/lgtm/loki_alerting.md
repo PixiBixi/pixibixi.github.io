@@ -7,7 +7,7 @@ tags:
 
 # Générer des alertes depuis Loki
 
-Avoir des logs c'est bien, les exploiter c'est mieux. Pour cela, nous pouvons générer des alertes et les remonter dans AlertManager, tout comme Prometheus.
+Avoir des logs c'est bien, les exploiter c'est mieux. Pour cela, nous pouvons générer des alertes et les remonter dans [AlertManager](simple_monitoring_stack.md#alertmanager), tout comme Prometheus.
 
 Les différentes configuration sont valables pour le [chart Helm](https://github.com/grafana/loki/tree/main/production/helm/loki) officiel `grafana/loki`
 
@@ -104,3 +104,9 @@ Enfin, nous montons les différents volumes
         - name: loki-wal-dir
           emptyDir: {}
     ```
+
+## Voir aussi
+
+* [Netdata, Prometheus et Grafana : une stack de monitoring simple et puissante](simple_monitoring_stack.md) — alerting avec Prometheus et AlertManager
+* [Grafana Alloy](alloy.md) — collecteur universel pour les logs vers Loki
+* [2-3 tips pour la stack LGTM](tips_lgtm.md)

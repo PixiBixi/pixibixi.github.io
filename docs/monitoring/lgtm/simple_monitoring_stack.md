@@ -558,6 +558,13 @@ je vais vous partager mes panels.
 
 La communauté Grafana met à votre disposition énormement de [dashboards](https://grafana.com/grafana/dashboards/)
 
+## Voir aussi
+
+* [Générer des alertes depuis Loki](loki_alerting.md) — alerting avec LogQL via AlertManager
+* [Ecrire une métrique custom pour node_exporter](custom_metrics_nodeexporter.md) — étendre les métriques collectées
+* [Grafana Alloy](alloy.md) — collecteur universel logs/métriques/traces
+* [2-3 tips pour la stack LGTM](tips_lgtm.md) — API calls et astuces
+
 ## Trucs & Astuces
 
 ### Grafana
@@ -941,7 +948,7 @@ comme Kubernetes ou autre.
 
 Alertmanager est la brique d'alerting de notre stack, celle-ci se
 greffe directement à prometheus. La procédure d'installation reste la
-même que tous les autres produits créés par Prometheus :
+même que tous les autres produits créés par Prometheus. Pour générer des [alertes depuis Loki](loki_alerting.md), voir la documentation dédiée.
 
 Rendons-nous sur la [page officielle](https://prometheus.io/download/)
 pour trouver la dernière version d'alertmanager. A l'heure où

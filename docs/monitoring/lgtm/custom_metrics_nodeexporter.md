@@ -7,7 +7,7 @@ tags:
 
 # Ecrire une métrique custom pour node_exporter
 
-Grace au module textfile de node_exporter, nous pouvons introduire facilement des métriques dans ce dernier.
+Grace au module textfile de node_exporter, nous pouvons introduire facilement des métriques dans ce dernier. Ces métriques seront ensuite collectées par [Prometheus](simple_monitoring_stack.md) et visualisées dans Grafana.
 
 Voici un petit script bash qui va vous permettre d'avoir vos métriques customs
 
@@ -41,3 +41,8 @@ La chose importante ici est l'utilisation d'un fichier temporaire en .$$ (qui co
 Il est évidemment possible d'écrire un script custom en n'importe quel language (python, bash...).
 
 La communauté prometheus met en libre services [quelques scripts](https://github.com/prometheus-community/node-exporter-textfile-collector-scripts) qui peuvent être utiles (métriques NVME, updates APT...)
+
+## Voir aussi
+
+- [Netdata, Prometheus et Grafana : une stack de monitoring simple et puissante](simple_monitoring_stack.md) — architecture complète de collecte des métriques
+- [Grafana Alloy](alloy.md) — alternative moderne pour collecter logs et métriques

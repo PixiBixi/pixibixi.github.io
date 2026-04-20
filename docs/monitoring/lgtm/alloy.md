@@ -8,7 +8,7 @@ tags:
 
 # Grafana Alloy — remplacer Promtail (et tout le reste)
 
-Promtail est en fin de vie. Grafana Agent aussi. Alloy est le successeur officiel depuis avril 2024 — un collecteur universel qui gère logs, métriques et traces dans un seul binaire avec un langage de config déclaratif.
+Promtail est en fin de vie. Grafana Agent aussi. Alloy est le successeur officiel depuis avril 2024 — un collecteur universel qui gère logs, métriques et traces dans un seul binaire avec un langage de config déclaratif. Alloy complète la [stack LGTM](simple_monitoring_stack.md) en unifiant la collecte des données.
 
 La syntaxe change complètement, mais la migration est assistée.
 
@@ -74,9 +74,10 @@ curl -X POST http://localhost:12345/-/reload
 
 ## Migration depuis Promtail
 
-Alloy embarque un convertisseur automatique :
+Alloy embarque un convertisseur automatique pour faciliter la transition. Pour configurer les alertes basées sur les logs collectés, voir [l'alerting avec Loki](loki_alerting.md).
 
 ```bash
+
 alloy convert \
   --source-format=promtail \
   --output=config.alloy \
@@ -487,3 +488,10 @@ Les erreurs courantes :
 - `component evaluation failed` → vérifier que les exports référencés existent bien (typo dans le nom du composant)
 - `failed to read targets` → permission sur les fichiers de log (Alloy tourne souvent en `alloy` user)
 - `429 Too Many Requests` → rate limiting Loki, ajouter un `loki.process` avec `stage.limit`
+
+## Voir aussi
+
+- [Netdata, Prometheus et Grafana : une stack de monitoring simple et puissante](simple_monitoring_stack.md) — architecture et composants LGTM
+- [Générer des alertes depuis Loki](loki_alerting.md) — alerting basé sur les logs collectés
+- [Ecrire une métrique custom pour node_exporter](custom_metrics_nodeexporter.md) — métriques complémentaires via textfile
+- [2-3 tips pour la stack LGTM](tips_lgtm.md) — API calls pratiques
