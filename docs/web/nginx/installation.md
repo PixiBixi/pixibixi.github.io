@@ -105,6 +105,8 @@ Voici les options de compilations du paquet **nginx**
     --with-ipv6
     ```
 
+L'option `--with-ipv6` est nécessaire pour supporter IPv6. Voir [Configurer nginx pour utiliser IPv6](ipv6_nginx.md) pour la configuration détaillée.
+
 Désormais, nginx est quasiment prêt à être utilisé, il reste à le configurer.
 
 Voici une configuration personnelle :
@@ -204,14 +206,14 @@ de même certains points importants à conserver :
 * `server_tokens` une valeur très importante, celle-ci doit être
     mise à `off`. Cette valeur évite à nginx de montrer des éléments
     importants tel que son numéro de version. Ces éléments peuvent être
-    utilisés pour exploiter des failles sur nginx
+    utilisés pour exploiter des failles sur nginx. Voir [Être encore plus safe en customisant son header Server NGINX](custom_server_header.md) pour plus de détails.
 * `ignore_invalid_headers` est également une directive assez
     intéréssante. Si des bots tentent de se connecter avec un header
     incorrect, nginx leur retourne une erreur 404.
 * `resolver` permet de spécifier les DNS utilisés dans les logs pour résoudre les noms de domaines
 
 La directive *more_set_headers* permet de ne pas dévoiler son serveur
-web, et n'est disponible que via le package **nginx-extras**.
+web, et n'est disponible que via le package **nginx-extras**. Voir [Être encore plus safe en customisant son header Server NGINX](custom_server_header.md).
 
 On inclut également différents fichiers :
 
@@ -294,7 +296,7 @@ internet.
 <!-- markdownlint-enable MD046 MD034 -->
 
 Le fichier **ssl.conf** est à inclure seulement si l'on souhaite du SSL
-sur ses sites web
+sur ses sites web. Voir [Forcer le SSL sous NGINX](nginx_ssl.md) pour les directives de redirection.
 
 Certaines lignes sont importantes tels que **ssl_ciphers** qui
 permet de sélectionner quels ciphers seront utilisés pour coder
@@ -360,7 +362,7 @@ Snippets utiles pour les vhosts (`snippets/letsencrypt.conf`) :
 
 ## Installer et configurer PHP7-FPM
 
-Commande à adapter selon les modules souhaités. Généralement suffisant pour 99% des installations :
+Commande à adapter selon les modules souhaités. Généralement suffisant pour 99% des installations. Pour installer une version spécifique de PHP, voir [Installer une version custom de PHP](php_custom_version.md):
 
 ```bash
 apt-get -y install php-common php8.2 php8.2-bz2 php8.2-cli php8.2-common php8.2-curl php8.2-fpm php8.2-gd php8.2-geoip php8.2-gmp php8.2-igbinary php8.2-imagick php8.2-intl php8.2-json php8.2-mbstring php8.2-mcrypt php8.2-memcached php8.2-msgpack php8.2-mysql php8.2-opcache php8.2-readline php8.2-sqlite3 php8.2-xml php8.2-xmlrpc php8.2-zip
@@ -447,3 +449,9 @@ Et on finit par le script made in MariaDB pour sécuriser le tout
 ```bash
 mysql_secure_installation
 ```
+
+## Voir aussi
+
+* [Forcer le SSL sous NGINX](nginx_ssl.md) — Configuration SSL/TLS et redirection HTTPS
+* [Configurer nginx pour utiliser IPv6](ipv6_nginx.md) — Support IPv6 dans nginx
+* [Installer une version custom de PHP](php_custom_version.md) — Utiliser le dépôt Sury pour des versions récentes

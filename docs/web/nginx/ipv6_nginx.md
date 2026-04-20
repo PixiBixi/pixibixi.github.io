@@ -72,3 +72,7 @@ ndd.tld` à partir d'une machine tierce.
 N'oubliez également pas de faire vos entrées DNS AAAA afin de match
 IPv6 et NDD, sans cela, même avec une configuration nginx au poil, nous
 ne pourrons communiquer en IPv6 avec le client.
+
+## Voir aussi
+
+* [Installer son Serveur Web : NGINX, PHP-FPM et MariaDB](installation.md) — Vérification de la compilation `--with-ipv6`

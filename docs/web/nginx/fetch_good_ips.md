@@ -9,7 +9,7 @@ tags:
 
 Sans configuration particulière, on aura 127.0.0.1 dans les logs apache
 s'il est derrière un reverse-proxy. Il est toujours bon d'avoir les
-vrais IPs
+vrais IPs. Voir [Installer son Serveur Web : NGINX, PHP-FPM et MariaDB](installation.md) pour la configuration nginx de base.
 
 Comme vous pouvez le voir, la conservation de l'IP dépend du header `X-Forwarded-For`, soyez sûr que votre reverse-proxy transmet le header
 
@@ -54,3 +54,7 @@ a2enmod remoteip
 On n'oublie pas de spécifier le format du CustomLog à proxified
 
 Pour information, **%a** a la vraie IP dans le cadre de l'utilisation de `remoteip`, contrairement à **%h**.
+
+## Voir aussi
+
+* [Installer son Serveur Web : NGINX, PHP-FPM et MariaDB](installation.md) — Configuration nginx complète avec reverse proxy
