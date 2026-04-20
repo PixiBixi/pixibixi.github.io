@@ -71,3 +71,9 @@ echo ${CURRENT_LOG} ${CURRENT_POS}
 ```
 
 Et on remplit le `CHANGE MASTER TO` avec les bonnes valeurs.
+
+## Voir aussi
+
+* [MySQL : Commandes avancées](../advanced_commands.md)
+* [Créer son cluster Galera](../galera_gluster.md)
+* [Générer des INSERT INTO depuis un SELECT](generate_insert_into.md)

@@ -56,3 +56,8 @@ cd ; ./analyze_new_cluster.sh ; ./delete_old_cluster.sh
 ```
 
 Puis on supprime tout ce qui concerne l'ancienne version de postgresql
+
+## Voir aussi
+
+* [Postgres : les commandes qui servent](commands.md)
+* [PostgreSQL Replication](postgresql_replication.md)

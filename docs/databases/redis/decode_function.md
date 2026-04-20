@@ -60,3 +60,7 @@ FUNCTION DUMP
 
 !!! note "Redis 7.0+"
     Les fonctions (`FUNCTION LOAD`) remplacent les scripts Lua éphémères (`EVAL`/`EVALSHA`). Elles sont persistées en RDB/AOF et survivent aux redémarrages.
+
+## Voir aussi
+
+* [Déployer un Redis en High Availability](cluster_ha.md)

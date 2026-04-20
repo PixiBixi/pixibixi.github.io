@@ -123,3 +123,9 @@ WHERE system_variables.variable_name=global_variables.variable_name
 ```
 
 * Permet de lister les variables qui n'ont pas les valeurs par défaut
+
+## Voir aussi
+
+* [Gérer ses users MySQL](users.md)
+* [Créer son cluster Galera](galera_gluster.md)
+* [Debug d'une réplication primaire/réplica](troubleshooting/replication_slave.md)

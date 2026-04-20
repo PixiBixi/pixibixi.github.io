@@ -210,3 +210,9 @@ conninfo              | user=replicator passfile=/var/lib/postgresql/.pgpass cha
 ```
 
 Autres informations utiles
+
+## Voir aussi
+
+* [Postgres : les commandes qui servent](commands.md)
+* [Upgrade sa version de PostgreSQL](upgrade_version.md)
+* [Debug d'une réplication MySQL primaire/réplica](../mysql/troubleshooting/replication_slave.md)

@@ -18,3 +18,9 @@ mysql_install_db
 ```
 
 Puis un `systemctl start mysql` et il est démarré !
+
+## Voir aussi
+
+* [Gérer ses users MySQL](users.md)
+* [MySQL : Commandes avancées](advanced_commands.md)
+* [Créer son cluster Galera](galera_gluster.md)

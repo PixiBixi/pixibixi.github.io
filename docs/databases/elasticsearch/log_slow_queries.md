@@ -40,3 +40,8 @@ curl -X PUT "localhost:9200/x_search_results_20210402185209/_settings?pretty" -H
 
 Les logs seront dans **/var/log/elasticsearch/** et les options propres
 aux slowlog dans le fichier log4j2.properties
+
+## Voir aussi
+
+* [Postgres : les commandes qui servent](../postgres/commands.md)
+* [MySQL : Commandes avancées](../mysql/advanced_commands.md)

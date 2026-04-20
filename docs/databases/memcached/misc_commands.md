@@ -11,3 +11,8 @@ tags:
     cat <&${memcache} > myfile.txt
 
 Dump le contenu local du memcached
+
+## Voir aussi
+
+* [Déployer un Redis en High Availability](../redis/cluster_ha.md)
+* [Log des slow queries de ElasticSearch](../elasticsearch/log_slow_queries.md)

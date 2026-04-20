@@ -94,6 +94,11 @@ mongosh "mongodb://target-host:27017/mydb" --quiet --eval "
 
 Pour MongoDB Atlas ou une instance avec auth, ajouter `--username --password --authenticationDatabase admin` à la commande `mongosh`.
 
+## Voir aussi
+
+* [Postgres : les commandes qui servent](../postgres/commands.md)
+* [MySQL : Commandes avancées](../mysql/advanced_commands.md)
+
 ## Exemple complet
 
 ```bash

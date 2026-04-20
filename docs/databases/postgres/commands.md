@@ -32,3 +32,8 @@ psql> \q
 ```
 
 Permet d'avoir un output de psql en tant que CSV
+
+## Voir aussi
+
+* [PostgreSQL Replication](postgresql_replication.md)
+* [Upgrade sa version de PostgreSQL](upgrade_version.md)

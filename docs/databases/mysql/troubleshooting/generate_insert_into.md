@@ -15,3 +15,8 @@ mysqldump -t DB Table --where="champ in (280, 172);" > ~/Req.sql
 
 Cet SQL dump va simple générer les INSERT INTO selon la condition que
 nous lui avons donné, MAGIQUE !
+
+## Voir aussi
+
+* [MySQL : Commandes avancées](../advanced_commands.md)
+* [Debug d'une réplication primaire/réplica](replication_slave.md)

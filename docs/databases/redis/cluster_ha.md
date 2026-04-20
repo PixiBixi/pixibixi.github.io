@@ -242,3 +242,7 @@ pouvoir se connecter depuis tous les noeuds.
 
 !!! warning
     Vérifier que sentinel écoute sur toutes les interfaces désirées et que les ports 6379 et 26379 sont bien ouverts.
+
+## Voir aussi
+
+* [Décoder une fonction Redis](decode_function.md)

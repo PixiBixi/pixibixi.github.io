@@ -92,3 +92,8 @@ de lutilisateur.
 ```sql
 DROP USER user@localhost;
 ```
+
+## Voir aussi
+
+* [MySQL : Commandes avancées](advanced_commands.md)
+* [Créer son cluster Galera](galera_gluster.md)

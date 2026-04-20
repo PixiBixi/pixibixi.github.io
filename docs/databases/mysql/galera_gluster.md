@@ -119,3 +119,9 @@ node1$ galera_new_cluster
 Puis redémarrer les autres nœuds normalement.
 
 Toutes les infos sur [le site Galera](https://galeracluster.com/library/training/tutorials).
+
+## Voir aussi
+
+* [MySQL : Commandes avancées](advanced_commands.md)
+* [Gérer ses users MySQL](users.md)
+* [Debug d'une réplication primaire/réplica](troubleshooting/replication_slave.md)
