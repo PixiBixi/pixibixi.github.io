@@ -277,7 +277,7 @@ additionnelles :
 
 Voici le thème :
 
-![Material Design for ST](./_img/presentation_material_design.gif)
+![Material Design for ST](./_img/presentation_material_design.webp)
 
 Comme vous pouvez le voir, le thème *Material Theme* ainsi que *Material
 Theme Darker* sont agréables et reposant, contrairement au thème
