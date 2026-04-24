@@ -18,7 +18,7 @@ On fait tourner des workloads Kubernetes depuis des années — RKE, Rancher, GK
 - [CLI — Plugins Krew](cli/krew_plugins.md) — les plugins indispensables
 - [CLI — Kubeconfig](cli/kubeconfig.md) — gestion des contextes et fichiers de config
 - [CLI — Outils](cli/tools.md) — k9s, stern et autres outils autour de kubectl
-- [Deployment — Limits Golang](deployment/golang_kubernetes_limit.md) — GOMAXPROCS et limits CPU
+- [Deployment — GOMAXPROCS/GOMEMLIMIT](deployment/gomaxprocs_gomemlimit_kubernetes.md) — GOMAXPROCS et limits CPU
 - [Deployment — Cache d'images local](deployment/local_image_cache.md) — éviter les pulls répétés
 - [Deployment — Validating Admission Policy](deployment/validating_admission_policy.md) — CEL policies sans webhook
 - [ArgoCD — Service Accounts](argocd/argocd_sa.md) — RBAC et accès programmatique

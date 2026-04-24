@@ -244,7 +244,7 @@ Cette magnifique documentation a été faite avec MkDocs Material. [À propos](a
 
 ### Deploiement sur K8S
 
-* [Golang : Définir automatiquement son GOMEMLIMIT/GOMAXPROCS](./kubernetes/deployment/golang_kubernetes_limit.md)
+* [Golang : Définir automatiquement son GOMEMLIMIT/GOMAXPROCS](./kubernetes/deployment/gomaxprocs_gomemlimit_kubernetes.md)
 * [Spegel : Un OCI registry cache stateless](./kubernetes/deployment/local_image_cache.md)
 * [ValidatingAdmissionPolicy : admission control sans webhook](./kubernetes/deployment/validating_admission_policy.md)
 

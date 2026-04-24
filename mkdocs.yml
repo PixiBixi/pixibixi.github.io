@@ -72,6 +72,7 @@ plugins:
         'mess/optimization.md': 'misc/optimization.md'
         'mess/scripts_useful.md': 'misc/scripts_useful.md'
         'mess/github_template.md': 'misc/github_template.md'
+        'kubernetes/deployment/golang_kubernetes_limit.md': 'kubernetes/deployment/gomaxprocs_gomemlimit_kubernetes.md'
         'mess/fibre_optique/info_transceiver.md': 'misc/fibre_optique/info_transceiver.md'
         'mess/download/netflix_subs.md': 'misc/download/netflix_subs.md'
         # Phase 1 — databases/ extracted from linux/
