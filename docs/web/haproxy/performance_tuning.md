@@ -1,29 +1,29 @@
 ---
-description: Optimiser les performances de HAproxy pour les fortes charges — threads, maxconn, buffers, timeouts, SSL et noyau Linux.
+description: Guide complet de tuning HAProxy : nbthread, cpu-policy, maxconn, TLS (ECDSA vs RSA), sysctls, Kubernetes. Benchmarks ARM Axion vs x86 — le guide francophone de référence.
 tags:
   - HAProxy
   - Performance
 ---
 
-# HAproxy : Performance tuning
+# HAProxy : guide de performance tuning (nbthread, maxconn, TLS, Kubernetes)
 
-HAproxy est déjà très performant out of the box. Mais sur des infras à forte charge (100k+ connexions simultanées), quelques réglages font la différence entre "ça tient" et "ça explose".
+HAProxy est déjà très performant out of the box. Mais sur des infras à forte charge (100k+ connexions simultanées), quelques réglages font la différence entre "ça tient" et "ça explose".
 
 !!! note
-    Toutes les valeurs présentées ici sont des suggestions à adapter selon le profil de trafic. Un HAproxy qui sert du streaming vidéo n'a pas les mêmes besoins qu'un HAproxy devant une API REST. Toujours load-tester avant d'appliquer en production.
+    Toutes les valeurs présentées ici sont des suggestions à adapter selon le profil de trafic. Un HAProxy qui sert du streaming vidéo n'a pas les mêmes besoins qu'un HAProxy devant une API REST. Toujours load-tester avant d'appliquer en production.
 
 ## Threads et CPU
 
 ### nbthread
 
-Depuis HAproxy 1.8, `nbthread` remplace l'ancien `nbproc` (déprécié). Un thread par cœur CPU, c'est le réglage de base.
+Depuis HAProxy 1.8, `nbthread` remplace l'ancien `nbproc` (déprécié). Un thread par cœur CPU, c'est le réglage de base.
 
 ```haproxy
 global
     nbthread 4
 ```
 
-HAproxy détecte automatiquement le nombre de CPUs disponibles — `nbthread auto` existe mais mettre la valeur explicitement reste plus prédictible, surtout en conteneur où les cgroups peuvent fausser la détection.
+HAProxy détecte automatiquement le nombre de CPUs disponibles — `nbthread auto` existe mais mettre la valeur explicitement reste plus prédictible, surtout en conteneur où les cgroups peuvent fausser la détection.
 
 ### cpu-map (affinité manuelle)
 
@@ -39,7 +39,7 @@ En K8S ou environnement conteneurisé, `cpu-map` n'a généralement pas de sens 
 
 ### cpu-policy (3.2+)
 
-Depuis HAproxy 3.2, `cpu-policy` remplace avantageusement les `cpu-map` manuels. HAproxy analyse la topologie CPU (NUMA nodes, CCX, L3 caches) et place ses threads de façon optimale.
+Depuis HAProxy 3.2, `cpu-policy` remplace avantageusement les `cpu-map` manuels. HAProxy analyse la topologie CPU (NUMA nodes, CCX, L3 caches) et place ses threads de façon optimale.
 
 ```haproxy
 global
@@ -55,7 +55,7 @@ global
 | `first-usable-node` | Se limite au premier NUMA node (défaut en 3.2) |
 
 !!! tip
-    Sur HAproxy 3.3+, les défauts sont optimaux dans la majorité des cas — ne toucher à rien sauf si les benchmarks montrent un problème. Vérifier la configuration auto avec `haproxy -dc`.
+    Sur HAProxy 3.3+, les défauts sont optimaux dans la majorité des cas — ne toucher à rien sauf si les benchmarks montrent un problème. Vérifier la configuration auto avec `haproxy -dc`.
 
 ### NUMA et gros serveurs
 
@@ -66,13 +66,13 @@ Sur des machines multi-socket ou multi-CCX (AMD EPYC, Intel Xeon Scalable), la l
 - Deux threads sur des CCX différents : plus lent
 - Deux threads sur des sockets CPU différents : le pire, à éviter
 
-HAproxy 2.4–3.2 se limite par défaut au premier NUMA node pour éviter les communications cross-socket. En 3.3+, il utilise tous les nodes mais groupe intelligemment les threads par L3 cache.
+HAProxy 2.4–3.2 se limite par défaut au premier NUMA node pour éviter les communications cross-socket. En 3.3+, il utilise tous les nodes mais groupe intelligemment les threads par L3 cache.
 
 ### Thread groups
 
 Un thread group est un ensemble de threads qui partagent le même espace de travail. Les threads d'un même groupe coopèrent (partage de connexions, de caches internes), tandis que les threads de groupes différents sont quasi indépendants — ce qui réduit les verrous inter-groupes.
 
-HAproxy supporte max 64 threads par groupe et 16 groupes, soit 1024 threads au total. Sur une machine avec plus de 64 cœurs, il faut obligatoirement plusieurs thread groups.
+HAProxy supporte max 64 threads par groupe et 16 groupes, soit 1024 threads au total. Sur une machine avec plus de 64 cœurs, il faut obligatoirement plusieurs thread groups.
 
 En 3.2+, `cpu-policy` gère ça automatiquement. Sur les versions 2.7–3.1, on définit manuellement :
 
@@ -121,7 +121,7 @@ frontend http_front
 
 ### IRQ NIC et ksoftirqd
 
-Sur du bare-metal à très haut débit, les interruptions NIC (`ksoftirqd`) peuvent saturer des cœurs CPU. Si `perf top` montre `ksoftirqd` en haut, il faut réserver des cœurs pour les IRQ et ne pas y placer de threads HAproxy.
+Sur du bare-metal à très haut débit, les interruptions NIC (`ksoftirqd`) peuvent saturer des cœurs CPU. Si `perf top` montre `ksoftirqd` en haut, il faut réserver des cœurs pour les IRQ et ne pas y placer de threads HAProxy.
 
 Identifier les cœurs qui traitent les IRQ de la NIC :
 
@@ -133,7 +133,7 @@ grep eth0 /proc/interrupts
 cat /proc/irq/<IRQ_NUM>/smp_affinity_list
 ```
 
-Exclure ces cœurs du pool HAproxy avec `cpu-set` (3.2+) :
+Exclure ces cœurs du pool HAProxy avec `cpu-set` (3.2+) :
 
 ```haproxy
 global
@@ -141,7 +141,7 @@ global
     cpu-policy performance
 ```
 
-Ou manuellement, dédier les premiers cœurs aux IRQ NIC via `irqbalance` ou `smp_affinity`, et mapper HAproxy sur les cœurs restants.
+Ou manuellement, dédier les premiers cœurs aux IRQ NIC via `irqbalance` ou `smp_affinity`, et mapper HAProxy sur les cœurs restants.
 
 !!! warning
     Ne pas utiliser `irqbalance` en même temps qu'un pinning manuel via `smp_affinity` — ils se marchent dessus.
@@ -152,14 +152,14 @@ Le paramètre le plus important. Il se configure à 3 niveaux :
 
 ### Global
 
-Limite le nombre total de connexions simultanées sur l'instance HAproxy.
+Limite le nombre total de connexions simultanées sur l'instance HAProxy.
 
 ```haproxy
 global
     maxconn 100000
 ```
 
-Si `-m` est défini (limite mémoire), HAproxy calcule automatiquement le `maxconn` en fonction de la RAM disponible. C'est ce qui explique le comportement décrit dans l'article sur la [limite mémoire](memory_limit.md) — une surprise fréquente en environnement conteneurisé.
+Si `-m` est défini (limite mémoire), HAProxy calcule automatiquement le `maxconn` en fonction de la RAM disponible. C'est ce qui explique le comportement décrit dans l'article sur la [limite mémoire](memory_limit.md) — une surprise fréquente en environnement conteneurisé.
 
 ### Frontend
 
@@ -181,7 +181,7 @@ backend app_servers
 ```
 
 !!! warning
-    Un `maxconn` serveur trop bas met les requêtes en queue dans HAproxy. C'est voulu — HAproxy gère bien les queues, les backends souvent non.
+    Un `maxconn` serveur trop bas met les requêtes en queue dans HAProxy. C'est voulu — HAProxy gère bien les queues, les backends souvent non.
 
 ## Buffers
 
@@ -195,7 +195,7 @@ global
 ```
 
 !!! warning
-    Dans la majorité des cas, la valeur par défaut de 16 KB est suffisante. N'augmenter `tune.bufsize` que si HAproxy retourne des erreurs 400 (headers tronqués) ou si les logs montrent des requêtes rejetées pour dépassement de buffer. Augmenter sans raison gaspille de la RAM pour rien.
+    Dans la majorité des cas, la valeur par défaut de 16 KB est suffisante. N'augmenter `tune.bufsize` que si HAProxy retourne des erreurs 400 (headers tronqués) ou si les logs montrent des requêtes rejetées pour dépassement de buffer. Augmenter sans raison gaspille de la RAM pour rien.
 
 64 KB est une valeur qu'on retrouve sur du trafic ad-tech ou des APIs avec de gros headers (cookies, JWT, query strings longues). La valeur par défaut de 16 KB est trop juste pour ces cas spécifiques.
 
@@ -249,7 +249,7 @@ defaults
 
 ### timeout client-fin
 
-Sur du trafic fire-and-forget (beaconing, pixels de tracking), les clients envoient un FIN sans attendre la réponse. Sans `timeout client-fin`, HAproxy maintient la connexion half-closed pendant tout le `timeout client`. Avec 1s, les file descriptors sont libérés quasi immédiatement.
+Sur du trafic fire-and-forget (beaconing, pixels de tracking), les clients envoient un FIN sans attendre la réponse. Sans `timeout client-fin`, HAProxy maintient la connexion half-closed pendant tout le `timeout client`. Avec 1s, les file descriptors sont libérés quasi immédiatement.
 
 ### Timeouts agressifs vs conservateurs
 
@@ -301,7 +301,7 @@ global
 
 ### Certificats : ECDSA vs RSA
 
-Le handshake TLS est l'opération la plus coûteuse en CPU. Le type de certificat a un impact majeur sur le nombre de handshakes/seconde qu'un HAproxy peut absorber.
+Le handshake TLS est l'opération la plus coûteuse en CPU. Le type de certificat a un impact majeur sur le nombre de handshakes/seconde qu'un HAProxy peut absorber.
 
 | Certificat | C4a (ARM Axion) | C4d (x86 Emerald Rapids) |
 | ---------- | --------------- | ------------------------ |
@@ -318,7 +318,7 @@ En intégrant le prix (GCP spot, standard-16, avril 2026 : C4a ~179$/mois, C4d ~
 | ECDSA P-256 | 4 545 | 5 131 | x86 +13% |
 | RSA 2048 | 113 | 343 | x86 +3x |
 
-Ces ratios ne concernent que la crypto TLS (signatures, bulk encryption) — pas les performances HAproxy globales. Un proxy passe aussi beaucoup de temps en parsing HTTP, évaluation d'ACLs et forwarding, où l'écart est bien moins marqué. Ne pas choisir un type d'instance uniquement sur la base de ces benchmarks — profiler avec le trafic réel.
+Ces ratios ne concernent que la crypto TLS (signatures, bulk encryption) — pas les performances HAProxy globales. Un proxy passe aussi beaucoup de temps en parsing HTTP, évaluation d'ACLs et forwarding, où l'écart est bien moins marqué. Ne pas choisir un type d'instance uniquement sur la base de ces benchmarks — profiler avec le trafic réel.
 
 Ces chiffres viennent d'`openssl speed` sur des instances GCP single-core. Vérifier sur sa propre machine :
 
@@ -326,12 +326,12 @@ Ces chiffres viennent d'`openssl speed` sur des instances GCP single-core. Véri
 openssl speed rsa2048 rsa4096 ecdsap256
 ```
 
-Sur un HAproxy qui gère 100k nouvelles connexions TLS par seconde : en RSA 4096, il faudrait ~130 cœurs x86 (ou ~524 cœurs ARM). En ECDSA P-256, 2 cœurs suffisent.
+Sur un HAProxy qui gère 100k nouvelles connexions TLS par seconde : en RSA 4096, il faudrait ~130 cœurs x86 (ou ~524 cœurs ARM). En ECDSA P-256, 2 cœurs suffisent.
 
 !!! tip
     Passer de RSA 2048 à ECDSA P-256 est le gain de performance TLS le plus simple et le plus impactant. Tous les clients modernes supportent ECDSA — il n'y a plus de raison de rester en RSA sauf contrainte legacy.
 
-Si des clients anciens ne supportent pas ECDSA, HAproxy peut servir les deux certificats sur le même bind (dual-cert). Il choisit automatiquement le bon en fonction de ce que le client supporte :
+Si des clients anciens ne supportent pas ECDSA, HAProxy peut servir les deux certificats sur le même bind (dual-cert). Il choisit automatiquement le bon en fonction de ce que le client supporte :
 
 ```haproxy
 bind *:443 ssl crt /etc/haproxy/certs/site.ecdsa.pem crt /etc/haproxy/certs/site.rsa.pem
@@ -358,7 +358,7 @@ TLS 1.3 supporte le 0-RTT : le client peut envoyer des données dès le premier 
 bind *:443 ssl crt /etc/haproxy/certs/ allow-0rtt
 ```
 
-HAproxy reçoit la requête immédiatement sans attendre le handshake complet. Pour relayer le 0-RTT vers les backends :
+HAProxy reçoit la requête immédiatement sans attendre le handshake complet. Pour relayer le 0-RTT vers les backends :
 
 ```haproxy
 backend app_servers
@@ -438,11 +438,11 @@ bind *:443 ssl crt /etc/haproxy/certs/ ocsp-update on
 ```
 
 !!! warning "Let's Encrypt"
-    Let's Encrypt a arrêté de fournir des réponses OCSP en juin 2025. Avec des certificats LE, `ocsp-update on` ne sert plus à rien — HAproxy logguera des erreurs de fetch OCSP sans impact fonctionnel, mais c'est du bruit inutile. Les autres CA (DigiCert, Sectigo, etc.) supportent toujours OCSP.
+    Let's Encrypt a arrêté de fournir des réponses OCSP en juin 2025. Avec des certificats LE, `ocsp-update on` ne sert plus à rien — HAProxy logguera des erreurs de fetch OCSP sans impact fonctionnel, mais c'est du bruit inutile. Les autres CA (DigiCert, Sectigo, etc.) supportent toujours OCSP.
 
 ## Tuning réseau noyau
 
-HAproxy ne peut pas aller plus vite que le noyau Linux. Sur un serveur dédié à du load balancing, ces sysctls sont essentiels.
+HAProxy ne peut pas aller plus vite que le noyau Linux. Sur un serveur dédié à du load balancing, ces sysctls sont essentiels.
 
 ```bash
 # Backlog de connexions
@@ -470,7 +470,7 @@ sysctl -w fs.nr_open=1048576
 
 `tcp_fin_timeout=15` réduit le temps pendant lequel une connexion fermée reste en état TIME_WAIT (défaut 60s). Sur un load balancer qui ouvre des milliers de connexions par seconde vers les backends, 60s de TIME_WAIT sature vite la table de connexion.
 
-`ip_local_port_range="1024 65023"` étend la plage de ports éphémères à ~64k ports. Le défaut `32768 60999` ne donne que ~28k ports — insuffisant quand HAproxy ouvre beaucoup de connexions sortantes.
+`ip_local_port_range="1024 65023"` étend la plage de ports éphémères à ~64k ports. Le défaut `32768 60999` ne donne que ~28k ports — insuffisant quand HAProxy ouvre beaucoup de connexions sortantes.
 
 Pour persister, ajouter dans `/etc/sysctl.d/99-haproxy.conf` et appliquer avec `sysctl --system`.
 
@@ -479,7 +479,7 @@ Pour persister, ajouter dans `/etc/sysctl.d/99-haproxy.conf` et appliquer avec `
 
 ### File descriptors
 
-HAproxy a besoin de 2 file descriptors par connexion (client + backend). Pour 100k connexions :
+HAProxy a besoin de 2 file descriptors par connexion (client + backend). Pour 100k connexions :
 
 ```bash
 # /etc/security/limits.d/haproxy.conf
@@ -487,11 +487,11 @@ haproxy  soft  nofile  200000
 haproxy  hard  nofile  200000
 ```
 
-HAproxy calcule automatiquement son `ulimit-n` à partir du `maxconn` — pas besoin de le forcer manuellement. Vérifier simplement que les limits système sont suffisantes.
+HAProxy calcule automatiquement son `ulimit-n` à partir du `maxconn` — pas besoin de le forcer manuellement. Vérifier simplement que les limits système sont suffisantes.
 
 ## Pool de file descriptors
 
-Quand HAproxy approche de sa limite de file descriptors, il commence à fermer les connexions idle pour en libérer. Les ratios `tune.pool-high-fd-ratio` et `tune.pool-low-fd-ratio` contrôlent ce comportement :
+Quand HAProxy approche de sa limite de file descriptors, il commence à fermer les connexions idle pour en libérer. Les ratios `tune.pool-high-fd-ratio` et `tune.pool-low-fd-ratio` contrôlent ce comportement :
 
 ```haproxy
 global
@@ -499,13 +499,13 @@ global
     tune.pool-low-fd-ratio 80
 ```
 
-Par défaut, HAproxy commence à recycler les connexions idle quand il atteint ~75% des FD disponibles, et s'arrête quand il redescend à ~25%. Sur du trafic avec de longs keep-alive (beaconing, long-polling), ce comportement par défaut tue les connexions backend poolées trop tôt, ce qui force des reconnexions TCP inutiles et consomme du CPU.
+Par défaut, HAProxy commence à recycler les connexions idle quand il atteint ~75% des FD disponibles, et s'arrête quand il redescend à ~25%. Sur du trafic avec de longs keep-alive (beaconing, long-polling), ce comportement par défaut tue les connexions backend poolées trop tôt, ce qui force des reconnexions TCP inutiles et consomme du CPU.
 
 Monter les ratios à 90/80 préserve le pool de connexions plus longtemps et ne recycle qu'en cas de vrai manque de FD.
 
 ## Déploiement K8S
 
-Sur Kubernetes, quelques patterns spécifiques au déploiement de HAproxy :
+Sur Kubernetes, quelques patterns spécifiques au déploiement de HAProxy :
 
 ### hostNetwork
 
@@ -524,7 +524,7 @@ spec:
 
 ### DaemonSet vs Deployment
 
-- **DaemonSet** avec `hostNetwork` : un pod HAproxy par node, trafic routé directement sur l'IP du node. Adapté quand on veut saturer les nodes dédiés (compute-class).
+- **DaemonSet** avec `hostNetwork` : un pod HAProxy par node, trafic routé directement sur l'IP du node. Adapté quand on veut saturer les nodes dédiés (compute-class).
 - **Deployment** avec `hostNetwork` : même avantage réseau, mais avec un replicaCount flexible et un anti-affinity pour répartir sur les nodes.
 
 ### Sysctls via initContainers
@@ -551,7 +551,7 @@ initContainers:
 
 ## Réutilisation des connexions backend
 
-Par défaut, HAproxy ouvre une nouvelle connexion TCP vers le backend pour chaque requête client. Sur du HTTP/1.1 avec TLS, ça veut dire un handshake TCP + TLS à chaque requête — coûteux en latence et en CPU.
+Par défaut, HAProxy ouvre une nouvelle connexion TCP vers le backend pour chaque requête client. Sur du HTTP/1.1 avec TLS, ça veut dire un handshake TCP + TLS à chaque requête — coûteux en latence et en CPU.
 
 `http-reuse` permet de réutiliser les connexions idle vers les backends :
 
@@ -581,14 +581,14 @@ backend app_servers
 
 ### Zero-copy (splice)
 
-Sur Linux, HAproxy peut transférer les données entre sockets sans les copier en userspace via `splice()` :
+Sur Linux, HAProxy peut transférer les données entre sockets sans les copier en userspace via `splice()` :
 
 ```haproxy
 defaults
     option splice-auto
 ```
 
-HAproxy décide automatiquement quand le splice est bénéfique. Le gain est surtout visible sur du gros débit (vidéo, downloads), moins sur du trafic HTTP classique avec des petites réponses.
+HAProxy décide automatiquement quand le splice est bénéfique. Le gain est surtout visible sur du gros débit (vidéo, downloads), moins sur du trafic HTTP classique avec des petites réponses.
 
 ### tune.ssl.maxrecord
 
@@ -599,7 +599,7 @@ global
     tune.ssl.maxrecord 1419
 ```
 
-1419 bytes = un record qui tient dans un seul segment TCP (MTU 1500 - overhead IP/TCP/TLS). Améliore le TTFB sur les connexions à haute latence (mobile, intercontinental). HAproxy revient automatiquement à des records de taille normale une fois la connexion établie.
+1419 bytes = un record qui tient dans un seul segment TCP (MTU 1500 - overhead IP/TCP/TLS). Améliore le TTFB sur les connexions à haute latence (mobile, intercontinental). HAProxy revient automatiquement à des records de taille normale une fois la connexion établie.
 
 ### tune.listener.multi-queue
 
@@ -662,7 +662,7 @@ La bonne valeur dépend du workload — tester en charge en surveillant le cache
 
 ## Retry et redispatch
 
-Sur des backends qui peuvent se dégrader (throttle réseau cloud, saturation CPU), HAproxy sait retenter la requête sur un autre serveur :
+Sur des backends qui peuvent se dégrader (throttle réseau cloud, saturation CPU), HAProxy sait retenter la requête sur un autre serveur :
 
 ```haproxy
 defaults
@@ -688,7 +688,7 @@ backend app_servers
 | `rise 10` | 10 checks OK consécutifs pour le remonter — évite les allers-retours |
 
 !!! tip
-    `timeout connect 20ms` est très agressif — adapté quand HAproxy et les backends sont dans le même datacenter/VPC. Un backend qui met plus de 20ms à accepter la connexion TCP est probablement throttled ou saturé, mieux vaut redispatcher immédiatement.
+    `timeout connect 20ms` est très agressif — adapté quand HAProxy et les backends sont dans le même datacenter/VPC. Un backend qui met plus de 20ms à accepter la connexion TCP est probablement throttled ou saturé, mieux vaut redispatcher immédiatement.
 
 ## Health checks
 
@@ -725,7 +725,7 @@ frontend high_traffic
 
 ## Compression
 
-HAproxy peut compresser les réponses à la volée. Utile si les backends ne le font pas.
+HAProxy peut compresser les réponses à la volée. Utile si les backends ne le font pas.
 
 ```haproxy
 defaults
@@ -745,7 +745,7 @@ global
 | `raw-deflate` | Deflate sans wrapper zlib, mieux supporté que `deflate` mais aucun avantage sur gzip. |
 | `identity` | Pas de compression, utile pour du debug uniquement. |
 
-Pas de support zstd à ce jour, même en HAproxy 3.x. Si on a besoin de zstd, le faire côté backend (Nginx, application).
+Pas de support zstd à ce jour, même en HAProxy 3.x. Si on a besoin de zstd, le faire côté backend (Nginx, application).
 
 ### Niveau de compression
 
@@ -755,10 +755,10 @@ Pas de support zstd à ce jour, même en HAproxy 3.x. Si on a besoin de zstd, le
 - **4-5** : bon compromis ratio/CPU pour la plupart des workloads
 - **9** : gain marginal en ratio par rapport à 6, mais consommation CPU qui explose
 
-Sur un HAproxy à forte charge, rester entre 1 et 4. Le gain de bande passante entre le niveau 4 et le niveau 9 ne justifie rarement le coût CPU.
+Sur un HAProxy à forte charge, rester entre 1 et 4. Le gain de bande passante entre le niveau 4 et le niveau 9 ne justifie rarement le coût CPU.
 
 !!! warning
-    La compression consomme du CPU. Si les backends gèrent déjà la compression (Nginx, CDN), ne pas l'activer côté HAproxy — ça revient à compresser deux fois pour rien. HAproxy détecte automatiquement un `Content-Encoding` existant et ne recompresse pas.
+    La compression consomme du CPU. Si les backends gèrent déjà la compression (Nginx, CDN), ne pas l'activer côté HAProxy — ça revient à compresser deux fois pour rien. HAProxy détecte automatiquement un `Content-Encoding` existant et ne recompresse pas.
 
 ## Exemple complet
 
@@ -801,29 +801,34 @@ backend app_servers
 
 ## Monitoring Prometheus
 
-Le tuning sans monitoring, c'est du pilotage à l'aveugle. Un set complet de recording rules et alertes Prometheus pour HAproxy est disponible sur [rules.jdelgado.fr](https://rules.jdelgado.fr/#alerts/haproxy.rules.yml) (40 alertes, 20 recording rules).
+Le tuning sans monitoring, c'est du pilotage à l'aveugle. Un set complet de recording rules et alertes Prometheus pour HAProxy est disponible sur [rules.jdelgado.fr](https://rules.jdelgado.fr/#alerts/haproxy.rules.yml) (40 alertes, 20 recording rules).
 
 Les alertes les plus pertinentes pour le tuning :
 
 | Alerte | Seuil | Ce que ça détecte |
 | ------ | ----- | ----------------- |
-| `HAproxyProcessConnectionsSaturation` | >80% de maxconn | `maxconn` trop bas |
-| `HAproxyProcessConnectionsCritical` | >90% de maxconn | Rejet de connexions imminent |
-| `HAproxyFrontendSessionSaturation` | >70% des sessions | Frontend qui sature |
-| `HAproxyProcessIdleLow` | <10% idle | CPU HAproxy saturé — ajouter des threads ou des replicas |
-| `HAproxyProcessPoolFailures` | >0 | Allocation mémoire échoue — OOM, `tune.bufsize` ou RAM insuffisante |
-| `HAproxyProcessSslConnectionsSaturation` | >80% de maxsslconn | `maxsslconn` trop bas |
-| `HAproxyRetryHigh` | >10/s | Backends dégradés, `retry-on` / `redispatch` en action |
-| `HAproxyBackendQueueTimeHigh` | >500ms | `maxconn` serveur trop bas ou backends lents |
-| `HAproxyConnectionRateNearLimit` | >80% du rate limit | Pic de nouvelles connexions |
-| `HAproxyProcessDroppedLogs` | >0 | Socket syslog saturé — passer en `dontlog-normal` |
+| `HAProxyProcessConnectionsSaturation` | >80% de maxconn | `maxconn` trop bas |
+| `HAProxyProcessConnectionsCritical` | >90% de maxconn | Rejet de connexions imminent |
+| `HAProxyFrontendSessionSaturation` | >70% des sessions | Frontend qui sature |
+| `HAProxyProcessIdleLow` | <10% idle | CPU HAProxy saturé — ajouter des threads ou des replicas |
+| `HAProxyProcessPoolFailures` | >0 | Allocation mémoire échoue — OOM, `tune.bufsize` ou RAM insuffisante |
+| `HAProxyProcessSslConnectionsSaturation` | >80% de maxsslconn | `maxsslconn` trop bas |
+| `HAProxyRetryHigh` | >10/s | Backends dégradés, `retry-on` / `redispatch` en action |
+| `HAProxyBackendQueueTimeHigh` | >500ms | `maxconn` serveur trop bas ou backends lents |
+| `HAProxyConnectionRateNearLimit` | >80% du rate limit | Pic de nouvelles connexions |
+| `HAProxyProcessDroppedLogs` | >0 | Socket syslog saturé — passer en `dontlog-normal` |
 
 Les recording rules pré-calculent les ratios d'erreurs (4xx/5xx par backend), le trafic, les sessions et les retries pour que les alertes soient rapides sans surcharger Prometheus.
 
 ## Voir aussi
 
-- [HAproxy : Comportement d'une limite mémoire](memory_limit.md)
-- [Reverse proxy: HAproxy](overview.md)
+- [HAProxy : Comportement d'une limite mémoire](memory_limit.md)
+- [Reverse proxy: HAProxy](overview.md)
+- [HAProxy : Utiliser son API](api.md)
+- [HAProxy : Obtenir les vraies IPs depuis CloudFlare](cloudflare.md)
+- [Conserver l'IP de son visiteur sur un reverse-proxy](keep_real_ip.md)
+- [HAProxy : Mettre un node en maintenance](maintenance.md)
+- [GOMEMLIMIT/GOMAXPROCS automatiques en Kubernetes](../../kubernetes/deployment/golang_kubernetes_limit.md)
 
 ## Diagnostic
 
@@ -837,7 +842,7 @@ echo "show info" | socat - /var/run/haproxy.sock | grep -iE 'maxconn|maxsock|nbt
 
 ### CPU binding
 
-Voir comment HAproxy a réparti ses threads sur les CPUs (3.2+) :
+Voir comment HAProxy a réparti ses threads sur les CPUs (3.2+) :
 
 ```bash
 haproxy -dc -f /etc/haproxy/haproxy.cfg
@@ -856,5 +861,5 @@ sudo perf top
 | Symptôme dans perf top | Cause probable | Action |
 | ---------------------- | -------------- | ------ |
 | `native_queued_spin_lock_slowpath` | Contention sur les listener sockets | Ajouter `shards by-group` |
-| `ksoftirqd` | IRQ NIC saturent des cœurs | Réserver des cœurs pour les IRQ, exclure du pool HAproxy |
+| `ksoftirqd` | IRQ NIC saturent des cœurs | Réserver des cœurs pour les IRQ, exclure du pool HAProxy |
 | Fonctions SSL (`_bignum`, `_mont`) | Handshakes TLS intensifs | Séparer les threads SSL sur un NUMA node dédié |
