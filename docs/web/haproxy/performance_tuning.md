@@ -1,5 +1,5 @@
 ---
-description: Guide complet de tuning HAProxy : nbthread, cpu-policy, maxconn, TLS (ECDSA vs RSA), sysctls, Kubernetes. Benchmarks ARM Axion vs x86 — le guide francophone de référence.
+description: "Guide complet de tuning HAProxy : nbthread, cpu-policy, maxconn, TLS (ECDSA vs RSA), sysctls, Kubernetes. Benchmarks ARM Axion vs x86 - le guide francophone de référence."
 tags:
   - HAProxy
   - Performance
