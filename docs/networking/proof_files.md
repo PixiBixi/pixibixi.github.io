@@ -33,23 +33,23 @@ autre réseau, et donc de tester son peering
 
 ## Liste des proofs files disponibles
 
-  **Provider**   **Lien**
-  -------------- -------------------------------------------------------------------------------
-  I3D            [Ici](https://customer.i3d.net/mirror/)
-  Tele2          [Ìci](http://speedtest.tele2.net/)
-  Vultr          [Ici](https://vultrcoupons.com/test-vultr-download-speed-from-your-location/)
-  Free           [Ici](http://test-debit.free.fr/)
-  Linode         [Ici](https://www.linode.com/speedtest)
-  Feral          [Ici](https://www.feral.io/test.bin)
-  OVH            [Ici](https://proof.ovh.net/)
-  Online (AMS)   [Ici](http://ping-ams1.online.net/)
-  Online         [Ici](http://ping.online.net/)
-  Test Debit     [Ici](https://testdebit.info/)
-  X4B            [Ici](http://lg.x4b.net/)
-  Serverius      [Ici](http://speedtest.serverius.net/)
-  Hetzner        [ici](https://speed.hetzner.de/)
-  Belwue         [ici](http://speedtest.belwue.net/)
-  LG             [ici](http://lg.core-backbone.com)
+| Provider | Lien |
+| --- | --- |
+| I3D | [Ici](https://customer.i3d.net/mirror/) |
+| Tele2 | [Ici](http://speedtest.tele2.net/) |
+| Vultr | [Ici](https://vultrcoupons.com/test-vultr-download-speed-from-your-location/) |
+| Free | [Ici](http://test-debit.free.fr/) |
+| Linode | [Ici](https://www.linode.com/speedtest) |
+| Feral | [Ici](https://www.feral.io/test.bin) |
+| OVH | [Ici](https://proof.ovh.net/) |
+| Online (AMS) | [Ici](http://ping-ams1.online.net/) |
+| Online | [Ici](http://ping.online.net/) |
+| Test Debit | [Ici](https://testdebit.info/) |
+| X4B | [Ici](http://lg.x4b.net/) |
+| Serverius | [Ici](http://speedtest.serverius.net/) |
+| Hetzner | [Ici](https://speed.hetzner.de/) |
+| Belwue | [Ici](http://speedtest.belwue.net/) |
+| LG | [Ici](http://lg.core-backbone.com) |
 
 Durant les cours intéréssants, j'ai finis par développer (Ou plutôt
 fork) un script permettant de lancer des DLs à partir d'une multitude
