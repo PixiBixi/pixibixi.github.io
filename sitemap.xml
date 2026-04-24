@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://wiki.jdelgado.fr/</loc>
-    <lastmod>2026-04-20</lastmod>
+    <lastmod>2026-04-24</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/about/</loc>
@@ -250,7 +250,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/kubernetes/</loc>
-    <lastmod>2026-03-14</lastmod>
+    <lastmod>2026-04-24</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/kubernetes/argocd/applicationset/</loc>
@@ -289,8 +289,8 @@
     <lastmod>2026-04-20</lastmod>
   </url>
   <url>
-    <loc>https://wiki.jdelgado.fr/kubernetes/deployment/golang_kubernetes_limit/</loc>
-    <lastmod>2026-03-12</lastmod>
+    <loc>https://wiki.jdelgado.fr/kubernetes/deployment/gomaxprocs_gomemlimit_kubernetes/</loc>
+    <lastmod>2026-04-24</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/kubernetes/deployment/local_image_cache/</loc>
