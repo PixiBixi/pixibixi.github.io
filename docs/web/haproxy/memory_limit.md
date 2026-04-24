@@ -68,5 +68,5 @@ MaxconnReached: 0
 
 ## Voir aussi
 
-* [HAproxy : Performance tuning](performance_tuning.md)
-* [Reverse proxy: HAproxy](overview.md)
+* [HAProxy : tuning nbthread, maxconn et TLS](performance_tuning.md)
+* [Reverse proxy: HAProxy](overview.md)

@@ -27,5 +27,6 @@ pour garder ce qu'on souhaite).
 
 ## Voir aussi
 
-* [HAproxy : Mettre un node en maintenance](maintenance.md)
-* [Reverse proxy: HAproxy](overview.md)
+* [HAProxy : Mettre un node en maintenance](maintenance.md)
+* [Reverse proxy: HAProxy](overview.md)
+* [HAProxy : tuning nbthread, maxconn et TLS](performance_tuning.md)

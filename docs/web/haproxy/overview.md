@@ -114,7 +114,7 @@ exemple simple qu'on retrouve dans un grand nombre de configurations HAproxy :
 * `maxconn` permet de limiter le nombre de connexions acceptées
 par HAproxy pour prémunir un manque de mémoire. Attention à ne pas
 faire un sizing trop juste, ce qui induirait un drop de
-connexions légitimes. Voir [Performance tuning](performance_tuning.md) et [limite mémoire](memory_limit.md) pour les détails.
+connexions légitimes. Voir [le guide de tuning nbthread, maxconn et TLS](performance_tuning.md) et [limite mémoire](memory_limit.md) pour les détails.
 * `log` permet de spécifier où sont renvoyés les logs. Dans
 ce cas, on les logue dans rsyslog (/dev/log) en tant que
 local0. rsyslog s'occupe de traiter les logs. (par défaut,
@@ -437,7 +437,7 @@ uri1.html https://monsite.fr/coucou
 
 ## Voir aussi
 
-* [HAproxy : Performance tuning](performance_tuning.md)
-* [HAproxy : Utiliser son API](api.md)
+* [HAProxy : tuning nbthread, maxconn et TLS](performance_tuning.md)
+* [HAProxy : Utiliser son API](api.md)
 * [Conserver l'IP de son visiteur sur un reverse-proxy](keep_real_ip.md)
-* [HAproxy : Obtenir les vraies IPs depuis CloudFlare](cloudflare.md)
+* [HAProxy : Obtenir les vraies IPs depuis CloudFlare](cloudflare.md)

@@ -31,4 +31,5 @@ publique de ses IPs :
 ## Voir aussi
 
 * [Conserver l'IP de son visiteur sur un reverse-proxy](keep_real_ip.md)
-* [Reverse proxy: HAproxy](overview.md)
+* [Reverse proxy: HAProxy](overview.md)
+* [HAProxy : tuning nbthread, maxconn et TLS](performance_tuning.md)
