@@ -2,7 +2,7 @@
 description: Wiki SRE/Platform Engineer — Linux, Kubernetes, Cloud, CI/CD, Monitoring. 200+ articles pratiques en français.
 ---
 
-# Sommaire
+# Wiki SRE — Kubernetes, HAProxy, Linux, Terraform
 
 Bienvenue sur mon wiki personnel où j'écris toutes mes astuces, ainsi
 que des tutoriels divers que j'ai pu prendre ici et là.

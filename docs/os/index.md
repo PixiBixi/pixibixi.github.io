@@ -31,5 +31,9 @@ Ce qui tourne sur le poste de travail et les serveurs Windows. macOS avec Homebr
 - [Windows Server — Premier setup](windows/server/powershell/first_setup.md) — configuration initiale en PowerShell
 - [Windows Server — Import CSV utilisateurs](windows/server/powershell/import_csv_users.md) — créer des comptes AD en masse
 - [Windows Server — iSCSI](windows/server/powershell/initiate_iscsi.md) — connecter un initiateur iSCSI
+- [Windows Server — Monter un ISO](windows/server/powershell/mount_iso.md) — monter un ISO directement via PowerShell
+- [Windows Server — Temps d'exécution](windows/server/powershell/command_time_execution.md) — mesurer la durée d'une commande
+- [Windows Server — Variables built-in](windows/server/powershell/useful_vars.md) — variables PowerShell utiles
+- [Windows Server — Installer des drivers](windows/server/powershell/install_drivers.md) — installer des drivers via PowerShell
 - [Windows Server — Storage Pool](windows/server/powershell/storage/pool.md) — créer un pool de stockage
 - [Windows Server — Registre](windows/server/registry/useful_keys.md) — clés de registre utiles
