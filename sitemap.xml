@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://wiki.jdelgado.fr/</loc>
-    <lastmod>2026-04-24</lastmod>
+    <lastmod>2026-04-28</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/about/</loc>
@@ -250,7 +250,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/kubernetes/</loc>
-    <lastmod>2026-04-24</lastmod>
+    <lastmod>2026-04-28</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/kubernetes/argocd/applicationset/</loc>
@@ -295,6 +295,10 @@
   <url>
     <loc>https://wiki.jdelgado.fr/kubernetes/deployment/local_image_cache/</loc>
     <lastmod>2026-03-15</lastmod>
+  </url>
+  <url>
+    <loc>https://wiki.jdelgado.fr/kubernetes/deployment/statefulset_pod_management_policy/</loc>
+    <lastmod>2026-04-28</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/kubernetes/deployment/validating_admission_policy/</loc>
