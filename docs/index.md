@@ -247,6 +247,7 @@ Cette magnifique documentation a été faite avec MkDocs Material. [À propos](a
 * [Golang : Définir automatiquement son GOMEMLIMIT/GOMAXPROCS](./kubernetes/deployment/gomaxprocs_gomemlimit_kubernetes.md)
 * [Spegel : Un OCI registry cache stateless](./kubernetes/deployment/local_image_cache.md)
 * [ValidatingAdmissionPolicy : admission control sans webhook](./kubernetes/deployment/validating_admission_policy.md)
+* [StatefulSet — podManagementPolicy : OrderedReady vs Parallel](./kubernetes/deployment/statefulset_pod_management_policy.md)
 
 ### ArgoCD
 
