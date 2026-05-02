@@ -21,7 +21,7 @@ Voici en détail à quoi servent-ils :
 * `browse-pvc` permet de parcourir un PVC et de voir son contenu
 * `df-pv` permet de voir tel la commande `df` l'espace dispo sur son PVC & co
 * `get-all` permet de lister toutes les ressources dans un NS
-* `klock` permet de rafraichir automatiquement une commande, par exemple `kubectl krew pods` va watch toutes les secondes les changements sur les pods
+* `klock` permet de rafraichir automatiquement une commande, par exemple `kubectl klock pods` va watch toutes les secondes les changements sur les pods
 * `modify-secret` permet de modifier un secret en plain text
 * `neat` permet de supprimer d'un yaml tous les champs qui sont gérés par K8S
 * `netshoot/netshoot` permet de simplifier l'utilisation du magnifique container netshoot
