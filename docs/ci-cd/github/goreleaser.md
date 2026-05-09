@@ -113,6 +113,71 @@ upx:
 !!! warning "UPX et macOS/Windows"
     UPX est déconseillé sur macOS (problèmes de notarisation Apple) et Windows (faux positifs antivirus). Le limiter à `goos: [linux]`.
 
+## Signature des artefacts (cosign)
+
+[Cosign](https://github.com/sigstore/cosign) permet de signer les artefacts en mode **keyless** : pas de clé à gérer, l'identité est prouvée par l'OIDC de GitHub Actions. La signature est ancrée dans la transparence log de [Sigstore](https://www.sigstore.dev/).
+
+### .goreleaser.yml
+
+```yaml
+signs:
+  - cmd: cosign
+    signature: "${artifact}.sigstore.json"
+    args:
+      - sign-blob
+      - "--bundle=${signature}"
+      - "${artifact}"
+      - "--yes"
+    artifacts: checksum   # signe checksums.txt, qui couvre tous les binaires/archives
+
+docker_signs:
+  - cmd: cosign
+    args:
+      - sign
+      - "--yes"
+      - "${artifact}"
+    artifacts: manifests   # signe les manifests multi-arch, pas les images individuelles
+```
+
+!!! note "Pourquoi signer le checksum plutôt que chaque archive ?"
+    Le fichier `checksums.txt` contient les SHA256 de tous les artefacts. Signer ce seul fichier suffit : on vérifie d'abord l'authenticité du checksum, puis l'intégrité de chaque archive via SHA256.
+
+### GitHub Actions — permissions requises
+
+Deux ajouts par rapport au workflow de base :
+
+```yaml
+permissions:
+  contents: write
+  packages: write
+  id-token: write   # requis pour la signature OIDC keyless
+```
+
+```yaml
+      - name: Install cosign
+        uses: sigstore/cosign-installer@v3
+```
+
+### Vérifier les artefacts (côté utilisateur)
+
+```bash
+# 1. Vérifier la signature du checksum
+cosign verify-blob \
+  --certificate-identity 'https://github.com/monorg/mon-repo/.github/workflows/release.yml@refs/tags/vX.Y.Z' \
+  --certificate-oidc-issuer 'https://token.actions.githubusercontent.com' \
+  --bundle checksums.txt.sigstore.json \
+  checksums.txt
+
+# 2. Vérifier l'intégrité des binaires
+sha256sum --ignore-missing -c checksums.txt
+
+# 3. Vérifier l'image Docker
+cosign verify \
+  --certificate-identity 'https://github.com/monorg/mon-repo/.github/workflows/release.yml@refs/tags/vX.Y.Z' \
+  --certificate-oidc-issuer 'https://token.actions.githubusercontent.com' \
+  ghcr.io/monorg/mon-image:vX.Y.Z
+```
+
 ## Images Docker multi-arch
 
 GoReleaser gère le build multi-arch via Docker Buildx et crée automatiquement le manifest combiné.
@@ -185,6 +250,7 @@ on:
 permissions:
   contents: write
   packages: write   # push vers ghcr.io
+  id-token: write   # signature cosign keyless
 
 jobs:
   goreleaser:
@@ -197,6 +263,9 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version: stable
+
+      - name: Install cosign
+        uses: sigstore/cosign-installer@v3
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
