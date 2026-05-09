@@ -1,5 +1,5 @@
 ---
-description: Publier des binaires Go multi-arch, images Docker et charts Helm en une commande avec GoReleaser — build flags, UPX, ghcr.io, GitHub Actions.
+description: Publier des binaires Go multi-arch, images OCI et charts Helm en une commande avec GoReleaser — build flags, UPX, ko, ghcr.io, GitHub Actions.
 tags:
   - GitHub Actions
   - Go
@@ -178,47 +178,34 @@ cosign verify \
   ghcr.io/monorg/mon-image:vX.Y.Z
 ```
 
-## Images Docker multi-arch
+## Images OCI multi-arch (ko)
 
-GoReleaser build les images par arch via Docker Buildx, puis assemble le manifest multi-arch.
+[ko](https://ko.build) est un builder d'images OCI natif Go : il cross-compile le binaire et l'emballe dans une image distroless **sans Dockerfile, sans Docker daemon, sans buildx**. GoReleaser v2 l'intègre nativement via la clé `kos:`.
 
 ```yaml
-dockers:
-  - id: amd64
-    goos: linux
-    goarch: amd64
-    image_templates:
-      - "ghcr.io/monorg/mon-image:{{ .Tag }}-amd64"
-    dockerfile: Dockerfile.release
-    use: buildx
-    build_flag_templates:
-      - "--platform=linux/amd64"
-      - "--label=org.opencontainers.image.version={{.Version}}"
-      - "--label=org.opencontainers.image.source=https://github.com/monorg/mon-repo"
-
-  - id: arm64
-    goos: linux
-    goarch: arm64
-    image_templates:
-      - "ghcr.io/monorg/mon-image:{{ .Tag }}-arm64"
-    dockerfile: Dockerfile.release
-    use: buildx
-    build_flag_templates:
-      - "--platform=linux/arm64"
-
-docker_manifests:
-  - name_template: "ghcr.io/monorg/mon-image:{{ .Tag }}"
-    image_templates:
-      - "ghcr.io/monorg/mon-image:{{ .Tag }}-amd64"
-      - "ghcr.io/monorg/mon-image:{{ .Tag }}-arm64"
-
-  - name_template: "ghcr.io/monorg/mon-image:latest"
-    image_templates:
-      - "ghcr.io/monorg/mon-image:{{ .Tag }}-amd64"
-      - "ghcr.io/monorg/mon-image:{{ .Tag }}-arm64"
+kos:
+  - id: mon-binaire
+    repositories:
+      - ghcr.io/monorg/mon-image
+    base_image: gcr.io/distroless/static:nonroot
+    platforms:
+      - linux/amd64
+      - linux/arm64
+    tags:
+      - "{{ .Version }}"          # 1.2.3
+      - "{{ .Major }}.{{ .Minor }}" # 1.2
+      - "{{ .Major }}"             # 1
+      - '{{ if not .Prerelease }}latest{{ end }}'
+    bare: true   # ghcr.io/monorg/mon-image:1.2.3 (sans suffixe binaire)
 ```
 
-`Dockerfile.release` est typiquement un `FROM scratch` ou `FROM gcr.io/distroless/static` qui copie le binaire compilé par GoReleaser.
+Ko génère automatiquement un manifest multi-arch et publie des SBOMs par image. Il utilise le `GITHUB_TOKEN` pour s'authentifier sur `ghcr.io` — aucun `docker login` ni step buildx requis dans le workflow CI.
+
+!!! note "Pas de Dockerfile nécessaire"
+    Pour un binaire Go pur (`CGO_ENABLED=0`), ko remplace entièrement le duo `Dockerfile.release` + `docker_manifests`. Pour les builds locaux de développement (avec un vrai Dockerfile multi-stage), on peut garder un `Dockerfile` séparé.
+
+!!! warning "Visibilité GHCR"
+    La première image publiée est privée par défaut sur GHCR, même pour un repo public. À rendre public manuellement : **GitHub → Packages → mon-image → Package settings → Change visibility**.
 
 ## Helm chart vers OCI
 
@@ -266,16 +253,6 @@ jobs:
 
       - name: Install cosign
         uses: sigstore/cosign-installer@v3
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v6
