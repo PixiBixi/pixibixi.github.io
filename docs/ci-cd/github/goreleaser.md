@@ -10,7 +10,7 @@ tags:
 
 # Releases Go avec GoReleaser
 
-GoReleaser génère changelog, binaires multi-arch, archives, images Docker et charts Helm à partir d'un seul fichier de config — le tout déclenché par un `git push --tags`.
+GoReleaser génère changelog, binaires multi-arch, archives, images Docker et charts Helm depuis un fichier de config. Tout se déclenche sur `git push --tags`.
 
 ## Flow
 
@@ -92,7 +92,7 @@ Résultat mesuré sur [gopen](https://github.com/PixiBixi/gopen) : **3,0 Mo → 
 
 ## Compression UPX (Linux uniquement)
 
-UPX compresse l'exécutable — il s'auto-décompresse à l'exécution.
+UPX compresse le binaire ; il se décompresse au lancement.
 
 Gains mesurés sur la layer binaire de [kubearch](https://github.com/PixiBixi/kubearch) (`ghcr.io/pixibixi/kubearch`) :
 
@@ -111,11 +111,11 @@ upx:
 ```
 
 !!! warning "UPX et macOS/Windows"
-    UPX est déconseillé sur macOS (problèmes de notarisation Apple) et Windows (faux positifs antivirus). Le limiter à `goos: [linux]`.
+    Sur macOS, UPX casse la notarisation Apple. Sur Windows, les antivirus le signalent. À limiter à `goos: [linux]`.
 
 ## Signature des artefacts (cosign)
 
-[Cosign](https://github.com/sigstore/cosign) permet de signer les artefacts en mode **keyless** : pas de clé à gérer, l'identité est prouvée par l'OIDC de GitHub Actions. La signature est ancrée dans la transparence log de [Sigstore](https://www.sigstore.dev/).
+[Cosign](https://github.com/sigstore/cosign) signe en mode keyless, sans clé à gérer. L'identité vient de l'OIDC GitHub Actions ; chaque signature est enregistrée dans le transparency log de [Sigstore](https://www.sigstore.dev/).
 
 ### .goreleaser.yml
 
@@ -140,7 +140,7 @@ docker_signs:
 ```
 
 !!! note "Pourquoi signer le checksum plutôt que chaque archive ?"
-    Le fichier `checksums.txt` contient les SHA256 de tous les artefacts. Signer ce seul fichier suffit : on vérifie d'abord l'authenticité du checksum, puis l'intégrité de chaque archive via SHA256.
+    `checksums.txt` contient les SHA256 de tous les artefacts. Signer ce fichier couvre tout : on vérifie la signature une fois, puis le SHA256 de chaque archive.
 
 ### GitHub Actions — permissions requises
 
@@ -180,7 +180,7 @@ cosign verify \
 
 ## Images Docker multi-arch
 
-GoReleaser gère le build multi-arch via Docker Buildx et crée automatiquement le manifest combiné.
+GoReleaser build les images par arch via Docker Buildx, puis assemble le manifest multi-arch.
 
 ```yaml
 dockers:
@@ -218,7 +218,7 @@ docker_manifests:
       - "ghcr.io/monorg/mon-image:{{ .Tag }}-arm64"
 ```
 
-`Dockerfile.release` est généralement un Dockerfile minimal (`FROM scratch` ou `FROM gcr.io/distroless/static`) qui copie juste le binaire déjà compilé par GoReleaser.
+`Dockerfile.release` est typiquement un `FROM scratch` ou `FROM gcr.io/distroless/static` qui copie le binaire compilé par GoReleaser.
 
 ## Helm chart vers OCI
 
@@ -305,7 +305,7 @@ git push origin v1.2.3
 
 ## Changelog
 
-GoReleaser génère le changelog à partir des messages de commit entre deux tags. On peut filtrer et regrouper :
+GoReleaser génère le changelog entre deux tags. On peut filtrer et regrouper :
 
 ```yaml
 changelog:
