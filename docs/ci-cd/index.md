@@ -12,6 +12,12 @@ Une CI lente ou mal configurée, ça coûte du temps et de l'argent. 3 articles 
 
 ## Contenus
 
+### GitHub Actions
+
+- [GoReleaser](github/goreleaser.md) — binaires multi-arch, images Docker, Helm OCI, UPX, GitHub Actions
+
+### GitLab
+
 - [Optimiser sa CI GitLab](gitlab/ci/optimize.md) — clone superficiel, cache, DAG et feature flags
 - [Scanner les images](gitlab/ci/scan_image.md) — intégrer un scan de vulnérabilités dans la CI
 - [GitLab CLI](gitlab/cli.md) — `glab` pour gérer MRs, pipelines et issues en ligne de commande
