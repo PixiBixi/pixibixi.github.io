@@ -6,22 +6,19 @@
     </marker>
   </defs>
 
-  <!-- Background -->
-  <rect width="640" height="420" fill="#0d1117" rx="12"/>
-
   <!-- ── Box 1: git tag ── -->
-  <rect x="80" y="24" width="480" height="68" fill="#161b22" rx="8" stroke="#30363d" stroke-width="1.5"/>
+  <rect x="80" y="24" width="480" height="68" fill="none" rx="8" stroke="#30363d" stroke-width="1.5"/>
   <rect x="80" y="24" width="4" height="68" fill="#8b949e" rx="2"/>
   <text x="106" y="52" font-size="14" fill="#e6edf3" font-weight="600">git tag vX.Y.Z &amp;&amp; git push --tags</text>
   <text x="106" y="73" font-size="12" fill="#8b949e">Tag sémantique poussé sur le remote</text>
 
   <!-- Arrow 1 -->
   <line x1="320" y1="92" x2="320" y2="124" stroke="#8b949e" stroke-width="1.5" marker-end="url(#arr)"/>
-  <rect x="192" y="99" width="256" height="20" fill="#0d1117" rx="4"/>
+  <rect x="192" y="99" width="256" height="20" fill="none" rx="4"/>
   <text x="320" y="113" font-size="11" fill="#8b949e" text-anchor="middle">trigger : push tag v*</text>
 
   <!-- ── Box 2: GitHub Actions ── -->
-  <rect x="80" y="128" width="480" height="68" fill="#161b22" rx="8" stroke="#30363d" stroke-width="1.5"/>
+  <rect x="80" y="128" width="480" height="68" fill="none" rx="8" stroke="#30363d" stroke-width="1.5"/>
   <rect x="80" y="128" width="4" height="68" fill="#3fb950" rx="2"/>
   <text x="106" y="156" font-size="14" fill="#e6edf3" font-weight="600">GitHub Actions — release.yml</text>
   <text x="106" y="177" font-size="12" fill="#8b949e">Checkout · setup-go · Docker Buildx · login ghcr.io</text>
@@ -30,7 +27,7 @@
   <line x1="320" y1="196" x2="320" y2="228" stroke="#8b949e" stroke-width="1.5" marker-end="url(#arr)"/>
 
   <!-- ── Box 3: GoReleaser ── -->
-  <rect x="80" y="232" width="480" height="68" fill="#161b22" rx="8" stroke="#30363d" stroke-width="1.5"/>
+  <rect x="80" y="232" width="480" height="68" fill="none" rx="8" stroke="#30363d" stroke-width="1.5"/>
   <rect x="80" y="232" width="4" height="68" fill="#f78166" rx="2"/>
   <text x="106" y="260" font-size="11" fill="#f78166" font-weight="700" letter-spacing="0.5">GoReleaser</text>
   <text x="106" y="280" font-size="14" fill="#e6edf3" font-weight="600">Build multi-arch · compression UPX · génération changelog</text>
@@ -39,19 +36,19 @@
   <line x1="320" y1="300" x2="320" y2="332" stroke="#8b949e" stroke-width="1.5" marker-end="url(#arr)"/>
 
   <!-- ── Box 4: artefacts ── -->
-  <rect x="80" y="336" width="480" height="60" fill="#161b22" rx="8" stroke="#30363d" stroke-width="1.5"/>
+  <rect x="80" y="336" width="480" height="60" fill="none" rx="8" stroke="#30363d" stroke-width="1.5"/>
   <rect x="80" y="336" width="4" height="60" fill="#f78166" rx="2"/>
 
-  <rect x="106" y="348" width="88" height="22" fill="#1c2128" rx="11" stroke="#f78166" stroke-width="1"/>
+  <rect x="106" y="348" width="88" height="22" fill="none" rx="11" stroke="#f78166" stroke-width="1"/>
   <text x="150" y="363" font-size="11" fill="#f78166" text-anchor="middle">binaires</text>
 
-  <rect x="204" y="348" width="110" height="22" fill="#1c2128" rx="11" stroke="#f78166" stroke-width="1"/>
+  <rect x="204" y="348" width="110" height="22" fill="none" rx="11" stroke="#f78166" stroke-width="1"/>
   <text x="259" y="363" font-size="11" fill="#f78166" text-anchor="middle">images Docker</text>
 
-  <rect x="324" y="348" width="84" height="22" fill="#1c2128" rx="11" stroke="#f78166" stroke-width="1"/>
+  <rect x="324" y="348" width="84" height="22" fill="none" rx="11" stroke="#f78166" stroke-width="1"/>
   <text x="366" y="363" font-size="11" fill="#f78166" text-anchor="middle">Helm OCI</text>
 
-  <rect x="418" y="348" width="122" height="22" fill="#1c2128" rx="11" stroke="#f78166" stroke-width="1"/>
+  <rect x="418" y="348" width="122" height="22" fill="none" rx="11" stroke="#f78166" stroke-width="1"/>
   <text x="479" y="363" font-size="11" fill="#f78166" text-anchor="middle">GitHub Release</text>
 
 </svg>
