@@ -88,11 +88,18 @@ Trois flags suffisent pour gagner ~33% :
 | `-trimpath` | Supprime les chemins locaux embarqués dans le binaire |
 | `CGO_ENABLED=0` | Désactive CGO → binaire statique pur |
 
-Résultat sur un binaire typique : **3,0 Mo → 2,0 Mo**.
+Résultat mesuré sur [gopen](https://github.com/PixiBixi/gopen) : **3,0 Mo → 2,0 Mo (-33%)**.
 
 ## Compression UPX (Linux uniquement)
 
-UPX compresse l'exécutable — il s'auto-décompresse à l'exécution. Gain supplémentaire de 60-70%.
+UPX compresse l'exécutable — il s'auto-décompresse à l'exécution.
+
+Gains mesurés sur la layer binaire de [kubearch](https://github.com/PixiBixi/kubearch) (`ghcr.io/pixibixi/kubearch`) :
+
+| Arch | Sans UPX (v0.2.0) | Avec UPX (v0.3.1) | Gain |
+|------|-------------------|-------------------|------|
+| amd64 | 14,91 MB | 8,34 MB | **-44%** |
+| arm64 | — | 6,61 MB | — |
 
 ```yaml
 upx:
