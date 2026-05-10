@@ -159,9 +159,17 @@ loki.write "default" {
 
 ### Métriques → Prometheus / Mimir
 
+Alloy embarque [27+ exporters Prometheus intégrés](https://grafana.com/docs/alloy/latest/reference/components/prometheus/) — `unix` (node_exporter), `mysql`, `postgres`, `redis`, `kafka`, `elasticsearch`, `blackbox`... — pas besoin de binaire séparé.
+
+Pour collecter les métriques système avec l'exporter Unix intégré :
+
 ```alloy
+prometheus.exporter.unix "node" {
+  include_exporter_metrics = true
+}
+
 prometheus.scrape "node" {
-  targets = [{"__address__" = "localhost:9100"}]
+  targets    = prometheus.exporter.unix.node.targets
   forward_to = [prometheus.remote_write.mimir.receiver]
 }
 
@@ -169,6 +177,21 @@ prometheus.remote_write "mimir" {
   endpoint {
     url = "http://mimir:9009/api/v1/push"
   }
+}
+```
+
+Les métriques de l'exporter ne passent pas par `/metrics` mais par l'API composant — remplacer `node` par le label utilisé dans la config :
+
+```bash
+curl -s http://localhost:12345/api/v0/component/prometheus.exporter.unix.node/metrics | head -20
+```
+
+Pour scraper un node_exporter externe déjà existant sur `localhost:9100` :
+
+```alloy
+prometheus.scrape "node_external" {
+  targets    = [{"__address__" = "localhost:9100"}]
+  forward_to = [prometheus.remote_write.mimir.receiver]
 }
 ```
 
