@@ -42,7 +42,11 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/ci-cd/</loc>
-    <lastmod>2026-03-14</lastmod>
+    <lastmod>2026-05-09</lastmod>
+  </url>
+  <url>
+    <loc>https://wiki.jdelgado.fr/ci-cd/github/goreleaser/</loc>
+    <lastmod>2026-05-09</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/ci-cd/gitlab/cli/</loc>
@@ -630,7 +634,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/monitoring/lgtm/alloy/</loc>
-    <lastmod>2026-04-20</lastmod>
+    <lastmod>2026-05-10</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/monitoring/lgtm/custom_metrics_nodeexporter/</loc>

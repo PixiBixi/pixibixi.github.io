@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Dark rounded background matching jdelgado.fr -->
+  <rect width="512" height="512" rx="90" ry="90" fill="#1B1B1B"/>
+  <!-- "jd" white + "$" teal — shell prompt identity -->
+  <text
+    x="256"
+    y="268"
+    font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"
+    font-weight="800"
+    font-size="220"
+    text-anchor="middle"
+    dominant-baseline="middle"
+    letter-spacing="-8">
+    <tspan fill="#FFFFFF">jd</tspan><tspan fill="#5C98A0">$</tspan>
+  </text>
+</svg>
