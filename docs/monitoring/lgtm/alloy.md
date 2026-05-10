@@ -208,6 +208,53 @@ prometheus.scrape "k8s_services" {
 }
 ```
 
+### Prometheus Operator (ServiceMonitor / PodMonitor)
+
+Si Prometheus Operator est déjà en place, les équipes définissent leurs targets via des CRDs `ServiceMonitor` et `PodMonitor` — Alloy peut les lire directement. L'intérêt : migrer de Prometheus vers Alloy + Mimir sans toucher aux configs des applications.
+
+```alloy
+prometheus.operator.servicemonitors "default" {
+  forward_to = [prometheus.remote_write.mimir.receiver]
+}
+
+prometheus.operator.podmonitors "default" {
+  forward_to = [prometheus.remote_write.mimir.receiver]
+}
+
+prometheus.remote_write "mimir" {
+  endpoint {
+    url = "http://mimir:9009/api/v1/push"
+  }
+}
+```
+
+Par défaut, Alloy scrute tous les namespaces. Pour limiter ou filtrer par label :
+
+```alloy
+prometheus.operator.servicemonitors "apps" {
+  namespaces = ["production", "staging"]
+
+  selector {
+    match_labels = {
+      "monitoring" = "enabled",
+    }
+  }
+
+  forward_to = [prometheus.remote_write.mimir.receiver]
+}
+```
+
+En mode clustered (plusieurs instances Alloy), le bloc `clustering` distribue les targets par consistent hashing — chaque instance scrape une partie des ServiceMonitors :
+
+```alloy
+prometheus.operator.servicemonitors "apps" {
+  clustering {
+    enabled = true
+  }
+  forward_to = [prometheus.remote_write.mimir.receiver]
+}
+```
+
 ### Traces → Tempo
 
 ```alloy
