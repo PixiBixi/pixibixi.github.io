@@ -277,6 +277,76 @@ otelcol.exporter.otlp "tempo" {
 }
 ```
 
+## Alerting avec Mimir
+
+Sans Prometheus local, l'évaluation des règles PromQL est assurée par le **Mimir Ruler**. Alloy synchronise les CRDs Prometheus Operator vers Mimir — les équipes continuent de déployer leurs `PrometheusRule` et `AlertmanagerConfig` sans rien changer.
+
+### Règles (PrometheusRule → Mimir Ruler)
+
+`mimir.rules.kubernetes` lit les `PrometheusRule` du cluster et les pousse dans le ruler Mimir (sync toutes les 5 minutes par défaut) :
+
+```alloy
+mimir.rules.kubernetes "default" {
+  address = "http://mimir:9009"
+}
+```
+
+Pour une migration partielle, n'activer que les namespaces labellisés `alloy: "yes"` :
+
+```alloy
+mimir.rules.kubernetes "default" {
+  address = "http://mimir:9009"
+
+  rule_namespace_selector {
+    match_labels = {
+      "alloy" = "yes",
+    }
+  }
+}
+```
+
+En multi-tenant, `tenant_id` est obligatoire — Mimir renvoie un `401` sans le header `X-Scope-OrgID` :
+
+```alloy
+mimir.rules.kubernetes "default" {
+  address   = "http://mimir:9009"
+  tenant_id = "team-a"
+}
+```
+
+### Config Alertmanager (AlertmanagerConfig → Mimir)
+
+`mimir.alerts.kubernetes` synchronise les `AlertmanagerConfig` CRDs vers l'Alertmanager de Mimir. Composant expérimental — passer `--stability.level=experimental` au lancement d'Alloy.
+
+```alloy
+mimir.alerts.kubernetes "default" {
+  address       = "http://mimir:9009"
+  global_config = remote.kubernetes.configmap.alertmanager.data["global"]
+
+  alertmanagerconfig_selector {
+    match_labels = {
+      "alloy" = "yes",
+    }
+  }
+}
+```
+
+!!! warning "RBAC requis"
+    Les deux composants accèdent à l'API Kubernetes — créer un `ClusterRole` avec accès en lecture sur les CRDs Prometheus Operator.
+
+<!-- markdownlint-disable MD046 -->
+```yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: alloy-rules
+rules:
+  - apiGroups: ["monitoring.coreos.com"]
+    resources: ["prometheusrules", "alertmanagerconfigs"]
+    verbs: ["get", "list", "watch"]
+```
+<!-- markdownlint-enable MD046 -->
+
 ## Multiline parsing
 
 Par défaut, Alloy envoie une entrée Loki par ligne de log. Pour les stack traces et les exceptions, c'est la galère — chaque ligne arrive séparément, impossible de corréler.
