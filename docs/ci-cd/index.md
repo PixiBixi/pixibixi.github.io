@@ -15,6 +15,7 @@ Une CI lente ou mal configurée, ça coûte du temps et de l'argent. 3 articles 
 ### GitHub Actions
 
 - [GoReleaser](github/goreleaser.md) — binaires multi-arch, images Docker, Helm OCI, UPX, GitHub Actions
+- [Cocogitto](github/cocogitto.md) — versioning sémantique automatique, CHANGELOG, GitHub Releases — comparaison avec release-please
 
 ### GitLab
 
