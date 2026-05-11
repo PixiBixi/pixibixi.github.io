@@ -1,5 +1,5 @@
 ---
-description: Automatiser le versioning sémantique et les releases avec cocogitto — cog check, cog bump, CHANGELOG, GitHub Actions. Comparaison avec release-please.
+description: "Automatiser le versioning sémantique avec cocogitto : cog check, cog bump, CHANGELOG, GitHub Actions. Comparaison avec release-please."
 tags:
   - GitHub Actions
   - CI/CD
@@ -10,7 +10,7 @@ tags:
 
 # Releases automatiques avec cocogitto
 
-Cocogitto valide les conventional commits, bumpe le semver automatiquement et génère un CHANGELOG. Tout se déclenche sur `git push` vers master — sans PR intermédiaire.
+Cocogitto valide les conventional commits, bumpe le semver automatiquement et génère un CHANGELOG. Tout se déclenche sur `git push` vers master, sans PR intermédiaire.
 
 ## Cocogitto vs release-please
 
@@ -26,21 +26,11 @@ Les deux outils s'appuient sur les [Conventional Commits](https://www.convention
 | **Config** | `cog.toml` | `release-please-config.json` |
 | **Mainteneur** | Communauté | Google |
 
-### Workflow release-please
+En pratique, les deux flows divergent dès le premier push :
 
-```text
-push feat → CI ouvre une "Release PR" → review → merge → GitHub Release créée
-```
+![Comparaison cocogitto vs release-please](./cocogitto-comparison.svg)
 
-Release-please accumule les commits depuis la dernière release dans une PR. La release n'a lieu que si quelqu'un merge manuellement. C'est un gate humain intégré.
-
-### Workflow cocogitto
-
-```text
-push feat → CI valide + bumpe + tag + GitHub Release → Docker/Helm buildés
-```
-
-Chaque push sur master qui contient un `feat:` ou `fix:` déclenche un bump immédiat. Zéro friction, mais zéro gate : il faut de la discipline sur les branches.
+Release-please accumule les commits dans une PR ; la release n'a lieu que si quelqu'un merge manuellement, c'est un gate humain intégré. Cocogitto bumpe au push : zéro friction, mais zéro gate, il faut de la discipline sur les branches.
 
 !!! warning "Bumps à répétition"
     Pousser plusieurs commits `fix:` directement sur master = autant de patch bumps. Travailler sur une branche feature et merger en une fois produit un seul bump.
@@ -142,98 +132,102 @@ repos:
 
 ## GitHub Actions
 
-```yaml title=".github/workflows/release.yml"
-name: Release
+<!-- markdownlint-disable MD046 -->
+??? example ".github/workflows/release.yml"
+    ```yaml
+    name: Release
 
-on:
-  push:
-    branches: [master]
+    on:
+      push:
+        branches: [master]
 
-permissions:
-  contents: write
-  packages: write
+    permissions:
+      contents: write
+      packages: write
 
-jobs:
-  release:
-    runs-on: ubuntu-latest
-    outputs:
-      bumped: ${{ steps.bump.outputs.bumped }}
-      tag_name: ${{ steps.bump.outputs.tag_name }}
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0          # obligatoire — cog a besoin de tout l'historique
-          token: ${{ secrets.GITHUB_TOKEN }}
+    jobs:
+      release:
+        runs-on: ubuntu-latest
+        outputs:
+          bumped: ${{ steps.bump.outputs.bumped }}
+          tag_name: ${{ steps.bump.outputs.tag_name }}
+        steps:
+          - uses: actions/checkout@v4
+            with:
+              fetch-depth: 0          # obligatoire : cog a besoin de tout l'historique
+              token: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: oknozor/cocogitto-action@v3
-        with:
-          git-user: github-actions[bot]
-          git-user-email: github-actions[bot]@users.noreply.github.com
-          check-latest-tag-only: true   # ne valide que les commits depuis le dernier tag
+          - uses: oknozor/cocogitto-action@v3
+            with:
+              git-user: github-actions[bot]
+              git-user-email: github-actions[bot]@users.noreply.github.com
+              check-latest-tag-only: true   # ne valide que les commits depuis le dernier tag
 
-      - name: Bump version
-        id: bump
-        run: |
-          BEFORE=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
-          cog bump --auto || true
-          AFTER=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
-          if [ "$BEFORE" != "$AFTER" ]; then
-            git push
-            git push origin "$AFTER"
-            echo "bumped=true" >> "$GITHUB_OUTPUT"
-            echo "tag_name=$AFTER" >> "$GITHUB_OUTPUT"
-          else
-            echo "bumped=false" >> "$GITHUB_OUTPUT"
-          fi
+          - name: Bump version
+            id: bump
+            run: |
+              BEFORE=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+              cog bump --auto || true
+              AFTER=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+              if [ "$BEFORE" != "$AFTER" ]; then
+                git push
+                git push origin "$AFTER"
+                echo "bumped=true" >> "$GITHUB_OUTPUT"
+                echo "tag_name=$AFTER" >> "$GITHUB_OUTPUT"
+              else
+                echo "bumped=false" >> "$GITHUB_OUTPUT"
+              fi
 
-      - name: Create GitHub release
-        if: steps.bump.outputs.bumped == 'true'
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          TAG="${{ steps.bump.outputs.tag_name }}"
-          NOTES=$(awk "/^## .*${TAG#v}/{found=1; next} found && /^- - -/{exit} found{print}" CHANGELOG.md)
-          gh release create "$TAG" \
-            --title "$TAG" \
-            --notes "${NOTES:-Release $TAG}" \
-            --verify-tag
+          - name: Create GitHub release
+            if: steps.bump.outputs.bumped == 'true'
+            env:
+              GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            run: |
+              TAG="${{ steps.bump.outputs.tag_name }}"
+              NOTES=$(awk "/^## .*${TAG#v}/{found=1; next} found && /^- - -/{exit} found{print}" CHANGELOG.md)
+              gh release create "$TAG" \
+                --title "$TAG" \
+                --notes "${NOTES:-Release $TAG}" \
+                --verify-tag
 
-  build-push:
-    needs: release
-    if: needs.release.outputs.bumped == 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ needs.release.outputs.tag_name }}
+      build-push:
+        needs: release
+        if: needs.release.outputs.bumped == 'true'
+        runs-on: ubuntu-latest
+        steps:
+          - uses: actions/checkout@v4
+            with:
+              ref: ${{ needs.release.outputs.tag_name }}
 
-      - uses: docker/setup-buildx-action@v3
+          - uses: docker/setup-buildx-action@v3
 
-      - uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          - uses: docker/login-action@v3
+            with:
+              registry: ghcr.io
+              username: ${{ github.actor }}
+              password: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: docker/metadata-action@v5
-        id: meta
-        with:
-          images: ghcr.io/${{ github.repository }}
-          tags: |
-            type=semver,pattern={{version}},value=${{ needs.release.outputs.tag_name }}
-            type=semver,pattern={{major}}.{{minor}},value=${{ needs.release.outputs.tag_name }}
-            type=raw,value=latest   # non généré automatiquement hors push de tag natif
-            type=sha,prefix=sha-
+          - uses: docker/metadata-action@v5
+            id: meta
+            with:
+              images: ghcr.io/${{ github.repository }}
+              tags: |
+                type=semver,pattern={{version}},value=${{ needs.release.outputs.tag_name }}
+                type=semver,pattern={{major}}.{{minor}},value=${{ needs.release.outputs.tag_name }}
+                type=raw,value=latest   # non généré automatiquement hors push de tag natif
+                type=sha,prefix=sha-
 
-      - uses: docker/build-push-action@v6
-        with:
-          push: true
-          platforms: linux/amd64,linux/arm64
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-```
+          - uses: docker/build-push-action@v6
+            with:
+              push: true
+              platforms: linux/amd64,linux/arm64
+              cache-from: type=gha
+              cache-to: type=gha,mode=max
+              tags: ${{ steps.meta.outputs.tags }}
+              labels: ${{ steps.meta.outputs.labels }}
+
+    ```
+<!-- markdownlint-enable MD046 -->
 
 !!! note "tag latest non automatique"
     `docker/metadata-action` ne génère `latest` automatiquement que sur un push de tag GitHub (`on: push: tags: ['v*']`). Ici le trigger est un push de branche, donc il faut `type=raw,value=latest` explicitement.
@@ -242,9 +236,9 @@ jobs:
 
 | Commit | Bump |
 |--------|------|
-| `fix:` | patch — `1.2.3 → 1.2.4` |
-| `feat:` | minor — `1.2.3 → 1.3.0` |
-| `feat!:` ou `BREAKING CHANGE` | major — `1.2.3 → 2.0.0` |
+| `fix:` | patch (`1.2.3 → 1.2.4`) |
+| `feat:` | minor (`1.2.3 → 1.3.0`) |
+| `feat!:` ou `BREAKING CHANGE` | major (`1.2.3 → 2.0.0`) |
 | `chore:`, `docs:`, `ci:` | aucun bump |
 
 ## Quand choisir quoi
