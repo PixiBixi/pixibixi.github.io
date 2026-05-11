@@ -266,7 +266,14 @@ Cette magnifique documentation a été faite avec MkDocs Material. [À propos](a
 * [Bootstrap rapidement son cluster](kubernetes/rke/bootstrap_cluster.md)
 * [Récupérer son fichier rkestate](./kubernetes/rke/recover_rkestate.md)
 
-## Gitlab
+## CI/CD
+
+### GitHub Actions
+
+* [GoReleaser : binaires multi-arch, images OCI et charts Helm](ci-cd/github/goreleaser.md)
+* [Cocogitto, le couteau suisse du versioning multi-langages](ci-cd/github/cocogitto.md)
+
+### Gitlab
 
 * [Optimiser sa CI Gitlab](ci-cd/gitlab/ci/optimize.md)
 * [Intégrer un scan d'image à sa CI](ci-cd/gitlab/ci/scan_image.md)
