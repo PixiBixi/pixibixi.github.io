@@ -549,6 +549,34 @@ loki.source.journal "systemd" {
     systemctl restart alloy
     ```
 
+### Alloy en Docker
+
+Depuis un conteneur, `loki.source.journal` ne voit rien sans les bons montages. Il faut exposer le journal de l'hôte et le network host pour que la socket journald soit accessible :
+
+```bash
+docker run -d \
+  --name alloy \
+  --network host \
+  -v /etc/alloy/config.alloy:/etc/alloy/config.alloy:ro \
+  -v /run/log/journal:/run/log/journal:ro \
+  -v /var/log/journal:/var/log/journal:ro \
+  -v /etc/machine-id:/etc/machine-id:ro \
+  grafana/alloy:latest \
+  run /etc/alloy/config.alloy
+```
+
+`/etc/machine-id` est requis — Alloy s'en sert pour identifier le journal local. Sans `--network host`, journald n'est pas accessible depuis le conteneur.
+
+Pour vérifier que les logs arrivent bien dans Loki après démarrage :
+
+```bash
+# Alloy n'a pas planté
+docker logs alloy 2>&1 | grep -i error
+
+# Loki a bien reçu des logs (les labels doivent apparaître)
+curl -s http://loki:3100/loki/api/v1/labels | jq '.data'
+```
+
 ## Helm values K8s (DaemonSet)
 
 Configuration minimale pour déployer Alloy en DaemonSet sur K8s — collecte des logs de tous les pods :
