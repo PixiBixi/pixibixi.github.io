@@ -16,6 +16,17 @@ brew install krew
 kubectl krew install < ./Plugins_Krew
 ```
 
+Depuis [brew bundle v4.5](https://github.com/Homebrew/brew/pull/21802), les plugins Krew sont aussi gérables directement dans un `Brewfile` — pratique pour centraliser tout son setup dans un seul endroit :
+
+```ruby
+brew "krew"
+krew "ctx"
+krew "neat"
+krew "view-secret"
+```
+
+`brew bundle install` installe ensuite tout en une passe, `brew bundle dump` exporte les plugins installés.
+
 Voici en détail à quoi servent-ils :
 
 * `browse-pvc` permet de parcourir un PVC et de voir son contenu
