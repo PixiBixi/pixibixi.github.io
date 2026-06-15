@@ -96,6 +96,13 @@ Ces commandes proviennent d'un peu partout, principalement la documentation Kube
     kubectl get pods -A -o json | jq -r '.items[].spec.nodeName' | sort | uniq -c
     ```
 
+Le flag `-L` ajoute n'importe quel label en colonne. Bien pratique sur GKE pour voir d'un coup le nodepool et le type d'instance de chaque noeud.
+
+!!! note "Afficher nodepool GKE et type d'instance en colonnes"
+    ```bash
+    kubectl get nodes -L cloud.google.com/gke-nodepool -L node.kubernetes.io/instance-type
+    ```
+
 ## Misc manifests
 
 !!! note "Split un manifest Kube contenant plusieurs ressources"
