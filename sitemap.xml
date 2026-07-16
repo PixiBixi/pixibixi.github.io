@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://wiki.jdelgado.fr/</loc>
-    <lastmod>2026-05-11</lastmod>
+    <lastmod>2026-07-16</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/about/</loc>
@@ -42,15 +42,19 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/ci-cd/</loc>
-    <lastmod>2026-05-11</lastmod>
+    <lastmod>2026-07-16</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/ci-cd/github/cocogitto/</loc>
     <lastmod>2026-05-11</lastmod>
   </url>
   <url>
+    <loc>https://wiki.jdelgado.fr/ci-cd/github/go-ci/</loc>
+    <lastmod>2026-07-16</lastmod>
+  </url>
+  <url>
     <loc>https://wiki.jdelgado.fr/ci-cd/github/goreleaser/</loc>
-    <lastmod>2026-05-09</lastmod>
+    <lastmod>2026-07-16</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/ci-cd/gitlab/cli/</loc>
