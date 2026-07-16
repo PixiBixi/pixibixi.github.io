@@ -12,6 +12,9 @@ tags:
 
 GoReleaser génère changelog, binaires multi-arch, archives, images Docker et charts Helm depuis un fichier de config. Tout se déclenche sur `git push --tags`.
 
+!!! tip "Avant le release, le CI"
+    GoReleaser intervient une fois le tag poussé. Ce qui tourne *avant*, sur chaque push et PR (test, lint, scan de vulnérabilités, durcissement des workflows), est détaillé dans [CI GitHub Actions durcie pour un projet Go](go-ci.md).
+
 ## Flow
 
 ![Flow GoReleaser](release-flow.svg)
