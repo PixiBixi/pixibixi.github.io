@@ -4,7 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-Personal knowledge base / wiki built with **MkDocs Material**, hosted at <https://wiki.jdelgado.fr/> via GitHub Pages. Content is 224+ Markdown files organized by SRE/infra topics.
+Personal knowledge base / wiki built with **MkDocs Material**, hosted at <https://wiki.jdelgado.fr/> via GitHub Pages. Content is 240+ Markdown files organized by SRE/infra topics.
+
+Config lives in `mkdocs.yml` (no `nav:` — sidebar is auto-generated). Active plugins that matter at build time: `social` (OG cards, needs `pillow`+`cairosvg`), `privacy` (self-hosts external assets — see Gotchas), `git-revision-date-localized` (needs full git history), `glightbox`, `redirects`, `minify`. Theme overrides live in `overrides/` (`custom_dir`): `main.html` injects the Google Search Console meta tag (`extrahead` block), `sitemap.xml` is a custom template.
 
 ## Local Development
 
