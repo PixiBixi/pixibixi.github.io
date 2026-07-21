@@ -17,4 +17,10 @@ pre-commit run --all-files
 
 ## Deploy
 
-Push to `master` — GitHub Actions handles lint + deploy automatically.
+Push to `master` runs GitHub Actions: lint → build (`mkdocs build --strict`) → deploy.
+Pull requests run lint + build only (no deploy).
+
+## Dependencies
+
+Managed by Renovate. Minor, patch and digest updates automerge once the `build`
+check is green; major updates wait for manual review.
