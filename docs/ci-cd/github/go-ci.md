@@ -249,6 +249,93 @@ jobs:
 
 Le job reformate le code, puis reviewdog compare avec ce qui a été poussé et propose le diff en commentaire. Même mécanique pour le Markdown avec `reviewdog/action-markdownlint` et `reporter: github-pr-review`.
 
+## Automerge et releases pilotées par les commits
+
+Une CI fiable et reproductible débloque un cran d'automatisation de plus : laisser Renovate merger ses PR tout seul, et faire du type de commit le déclencheur d'une release. L'automerge n'est sûr que parce que tout ce qui précède existe — il n'avale une PR qu'après une CI verte.
+
+### Élargir l'automerge
+
+Plus haut, seules les mises à jour d'actions étaient automergées. On peut étendre la règle à toutes les updates sûres — `minor`, `patch`, `digest` — et ne garder en revue manuelle que les `major`, les seules à casser une API :
+
+```json title="renovate.json"
+{
+  "matchUpdateTypes": ["minor", "patch", "digest"],
+  "automerge": true,
+  "automergeType": "pr"
+}
+```
+
+`automergeType: pr` ouvre quand même une PR et attend les checks : l'automerge ne court-circuite pas la CI, il retire juste le clic humain une fois qu'elle est verte.
+
+### Faire du commit le déclencheur de version
+
+Le chaînon manquant : relier le contenu d'une PR mergée à un numéro de version. Les commits conventionnels le permettent — `feat` → bump mineur, `fix` → bump patch. Renovate sait taguer ses commits par type d'update, ce qui suffit à décider du bump :
+
+```json title="renovate.json"
+"packageRules": [
+  {
+    "matchManagers": ["gomod"],
+    "matchUpdateTypes": ["minor"],
+    "semanticCommitType": "feat"
+  },
+  {
+    "matchManagers": ["gomod"],
+    "matchUpdateTypes": ["patch", "digest"],
+    "semanticCommitType": "fix"
+  },
+  {
+    "matchManagers": ["github-actions"],
+    "semanticCommitType": "chore"
+  }
+]
+```
+
+| Update | Manager | Commit émis | Release |
+|--------|---------|-------------|---------|
+| `minor` | gomod | `feat(deps):` | version mineure |
+| `patch` / `digest` | gomod | `fix(deps):` | version patch |
+| tout | github-actions | `chore(deps):` | aucune |
+
+!!! note "Pourquoi les actions ne déclenchent pas de release"
+    Un bump d'action CI ne change pas le binaire livré — il n'a aucune raison de produire une nouvelle version. On le garde en `chore` : mergé automatiquement, mais invisible pour le versioning. Chaque bump de module Go, lui, est compilé dans l'artefact et justifie une release.
+
+### Le workflow : taguer puis publier, en un seul job
+
+Un petit outil lit les commits depuis le dernier tag, calcule le prochain `vX.Y.Z` et le pose ; GoReleaser enchaîne dans le même job. `default_bump: false` est la clé : sans commit `feat`/`fix` releasable, aucun tag n'est créé, donc aucune release parasite sur un simple `docs:` ou `chore:`.
+
+```yaml title=".github/workflows/release.yml"
+on:
+  push:
+    branches: [main]
+    tags: ['v*']   # échappatoire : un tag posé à la main publie aussi
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - id: tag
+        if: github.ref_type == 'branch'
+        uses: mathieudutour/github-tag-action@a22cf08638b34d5badda920f9daf6e72c477b07b # v6.2
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          release_branches: main
+          default_bump: false
+      - if: github.ref_type == 'tag' || steps.tag.outputs.new_tag != ''
+        run: git fetch --tags --force
+      # setup-go + GoReleaser, gardés par la même condition — voir l'article GoReleaser
+```
+
+Pourquoi tout dans un seul job, plutôt qu'un workflow qui tague et un autre qui publie sur le tag ? Parce qu'un tag poussé avec le `GITHUB_TOKEN` par défaut **ne re-déclenche pas** de workflow — garde-fou anti-boucle de GitHub. Séparer les deux imposerait un PAT dédié juste pour ré-armer le second workflow. En enchaînant calcul-du-tag et publication dans le même run, on s'en passe. La double condition (`ref_type == 'tag'` ou nouveau tag calculé) préserve l'échappatoire manuelle : un `v*` poussé à la main court-circuite le calcul et publie directement.
+
+Résultat : Renovate merge un `minor` de dépendance, la CI passe, une version mineure sort et est publiée — sans qu'une main touche à un tag.
+
 ## Récap
 
 Ce qui fait la différence entre une CI Go qui marche et une CI Go qu'on laisse tourner sans y penser :
@@ -261,6 +348,7 @@ Ce qui fait la différence entre une CI Go qui marche et une CI Go qu'on laisse 
 - golangci-lint épinglé, exclusions justifiées
 - govulncheck pour les CVE réellement atteignables
 - reviewdog pour un feedback actionnable en PR
+- Renovate en automerge (minor/patch/digest) et releases déclenchées par le type de commit
 
 !!! tip "Et après le CI ?"
-    Une fois le CI vert et un tag poussé, c'est [GoReleaser](goreleaser.md) qui prend le relais : binaires multi-arch, images OCI, signatures cosign, publication Homebrew.
+    Une fois le CI vert et un tag posé — à la main ou calculé par la CI (voir plus haut) — c'est [GoReleaser](goreleaser.md) qui prend le relais : binaires multi-arch, images OCI, signatures cosign, publication Homebrew.
