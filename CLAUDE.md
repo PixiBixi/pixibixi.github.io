@@ -6,7 +6,21 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Personal knowledge base / wiki built with **MkDocs Material**, hosted at <https://wiki.jdelgado.fr/> via GitHub Pages. Content is 240+ Markdown files organized by SRE/infra topics.
 
-Config lives in `mkdocs.yml` (no `nav:` — sidebar is auto-generated). Active plugins that matter at build time: `social` (OG cards, needs `pillow`+`cairosvg`), `privacy` (self-hosts external assets — see Gotchas), `git-revision-date-localized` (needs full git history), `glightbox`, `redirects`, `minify`. Theme overrides live in `overrides/` (`custom_dir`): `main.html` injects the Google Search Console meta tag (`extrahead` block), `sitemap.xml` is a custom template.
+Config lives in `mkdocs.yml` (no `nav:` — sidebar is auto-generated). Active plugins that matter at build time:
+
+- `social` — OG cards, needs `pillow`+`cairosvg`
+- `privacy` — self-hosts external assets (see Gotchas); its cache is keyed on `docs/**/*.md` in CI
+- `git-revision-date-localized` — needs full git history; feeds `datePublished`/`dateModified` in the JSON-LD and `<lastmod>` in the sitemap
+- `meta` — applies `.meta.yml` directory defaults (mostly `tags:`) to every page below
+- `tags` — builds the tag index from front matter + `.meta.yml`
+- `glightbox`, `redirects`, `minify`, `search` (French)
+
+Theme overrides live in `overrides/` (`custom_dir`):
+
+- `main.html` (`extrahead` block) — Google Search Console meta tag, `og:locale`, and the Schema.org JSON-LD graph: `WebSite` + `Person` (anchored on `about/#author`) + `TechArticle` per page + a `BreadcrumbList` derived from the URL path. A page's front matter `description` lands in the `TechArticle`, so a missing description degrades structured data silently.
+- `sitemap.xml` — custom template emitting `<lastmod>` from the git revision date.
+
+`remote_branch: docs` in `mkdocs.yml` is why `gh-deploy` pushes to a `docs` branch rather than `gh-pages`.
 
 ## Local Development
 
@@ -28,7 +42,13 @@ uv run mkdocs build --strict
   A bare `markdownlint-enable` without rule names re-enables ALL rules,
   overriding `.markdownlint.json` globals (including MD013).
 
-Pre-commit hooks run `markdownlint-cli2` on changed files. Rules are in `.markdownlint.json`:
+Three pre-commit hooks run (`.pre-commit-config.yaml`):
+
+- `uv-lock` — keeps `uv.lock` in sync with `pyproject.toml`
+- `markdownlint-cli2` — on changed `.md` files, config `.markdownlint.json`
+- `convert-images-to-webp` — `.pre-commit-hooks/convert_to_webp.sh`, on staged JPEG/PNG under `docs/`. It converts, stages the `.webp`, deletes the original, then **exits 1 on purpose** — the first `git commit` always "fails", just re-run it. Needs `cwebp` (`brew install webp`).
+
+Rules are in `.markdownlint.json`:
 
 - MD013 (line length): **disabled**
 - MD024 (duplicate headings): allowed within siblings only
@@ -45,12 +65,15 @@ markdownlint-cli2 "docs/**/*.md"
 
 ## Deployment
 
-Push to `master` triggers GitHub Actions (`.github/workflows/main.yml`):
+GitHub Actions (`.github/workflows/main.yml`) runs three chained jobs — `lint` → `build` → `deploy`:
 
-1. Lint job: markdownlint on changed files
-2. Deploy job: `mkdocs gh-deploy --force` → pushes built site to `docs` remote branch → GitHub Pages
+1. `lint` — markdownlint-cli2 on `.md` files changed in the push/PR (step skipped when none changed)
+2. `build` — `uv sync` + `uv run mkdocs build --strict`; warnings are fatal
+3. `deploy` — `uv run mkdocs gh-deploy --force -d site/` → pushes the built site to the `docs` branch → GitHub Pages
 
-No manual deploy needed.
+Pull requests run `lint` + `build` only (`deploy` is gated on `github.event_name != 'pull_request'`). Every job checks out with `fetch-depth: 0` because `git-revision-date-localized` needs the full history. No manual deploy needed.
+
+Dependencies are managed by Renovate (`renovate.json`): minor, patch and digest updates automerge once `build` is green; majors wait for manual review.
 
 ## Content Structure
 
@@ -72,10 +95,23 @@ All content lives under `docs/`. Organized by technology domain:
 | `web/` | nginx, HAProxy, Varnish, DNS, mail, WordPress |
 | `hardware/` | NIC, HDD, SAN, server |
 | `hypervisor/` | ESXi, Proxmox |
-| `ssh/` | SSH config and tips |
+| `misc/` | Perf, optimization, fibre optique, links, sources |
 
 Sidebar navigation is **auto-generated** from the `docs/` directory structure (no `nav:` in `mkdocs.yml`).
-`docs/index.md` is a hand-maintained landing page TOC — update it when adding new files.
+
+Two hand-maintained TOCs must both be updated when adding a file — neither is generated, and a stale link only surfaces as a `--strict` build failure:
+
+- `docs/index.md` — global landing page
+- `docs/<section>/index.md` — per-section landing page (every content section has one)
+
+Non-Markdown files under `docs/` are copied verbatim into the build:
+
+- `docs/robots.txt` — points at the sitemap, blocks GPTBot/ClaudeBot/CCBot/Bytespider
+- `docs/llms.txt` — hand-maintained section map for LLM consumption; update it when a whole section appears or disappears
+- `docs/javascripts/copy-llm.js` — "Copy for LLM" button, converts the rendered article back to Markdown client-side
+- `docs/stylesheets/jdelgado.css`, `docs/img/`, `docs/CNAME`
+
+`docs/about.md` is the author page — the Schema.org `Person` node in `overrides/main.html` is anchored on its URL (`about/#author`), so don't rename or move it.
 
 ## Commit Convention
 
@@ -88,12 +124,6 @@ feat(kubernetes/cli): add helm rollback command
 fix(linux/security): correct firewall rule syntax
 change(cloud/gcloud): add billing export commands
 ```
-
-## CI Behavior
-
-Deploy job requires lint to pass (`needs: [lint]`).
-Lint only runs when `.md` files are changed.
-Deploy runs `mkdocs build --strict` before `gh-deploy` — warnings are fatal.
 
 ## MkDocs Material Features in Use
 
@@ -132,7 +162,10 @@ Always run `mkdocs build --strict` before committing file renames or new article
 uv run mkdocs build --strict 2>&1 | grep -E "WARNING|ERROR"
 ```
 
-`index.md` contains hardcoded links — renames break the build silently until CI catches it.
+`docs/index.md` and the per-section `index.md` contain hardcoded links — renames break the build silently until CI catches it.
+
+A green `--strict` build does not mean the page renders correctly (broken front matter, an
+oversized SVG). Preview locally before committing a new or rewritten article.
 
 ## Article Writing Style
 
@@ -171,7 +204,7 @@ When rewriting an article:
 1. Read the existing file first
 2. Fetch external sources if needed (dotfiles repo, upstream docs)
 3. Write: practical examples, real-world use cases — commands copy-pasteable on the spot
-4. **Update `docs/index.md`** if it's a new file — hardcoded links, always
+4. **Wire both indexes** if it's a new file — `docs/index.md` *and* `docs/<section>/index.md`, hardcoded links, always
 5. Lint: `markdownlint-cli2 "path/to/file.md"`
 6. Preview: run `mkdocs serve --dirty` (background) and open the article in the browser
    - URL pattern: `http://127.0.0.1:8000/<path-without-docs-prefix-and-md>/`
@@ -188,7 +221,11 @@ tags:
 ---
 ```
 
-Directory-level tags come from `.meta.yml` files — add per-article tags
+Quote the description whenever it contains `:`, `#`, `{`, `[` or an em dash. An unquoted
+colon followed by a space breaks the YAML parser and the whole block renders as plain text
+at the top of the article. The build stays green, so only a local preview catches it.
+
+Directory-level tags come from `.meta.yml` files (the `meta` plugin) — add per-article tags
 that are more specific than the directory defaults.
 
 ## Gotchas
@@ -202,12 +239,29 @@ that are more specific than the directory defaults.
 
 - **External images**: the `privacy` plugin downloads external assets to self-host them.
   A 403/unreachable URL triggers a warning → fatal with `--strict`.
-  Always store images locally next to the `.md` file (e.g., `docs/linux/selfhost/koel.jpg`).
+  Always store images locally next to the `.md` file (e.g., `docs/selfhost/koel.webp`);
+  the pre-commit hook converts any JPG/PNG to WebP anyway.
 
 - **SVG diagrams**: store in `docs/<section>/_img/<name>.svg` — run `mkdir -p` first as the dir may not exist. Reference with `![](./_img/name.svg)` — Glightbox applies automatically.
 
 - **Shallow clones**: `mkdocs serve` requires full git history due to `git-revision-date-localized`.
   Shallow clones (`--depth 1`) will cause errors. Use `git fetch --unshallow` if needed.
+  Its `WARNING:root:` lines are non-blocking, even under `--strict`.
+
+- **Zombie `mkdocs serve` on port 8000**: `pgrep` alone isn't enough. Restart sequence:
+
+  ```bash
+  pkill -f "mkdocs serve"; sleep 1
+  lsof -i :8000                                    # must be empty
+  nohup uv run mkdocs serve --dirty >/tmp/mkdocs.log 2>&1 &
+  sleep 5 && lsof -i :8000 | grep LISTEN           # must print a line
+  ```
+
+  A `server_bind()` crash in `/tmp/mkdocs.log` means a zombie still holds the port — `lsof -i :8000` then `kill -9`.
+
+- **Case-only renames on macOS**: the filesystem is case-insensitive, so `git mv Foo.md foo.md`
+  is a no-op. Go through a temp name, or `git show HEAD:old.md > new.md && git rm old.md`.
+  Either way, add the `redirects` entry.
 
 ## Local Working Files
 
