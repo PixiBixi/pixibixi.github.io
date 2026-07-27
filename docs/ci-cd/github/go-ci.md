@@ -1,11 +1,12 @@
 ---
-description: Une CI GitHub Actions durcie pour un projet Go — actions SHA-pinned, permissions least-privilege, zizmor, golangci-lint, govulncheck, tests multi-plateforme et feedback reviewdog en PR.
+description: Une CI GitHub Actions durcie pour un projet Go — actions SHA-pinned, permissions least-privilege, zizmor, golangci-lint, gocritic, govulncheck, tests multi-plateforme et feedback reviewdog en PR.
 tags:
   - GitHub Actions
   - Go
   - CI/CD
   - Security
   - golangci-lint
+  - gocritic
 ---
 
 # CI GitHub Actions durcie pour un projet Go
@@ -202,6 +203,60 @@ linters:
 !!! warning "Ne pas désactiver un linter pour faire passer le CI"
     Une exclusion sans commentaire, c'est de la dette. Soit le linter a raison et on corrige, soit il a tort dans ce contexte précis et on écrit pourquoi. `G204` ci-dessus est un cas légitime : le binaire n'invoque jamais de shell.
 
+### gocritic et les gros structs copiés
+
+Le set standard ne dit rien des copies de structs. Sur un projet qui manipule des objets Kubernetes, ça compte : un `corev1.Pod` pèse **1192 octets**, un `Node` 768, un `Container` 408 — mesuré au `unsafe.Sizeof`. Un `for _, p := range pods` copie donc 1,2 ko par tour, et un helper qui prend un `corev1.Pod` en paramètre le recopie à chaque appel.
+
+Le tag `performance` de [gocritic](https://go-critic.com/) attrape exactement ça, via `rangeValCopy` et `hugeParam`. Il n'est pas activé par défaut :
+
+```yaml title=".golangci.yml"
+linters:
+  enable:
+    - gocritic
+  settings:
+    gocritic:
+      enabled-tags:
+        - performance
+      settings:
+        hugeParam:
+          # Défaut 80 : flague aussi les structs de config qu'on passe
+          # volontairement par valeur et qu'on copie une fois par process.
+          # 256 garde le check braqué sur les objets d'API.
+          sizeThreshold: 256
+```
+
+Le seuil est le réglage à ne pas laisser par défaut. À 80, le linter réclame aussi des pointeurs sur les structs de configuration qui traversent toutes les signatures : sur `klens`, un `Flags` de 104 octets et un `App` de 96. Or elles sont copiées une fois par exécution. Les passer en pointeur touchait vingt-cinq signatures pour zéro gain, en ouvrant au passage la porte à une mutation accidentelle de flags partagés.
+
+Reste le plus intéressant : corriger les trente sites trouvés sur [klens](https://github.com/PixiBixi/kubectl-klens) n'a **rien accéléré**. Mesuré sur un cluster de production de 6400 pods, cinq exécutions, médianes :
+
+| Commande | Temps | RSS max |
+|---|---|---|
+| `privileged -A` | 3,59 s → 3,53 s | 354 → 356 MiB |
+| `images -A` | 3,31 s → 3,59 s | 372 → 372 MiB |
+
+Tout dans le bruit. Le calcul de départ, « 56 Mo recopiés par exécution », était juste et hors sujet : 56 Mo de `memcpy`, c'est quelques millisecondes face aux 3,4 s passées à attendre l'apiserver. Et ces copies vivent sur la pile puis sont réutilisées, donc elles n'apparaissent même pas dans le RSS de pointe, dominé par le graphe d'objets décodés.
+
+Ce que le check apporte quand même : il empêche de réintroduire le motif là où il *coûterait* vraiment, dans une slice de `Pod` à durée de vie longue ou une boucle imbriquée.
+
+!!! warning "Un finding de linter n'est pas un gain de perf"
+    `hugeParam` et `rangeValCopy` disent qu'une copie existe, pas qu'elle coûte. Sur un binaire dont le temps part en attente réseau, la réponse est souvent « rien du tout ». On mesure avant d'annoncer un gain, et quand le gain n'existe pas, le commit se type `chore`, pas `perf`.
+
+### Le piège des findings masqués
+
+Celui-là vaut pour tous les linters, pas seulement gocritic. Par défaut, golangci-lint **cache une partie de ce qu'il trouve** : 50 findings par linter, et surtout 3 occurrences par message identique.
+
+Trente sites copiant chacun `1192 bytes` produisent trente messages au texte identique, dont trois s'affichent. On corrige les trois, on relance, trois nouveaux apparaissent. Sur `klens`, le premier passage annonçait 25 problèmes : des fichiers entiers n'étaient jamais sortis, et la correction paraissait finie alors qu'il en restait.
+
+```yaml title=".golangci.yml"
+issues:
+  # Les défauts (50 par linter, 3 par message identique) masquent les répétitions :
+  # un lot de findings au texte identique paraît réglé alors qu'il en reste.
+  max-issues-per-linter: 0
+  max-same-issues: 0
+```
+
+Sur un repo de taille raisonnable, il n'y a aucune raison de plafonner. Un linter qui ne montre pas tout est plus dangereux qu'un linter bruyant : on lui fait confiance à tort.
+
 ## Vulnérabilités des dépendances
 
 [govulncheck](https://go.dev/blog/govulncheck) est l'outil officiel de la Go Team. Sa force : il ne signale une CVE que si ton code **appelle réellement** la fonction vulnérable, pas juste parce que le module est dans l'arbre de dépendances. Beaucoup moins de faux positifs qu'un scanner générique.
@@ -345,7 +400,7 @@ Ce qui fait la différence entre une CI Go qui marche et une CI Go qu'on laisse 
 - `persist-credentials: false` sur chaque checkout
 - zizmor pour que tout ça reste vrai dans le temps
 - `go test -race` et build sur les trois OS
-- golangci-lint épinglé, exclusions justifiées
+- golangci-lint épinglé, exclusions justifiées, `max-same-issues: 0` pour ne rien masquer
 - govulncheck pour les CVE réellement atteignables
 - reviewdog pour un feedback actionnable en PR
 - Renovate en automerge (minor/patch/digest) et releases déclenchées par le type de commit
