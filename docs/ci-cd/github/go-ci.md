@@ -356,7 +356,7 @@ Le chaînon manquant : relier le contenu d'une PR mergée à un numéro de versi
 
 ### Le workflow : taguer puis publier, en un seul job
 
-Un petit outil lit les commits depuis le dernier tag, calcule le prochain `vX.Y.Z` et le pose ; GoReleaser enchaîne dans le même job. `default_bump: false` est la clé : sans commit `feat`/`fix` releasable, aucun tag n'est créé, donc aucune release parasite sur un simple `docs:` ou `chore:`.
+[`svu`](https://github.com/caarlos0/svu) lit les commits depuis le dernier tag et calcule le prochain `vX.Y.Z` ; un appel API pose le tag, GoReleaser enchaîne dans le même job. Le garde-fou est dans la comparaison : `svu next` renvoie **la version courante** quand rien ne justifie de release, donc `next == current` signifie « ne rien faire » — aucune release parasite sur un simple `docs:` ou `chore:`.
 
 ```yaml title=".github/workflows/release.yml"
 on:
@@ -375,17 +375,47 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
+      # setup-go d'abord : il sert à installer svu, puis à GoReleaser
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: go.mod
+          cache: false
       - id: tag
         if: github.ref_type == 'branch'
-        uses: mathieudutour/github-tag-action@a22cf08638b34d5badda920f9daf6e72c477b07b # v6.2
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          release_branches: main
-          default_bump: false
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # renovate: datasource=github-releases depName=caarlos0/svu
+          SVU_VERSION: v3.4.1
+        run: |
+          set -euo pipefail
+          GOBIN="${RUNNER_TEMP}/bin" go install "github.com/caarlos0/svu/v3@${SVU_VERSION}"
+          svu="${RUNNER_TEMP}/bin/svu"
+
+          current=$("$svu" current)
+          next=$("$svu" next --v0)
+          [ "$next" = "$current" ] && exit 0   # rien de releasable
+
+          gh api "repos/${GITHUB_REPOSITORY}/git/refs" \
+            -f "ref=refs/tags/${next}" -f "sha=${GITHUB_SHA}" --silent
+          echo "new_tag=${next}" >> "$GITHUB_OUTPUT"
       - if: github.ref_type == 'tag' || steps.tag.outputs.new_tag != ''
         run: git fetch --tags --force
       # setup-go + GoReleaser, gardés par la même condition — voir l'article GoReleaser
 ```
+
+`go install` passe par le proxy de modules Go, donc la version de svu est vérifiée contre la base de checksums — et le pin en variable d'env est suivi par Renovate via un `customManager` regex. Créer le tag par l'API plutôt qu'avec `git push` permet de garder `persist-credentials: false` sur le checkout.
+
+!!! warning "`perf:` ne déclenche pas de release"
+    svu applique la spec Conventional Commits à la lettre : seuls `fix` (patch) et `feat` (mineur) sont normatifs. Un `perf:` seul ne sort donc **aucune** version, et sa config ne permet pas d'ajouter des mots-clés. Si un gain de perf doit être livré tout de suite, il se type `fix:`. Le flag `--v0` évite au passage qu'un breaking change fasse sauter un projet en `0.x` directement en `v1.0.0`.
+
+<!-- markdownlint-disable MD046 -->
+!!! note "Pourquoi pas une action toute faite ?"
+    Le réflexe est d'utiliser `mathieudutour/github-tag-action`, la plus répandue pour ça. Elle est **abandonnée** : plus de release depuis mars 2024, plus de commit depuis juin 2024, et toujours `using: node20` — donc une alerte de dépréciation à chaque release, sans version vers laquelle migrer. Épingler par SHA protège d'un tag repointé, pas d'un projet mort.
+
+    Les remplaçantes évidentes ne tiennent pas l'examen : `anothrNick/github-tag-action` ne fait **pas** de conventional commits (elle cherche des hashtags `#major`/`#minor`/`#patch`, et détourner ses tokens donne un match de sous-chaîne où « prefix » déclenche un patch) ; `TriPSs/conventional-changelog-action` fonctionne mais écrit un `CHANGELOG.md` par défaut, ce qui salit l'arbre que GoReleaser va lire ; `release-please` et consorts imposent un modèle de release PR, soit exactement le clic humain que l'automerge cherche à supprimer.
+
+    D'où le choix d'un CLI maintenu qui ne fait que le calcul, plus un appel API. Leçon générale : sur un chemin de release qui détient `contents: write`, la maintenance de la dépendance compte autant que ses fonctionnalités.
+<!-- markdownlint-enable MD046 -->
 
 Pourquoi tout dans un seul job, plutôt qu'un workflow qui tague et un autre qui publie sur le tag ? Parce qu'un tag poussé avec le `GITHUB_TOKEN` par défaut **ne re-déclenche pas** de workflow — garde-fou anti-boucle de GitHub. Séparer les deux imposerait un PAT dédié juste pour ré-armer le second workflow. En enchaînant calcul-du-tag et publication dans le même run, on s'en passe. La double condition (`ref_type == 'tag'` ou nouveau tag calculé) préserve l'échappatoire manuelle : un `v*` poussé à la main court-circuite le calcul et publie directement.
 
