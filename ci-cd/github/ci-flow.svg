@@ -68,9 +68,9 @@
   <text x="106" y="496" font-size="11" fill="#f78166" font-weight="700" letter-spacing="0.5">RELEASE — un seul job</text>
   <text x="106" y="514" font-size="11" fill="#8b949e">un tag posé par GITHUB_TOKEN ne re-déclenche aucun workflow</text>
 
-  <rect x="106" y="524" width="152" height="24" fill="none" rx="12" stroke="#f78166" stroke-width="1"/>
-  <text x="182" y="540" font-size="11" fill="#f78166" text-anchor="middle">github-tag-action</text>
-  <text x="268" y="540" font-size="11" fill="#e6edf3">feat → minor · fix → patch · sinon aucun tag</text>
+  <rect x="106" y="524" width="52" height="24" fill="none" rx="12" stroke="#f78166" stroke-width="1"/>
+  <text x="132" y="540" font-size="11" fill="#f78166" text-anchor="middle">svu</text>
+  <text x="168" y="540" font-size="11" fill="#e6edf3">feat → minor · fix → patch · sinon aucun tag</text>
 
   <rect x="106" y="554" width="100" height="24" fill="none" rx="12" stroke="#f78166" stroke-width="1"/>
   <text x="156" y="570" font-size="11" fill="#f78166" text-anchor="middle">goreleaser</text>
