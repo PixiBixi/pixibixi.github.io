@@ -154,7 +154,7 @@ repos:
           bumped: ${{ steps.bump.outputs.bumped }}
           tag_name: ${{ steps.bump.outputs.tag_name }}
         steps:
-          - uses: actions/checkout@v4
+          - uses: actions/checkout@v7
             with:
               fetch-depth: 0          # obligatoire : cog a besoin de tout l'historique
               token: ${{ secrets.GITHUB_TOKEN }}
@@ -198,19 +198,19 @@ repos:
         if: needs.release.outputs.bumped == 'true'
         runs-on: ubuntu-latest
         steps:
-          - uses: actions/checkout@v4
+          - uses: actions/checkout@v7
             with:
               ref: ${{ needs.release.outputs.tag_name }}
 
-          - uses: docker/setup-buildx-action@v3
+          - uses: docker/setup-buildx-action@v4
 
-          - uses: docker/login-action@v3
+          - uses: docker/login-action@v4
             with:
               registry: ghcr.io
               username: ${{ github.actor }}
               password: ${{ secrets.GITHUB_TOKEN }}
 
-          - uses: docker/metadata-action@v5
+          - uses: docker/metadata-action@v6
             id: meta
             with:
               images: ghcr.io/${{ github.repository }}
@@ -220,7 +220,7 @@ repos:
                 type=raw,value=latest   # non généré automatiquement hors push de tag natif
                 type=sha,prefix=sha-
 
-          - uses: docker/build-push-action@v6
+          - uses: docker/build-push-action@v7
             with:
               push: true
               platforms: linux/amd64,linux/arm64
