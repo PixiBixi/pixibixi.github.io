@@ -34,7 +34,7 @@ logformat précis et active le mode remoteip
 
 ```bash
 $ cat /etc/apache2/conf-available/log-proxified.conf
-LogFormat "%a %l %u %t '"%r'" %>s %O '"%{Referer}i'" '"%{User-Agent}i'"" proxified
+LogFormat "%a %l %u %t \"%r\" %>s %O \"%{Referer}i\" \"%{User-Agent}i\"" proxified
 
 $ cat /etc/apache2/conf-available/remoteip.conf
 RemoteIPHeader X-Forwarded-For

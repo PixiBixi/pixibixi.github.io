@@ -22,7 +22,7 @@ static char ngx_http_server_string[] = "Server: MyDomain.com" CRLF;
 static char ngx_http_server_full_string[] = "Server: MyDomain.com" CRLF;
 ```
 
-## Manière '"propre'"
+## Manière « propre »
 
 Il suffit d'installer nginx-extras qui nous apportera le module nginx
 more-headers

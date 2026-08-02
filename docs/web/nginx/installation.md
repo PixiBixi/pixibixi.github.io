@@ -330,7 +330,7 @@ Voici désormais des snippets utiles pour ses différents blocks nginx :
     }
 
     # Disallow download of these extensions
-    location ~* (?:'.(?:bak|conf.*|sql|fla|psd|ini|log|sh|inc|swp|dist)|~)$ {
+    location ~* (?:\.(?:bak|conf.*|sql|fla|psd|ini|log|sh|inc|swp|dist)|~)$ {
         deny all;
     }
     ```

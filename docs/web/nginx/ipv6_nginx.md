@@ -42,7 +42,7 @@ listen [::]:80 ipv6only=on deferred default_server;
 Dans cette ligne, nous pouvons observer plusieurs éléments :
 
 * `listen` l'instruction **nginx** qui nous indique que nous devons
-    '"écouter'"
+    « écouter »
 * `[::']` qui nous indique sur quelles interfaces écouter (Ici, sur
     toutes)
 * `ipv6only=on` signifie que cette ligne listen ne concerne uniquement
