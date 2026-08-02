@@ -37,7 +37,7 @@ Bonne config trouvée de Git que je reposte ici si jamais : [Gist](https://gist.
 
         # Properly handle different encoding types
         if (req.http.Accept-Encoding) {
-            if (req.url ~ "'.(jpg|jpeg|png|gif|gz|tgz|bz2|tbz|mp3|ogg|swf|woff)$") {
+            if (req.url ~ "\.(jpg|jpeg|png|gif|gz|tgz|bz2|tbz|mp3|ogg|swf|woff)$") {
                     # No point in compressing these
                     unset req.http.Accept-Encoding;
             } elsif (req.http.Accept-Encoding ~ "gzip") {
@@ -51,7 +51,7 @@ Bonne config trouvée de Git que je reposte ici si jamais : [Gist](https://gist.
         }
 
         # Cache files with these extensions
-        if (req.url ~ "'.(js|css|jpg|jpeg|png|gif|gz|tgz|bz2|tbz|mp3|ogg|swf|woff)$") {
+        if (req.url ~ "\.(js|css|jpg|jpeg|png|gif|gz|tgz|bz2|tbz|mp3|ogg|swf|woff)$") {
             unset req.http.cookie;
             return (hash);
         }
@@ -80,9 +80,9 @@ Bonne config trouvée de Git que je reposte ici si jamais : [Gist](https://gist.
         # This is how long Varnish will cache content. Set at top for visibility.
         set beresp.ttl = 1d;
 
-        if ((bereq.method == "GET" && bereq.url ~ "'.(css|js|xml|gif|jpg|jpeg|swf|png|zip|ico|img|wmf|txt)$") ||
-                    bereq.url ~ "'.(minify).*'.(css|js).*" ||
-                    bereq.url ~ "'.(css|js|xml|gif|jpg|jpeg|swf|png|zip|ico|img|wmf|txt)'?ver") {
+        if ((bereq.method == "GET" && bereq.url ~ "\.(css|js|xml|gif|jpg|jpeg|swf|png|zip|ico|img|wmf|txt)$") ||
+                    bereq.url ~ "\.(minify).*\.(css|js).*" ||
+                    bereq.url ~ "\.(css|js|xml|gif|jpg|jpeg|swf|png|zip|ico|img|wmf|txt)\?ver") {
                     unset beresp.http.Set-Cookie;
                     set beresp.ttl = 5d;
             }
@@ -103,8 +103,8 @@ Bonne config trouvée de Git que je reposte ici si jamais : [Gist](https://gist.
             set beresp.http.cache-control = "max-age = 300";
 
             # Override browsers to keep styling and dynamics for longer
-            if (bereq.url ~ ".minify.*'.(css|js).*") { set beresp.http.cache-control = "max-age = 604800"; }
-            if (bereq.url ~ "'.(css|js).*") { set beresp.http.cache-control = "max-age = 604800"; }
+            if (bereq.url ~ ".minify.*\.(css|js).*") { set beresp.http.cache-control = "max-age = 604800"; }
+            if (bereq.url ~ "\.(css|js).*") { set beresp.http.cache-control = "max-age = 604800"; }
 
             # Override the browsers to cache longer for images than for main content
             if (bereq.url ~ ".(xml|gif|jpg|jpeg|swf|css|js|png|zip|ico|img|wmf|txt)$") {
@@ -224,7 +224,7 @@ Cette autre config orientée pour WordPress est également bien [Gist](https://g
 
       if (req.http.Accept-Encoding) {
         # Do no compress compressed files...
-        if (req.url ~ "'.(jpg|png|gif|gz|tgz|bz2|tbz|mp3|ogg)$") {
+        if (req.url ~ "\.(jpg|png|gif|gz|tgz|bz2|tbz|mp3|ogg)$") {
               remove req.http.Accept-Encoding;
         } elsif (req.http.Accept-Encoding ~ "gzip") {
               set req.http.Accept-Encoding = "gzip";
@@ -236,7 +236,7 @@ Cette autre config orientée pour WordPress est également bien [Gist](https://g
       }
 
       # Cache the following files extensions
-      if (req.url ~ "'.(css|js|png|gif|jp(e)?g)") {
+      if (req.url ~ "\.(css|js|png|gif|jp(e)?g)") {
         unset req.http.cookie;
       }
 
@@ -327,7 +327,7 @@ Cette autre config orientée pour WordPress est également bien [Gist](https://g
     # This function is used when a request is sent by our backend (Nginx server)
     sub vcl_fetch {
       # For static content related to the theme, strip all backend cookies
-      if (req.url ~ "'.(css|js|png|gif|jp(e?)g)") {
+      if (req.url ~ "\.(css|js|png|gif|jp(e?)g)") {
         unset beresp.http.cookie;
       }
 
