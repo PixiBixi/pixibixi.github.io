@@ -68,7 +68,7 @@ composants réseaux de votre système.
 beaucoup de comportements du système tel que le nombre maximum de PID du
 système, le comportement à adopter après un kernel-panic...
 
-* `/proc/irq` est un répertoire un peu '"particulier'" où nous pouvons
+* `/proc/irq` est un répertoire un peu « particulier » où nous pouvons
 définir manuellement les interruptions à un certain core du CPU.
 
 Outre ces répertoires, de nombreux fichiers peuvent nous importer de
@@ -272,4 +272,95 @@ Dans ce notre exemple ci-dessus :
 * Notre utilisateur `monitoring` verra tous les PID, grace à son appartenance au groupe 1500
 * Notre user générique `pierre` ne verra quant à lui que les PID dont il est propriétaire, n'appartenant pas au GID 1500
 
-## /sys
+## Système de fichier /sys
+
+Là où `/proc` expose surtout des process et du legacy kernel, `sysfs` expose le modèle de périphériques du noyau : un objet kernel = un répertoire, un attribut = un fichier contenant une seule valeur. C'est là que se trouvent la quasi-totalité des tunables hardware, et la plupart sont accessibles en écriture.
+
+### Structure de base de /sys
+
+Les répertoires qui servent réellement au quotidien :
+
+* `/sys/block` : un dossier par périphérique bloc (`sda`, `nvme0n1`), avec ses paramètres de queue
+* `/sys/class` : les périphériques rangés par type (`net`, `power_supply`, `thermal`) - le point d'entrée le plus pratique
+* `/sys/devices` : l'arborescence réelle telle que le noyau la voit, `/sys/class` n'en est qu'un ensemble de symlinks
+* `/sys/module` : les paramètres des modules chargés, y compris ceux passés au boot
+* `/sys/kernel/mm` : la gestion mémoire, dont les transparent hugepages
+* `/sys/devices/system/cpu` et `/sys/devices/system/node` : topologie CPU et NUMA
+
+### CPU : governor et fréquence
+
+Le governor décide de la politique de fréquence. Sur un serveur qui fait de la latence, `performance` évite les micro-ralentissements liés au ramp-up de fréquence.
+
+```bash
+λ jeremy ~ → cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+powersave
+
+# Fréquence réelle de chaque core, en kHz
+λ jeremy ~ → grep . /sys/devices/system/cpu/cpu*/cpufreq/scaling_cur_freq
+
+# Passer tous les cores en performance
+λ jeremy ~ → echo performance | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
+```
+
+### Stockage : scheduler et read-ahead
+
+Le scheduler par défaut est rarement le bon sur du NVMe. `rotational` à `0` confirme qu'on est bien sur du flash.
+
+```bash
+# Le scheduler actif est entre crochets
+λ jeremy ~ → cat /sys/block/nvme0n1/queue/scheduler
+[none] mq-deadline kyber
+
+# Disque rotatif (1) ou flash (0) ?
+λ jeremy ~ → cat /sys/block/nvme0n1/queue/rotational
+0
+
+# Read-ahead en Ko, et profondeur de queue
+λ jeremy ~ → cat /sys/block/nvme0n1/queue/read_ahead_kb
+128
+λ jeremy ~ → cat /sys/block/nvme0n1/queue/nr_requests
+1023
+```
+
+### Réseau : état et compteurs d'erreurs
+
+`/sys/class/net` évite de parser la sortie de `ip` ou `ethtool` quand on scripte.
+
+```bash
+λ jeremy ~ → cat /sys/class/net/eth0/speed
+10000
+λ jeremy ~ → cat /sys/class/net/eth0/mtu
+9000
+
+# Compteurs de drop, bien plus rapide à lire que ethtool -S
+λ jeremy ~ → grep . /sys/class/net/eth0/statistics/{rx,tx}_dropped
+```
+
+### Transparent hugepages
+
+Les THP sont une cause classique de latences erratiques sur les bases de données. La valeur active est celle entre crochets.
+
+```bash
+λ jeremy ~ → cat /sys/kernel/mm/transparent_hugepage/enabled
+[always] madvise never
+```
+
+### NUMA
+
+Sur un bi-socket, savoir quels cores appartiennent à quel node conditionne le pinning.
+
+```bash
+λ jeremy ~ → cat /sys/devices/system/node/node0/cpulist
+0-15,32-47
+
+# Mémoire libre par node
+λ jeremy ~ → grep MemFree /sys/devices/system/node/node*/meminfo
+```
+
+!!! warning "Rien n'est persistant"
+    Tout ce qu'on écrit dans `/sys` est perdu au reboot. Pour rendre un réglage durable, il faut passer par une règle udev, une unit systemd, `tuned`, ou `sysfsutils` (`/etc/sysfs.conf`) selon la distribution. Contrairement à `/proc/sys`, `sysctl.conf` ne couvre pas `/sys`.
+
+## Voir aussi
+
+* [Performances Linux : la boîte à outils du triage](../../misc/linux_performances.md) - la méthodologie qui exploite ces fichiers
+* [Augmenter les buffers d'une carte réseau](../networking/buffer_nic.md) - un tunable NIC en pratique
