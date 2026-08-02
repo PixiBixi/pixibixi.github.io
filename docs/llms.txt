@@ -12,12 +12,16 @@
 - [Automation](https://wiki.jdelgado.fr/automation/): Terraform (cheatsheet, tools, speedup), Ansible, Makefile
 - [Web](https://wiki.jdelgado.fr/web/): HAProxy, nginx, Varnish, DNS, TLS/SSL, WordPress
 - [Containers](https://wiki.jdelgado.fr/containers/): Docker, Kafka
-- [CI/CD](https://wiki.jdelgado.fr/ci-cd/): GitLab CI optimization, image scanning
+- [CI/CD](https://wiki.jdelgado.fr/ci-cd/): GitHub Actions (Go CI, GoReleaser, cocogitto), GitLab CI optimization, image scanning
 - [Networking](https://wiki.jdelgado.fr/networking/): Cisco, MikroTik, pfSense
 - [Hypervisor](https://wiki.jdelgado.fr/hypervisor/): ESXi, Proxmox
 - [Self-hosted](https://wiki.jdelgado.fr/selfhost/): Nextcloud, Koel, Guacamole, ruTorrent
 - [About the author](https://wiki.jdelgado.fr/about/): Jérémy Delgado, Senior Platform Engineer at Equativ
 
+## Index
+
+- [Tags](https://wiki.jdelgado.fr/tags/): tous les articles regroupés par technologie et par thème, ~255 tags
+
 ## Sitemap
 
-- [Full sitemap](https://wiki.jdelgado.fr/sitemap.xml): 240 pages, XML format
+- [Full sitemap](https://wiki.jdelgado.fr/sitemap.xml): 241 pages, XML format
