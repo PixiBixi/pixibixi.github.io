@@ -9,6 +9,13 @@ tags:
 
 Le fichier rkestate contient la description complète du cluster Kubernetes — indispensable pour ajouter ou supprimer un node. Si on ne l'a plus, pas de panique, plusieurs méthodes permettent de le récupérer.
 
+!!! warning "Spécifique à RKE1, en fin de vie"
+    Le `rkestate` est un mécanisme propre à **RKE1**, dont le support Rancher s'est arrêté
+    en juillet 2025. RKE2 n'a pas d'équivalent : l'état vit dans etcd, et on repart d'un
+    snapshot (`rke2 etcd-snapshot`). Les versions citées plus bas (K8s 1.18/1.19,
+    Rancher 2.2.x) sont celles d'origine de la procédure, gardées telles quelles pour
+    coller aux clusters concernés. Voir aussi [Bootstrap rapidement son cluster](bootstrap_cluster.md).
+
 ## Depuis le master
 
 ### Master - K8S (1.19 et +)

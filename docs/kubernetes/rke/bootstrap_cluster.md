@@ -6,7 +6,14 @@ tags:
 
 # Bootstrap rapidement son cluster
 
-Pour bootstrap rapidement un cluster, on peut utiliser RKE, un outil Rancher. À noter qu'on utilise RKE et non RKEv2 car ce dernier se base sur K3S et non K8S, ce qui apporte beaucoup moins de fonctionnalités.
+!!! warning "RKE1 est en fin de vie"
+    Cet article documente **RKE1**, dont le support Rancher s'est arrêté en juillet 2025.
+    Pour un nouveau cluster, partir sur [RKE2](https://docs.rke2.io/) : contrairement à ce
+    que laissait penser son ancien nom « RKEv2 », il ne se base pas sur K3s et embarque le
+    durcissement CIS et le support FIPS. Le contenu ci-dessous reste valable pour maintenir
+    un cluster RKE1 existant.
+
+Pour bootstrap rapidement un cluster, on peut utiliser RKE, un outil Rancher.
 
 RKE c'est un binaire et un fichier `cluster.yaml`. Il peut être exécuté depuis le serveur lui-même ou en remote. La dernière version est disponible [ici](https://github.com/rancher/rke/#latest-release).
 
