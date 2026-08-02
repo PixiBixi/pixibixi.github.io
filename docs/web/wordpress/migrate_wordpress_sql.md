@@ -25,5 +25,5 @@ UPDATE wp_links SET link_url = replace(link_url, http://www.old_url, https://www
 
 Assez chiantes à trouver, donc je note ici
 
-Penser à modifier le prefix **wp'_** si vous avez modifier le prefix de
+Penser à modifier le prefix `wp_` si vous avez modifier le prefix de
 votre site

@@ -30,11 +30,11 @@ dkim_domain = ${if match_domain{$sender_address_domain}{+local_domains} {$sender
 PUBLIC_KEY="$(command cat "${SELECTOR}.dkim.pem"|grep -v ''-|tr -d \n)"
 command echo "# Dkim configuration for server with selector {$SELECTOR}.
 
-_asp._domainkey IN TXT '"dkim=all'"
-_adsp._domainkey IN TXT '"dkim=all'"
-_domainkey IN TXT '"t=y; o=-;'"
+_asp._domainkey IN TXT "dkim=all"
+_adsp._domainkey IN TXT "dkim=all"
+_domainkey IN TXT "t=y; o=-;"
 
-${SELECTOR}._domainkey 1 IN TXT '"v=DKIM1; k=rsa; p=${PUBLIC_KEY};'"
+${SELECTOR}._domainkey 1 IN TXT "v=DKIM1; k=rsa; p=${PUBLIC_KEY};"
 "   Yes
 ```
 

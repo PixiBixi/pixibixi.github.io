@@ -12,7 +12,7 @@ MOZILLA_PKIX_ERROR_REQUIRED_TLS_FEATURE_MISSING.
 
 Personnellement, j'ai souvent rencontré cette erreur avec des
 certificats Let's Encrypt ayant été créé avec l'argument
-**'--must-staple**. Ce bug se produit lorsque qu'aucun résolveur n'est
+**--must-staple**. Ce bug se produit lorsque qu'aucun résolveur n'est
 définit au niveau de nginx. Sans résolveur, nginx n'est pas capable
 d'effectuer l'OCSP Stapling.
 
