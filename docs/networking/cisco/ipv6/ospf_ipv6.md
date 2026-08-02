@@ -66,7 +66,7 @@ Le procédé est le même en OSPFv2/OSPFv3 (Seul le prompt changera)
 ## Activation de l'OSPF
 
 Une fois l'OSPF correctement configuré, il faut maintenant
-'"l'activer'" (C'est à dire, lui dire quels réseaux annoncer)
+« l'activer » (C'est à dire, lui dire quels réseaux annoncer)
 
 Pour se faire, il existe 2 manières en OSPFv2 mais **une seule** en
 OSPFv3
@@ -79,7 +79,7 @@ Dans cette ligne, nous annonçons le réseau 192.168.80.0/24 en OSPF dans
 la zone 0
 
 **Originellement, nous devons mettre le wildcard mask en OSPF, mais la
-grande majorité des IOS peuvent convertir masque '"normal'" en wildcard
+grande majorité des IOS peuvent convertir masque « normal » en wildcard
 mask**
 
 La seconde méthode, utilisable en OSPFv2 et indispensable en OSPFv3 et

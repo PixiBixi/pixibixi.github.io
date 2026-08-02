@@ -108,9 +108,9 @@ celle serveur, soit TCP, port 5001, et une Window Size +/- identique
 (Ici, 0.3KB de différence, soit un gain négligable)
 
 Et enfin, nous observons enfin les données qui nous sont utiles. Tout
-d'abord, sous l'identifiant '"5'", il s'agit des données qui sont
+d'abord, sous l'identifiant « 5 », il s'agit des données qui sont
 envoyées par le serveur, et enfin, sous le champ 4, les données qui
-sont réellement reçus par le serveur '"hôte'".
+sont réellement reçus par le serveur « hôte ».
 
 Nous pouvons apercevoir d'une perte de 10mbps, ce qui est plutôt
 faible, mais qui n'est tout de même pas insignifiant. Nous pouvons

@@ -69,7 +69,7 @@ Définit une bannière de connexion (motd)
 
     Router(config)# banner motd #
 
-Où '# est le caractère d'exit (il est possible de le modifier)
+Où `#` est le caractère d'exit (il est possible de le modifier)
 
 ## Configuration des lignes consoles et terminaux virtuels (vty)
 

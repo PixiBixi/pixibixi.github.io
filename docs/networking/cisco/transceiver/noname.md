@@ -8,7 +8,7 @@ tags:
 # Autoriser les transceiver no-name
 
 Pour éviter de payer une fortune le transceiver 1XG LC LR, il est
-possible d'autoriser des transceivers dit '"no-name'". Par exemple, un
+possible d'autoriser des transceivers dit « no-name ». Par exemple, un
 simple transceiver 1XG LC LR peut couter dans les 300e alors que le
 no-name (qui fera exactement le même travaille) ne coutera que 25e.
 

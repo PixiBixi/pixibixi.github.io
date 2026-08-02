@@ -30,5 +30,5 @@ le pare-feu temporairement.
 Une fois ceci fait, nous passons sur l'interface graphique : **System /
 Routing / Gateways / '[+ Add']**
 
-Il y a un bouton **'"Display Advanced'"** en bas de la page et vers la
-fin de ces options, nous avons **'"Use non-local gateway'"** à cocher
+Il y a un bouton **« Display Advanced »** en bas de la page et vers la
+fin de ces options, nous avons **« Use non-local gateway »** à cocher

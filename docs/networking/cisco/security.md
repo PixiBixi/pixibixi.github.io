@@ -89,8 +89,8 @@ informations étonnées (Mauvaise passerelle, mauvais DNS..)
 ```
 
 A partir de ce moment, tous les ports seront considérés comme étant
-'"untrust'", et donc aucun ne sera capable de fournir du DHCP. Il nous
-faut donc placer un port comme étant '"trust'"
+« untrust », et donc aucun ne sera capable de fournir du DHCP. Il nous
+faut donc placer un port comme étant « trust »
 
 ```cisco
     switch(config)#interface fa0/1
@@ -130,7 +130,7 @@ fonction de l'importance de celui-ci
 ## Affectation d'adresse MAC statique
 
 Afin d'améliorer au maximum la sécurité, nous pouvons attribuer de
-manière statique, ou bien en mode '"apprentissage'" une adresse MAC sur
+manière statique, ou bien en mode « apprentissage » une adresse MAC sur
 un port défini.
 
 Cela empêche de se connecter à un port, même si celui-ci est activé
