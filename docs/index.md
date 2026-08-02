@@ -64,7 +64,7 @@ Cette magnifique documentation a été faite avec MkDocs Material. [À propos](a
 * [Les outils eZ Server, des outils simple de supervision](monitoring/eztools.md)
 * [Netdata, Prometheus et Grafana : une stack de monitoring simple et puissante](monitoring/lgtm/simple_monitoring_stack.md)
 * [Générer des alertes depuis Loki](monitoring/lgtm/loki_alerting.md)
-* [2-3 tips pour la stack LGTM](monitoring/lgtm/tips_lgtm.md)
+* [Quelques tips pour la stack LGTM](monitoring/lgtm/tips_lgtm.md)
 * [Grafana Alloy — remplacer Promtail (et tout le reste)](monitoring/lgtm/alloy.md)
 * [Ecrire une métrique custom pour node_exporter](./monitoring/lgtm/custom_metrics_nodeexporter.md)
 * [Configurer des notifications Slack pour check_mk](monitoring/check_mk/add_slack_notification.md)
@@ -295,7 +295,7 @@ Cette magnifique documentation a été faite avec MkDocs Material. [À propos](a
 
 * [Télécharger ses sous-titres en ligne de commande](linux/misc/subs.md)
 * [Gagner de la place en supprimant les locales inutiles](linux/misc/locales.md)
-* [Enlever les paquets '"rc'" sur dpkg](linux/misc/rc_package.md)
+* [Enlever les paquets « rc » sur dpkg](linux/misc/rc_package.md)
 * [Ajouter de la couleur à sa commande man](linux/misc/mancolor.md)
 * [Trouver les options de compilation du kernel](linux/misc/find_kernel_options.md)
 * [Réinitialiser son mot de passe root](linux/misc/forgot_root_password.md)
@@ -326,7 +326,7 @@ Cette magnifique documentation a été faite avec MkDocs Material. [À propos](a
 ## Proxmox
 
 * [Ajouter une ISO depuis une URL](./hypervisor/proxmox/insert_iso_from_url.md)
-* [Résoudre l'erreur '"VM is locked'"](./hypervisor/proxmox/troubleshooting/vm_locked.md)
+* [Résoudre l'erreur « VM is locked »](./hypervisor/proxmox/troubleshooting/vm_locked.md)
 * [NAT pour les VMs Proxmox](./hypervisor/proxmox/networking/nat.md)
 * [Gérer son cluster Proxmox](./hypervisor/proxmox/cluster.md)
 * [Créer sa VM en CLI avec cloud-init](./hypervisor/proxmox/vm_as_cli.md)
@@ -421,7 +421,7 @@ Cette magnifique documentation a été faite avec MkDocs Material. [À propos](a
 ## Misc
 
 * [Mes sources](misc/sources.md)
-* [Bordel de lien](misc/useful_links.md)
+* [Liens en vrac](misc/useful_links.md)
 * [Performances Linux](misc/linux_performances.md)
 * [Optimisations Linux : liens de référence](misc/optimization.md)
 * [Scripts utiles multi-OS](misc/scripts_useful.md)
