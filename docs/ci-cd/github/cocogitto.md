@@ -159,11 +159,12 @@ repos:
               fetch-depth: 0          # obligatoire : cog a besoin de tout l'historique
               token: ${{ secrets.GITHUB_TOKEN }}
 
-          - uses: oknozor/cocogitto-action@v3
+          - uses: cocogitto/cocogitto-action@v4
             with:
               git-user: github-actions[bot]
               git-user-email: github-actions[bot]@users.noreply.github.com
-              check-latest-tag-only: true   # ne valide que les commits depuis le dernier tag
+              command: check
+              args: --from-latest-tag   # ne valide que les commits depuis le dernier tag
 
           - name: Bump version
             id: bump
@@ -229,6 +230,29 @@ repos:
               labels: ${{ steps.meta.outputs.labels }}
 
     ```
+<!-- markdownlint-enable MD046 -->
+
+<!-- markdownlint-disable MD046 -->
+!!! warning "cocogitto-action : nom du dépôt et migration v3 → v4"
+    L'action vit sous `cocogitto/cocogitto-action`. Les exemples qui traînent en
+    ligne référencent souvent `oknozor/cocogitto-action` : c'est le même dépôt,
+    transféré du compte personnel du mainteneur vers l'organisation, et ça ne
+    fonctionne que par la redirection GitHub. Autant pointer le nom canonique.
+
+    La **v4 est cassante** et l'échec est silencieux au moment du bump :
+
+    | v3 | v4 |
+    |---|---|
+    | `check: true` (défaut) | `command: check` — **obligatoire** |
+    | `check-latest-tag-only: true` | `args: --from-latest-tag` |
+    | `release: true` | `command: bump` + `args` |
+
+    Un input inconnu ne fait qu'un warning côté Actions, mais `command` manquant
+    fait sortir le script en erreur : `Error: No command specified`. Le job release
+    échoue à chaque push sur master.
+
+    v4 embarque aussi cog 6.4.0 au lieu de 6.3.0 — à garder en tête si un
+    comportement de bump change.
 <!-- markdownlint-enable MD046 -->
 
 !!! note "tag latest non automatique"
