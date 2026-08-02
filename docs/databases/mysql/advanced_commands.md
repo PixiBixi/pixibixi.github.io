@@ -75,7 +75,7 @@ Un use case parmis tant d'autres, une cluster Galera.
 MariaDB [(none)]> SHOW (FULL) PROCESSLIST 'G;
 ```
 
-Permet de lister les process SQL tournant d'une manière '"propre'"
+Permet de lister les process SQL tournant d'une manière « propre »
 (''G), on peut également aller plus loin en détail en ajoutant FULL
 
 ```sql

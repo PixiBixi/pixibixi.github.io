@@ -130,7 +130,7 @@ On voit que notre redis1 est le master et que redis2 est le slave de
 redis1, on voit également qu'il est bien connecté.
 
 Pour debug notre replication & election de master, nous pouvons forcer
-un sleep du '"master'", empêchant ainsi les écritures. Nous devons
+un sleep du « master », empêchant ainsi les écritures. Nous devons
 observer un changement de master (côté Redis & HAproxy)
 
 ```bash
@@ -236,7 +236,7 @@ sentinel down-after-milliseconds mymaster 1000
 protected-mode no
 ```
 
-Le '"2'" est le nombre de replica que l'on souhaite. On élit un nouveau
+Le « 2 » est le nombre de replica que l'on souhaite. On élit un nouveau
 master après 1s de down. On désactive le *protected-mode* afin de
 pouvoir se connecter depuis tous les noeuds.
 

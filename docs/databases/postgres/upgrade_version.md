@@ -26,7 +26,7 @@ export PGBINOLD=/usr/lib/postgresql/11/bin/
 export PGBINNEW=/usr/lib/postgresql/13/bin/
 ```
 
-Puis on passe pg_upgrade avec l'option **'--check** afin de ne pas
+Puis on passe pg_upgrade avec l'option **--check** afin de ne pas
 appliquer les modifications
 
 ```bash
@@ -36,7 +36,7 @@ appliquer les modifications
 !!! warning "Note"
     Il est important d'utiliser le fullpath pour la commande `pg_upgrade`, sous peine que le mauvais `pg_upgrade` soit sélectionné.
 
-Si tout est OK, repassez la commande en supprimant **'--check**.
+Si tout est OK, repassez la commande en supprimant **--check**.
 
 Enfin, on pense à modifier la configuration de la nouvelle version de
 postgresql afin d'écouter sur le bon port :
