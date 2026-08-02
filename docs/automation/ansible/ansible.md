@@ -10,7 +10,7 @@ tags:
 
 ansible est un outil d'automatisation des tâches d'un serveur
 développé en python agent-less (càd sans agent à installer sur le
-serveur) via des '"recettes'" appelées playbooks en jargon ansible ou
+serveur) via des « recettes » appelées playbooks en jargon ansible ou
 alors pour des actions simples des lignes de commandes. Il ne s'agit ni
 plus ni moins que de scripts à la sauce ansible permettant de configurer
 vos serveurs.
@@ -86,9 +86,9 @@ done
 
 Plus d'informations sur les commandes ad-hoc sont disponibles sur [le site officiel](https://docs.ansible.com/ansible/latest/user_guide/intro_adhoc.html#intro-adhoc)
 
-'## Playbooks
+## Playbooks
 
-Un playbook est un fichier de '"description'" des actions à réaliser
+Un playbook est un fichier de « description » des actions à réaliser
 écrit en YAML.
 
 Voici un exemple de playbook simple :
