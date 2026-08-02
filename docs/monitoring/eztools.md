@@ -8,14 +8,14 @@ tags:
 
 ## Préambule
 
-'### **eZ Server Monitor** est une suite d'outil se décomposant en 2
+**eZ Server Monitor** est une suite d'outils se décomposant en 2
 parties : **eZ Server Monitor SH**, qui, comme son nom l'indique,
 permet de voir la plupart des éléments intéressants de son système, et
 **eZ Server Monitor WEB** qui permet d'avoir une vue globale de son
-système via son navigateur web.'
-Ceux-ci ont été développés par un jeune français du pseudo de
-['@shevabam](https://twitter.com/shevabam) '### [Voici le rendu
-:]{.underline}
+système via son navigateur web.
+
+Ceux-ci ont été développés par un développeur français au pseudo de
+[@shevabam](https://twitter.com/shevabam). Voici le rendu :
 
 ## Installation eZ Server Monitor SH
 
@@ -43,7 +43,7 @@ chmod +x eZServerMonitor.sh
 ```
 
 Et enfin, une chose qui n'est pas obligée mais je déplace le fichier
-dans un répertoire de mon '$PATH, et je le renomme en quelque chose de
+dans un répertoire de mon `$PATH`, et je le renomme en quelque chose de
 simple comme monitor pour y accéder simplement
 
 ```bash
@@ -54,23 +54,23 @@ Voici les options disponibles pour eZ Server Monitor SH
 
 ------------------------------------------------------------------------
 
-* **-h**, **-u**, **'--help** ou **'--usage** : Affiche le message
+* **-h**, **-u**, **--help** ou **--usage** : Affiche le message
     d'aide
-* **-v** ou **'--version** : Affiche le numéro de version du script
-* **-C** ou **'--clear** : Clear la console
-* **-a** ou **'--all** : Affiche toutes les informations
-* **-s** ou **'--system** : Affiche des informations système de base
-* **-e** ou **'--services** : Vérifie si les services sont ups ou pas
-* **-n** ou **'--network** : Affiche les informations sur le réseau
-* **-p** ou **'--ping** : Pings différents hosts selon la
+* **-v** ou **--version** : Affiche le numéro de version du script
+* **-C** ou **--clear** : Clear la console
+* **-a** ou **--all** : Affiche toutes les informations
+* **-s** ou **--system** : Affiche des informations système de base
+* **-e** ou **--services** : Vérifie si les services sont ups ou pas
+* **-n** ou **--network** : Affiche les informations sur le réseau
+* **-p** ou **--ping** : Pings différents hosts selon la
     configuration
-* **-c** ou **'--cpu** : Information sur le processeur
-* **-m** ou **'--memory** : Informations sur la RAM
-* **-l** ou **'--load** : Affiche le load et des infos sur les
+* **-c** ou **--cpu** : Information sur le processeur
+* **-m** ou **--memory** : Informations sur la RAM
+* **-l** ou **--load** : Affiche le load et des infos sur les
     processus
-* **-t** ou **'--temperatures** : Affiche les températures CPU,
+* **-t** ou **--temperatures** : Affiche les températures CPU,
     HDD...
-* **-d** ou **'--disk** : Affiche les différents disques
+* **-d** ou **--disk** : Affiche les différents disques
 
 ------------------------------------------------------------------------
 
