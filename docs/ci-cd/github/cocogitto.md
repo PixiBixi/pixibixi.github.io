@@ -55,6 +55,8 @@ tag_prefix = "v"          # obligatoire si vos tags existants sont en v*
 [commit_types]
 # Types custom pour le changelog
 refacto = { changelog_title = "Refactoring" }
+# perf ne bumpe pas par défaut — voir « Logique de bump »
+perf = { changelog_title = "Performance Improvements", bump_patch = true }
 
 [changelog]
 path = "CHANGELOG.md"
@@ -239,7 +241,40 @@ repos:
 | `fix:` | patch (`1.2.3 → 1.2.4`) |
 | `feat:` | minor (`1.2.3 → 1.3.0`) |
 | `feat!:` ou `BREAKING CHANGE` | major (`1.2.3 → 2.0.0`) |
+| `perf:`, `refactor:` | aucun bump (configurable, voir ci-dessous) |
 | `chore:`, `docs:`, `ci:` | aucun bump |
+
+<!-- markdownlint-disable MD046 -->
+!!! warning "`perf:` ne déclenche aucune release"
+    Seuls `feat` et `fix` bumpent par défaut. Une PR ne contenant que des commits
+    `perf:` produit un job de release **vert** mais sans tag :
+
+    ```text
+    No conventional commits for your repository that required a bump.
+    ```
+
+    Le piège est que tout a l'air de fonctionner : `release` passe en success, et
+    ce sont les jobs conditionnés par `bumped == 'true'` (build Docker, publication
+    Helm) qui sont *skipped*. L'optimisation reste sur master et ne sortira qu'au
+    prochain `fix:` sans rapport, qui l'embarquera au passage.
+<!-- markdownlint-enable MD046 -->
+
+Pour qu'un type déclenche un bump, `[commit_types]` accepte `bump_patch` et `bump_minor` :
+
+```toml title="cog.toml"
+[commit_types]
+perf = { changelog_title = "Performance Improvements", bump_patch = true }
+```
+
+Reprendre `changelog_title` explicitement : un `CommitConfig` défini sans ce champ
+perd le titre de section par défaut du type.
+
+!!! tip "Vérifier avant de pousser"
+    `cog bump --auto --dry-run` répond `No conventional commits...` ou la version
+    calculée. C'est la façon la plus rapide de confirmer qu'un changement de
+    `[commit_types]` produit bien l'effet attendu. Attention, `cog bump` refuse de
+    tourner sur un arbre de travail sale : il affiche un `git status` au lieu du
+    résultat. Committer d'abord.
 
 ## Quand choisir quoi
 
