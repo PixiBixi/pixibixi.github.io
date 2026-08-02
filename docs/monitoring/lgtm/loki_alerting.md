@@ -109,4 +109,4 @@ Enfin, nous montons les différents volumes
 
 * [Netdata, Prometheus et Grafana : une stack de monitoring simple et puissante](simple_monitoring_stack.md) — alerting avec Prometheus et AlertManager
 * [Grafana Alloy](alloy.md) — collecteur universel pour les logs vers Loki
-* [2-3 tips pour la stack LGTM](tips_lgtm.md)
+* [Quelques tips pour la stack LGTM](tips_lgtm.md)

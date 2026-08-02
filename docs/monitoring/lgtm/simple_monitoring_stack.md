@@ -37,7 +37,7 @@ envoyées par l'exporter
 
 * **TSDB** : Une Time Series Database (TSDB) est une base de données
 optimisée pour les données horodatées ou les séries chronologiques. Une
-'"time serie'" est seulement une suite de mesures ou évènements qui sont
+« time serie » est seulement une suite de mesures ou évènements qui sont
 monitorées, downsampled et agrégées dans le temps.
 
 * **Downsampling** : Le downsampling (sous-échantillonnage) est une
@@ -122,8 +122,8 @@ Prometheus (PromQL) assez intuitif et puissant.
 
 ### Installation & configuration de Netdata
 
-2 méthodes pour installer Netdata, soit via image Docker, soit '"à la
-main'". Pour ma part, j'ai un serveur *from scratch* et les autres sous
+2 méthodes pour installer Netdata, soit via image Docker, soit « à la
+main ». Pour ma part, j'ai un serveur *from scratch* et les autres sous
 Docker, j'ai donc utilisé les 2 méthodes.
 
 #### Via Docker
@@ -194,7 +194,7 @@ dépendances nécessaires :
 bash <(curl -Ss https://my-netdata.io/kickstart.sh) all
 ```
 
-Le paramètre **'--dont-wait** que l'on peut appliquer à la commande
+Le paramètre **--dont-wait** que l'on peut appliquer à la commande
 permet de s'abstraire de toutes les questions posées à l'utilisateur.
 
 ### Installation de Prometheus
@@ -340,7 +340,7 @@ Nous verrons par la suite comment configurer alertmanager
 Troisièmement, la partie la plus importante, nous avons au premier
 niveau un **scrape_configs** qui indique la configuration qui sera
 appliquée par Prometheus. **job_name** nous indique quel nom appliquer
-au '"groupe'" au niveau de Prometheus.
+au « groupe » au niveau de Prometheus.
 
 Nous avons 2 jobs : Un concernant les noeuds netdata SSL appelé *Node
 SSL* et un autre avec les node normaux appelés *Node*.
@@ -563,7 +563,7 @@ La communauté Grafana met à votre disposition énormement de [dashboards](http
 * [Générer des alertes depuis Loki](loki_alerting.md) — alerting avec LogQL via AlertManager
 * [Ecrire une métrique custom pour node_exporter](custom_metrics_nodeexporter.md) — étendre les métriques collectées
 * [Grafana Alloy](alloy.md) — collecteur universel logs/métriques/traces
-* [2-3 tips pour la stack LGTM](tips_lgtm.md) — API calls et astuces
+* [Quelques tips pour la stack LGTM](tips_lgtm.md) — API calls et astuces
 
 ## Trucs & Astuces
 
