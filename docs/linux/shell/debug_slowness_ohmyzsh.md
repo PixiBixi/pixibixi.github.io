@@ -1,7 +1,7 @@
 ---
 description: Profiler les plugins oh-my-zsh les plus lents pour optimiser le temps de démarrage du shell
 tags:
-  - zsh
+  - Zsh
   - oh-my-zsh
 ---
 

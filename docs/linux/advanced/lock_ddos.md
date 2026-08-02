@@ -4,7 +4,7 @@ tags:
   - Security
   - DDoS
   - HAProxy
-  - NGINX
+  - Nginx
 ---
 
 # Mitigation DDoS L7

@@ -3,7 +3,6 @@ description: ESXi et Proxmox — installation, configuration réseau, gestion de
 tags:
   - ESXi
   - Proxmox
-  - Hypervisor
   - Virtualization
 ---
 

@@ -2,7 +2,7 @@
 description: Configurer le NAT sur Proxmox avec Linux Bridge et iptables pour l'accès réseau des VMs
 tags:
   - Proxmox
-  - Network
+  - Networking
 ---
 
 # NAT pour les VMs Proxmox

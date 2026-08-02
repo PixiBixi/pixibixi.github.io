@@ -1,7 +1,7 @@
 ---
 description: Tester la bande passante réelle d'un serveur avec des fichiers de preuve (proof files) HTTP
 tags:
-  - Network
+  - Networking
   - Testing
 ---
 

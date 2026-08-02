@@ -5,7 +5,7 @@ tags:
   - Music
   - Docker
   - PHP
-  - Self-hosted
+  - Selfhost
 ---
 
 # Streamer sa musique depuis Koel

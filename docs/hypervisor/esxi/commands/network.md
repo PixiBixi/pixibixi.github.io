@@ -2,7 +2,7 @@
 description: Commandes ESXi CLI pour lister et gérer l'état des interfaces réseau virtuelles
 tags:
   - ESXi
-  - Network
+  - Networking
 ---
 
 # ESXi : commandes réseau en vrac

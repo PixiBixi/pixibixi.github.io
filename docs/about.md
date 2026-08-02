@@ -1,7 +1,5 @@
 ---
 description: "Senior Platform Engineer chez Equativ — infra 2,5M req/s, 4500+ serveurs, 30+ clusters Kubernetes. Wiki SRE pratique depuis 2017, 240+ articles."
-tags:
-  - About
 ---
 
 # À propos

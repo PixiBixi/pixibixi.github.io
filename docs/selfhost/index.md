@@ -2,7 +2,7 @@
 description: Applications self-hostées — Nextcloud, Koel, Guacamole, Rutorrent et autres outils à faire tourner soi-même.
 tags:
   - Nextcloud
-  - Self-hosted
+  - Selfhost
   - Docker
 ---
 

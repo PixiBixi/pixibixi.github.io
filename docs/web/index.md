@@ -1,7 +1,7 @@
 ---
 description: nginx, HAProxy, Varnish, DNS, mail et WordPress — tout ce qui tourne devant le code applicatif.
 tags:
-  - nginx
+  - Nginx
   - HAProxy
   - Varnish
   - DNS

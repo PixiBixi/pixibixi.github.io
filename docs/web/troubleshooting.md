@@ -1,7 +1,7 @@
 ---
 description: Résoudre l'erreur MOZILLA_PKIX_ERROR_REQUIRED_TLS_FEATURE_MISSING dans Nginx — OCSP Stapling et resolver
 tags:
-  - nginx
+  - Nginx
   - HAProxy
 ---
 

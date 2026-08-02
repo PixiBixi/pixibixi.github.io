@@ -2,7 +2,7 @@
 description: Remplacer ifconfig par ip — configuration réseau, routes, ARP et statistiques
 tags:
   - ip
-  - Network
+  - Networking
 ---
 
 # Mémo sur la commande IP

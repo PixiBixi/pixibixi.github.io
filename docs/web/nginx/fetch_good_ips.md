@@ -1,7 +1,7 @@
 ---
 description: Récupérer les vraies IPs des visiteurs derrière un reverse proxy avec X-Forwarded-For dans Nginx
 tags:
-  - nginx
+  - Nginx
   - Cloudflare
 ---
 

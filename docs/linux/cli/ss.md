@@ -2,7 +2,7 @@
 description: Remplacer netstat par ss — filtrer connexions TCP/UDP, états et statistiques avancées
 tags:
   - ss
-  - Network
+  - Networking
 ---
 
 # La commande ss

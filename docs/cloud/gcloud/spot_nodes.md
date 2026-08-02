@@ -4,7 +4,6 @@ tags:
   - GKE
   - GCP
   - FinOps
-  - Cost Optimization
 ---
 
 # GKE Spot Nodes
