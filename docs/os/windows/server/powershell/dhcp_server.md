@@ -37,7 +37,7 @@ Puis on restart le service
 Restart-Service dhcpserver
 ```
 
-Une fois ceci fait, nous pouvons passer à la '"vraie'" configuration
+Une fois ceci fait, nous pouvons passer à la « vraie » configuration
 (Pools d'IP, DNS...)
 
 Maintenant, nous pouvons passer à la configuration
@@ -152,7 +152,7 @@ Set-DhcpServerv4Scope -ComputerName DHCPServer -ScopeId 10.1.1.0 -State Active
 Exporter la configuration du serveur DHCP
 
 ```powershell
-Export-DHCPServer -ComputerName DHCPServer -File C:'dhcp'dhcp.xml
+Export-DHCPServer -ComputerName DHCPServer -File C:\dhcp\dhcp.xml
 ```
 
 * `-Lease` pour inclure les baux

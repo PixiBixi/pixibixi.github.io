@@ -13,5 +13,5 @@ drivers via interface graphique.
 Voici donc la commande pour les installer
 
 ```powershell
-Get-ChildItem "C:'mydrivers'" -Recurse -Filter "*.inf" | ForEach-Object { PNPUtil.exe /add-driver $_.FullName /install }
+Get-ChildItem "C:\mydrivers\" -Recurse -Filter "*.inf" | ForEach-Object { PNPUtil.exe /add-driver $_.FullName /install }
 ```

@@ -31,10 +31,10 @@ param(
 $RegKey = $null
 
 switch ($Proto){
-   SSL30 {$RegKey = "HKLM:'SYSTEM'CurrentControlSet'Control'SecurityProviders'SCHANNEL'Protocols'SSL 3.0"}
-   TLS10 {$RegKey = "HKLM:'SYSTEM'CurrentControlSet'Control'SecurityProviders'SCHANNEL'Protocols'TLS 1.0"}
-   TLS11 {$RegKey = "HKLM:'SYSTEM'CurrentControlSet'Control'SecurityProviders'SCHANNEL'Protocols'TLS 1.1"}
-   TLS12 {$RegKey = "HKLM:'SYSTEM'CurrentControlSet'Control'SecurityProviders'SCHANNEL'Protocols'TLS 1.2"}
+   SSL30 {$RegKey = "HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 3.0"}
+   TLS10 {$RegKey = "HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.0"}
+   TLS11 {$RegKey = "HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.1"}
+   TLS12 {$RegKey = "HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.2"}
    default{"Not supported protocol. Possible values: SSL30, TLS10, TLS11, TLS12"
             exit}
   }

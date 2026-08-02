@@ -15,7 +15,7 @@ Heureusement pour nous, nous pouvons définir **PowerShell** en temps que
 shell par défaut :
 
 ```powershell
-Set-ItemProperty -Path HKLM:'SOFTWARE'Microsoft'Windows NT'CurrentVersion'Winlogon -Name Shell -Value PowerShell.exe -NoExit
+Set-ItemProperty -Path HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon -Name Shell -Value PowerShell.exe -NoExit
 ```
 
 Mais il est également possible de définir cette règle via une GPO. Pour

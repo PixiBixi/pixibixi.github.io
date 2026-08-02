@@ -14,11 +14,9 @@ Outils d'administrations - Planificateur de tâches
 
 **3)** Configurer les options de base suivant vos besoins
 
-'***Nom :** Correspond au nom de votre tâche planifiée '* **Description
-:** Vous pouvez indiquer les détails, cela n'a pas d'importance '*
-**Exécuter même si l'utilisateur n'est pas connecté :** Permet
-dexécuter la tâche à n'importe quel moment (les informations
-d'identification utilisateur seront demandées)
+- **Nom :** Correspond au nom de votre tâche planifiée
+- **Description :** Vous pouvez indiquer les détails, cela n'a pas d'importance
+- **Exécuter même si l'utilisateur n'est pas connecté :** Permet d'exécuter la tâche à n'importe quel moment (les informations d'identification utilisateur seront demandées)
 
 **4)** Cliquer sur l'onglet Déclencheurs - Cliquer sur Nouveau C'est
 ici que l'on configure la planification de la tâche. Il est possible

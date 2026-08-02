@@ -16,7 +16,7 @@ Golay;Jerry;OU=_Users,DC=test,DC=com
 ```
 
 Dans cet exemple, notre utilisateur s'appelle Jerry GOLAY et sera créé
-dans l'OU **'_Users** de **test.com**
+dans l'OU `_Users` de **test.com**
 
 Concernant le script PS1 :
 
@@ -24,7 +24,7 @@ Concernant le script PS1 :
 Import-Module ActiveDirectory
 Import-Module Microsoft.PowerShell.Security
 
-$users = Import-Csv -Delimiter ";" -Path "C:'tmp'add_users.csv"
+$users = Import-Csv -Delimiter ";" -Path "C:\tmp\add_users.csv"
 
 foreach($user in $users)
 {
