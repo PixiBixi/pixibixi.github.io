@@ -55,7 +55,7 @@ JSON, très facile à parser
 curl --write-out %{json} https://google.com -o saved
 ```
 
-Toutes les options de '--write-out sont disponibles
+Toutes les options de --write-out sont disponibles
 [ici](https://curl.se/docs/manpage.html#-w)
 
 ### Résolution DNS forcée
@@ -93,7 +93,7 @@ On peut avoir quelques détails sur le CRT en utilisant cURL et un peu de
 magie :
 
 ```bash
-λ Jeremy ~ → curl -vvI https://wiki.jdelgado.fr 2>&1 | awk BEGIN { cert=0 } /^'* Server certificate:/ { cert=1 } /^'*/ { if (cert) print }
+λ Jeremy ~ → curl -vI https://wiki.jdelgado.fr 2>&1 | awk '/^\* Server certificate:/ { cert=1 } /^\*/ { if (cert) print }'
 * Server certificate:
 *  subject: CN=*.jdelgado.fr
 *  start date: Mar 21 03:47:50 2021 GMT

@@ -75,7 +75,7 @@ vim)
 
 ### Plugins
 
-* `tpope/vim-surround` : cs'"' : Change les `'"` en `'`
+* `tpope/vim-surround` : `cs'"` remplace les quotes simples entourant le mot par des quotes doubles
 
 ## Configuration
 

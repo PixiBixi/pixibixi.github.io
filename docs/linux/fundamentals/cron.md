@@ -15,7 +15,7 @@ certaines tâches.
 Les tâches planifiées peuvent être lancées en tant qu'utilisateur
 standard. Nous gérons la plupart des tâche cron via la commande
 **crontab**. D'autres scripts peuvent être directement déployés dans
-certains dossiers '"spéciaux'"
+certains dossiers « spéciaux »
 
 ## La commande crontab
 

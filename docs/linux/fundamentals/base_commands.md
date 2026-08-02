@@ -39,7 +39,7 @@ répertoires
 `ln <src> <dst>` : **l**i**n**k : Permet de créer un lien entre deux
 fichiers
 
-* -s : Lien symoblique (A la place d'un lien '"dur'" (hardlink))
+* -s : Lien symoblique (A la place d'un lien « dur » (hardlink))
 
 `touch <file>` : Met à jour l'heurodatage ou créé le document si
 celui-ci n'existe pas
@@ -141,7 +141,7 @@ nouveaux fichiers
 `du` : **d**isk **u**sage : Affiche l'utilisation d'un dossier
 
 * -sh : Affiche la taille du dossier
-* -hc '--max-depth=1 : Affiche la taille des dossiers comme des
+* -hc --max-depth=1 : Affiche la taille des dossiers comme des
     fichiers dans le répertoire courant
 
 ## Gestion des processus
