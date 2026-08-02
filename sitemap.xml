@@ -38,7 +38,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/automation/terraform/tools/</loc>
-    <lastmod>2026-04-20</lastmod>
+    <lastmod>2026-08-02</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/ci-cd/</loc>
@@ -326,11 +326,11 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/kubernetes/rke/bootstrap_cluster/</loc>
-    <lastmod>2026-03-15</lastmod>
+    <lastmod>2026-08-02</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/kubernetes/rke/recover_rkestate/</loc>
-    <lastmod>2026-03-15</lastmod>
+    <lastmod>2026-08-02</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/kubernetes/troubleshooting/resize_pvc_statefulset/</loc>
@@ -603,10 +603,6 @@
   <url>
     <loc>https://wiki.jdelgado.fr/misc/optimization/</loc>
     <lastmod>2026-08-02</lastmod>
-  </url>
-  <url>
-    <loc>https://wiki.jdelgado.fr/misc/scripts_useful/</loc>
-    <lastmod>2026-04-20</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/misc/sources/</loc>
@@ -882,7 +878,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/web/</loc>
-    <lastmod>2026-04-20</lastmod>
+    <lastmod>2026-08-02</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/web/dns/</loc>
@@ -905,32 +901,20 @@
     <lastmod>2026-03-12</lastmod>
   </url>
   <url>
-    <loc>https://wiki.jdelgado.fr/web/haproxy/api/</loc>
-    <lastmod>2026-04-26</lastmod>
-  </url>
-  <url>
-    <loc>https://wiki.jdelgado.fr/web/haproxy/cloudflare/</loc>
-    <lastmod>2026-04-26</lastmod>
-  </url>
-  <url>
-    <loc>https://wiki.jdelgado.fr/web/haproxy/keep_real_ip/</loc>
-    <lastmod>2026-04-20</lastmod>
-  </url>
-  <url>
-    <loc>https://wiki.jdelgado.fr/web/haproxy/maintenance/</loc>
-    <lastmod>2026-04-20</lastmod>
-  </url>
-  <url>
     <loc>https://wiki.jdelgado.fr/web/haproxy/memory_limit/</loc>
     <lastmod>2026-04-26</lastmod>
   </url>
   <url>
+    <loc>https://wiki.jdelgado.fr/web/haproxy/operations/</loc>
+    <lastmod>2026-08-02</lastmod>
+  </url>
+  <url>
     <loc>https://wiki.jdelgado.fr/web/haproxy/overview/</loc>
-    <lastmod>2026-04-24</lastmod>
+    <lastmod>2026-08-02</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/web/haproxy/performance_tuning/</loc>
-    <lastmod>2026-04-26</lastmod>
+    <lastmod>2026-08-02</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/web/mail/exim_manage_dkim/</loc>
