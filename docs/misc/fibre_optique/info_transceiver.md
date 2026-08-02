@@ -14,7 +14,7 @@ tags:
 
 ## Connecteur
 
-* **LC** : Connecteur le plus '"basique'"
+* **LC** : Connecteur le plus « basique »
 * **DAC** : Direct Attach Cables : Généralement pour stacker les switchs
 
 ## Dénominations
