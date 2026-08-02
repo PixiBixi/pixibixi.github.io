@@ -75,8 +75,7 @@ passante simplement :
 apt-get install wondershaper
 ```
 
-Et la syntaxe est simplement la suivante : wondershaper '[ interface ']
-'[ downlink '] '[ uplink ']
+Et la syntaxe est simplement la suivante : `wondershaper <interface> <downlink> <uplink>`
 
 Ce qui nous donne par exemple
 

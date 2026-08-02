@@ -26,7 +26,7 @@ warrior)
 
 * FQDN : hostname.domain.tld
 
-Désormais, il s'agit du '"mélange'" des deux éléments précédents (Donc
+Désormais, il s'agit du « mélange » des deux éléments précédents (Donc
 dans notre cas : warrior.toto.fr)
 
 * Reverse : hostname.domain.tld

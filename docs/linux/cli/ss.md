@@ -136,7 +136,7 @@ Voici tous les états supportés par ss
 * listen
 * closing
 
-Certains de ces états sont également regroupés en '"catégories'" :
+Certains de ces états sont également regroupés en « catégories » :
 
 * `connected` = {established'|syn-sent'|syn-recv'|fin-wait-{1,2}'|time-wait'|close-wait'|last-ack'|closing}
 * `synchronized` = {established'|syn-recv'|fin-wait-{1,2}'|time-wait'|close-wait'|last-ack'|closing}

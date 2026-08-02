@@ -6,10 +6,10 @@ tags:
 
 # Personnaliser ton motd
 
-Voici un petit tutoriel qui permet de personnaliser le '"Message Of The
-Day'" sur Debian (adaptable à toute distribution) Le '"motd'" c'est le
+Voici un petit tutoriel qui permet de personnaliser le « Message Of The
+Day » sur Debian (adaptable à toute distribution) Le « motd » c'est le
 message que vous avez au moment où vous vous connectez sur votre shell.
-Ce tutoriel vous permettra d'avoir un '"motd'" qui ressemblera à ça:'
+Ce tutoriel vous permettra d'avoir un « motd » qui ressemblera à ça :
 
 ```bash
 apt-get install update-notifier-common
@@ -32,18 +32,18 @@ On créer ensuite le script qui affichera les informations choisies
     REMOTEIP=`echo $SSH_CLIENT | awk {print $1}`
 
     if [ -f /var/run/reboot-required ]; then
-    REBOOT="'033[22;31m>>>>>> This server require a reboot <<<<<<'033[0m"
+    REBOOT="\033[22;31m>>>>>> This server require a reboot <<<<<<\033[0m"
     fi
 
     if [ -f /var/log/checkupdate.log ]; then PACKAGE=`cat /var/log/checkupdate.log | awk -F ; {print $1}` SECURITY=`cat /var/log/checkupdate.log | awk -F ; {print $2}`
     fi
 
-    if [ "$SECURITY" -gt 0 ]; then SECURITY="'033[22;31m${SECURITY}'033[0m"
+    if [ "$SECURITY" -gt 0 ]; then SECURITY="\033[22;31m${SECURITY}\033[0m"
     fi
 
     # get the load averages
     read one five fifteen rest < /proc/loadavg
-    echo -e "--------- '033[22;31mW'033[22;32melcome '033[0m--------------------------------------------- --- -- - -
+    echo -e "--------- \033[22;31mW\033[22;32melcome \033[0m--------------------------------------------- --- -- - -
     You are entering into a secured area! All activities on this system
     are logged. Unauthorized access will be fully investigated and
     reported to the appropriate law enforcement agencies.
@@ -54,7 +54,7 @@ On créer ensuite le script qui affichera les informations choisies
     Load Avg...: ${one}, ${five}, ${fifteen} (1, 5, 15 min)
     Top process: Memory: `ps axo %mem,comm | grep -v "MEM"| sort -nr | head -n 1 | awk {print $2}` `ps axo %mem,comm | grep -v "MEM" | sort -nr | head -n 1 | awk {print $1}`% Cpu: `ps axo pcpu,comm | grep -v "CPU" | sort -nr | head -n 1 | awk {print $2}` `ps axo pcpu,comm | grep -v "CPU" | sort -nr | head -n 1 | awk {print $1}`%
     Update.....: ${PACKAGE} package update / ${SECURITY} security update ${REBOOT}
-    ------------------------------------------------------------------ --- -- - - '033[0m"
+    ------------------------------------------------------------------ --- -- - - \033[0m"
     ```
 <!-- markdownlint-enable MD046 -->
 
