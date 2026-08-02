@@ -22,7 +22,7 @@ voir dans ce post.
 ### Pré-requis
 
 Pour fonctionner, la majorité de ces paquets auront besoin de PHP
-(5.6.'* minimum), il est donc indispensable de l'avoir !
+(5.6.* minimum), il est donc indispensable de l'avoir !
 
 Pour les composants plus spécifiques aux plugins, nous verrons cela dans
 leur section.
@@ -31,7 +31,7 @@ leur section.
 
 En règle général, si **X** fait une action, **MAJ + X** fera l'action
 opposée. Par exemple, **Tab** indente la ligne, alors que **MAJ + Tab**
-'"désindentera'" la ligne.
+« désindentera » la ligne.
 
 ### Sublime Text
 
@@ -306,7 +306,7 @@ Voici les différents paramètres pour les différents thèmes :
 "color_scheme": "Packages/Material Theme/schemes/Material-Theme-Darker.tmTheme",
 ```
 
-En plus du thème '"basique'", Material Theme dispose d'une Appbar :
+En plus du thème « basique », Material Theme dispose d'une Appbar :
 [Material Theme
 Appabar](https://github.com/equinusocio/material-theme-appbar), celle-ci
 completera votre thème avec une couleur originale pour la liste des
