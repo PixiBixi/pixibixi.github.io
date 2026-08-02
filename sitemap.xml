@@ -6,7 +6,11 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/about/</loc>
-    <lastmod>2026-04-24</lastmod>
+    <lastmod>2026-08-02</lastmod>
+  </url>
+  <url>
+    <loc>https://wiki.jdelgado.fr/tags/</loc>
+    <lastmod>2026-08-02</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/automation/</loc>
@@ -110,7 +114,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/cloud/gcloud/spot_nodes/</loc>
-    <lastmod>2026-04-20</lastmod>
+    <lastmod>2026-08-02</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/cloud/gcloud/workload_identity/</loc>
@@ -222,7 +226,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/hypervisor/</loc>
-    <lastmod>2026-03-14</lastmod>
+    <lastmod>2026-08-02</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/hypervisor/esxi/upload_iso_cli/</loc>
@@ -230,7 +234,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/hypervisor/esxi/commands/network/</loc>
-    <lastmod>2026-04-20</lastmod>
+    <lastmod>2026-08-02</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/hypervisor/esxi/misc/shell_access/</loc>
@@ -254,7 +258,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/hypervisor/proxmox/networking/nat/</loc>
-    <lastmod>2026-04-20</lastmod>
+    <lastmod>2026-08-02</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/hypervisor/proxmox/troubleshooting/vm_locked/</loc>
@@ -346,11 +350,11 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/linux/advanced/lock_ddos/</loc>
-    <lastmod>2026-02-21</lastmod>
+    <lastmod>2026-08-02</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/linux/advanced/move_process_to_tmux/</loc>
-    <lastmod>2026-04-20</lastmod>
+    <lastmod>2026-08-02</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/linux/advanced/strace/</loc>
@@ -390,7 +394,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/linux/cli/ip/</loc>
-    <lastmod>2026-04-20</lastmod>
+    <lastmod>2026-08-02</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/linux/cli/limit_bandwidth/</loc>
@@ -418,11 +422,11 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/linux/cli/git/git/</loc>
-    <lastmod>2026-04-20</lastmod>
+    <lastmod>2026-08-02</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/linux/cli/git/rework_files/</loc>
-    <lastmod>2026-04-20</lastmod>
+    <lastmod>2026-08-02</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/linux/fundamentals/base_commands/</loc>
@@ -478,7 +482,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/linux/networking/buffer_nic/</loc>
-    <lastmod>2026-03-12</lastmod>
+    <lastmod>2026-08-02</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/linux/networking/openvpn/</loc>
@@ -554,7 +558,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/linux/shell/debug_slowness_ohmyzsh/</loc>
-    <lastmod>2026-03-12</lastmod>
+    <lastmod>2026-08-02</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/linux/shell/template_bash_script/</loc>
@@ -566,7 +570,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/linux/shell/tips_zsh/</loc>
-    <lastmod>2026-03-12</lastmod>
+    <lastmod>2026-08-02</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/linux/shell/useful_commands/</loc>
@@ -586,7 +590,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/linux/systemd/create_unit/</loc>
-    <lastmod>2026-03-12</lastmod>
+    <lastmod>2026-08-02</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/misc/</loc>
@@ -670,7 +674,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/networking/weathermap/</loc>
-    <lastmod>2026-03-15</lastmod>
+    <lastmod>2026-08-02</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/networking/cisco/cdp/</loc>
@@ -834,7 +838,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/selfhost/</loc>
-    <lastmod>2026-03-14</lastmod>
+    <lastmod>2026-08-02</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/selfhost/ajenti/</loc>
@@ -850,7 +854,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/selfhost/koel/</loc>
-    <lastmod>2026-03-15</lastmod>
+    <lastmod>2026-08-02</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/selfhost/nextcloud/</loc>
@@ -938,11 +942,11 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/web/nginx/nginx_ssl/</loc>
-    <lastmod>2026-04-20</lastmod>
+    <lastmod>2026-08-02</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/web/nginx/php_custom_version/</loc>
-    <lastmod>2026-04-20</lastmod>
+    <lastmod>2026-08-02</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/web/ruby/install/</loc>
