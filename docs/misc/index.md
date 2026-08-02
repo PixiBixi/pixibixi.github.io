@@ -14,7 +14,6 @@ Tout ce qui ne rentre pas ailleurs. Performances Linux, scripts réutilisables, 
 
 - [Performances Linux](linux_performances.md) — méthodologie de triage CPU/mémoire/I/O et outils par couche
 - [Optimisation](optimization.md) — techniques d'optimisation système
-- [Scripts utiles](scripts_useful.md) — one-liners et scripts prêts à l'emploi
 - [Liens en vrac](useful_links.md) — ressources externes classées par domaine
 - [Sources](sources.md) — bibliographie et sources de documentation
 - [Template GitHub](github_template.md) — templates d'issues et pull requests

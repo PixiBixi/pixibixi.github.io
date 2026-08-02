@@ -33,6 +33,7 @@ Des ressources externes qui n'ont pas leur place dans un article dédié, mais q
 - [mtr.sh](https://mtr.sh/) — lancer un mtr depuis plusieurs points du globe
 - [Talos Intelligence](https://www.talosintelligence.com/) — réputation et blocklist d'IP
 - [GNS3 Vault](https://gns3vault.com) — labs réseau prêts à l'emploi pour GNS3
+- [PiVPN](https://www.pivpn.io/) — installation d'un WireGuard ou OpenVPN en un script
 
 ## Web
 
@@ -65,6 +66,7 @@ Des ressources externes qui n'ont pas leur place dans un article dédié, mais q
 ## Windows
 
 - [GPO Search](https://gpsearch.azurewebsites.net/) — chercher une stratégie de groupe par nom ou par clé de registre
+- [Debloat Windows 10](https://gist.github.com/alirobe/7f3b34ad89a159e6daa1) — script de désinstallation des applications préchargées
 
 ## Virtualisation
 
