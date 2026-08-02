@@ -824,10 +824,7 @@ Les recording rules pré-calculent les ratios d'erreurs (4xx/5xx par backend), l
 
 - [HAProxy : Comportement d'une limite mémoire](memory_limit.md)
 - [Reverse proxy: HAProxy](overview.md)
-- [HAProxy : Utiliser son API](api.md)
-- [HAProxy : Obtenir les vraies IPs depuis CloudFlare](cloudflare.md)
-- [Conserver l'IP de son visiteur sur un reverse-proxy](keep_real_ip.md)
-- [HAProxy : Mettre un node en maintenance](maintenance.md)
+- [HAProxy : exploitation au quotidien](operations.md)
 - [GOMEMLIMIT/GOMAXPROCS automatiques en Kubernetes](../../kubernetes/deployment/gomaxprocs_gomemlimit_kubernetes.md)
 
 ## Diagnostic

@@ -21,10 +21,7 @@ La couche entre internet et les applications. nginx pour servir, HAProxy pour lo
 - [nginx — IP réelles](nginx/fetch_good_ips.md) — récupérer l'IP client derrière un proxy
 - [nginx — Custom server header](nginx/custom_server_header.md) — masquer ou personnaliser le header Server
 - [HAProxy — Overview](haproxy/overview.md) — guide complet, ACLs et load balancing
-- [HAProxy — API](haproxy/api.md) — API de stats et d'administration
-- [HAProxy — Cloudflare](haproxy/cloudflare.md) — intégration et IP réelles Cloudflare
-- [HAProxy — IP réelle client](haproxy/keep_real_ip.md) — propager l'IP source
-- [HAProxy — Page de maintenance](haproxy/maintenance.md) — basculer en maintenance sans redémarrage
+- [HAProxy — exploitation au quotidien](haproxy/operations.md) — socket d'admin, mise en maintenance, IP réelle et Cloudflare
 - [HAProxy — Limite mémoire](haproxy/memory_limit.md) — configurer maxconn et buffers
 - [HAProxy — Performance tuning](haproxy/performance_tuning.md) — threads, buffers, SSL, timeouts et tuning noyau
 - [Varnish](varnish/config.md) — configuration VCL et cache HTTP

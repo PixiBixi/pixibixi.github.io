@@ -123,7 +123,7 @@ local0. rsyslog s'occupe de traiter les logs. (par défaut,
 en tant que root, mais en tant qu'haproxy.
 * `stats socket` permet de définir un socket afin d'y extraire les stats ou autre. Il est également possible d'écrire la configuration de HAproxy via ce moyen. Attention à bien restreindre les privilèges.
     <!-- markdownlint-disable-next-line -->
-    * SleepLessBeastie a écrit [un excellent article](https://sleeplessbeastie.eu/2020/01/29/how-to-use-haproxy-stats-socket/) sur la définition des privilèges et comment interagir avec l'API. Voir aussi [HAproxy : Utiliser son API](api.md) et [Mettre un node en maintenance](maintenance.md).
+    * SleepLessBeastie a écrit [un excellent article](https://sleeplessbeastie.eu/2020/01/29/how-to-use-haproxy-stats-socket/) sur la définition des privilèges et comment interagir avec l'API. Voir aussi [HAProxy : exploitation au quotidien](operations.md).
 * `nbthread` permet à HAproxy de scaler sur plusieurs threads. Utiliser `auto` pour détecter automatiquement le nombre de threads disponibles, ou spécifier un entier.
     <!-- markdownlint-disable-next-line -->
     * `nbproc` (multi-processus) est **déprécié depuis HAProxy 2.5** et **supprimé en 2.9**. Ne plus utiliser cette directive.
@@ -438,6 +438,4 @@ uri1.html https://monsite.fr/coucou
 ## Voir aussi
 
 * [HAProxy : tuning nbthread, maxconn et TLS](performance_tuning.md)
-* [HAProxy : Utiliser son API](api.md)
-* [Conserver l'IP de son visiteur sur un reverse-proxy](keep_real_ip.md)
-* [HAProxy : Obtenir les vraies IPs depuis CloudFlare](cloudflare.md)
+* [HAProxy : exploitation au quotidien](operations.md)
