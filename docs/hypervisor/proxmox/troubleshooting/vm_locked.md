@@ -5,7 +5,7 @@ tags:
   - Recovery
 ---
 
-# Résoudre l'erreur '"VM is locked'"
+# Résoudre l'erreur « VM is locked »
 
 Sous promxox, de ma faible expérience, il est fréquent d'avoir un
 problème de VM locked. Pour cela, 2 moyens
