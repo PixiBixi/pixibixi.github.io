@@ -58,17 +58,6 @@ Cette magnifique documentation a été faite avec MkDocs Material. [À propos](a
 * [Configurer des notifications Telegram pour SSH](linux/security/telegram_notifications_ssh.md)
 * [Lister tous les certificats émis](./linux/security/issued_crt.md)
 
-### Supervision
-
-* [Munin : l'outil de supervision sans fioritures](monitoring/munin.md)
-* [Les outils eZ Server, des outils simple de supervision](monitoring/eztools.md)
-* [Netdata, Prometheus et Grafana : une stack de monitoring simple et puissante](monitoring/lgtm/simple_monitoring_stack.md)
-* [Générer des alertes depuis Loki](monitoring/lgtm/loki_alerting.md)
-* [Quelques tips pour la stack LGTM](monitoring/lgtm/tips_lgtm.md)
-* [Grafana Alloy — remplacer Promtail (et tout le reste)](monitoring/lgtm/alloy.md)
-* [Ecrire une métrique custom pour node_exporter](./monitoring/lgtm/custom_metrics_nodeexporter.md)
-* [Configurer des notifications Slack pour check_mk](monitoring/check_mk/add_slack_notification.md)
-
 ### Hardware
 
 * [Identifier and upgrade son firmware Mellanox](hardware/nic/mellanox/identify_and_upgrade_firmware.md)
@@ -96,10 +85,7 @@ Cette magnifique documentation a été faite avec MkDocs Material. [À propos](a
 #### HAproxy
 
 * [Reverse proxy: HAproxy](web/haproxy/overview.md)
-* [HAproxy : Mettre un node en maintenance](web/haproxy/maintenance.md)
-* [HAproxy : Obtenir les vraies IPs depuis CloudFlare](web/haproxy/cloudflare.md)
-* [HAproxy : Utiliser son API](web/haproxy/api.md)
-* [Conserver l'IP de son visiteur sur un reverse-proxy](./web/haproxy/keep_real_ip.md)
+* [HAproxy : exploitation au quotidien](web/haproxy/operations.md)
 * [HAproxy : Comportement d'une limite mémoire](./web/haproxy/memory_limit.md)
 * [HAproxy : Performance tuning](./web/haproxy/performance_tuning.md)
 
@@ -266,6 +252,22 @@ Cette magnifique documentation a été faite avec MkDocs Material. [À propos](a
 * [Bootstrap rapidement son cluster](kubernetes/rke/bootstrap_cluster.md)
 * [Récupérer son fichier rkestate](./kubernetes/rke/recover_rkestate.md)
 
+## Monitoring & Observabilité
+
+### Stack LGTM
+
+* [Netdata, Prometheus et Grafana : une stack de monitoring simple et puissante](monitoring/lgtm/simple_monitoring_stack.md)
+* [Grafana Alloy — remplacer Promtail (et tout le reste)](monitoring/lgtm/alloy.md)
+* [Générer des alertes depuis Loki](monitoring/lgtm/loki_alerting.md)
+* [Écrire une métrique custom pour node_exporter](monitoring/lgtm/custom_metrics_nodeexporter.md)
+* [Quelques tips pour la stack LGTM](monitoring/lgtm/tips_lgtm.md)
+
+### Autres outils
+
+* [Munin : l'outil de supervision sans fioritures](monitoring/munin.md)
+* [Les outils eZ Server, des outils simple de supervision](monitoring/eztools.md)
+* [Configurer des notifications Slack pour check_mk](monitoring/check_mk/add_slack_notification.md)
+
 ## CI/CD
 
 ### GitHub Actions
@@ -424,7 +426,6 @@ Cette magnifique documentation a été faite avec MkDocs Material. [À propos](a
 * [Liens en vrac](misc/useful_links.md)
 * [Performances Linux](misc/linux_performances.md)
 * [Optimisations Linux : liens de référence](misc/optimization.md)
-* [Scripts utiles multi-OS](misc/scripts_useful.md)
 * [Générer un template pour ses Pull Request et ses Issues](misc/github_template.md)
 * [Lancer la console iLO depuis un Mac](hardware/server/hp/run_ilo.md)
 * [Lancer une ancienne console iLO](hardware/server/hp/run_old_ilo.md)
