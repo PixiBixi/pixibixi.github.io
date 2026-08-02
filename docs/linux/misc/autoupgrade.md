@@ -43,7 +43,7 @@ Ce logiciel va générer des logs sauvegardés dans
 
 * unattended-upgrades.log qui est un fichier généralisé qui va
     récapituler toutes les actions du logiciel
-* unattended-upgrades-dpkg'_**date**'_**heure**.log qui va indiquer ce
+* `unattended-upgrades-dpkg_<date>_<heure>.log` qui va indiquer ce
     qui a été fait un tel jour
 
 Toutes les options de configurations sont disponibles dans le fichier

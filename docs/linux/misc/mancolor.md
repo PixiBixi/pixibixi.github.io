@@ -30,10 +30,10 @@ simplement un paquet
 apt-get install most
 ```
 
-Puis exporter la commande dans votre '*'*.bashrc '*'*
+Puis exporter la commande dans votre `.bashrc`
 
 ```bash
-echo "export MANPAGER='"/usr/bin/most -s'"" >> ~/.bashrc
+echo "export MANPAGER=\"/usr/bin/most -s\"" >> ~/.bashrc
 ```
 
 Il faut refaire la commande export pour **chaque utilisateur**
