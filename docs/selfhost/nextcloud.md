@@ -239,10 +239,10 @@ sudo -u www-data php /var/www/nextcloud/occ config:system:set redis port --value
 sudo -u www-data php /var/www/nextcloud/occ config:system:set redis timeout --value="0.0"
 
 # Memcahed distributed
-sudo -u www-data php /var/www/nextcloud/occ config:system:set memcache.distributed --value="'OC'Memcache'Redis"
+sudo -u www-data php /var/www/nextcloud/occ config:system:set memcache.distributed --value="\OC\Memcache\Redis"
 # Locking & Local
-sudo -u www-data php /var/www/nextcloud/occ config:system:set memcache.local --value="'OC'Memcache'Redis"
-sudo -u www-data php /var/www/nextcloud/occ config:system:set memcache.locking --value="'OC'Memcach
+sudo -u www-data php /var/www/nextcloud/occ config:system:set memcache.local --value="\OC\Memcache\Redis"
+sudo -u www-data php /var/www/nextcloud/occ config:system:set memcache.locking --value="\OC\Memcache\Redis"
 ```
 
 ### Edition de documents

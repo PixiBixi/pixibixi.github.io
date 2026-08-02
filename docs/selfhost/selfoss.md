@@ -16,7 +16,7 @@ car elle me permet de ne rien louper de l'actualité de mes sites
 préférés.
 
 Cependant, pour en profiter tellement, il faut ce que l'on appelle un
-'"Reader RSS'", sans quoi, un flux RSS est totalement inexploitable.
+« Reader RSS », sans quoi, un flux RSS est totalement inexploitable.
 
 Il en existe aujourd'hui une multitude, que ce soit Online (Feedly,
 Google Reader), self-hosted (FreshRSS, SelfOss), ou bien même en local
@@ -165,7 +165,7 @@ conseille de le passer à 100 minimum
 * auto_mark_as_read
 
 Option très intéréssante qui vous permet de mettre automatiquement un
-article comme '"Lu'" une fois que vous l'avez ouvert (Désactivé par
+article comme « Lu » une fois que vous l'avez ouvert (Désactivé par
 défaut)
 
 * load_images_on_mobile

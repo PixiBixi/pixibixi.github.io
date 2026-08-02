@@ -39,7 +39,7 @@ wget https://release.larsjung.de/h5ai/h5ai-0.28.1.zip
 N'oublier pas de vous rendre [ici](https://release.larsjung.de/h5ai/)
 afin de consulter les dernières versions de h5ai disponibles
 
-Enfin, nous extrayons l'archive, puis nous renommons **'_h5ai** en
+Enfin, nous extrayons l'archive, puis nous renommons `_h5ai` en
 **.h5ai** afin de ne pas le voir dans l'explorateur.
 
 ```bash
