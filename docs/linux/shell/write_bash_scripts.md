@@ -40,12 +40,12 @@ dans une distribution BSD). Ce shebang peut également être adapté à
 python ou d'autres langages de scripting.
 
 La commande echo affiche tout simplement le texte qui lui est passé en
-argument. echo est une commande dites '"built-in'", c'est à dire
+argument. echo est une commande dites « built-in », c'est à dire
 qu'elle sera inclue dans toutes les versions de bash quelque soit la
 distribution. Pour voir toutes les commandes built-in, nous utilisons la
 commande compgen -b.
 
-Le texte '"Ma commande'" a été écrit après un '# ce qui signifie que le
+Le texte « Ma commande » a été écrit après un `#` ce qui signifie que le
 texte après ce caractère ne sera pas interprété, nous pouvons donc y
 mettre ce que nous voulons, généralement, ce sera du texte pour nous
 aider à comprendre la ligne précédée.
@@ -60,7 +60,7 @@ De nombreuses variables sont incluses dans un script bash, il est utile
 d'en connaitres quelques unes.
 
 * `$1` contient la valeur du premier argument de votre script bash ou
-    de votre fonction. ('$0 représente le script lui même)
+    de votre fonction. (`$0` représente le script lui même)
 * `$#` contient le nombre d'arguments passés à votre script
 * `$?` contient le code retour de votre programme script...
 * `$PWD` contient le chemin du répertoire courant
@@ -94,8 +94,8 @@ exemple, via un argument du script).
 FOO=${1:-BAR}
 ```
 
-Si notre variable '$1 ne contient rien, notre varible FOO prendra alors
-la valeur BAR, sinon, la valeur de '$1.
+Si notre variable `$1` ne contient rien, notre varible FOO prendra alors
+la valeur BAR, sinon, la valeur de `$1`.
 
 #### Manipulation de variables
 

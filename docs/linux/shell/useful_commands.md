@@ -238,13 +238,13 @@ sudo -E apt-get -qy -o "Dpkg::Options::=--force-confold" -o "Dpkg::Options::=--f
 
 ```bash
 [20:27] ✔ x-y@hostname.fdn:~
-└─$ sudo bash -c "cat /etc/lvm/archive/*" | '
-   awk -F= $0 ~ /^creation_time =|^description =/ { print $2 } | '
-   awk NR%2==1 {sub(/Created '*before'* /,"",$0);line1=$0;state=1}
+└─$ sudo bash -c "cat /etc/lvm/archive/*" | \
+   awk -F= '$0 ~ /^creation_time =|^description =/ { print $2 }' | \
+   awk 'NR%2==1 {sub(/Created \*before\* /,"",$0);line1=$0;state=1}
         NR%2==0 {line2=$0;state=0}
-        {if(state==0) {print line2 " -" line1}} | '
-   sort -n -k 1 | '
-   grep -v "lvs'|vgs'|vgdisplay'|vgscan"
+        {if(state==0) {print line2 " -" line1}}' | \
+   sort -n -k 1 | \
+   grep -v "lvs\|vgs\|vgdisplay\|vgscan"
  1633118488 # Fri Oct  1 20:01:28 2021 - "executing lvcreate -L 2G -n home vg --wipesignatures
  1633118488 # Fri Oct  1 20:01:28 2021 - "executing lvcreate -L 2G -n var vg --wipesignatures
  1633118501 # Fri Oct  1 20:01:41 2021 - "executing lvcreate -L 2G -n mysql vg --wipesignatures
