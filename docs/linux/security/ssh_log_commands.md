@@ -9,7 +9,7 @@ tags:
 
 Parfois, il peut-être utile de logger les action utilisateurs, que ce
 soit pour vérifier que celui-ci ne casse pas tout ou alors pour
-'"surveiller'" tous les activités.
+« surveiller » tous les activités.
 
 Tout d'abord, il y a 2 moyens de logger les actions :
 
@@ -41,7 +41,7 @@ local6.*    /var/log/commands.log
 ```
 
 Via cette commande, rsyslog enverra tout ce qui concerne `local6.`
-quelque soit le niveau de debug `(.'*)` dans le fichier
+quelque soit le niveau de debug `(.*)` dans le fichier
 /var/log/commands.log
 
 Puis nous redémarrons syslog

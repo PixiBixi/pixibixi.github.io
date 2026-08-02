@@ -35,7 +35,7 @@ d'overwrite les valeurs par défaut fourni dans
 echo "MailTo=bla@bla.fr" > /etc/logwatch/conf/logwatch.conf
 ```
 
-On peut également forcer la destination avec l'argument **'--mailto**.
+On peut également forcer la destination avec l'argument **--mailto**.
 
 Vous pouvez customiser le rapport en copiant les différents fichiers de
 configuration fournis par défaut par logwatch depuis

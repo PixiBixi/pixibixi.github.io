@@ -94,4 +94,4 @@ Vulnerable: __user pointer sanitization and usercopy barriers only; no swapgs ba
 ```
 
 Nous voyons ici que le patch kernel a été désactivé et que nous sommes
-donc '"vulnérable'" à la faill Spectre V1
+donc « vulnérable » à la faill Spectre V1

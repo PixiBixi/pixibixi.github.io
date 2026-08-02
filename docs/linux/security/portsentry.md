@@ -7,8 +7,8 @@ tags:
 
 # Installer et configurer PortSentry
 
-portsentry est un programme de détection et de blocage de '"scan de
-ports'" (Généralement programme qui scanne votre machine à le recherche
+portsentry est un programme de détection et de blocage de « scan de
+ports » (Généralement programme qui scanne votre machine à le recherche
 de ports ouverts, en général dans le but de préparer une attaque). Via
 ce scan de port, un attaquant peut obtenir de nombreuses informations,
 versions de SSH vulnérables ou autres... il est donc important de se
@@ -37,7 +37,7 @@ s'imposent donc immédiatement.
 Dans le fichier /etc/default/portsentry, il y a 2 variables :
 `TCP_MODE` et `UDP_MODE`. Par défaut, celles-ci sont respectivement
 en mode `tcp` et `udp`. Cela signifie que vous devez spécifier à la
-main les ports à '"surveiller'". Nous préférons donc le mode `atcp` et
+main les ports à « surveiller ». Nous préférons donc le mode `atcp` et
 `audp` (`a` pour avancé).
 
 Maintenant, nous allons configurer portsentry via le fichier
@@ -149,7 +149,7 @@ Maintenant, il faut spécifier à portsentry d'ajouter ces IPs bannies à
 notre set ipset :
 
 Nous allons spécifier la valeur 2 aux options BLOCK_TCP et BLOCK_UDP du
-fichier '_/etc/portsentry/portsentry.conf'_, pour utiliser
+fichier `/etc/portsentry/portsentry.conf`, pour utiliser
 **uniquement** la directive KILL_RUN_CMD.
 
 Voici la KILL_RUN_CMD à définir (autour de la ligne 269) :
