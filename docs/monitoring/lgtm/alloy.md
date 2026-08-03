@@ -180,6 +180,11 @@ prometheus.remote_write "mimir" {
 }
 ```
 
+!!! tip "Thanos Receive fonctionne pareil"
+    Le mode Receive de Thanos accepte le même `remote_write` : seule l'URL change
+    (`http://thanos-receive:19291/api/v1/receive`). Tout le reste de la config Alloy
+    est identique. Voir [Thanos at scale](thanos.md).
+
 Les métriques de l'exporter ne passent pas par `/metrics` mais par l'API composant — remplacer `node` par le label utilisé dans la config :
 
 ```bash

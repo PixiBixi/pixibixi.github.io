@@ -103,7 +103,7 @@ destinations : Slack, Email, Telegram...
 
 Enfin, il s'agit d'un logiciel ne consommant que très peu de RAM et de
 CPU. Ses métriques sont exportables en quelques clics vers de nombreuses
-TSDB tels que InfluxDB, Prometheus... Les métriques exportées à
+TSDB telles que InfluxDB, Prometheus... Les métriques exportées à
 Prometheus sont extrêmement claires.
 
 L'avantage comparativement à d'autres exporter est qu'il intègre
@@ -1255,19 +1255,21 @@ Quand au template default.tpl, voici celui que j'utilise :
 
 ### Stockage très longue durée
 
-Prometheus n'est pas adapté au stockage sur une longue durée de nos
-métriques. Il nous faudra alors utiliser VictoriaMetrics ou Thanos. Je
-n'ai pas pu explorer ces deux logiciels, n'ayant des métriques que sur
-une courte durée.
+Prometheus sait garder ce qu'on lui demande, via
+`--storage.tsdb.retention.time` ou `--storage.tsdb.retention.size`. Ce
+qu'il ne sait pas faire, c'est répliquer ce disque, downsampler les
+vieilles données, et répondre à une requête qui couvre plusieurs
+Prometheus à la fois. 2 options ici : VictoriaMetrics ou Thanos.
 
-L'avantage de VictoriaMetrics nous concernant est qu'il utilise le
-système PromQL comme Prometheus, nous n'aurons donc pas à apprendre un
-nouveau langage.
+Les deux parlent PromQL, donc pas de nouveau langage à apprendre, et
+aucun des deux n'est monolithique : chaque fonction est un binaire
+distinct, ce qui permet de scale les composants indépendamment sur
+Kubernetes.
 
-Il pourra s'agit d'une piste d'enrichissement de ce tutorial dans le
-futur avec l'intégration de VictoriaMetrics.
-
-De plus, VictoriaMetrics n'est pas un système monolithique comme l'est Prometheus, chaque fonctionnalité est un binaire distinct ce qui permet de scale simplement sur un cluster Kubernetes ou autre
+Thanos est celui que j'utilise en production, et le sujet est assez
+large pour avoir son propre article : [Thanos at scale](thanos.md)
+détaille le mode Receive, les paliers de downsampling et ce que tout ça
+coûte réellement.
 
 ### Exporters
 
