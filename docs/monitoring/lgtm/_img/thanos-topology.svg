@@ -1,0 +1,82 @@
+<svg width="640" height="336" viewBox="0 0 640 336" xmlns="http://www.w3.org/2000/svg" font-family="'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif">
+  <defs>
+    <marker id="up" markerWidth="8" markerHeight="6" refX="4" refY="0" orient="auto">
+      <polygon points="0 6, 4 0, 8 6" fill="#8b949e"/>
+    </marker>
+  </defs>
+
+  <!-- Grafana -->
+  <rect x="258" y="8" width="124" height="30" rx="4" fill="#161b22" stroke="#30363d"/>
+  <rect x="258" y="8" width="4" height="30" fill="#8b949e"/>
+  <text x="274" y="28" fill="#e6edf3" font-size="12">Grafana</text>
+  <line x1="320" y1="66" x2="320" y2="42" stroke="#8b949e" stroke-width="1.5" marker-end="url(#up)"/>
+
+  <!-- Querier global -->
+  <rect x="150" y="68" width="200" height="42" rx="4" fill="#161b22" stroke="#30363d"/>
+  <rect x="150" y="68" width="4" height="42" fill="#3fb950"/>
+  <text x="166" y="86" fill="#e6edf3" font-size="12">Querier global</text>
+  <text x="166" y="101" fill="#8b949e" font-size="9">fan-out sur tous les queriers régionaux</text>
+
+  <!-- Querier global restreint -->
+  <rect x="366" y="68" width="180" height="42" rx="4" fill="#161b22" stroke="#30363d" stroke-dasharray="4 3"/>
+  <rect x="366" y="68" width="4" height="42" fill="#3fb950"/>
+  <text x="382" y="86" fill="#e6edf3" font-size="12">Querier global restreint</text>
+  <text x="382" y="101" fill="#8b949e" font-size="9">sous-ensemble de tenants</text>
+
+  <!-- fan-out : bus horizontal, les stacks y remontent -->
+  <line x1="78" y1="126" x2="494" y2="126" stroke="#8b949e" stroke-width="1"/>
+  <line x1="78" y1="146" x2="78" y2="127" stroke="#8b949e" stroke-width="1.5"/>
+  <line x1="286" y1="146" x2="286" y2="127" stroke="#8b949e" stroke-width="1.5"/>
+  <line x1="494" y1="146" x2="494" y2="127" stroke="#8b949e" stroke-width="1.5"/>
+  <line x1="250" y1="126" x2="250" y2="112" stroke="#8b949e" stroke-width="1.5" marker-end="url(#up)"/>
+  <line x1="456" y1="126" x2="456" y2="112" stroke="#8b949e" stroke-width="1.5" stroke-dasharray="3 2" marker-end="url(#up)"/>
+
+  <!-- 3 stacks tenant -->
+  <g>
+    <rect x="8" y="148" width="140" height="118" rx="4" fill="#161b22" stroke="#30363d"/>
+    <text x="18" y="164" fill="#8b949e" font-size="9" font-weight="600">tenant A · namespace</text>
+    <rect x="18" y="170" width="120" height="20" rx="3" fill="#0d1117" stroke="#3fb950" stroke-width="0.8"/>
+    <text x="26" y="184" fill="#e6edf3" font-size="9">querier + frontend</text>
+    <rect x="18" y="194" width="120" height="20" rx="3" fill="#0d1117" stroke="#3fb950" stroke-width="0.8"/>
+    <text x="26" y="208" fill="#e6edf3" font-size="9">store gw · 3 shards</text>
+    <rect x="18" y="218" width="120" height="20" rx="3" fill="#0d1117" stroke="#f78166" stroke-width="0.8"/>
+    <text x="26" y="232" fill="#e6edf3" font-size="9">receive</text>
+    <rect x="18" y="242" width="120" height="18" rx="3" fill="#0d1117" stroke="#58a6ff" stroke-width="0.8"/>
+    <text x="26" y="255" fill="#e6edf3" font-size="9">bucket dédié</text>
+  </g>
+  <g>
+    <rect x="216" y="148" width="140" height="118" rx="4" fill="#161b22" stroke="#30363d"/>
+    <text x="226" y="164" fill="#8b949e" font-size="9" font-weight="600">tenant B · namespace</text>
+    <rect x="226" y="170" width="120" height="20" rx="3" fill="#0d1117" stroke="#3fb950" stroke-width="0.8"/>
+    <text x="234" y="184" fill="#e6edf3" font-size="9">querier + frontend</text>
+    <rect x="226" y="194" width="120" height="20" rx="3" fill="#0d1117" stroke="#3fb950" stroke-width="0.8"/>
+    <text x="234" y="208" fill="#e6edf3" font-size="9">store gw · 3 shards</text>
+    <rect x="226" y="218" width="120" height="20" rx="3" fill="#0d1117" stroke="#f78166" stroke-width="0.8"/>
+    <text x="234" y="232" fill="#e6edf3" font-size="9">receive</text>
+    <rect x="226" y="242" width="120" height="18" rx="3" fill="#0d1117" stroke="#58a6ff" stroke-width="0.8"/>
+    <text x="234" y="255" fill="#e6edf3" font-size="9">bucket dédié</text>
+  </g>
+  <g>
+    <rect x="424" y="148" width="140" height="118" rx="4" fill="#161b22" stroke="#30363d"/>
+    <text x="434" y="164" fill="#8b949e" font-size="9" font-weight="600">tenant C · namespace</text>
+    <rect x="434" y="170" width="120" height="20" rx="3" fill="#0d1117" stroke="#3fb950" stroke-width="0.8"/>
+    <text x="442" y="184" fill="#e6edf3" font-size="9">querier + frontend</text>
+    <rect x="434" y="194" width="120" height="20" rx="3" fill="#0d1117" stroke="#3fb950" stroke-width="0.8"/>
+    <text x="442" y="208" fill="#e6edf3" font-size="9">store gw · 3 shards</text>
+    <rect x="434" y="218" width="120" height="20" rx="3" fill="#0d1117" stroke="#f78166" stroke-width="0.8"/>
+    <text x="442" y="232" fill="#e6edf3" font-size="9">receive</text>
+    <rect x="434" y="242" width="120" height="18" rx="3" fill="#0d1117" stroke="#58a6ff" stroke-width="0.8"/>
+    <text x="442" y="255" fill="#e6edf3" font-size="9">bucket dédié</text>
+  </g>
+  <text x="578" y="212" fill="#6e7781" font-size="11" font-weight="600">× N</text>
+
+  <!-- remote_write depuis les Prometheus -->
+  <line x1="78" y1="300" x2="78" y2="272" stroke="#8b949e" stroke-width="1.5" marker-end="url(#up)"/>
+  <line x1="286" y1="300" x2="286" y2="272" stroke="#8b949e" stroke-width="1.5" marker-end="url(#up)"/>
+  <line x1="494" y1="300" x2="494" y2="272" stroke="#8b949e" stroke-width="1.5" marker-end="url(#up)"/>
+  <text x="92" y="288" fill="#6e7781" font-size="9" font-weight="600">remote_write</text>
+
+  <rect x="8" y="302" width="556" height="26" rx="4" fill="#161b22" stroke="#30363d"/>
+  <rect x="8" y="302" width="4" height="26" fill="#8b949e"/>
+  <text x="24" y="319" fill="#e6edf3" font-size="11">Un Prometheus par cluster source</text>
+</svg>

@@ -8,7 +8,7 @@
 - [Kubernetes](https://wiki.jdelgado.fr/kubernetes/): kubectl, ArgoCD, déploiements, troubleshooting, operators, RKE, Rancher
 - [Cloud](https://wiki.jdelgado.fr/cloud/): GCP (GKE, Workload Identity, Spot Nodes), AWS (CLI, IAM), Azure
 - [Databases](https://wiki.jdelgado.fr/databases/): MySQL, PostgreSQL, Redis, Elasticsearch, MongoDB, Memcached
-- [Monitoring](https://wiki.jdelgado.fr/monitoring/): Prometheus, Grafana, Loki, Alloy, custom metrics, alerting
+- [Monitoring](https://wiki.jdelgado.fr/monitoring/): Prometheus, Grafana, Loki, Alloy, Thanos (long-term storage, FinOps), custom metrics, alerting
 - [Automation](https://wiki.jdelgado.fr/automation/): Terraform (cheatsheet, tools, speedup), Ansible, Makefile
 - [Web](https://wiki.jdelgado.fr/web/): HAProxy, nginx, Varnish, DNS, TLS/SSL, WordPress
 - [Containers](https://wiki.jdelgado.fr/containers/): Docker, Kafka

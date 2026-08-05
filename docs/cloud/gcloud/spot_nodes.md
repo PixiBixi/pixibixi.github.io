@@ -121,7 +121,7 @@ Le tableau ci-dessous donne des exemples courants mais chaque appli est différe
 | ArgoCD (HA, composants stateless) | ✅ | Stateless, redémarre proprement |
 | DB replica / standby | ✅ | Ne détient pas les écritures actives |
 | Prometheus avec `remote_write` | ✅ | State flushé en continu, perte négligeable |
-| Prometheus sans `remote_write` | ❌ | Perte du TSDB local à la reprise |
+| Prometheus sans `remote_write` | ❌ | Perte de la TSDB locale à la reprise |
 | DB primary / leader | ❌ | Failover ~30-60s, GCP donne 30s — fenêtre trop serrée |
 | StatefulSet sans réplication | ❌ | State local non répliqué |
 

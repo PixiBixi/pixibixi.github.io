@@ -1,0 +1,26 @@
+<svg width="640" height="160" viewBox="0 0 640 160" xmlns="http://www.w3.org/2000/svg" font-family="'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif">
+  <!-- axe -->
+  <line x1="24" y1="108" x2="616" y2="108" stroke="#30363d" stroke-width="1"/>
+  <text x="24" y="126" fill="#6e7781" font-size="9" font-weight="600">0</text>
+  <text x="72" y="126" fill="#6e7781" font-size="9" font-weight="600">45 j</text>
+  <text x="152" y="126" fill="#6e7781" font-size="9" font-weight="600">135 j</text>
+  <text x="586" y="126" fill="#6e7781" font-size="9" font-weight="600">565 j</text>
+
+  <!-- palier raw : 45 j, resolution native -->
+  <rect x="24" y="46" width="45" height="62" fill="#c9714f"/>
+  <text x="24" y="38" fill="#6e7781" font-size="11" font-weight="600">raw</text>
+  <text x="24" y="22" fill="#6e7781" font-size="9" font-weight="600">45 j · 15 s</text>
+
+  <!-- palier 5m : 90 j -->
+  <rect x="71" y="76" width="92" height="32" fill="#5b8fc9"/>
+  <text x="80" y="68" fill="#6e7781" font-size="11" font-weight="600">5 m</text>
+  <text x="80" y="52" fill="#6e7781" font-size="9" font-weight="600">90 j · 20× moins de points</text>
+
+  <!-- palier 1h : 430 j -->
+  <rect x="165" y="94" width="451" height="14" fill="#4e8f57"/>
+  <text x="176" y="88" fill="#6e7781" font-size="11" font-weight="600">1h</text>
+  <text x="212" y="88" fill="#6e7781" font-size="9" font-weight="600">430 j · 240× moins de points que le raw</text>
+
+  <!-- legende -->
+  <text x="24" y="148" fill="#6e7781" font-size="10" font-weight="600">Largeur = durée de rétention. Hauteur = volume par jour (indicatif) : la longue traîne ne coûte presque rien.</text>
+</svg>
