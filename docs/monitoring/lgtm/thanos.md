@@ -94,6 +94,20 @@ Ce qui compte n'est pas dans les flags, c'est que la liste des stores à interro
 
 `--query-frontend.log-queries-longer-than=10s` est à activer dès le premier jour. C'est ce qui permet de savoir quel dashboard fait souffrir la stack, plutôt que de le deviner.
 
+Mais attention à ce qu'on y lira. Le querier global attend **tous** les stacks avant de répondre, donc la latence perçue est celle de la branche la plus lente. Un stack qui répond en 150 ms au p99 mais en 4 s dans sa queue suffit à produire des requêtes utilisateur à 25 s, dès lors que le fan-out en interroge une vingtaine : la probabilité de tomber sur au moins un traînard devient forte.
+
+On a chassé longtemps des requêtes coûteuses avant de comprendre que les plus lentes étaient triviales. Un sélecteur sur 9 séries qui met 26 secondes ne coûte rien à calculer, il attend. Le levier n'est alors ni le cache ni le sizing : c'est de réduire le fan-out, en s'assurant que les external labels annoncés par chaque stack permettent au querier global d'élaguer ceux qui ne peuvent pas matcher, ou d'accepter `--query.partial-response` pour borner la queue.
+
+!!! warning "Partial response et alerting ne font pas bon ménage"
+    Si les principaux appelants sont des règles d'alerte — et c'est souvent le cas, elles
+    tournent en continu là où un dashboard n'est ouvert que par intermittence — une réponse
+    incomplète peut sous-rapporter silencieusement et ne pas déclencher. Borner la latence au
+    prix d'une alerte qui rate n'est pas un bon échange.
+
+Et il y a un effet de bord qu'on ne voit pas venir : **une réponse partielle n'est jamais cachée**. Le query frontend refuse de cacher les réponses partielles comme celles assorties d'un warning, ce qui veut dire qu'on perd le cache **précisément** au moment où il servirait le plus. Les requêtes passent en partiel, donc deviennent non cachables, donc chaque rafraîchissement repart de zéro sur une infrastructure déjà en souffrance. C'est un amplificateur, pas un amortisseur.
+
+Le flag ne fixe qu'un défaut, et les clients peuvent le surcharger par requête avec le paramètre `partial_response`. La voie médiane est donc de laisser le défaut désactivé, ce qui protège les règles d'alerte et le cache, et de l'activer uniquement sur la datasource Grafana des humains, où une réponse partielle assortie d'un warning vaut mieux qu'un spinner de 25 secondes.
+
 ## Le chemin d'une métrique
 
 ![Chemin d'une métrique dans Thanos, coloré par mode de facturation](./_img/thanos-flow.svg)
@@ -380,9 +394,44 @@ Et c'est là que ça rejoint le choix du spot. Une éviction ne coûte rien en c
 
 Un backend partagé règle les 2 problèmes d'un coup. Un seul cache chaud pour tous les replicas, qui survit aux évictions, et une seule enveloppe mémoire au lieu de 100.
 
+!!! warning "Le cache IN-MEMORY n'expire jamais"
+    `validity` n'est pas une éviction, c'est un contrôle de péremption **à la lecture**. Rien
+    ne supprime les entrées : le cache grossit depuis le démarrage du pod jusqu'à buter sur
+    son plafond, en accumulant des entrées trop vieilles pour être servies. On mesure 0
+    éviction pendant que le nombre d'entrées triple.
+
+Ce qui fait qu'une taille de cache IN-MEMORY ne mesure pas un working set, elle mesure **depuis combien de temps le pod tourne**. En basculant sur un backend Redis avec un vrai TTL, on a vu le cache tomber à un dixième du nombre d'entrées et le hit ratio **monter** de 76 à 91 %. Les 90 % d'entrées en trop étaient du poids mort : périmées, incapables de servir un hit, et occupant la RAM quand même.
+
+Corollaire pratique : ne jamais dimensionner un cache partagé sur la taille observée du cache IN-MEMORY qu'il remplace. On surdimensionne d'un ordre de grandeur.
+
+### Dimensionner le cache partagé
+
+La taille à viser est le **working set sur la fenêtre du TTL**, pas la taille actuelle du cache, qui ne dit que le plafond qu'on lui a donné. Le proxy se calcule sur le volume d'admission : `increase(items_added_total[TTL])` multiplié par la taille moyenne d'une entrée. Deux pièges.
+
+Le premier est de lire ça sur un instantané. Un `increase` pris à un moment donné est un point au hasard, et il sous-estime lourdement les stacks en dents de scie : sur l'un des nôtres, 0,24 Gio en snapshot contre 9 Gio au P95 du glissant sur 24 h. Facteur 37. Il faut le **P95 de la fenêtre TTL glissante sur 24 h au minimum**, donc une subquery avec un pas explicite — une subquery sans pas est un moyen fiable de faire tomber le querier.
+
+Le second est le facteur de déduplication. Il est tentant de diviser par le nombre de pods, mais des store gateways shardées cachent des blocks **disjoints** : seuls les replicas d'un même shard cachent la même chose. Avec 3 shards et 2 replicas, on divise par 2, pas par 6. Se tromper là sous-dimensionne d'un facteur 3.
+
+Et le résultat reste une borne haute, parce qu'un cache qui évince réadmet en boucle les mêmes clés et gonfle le compteur d'admissions. Le vrai working set se trouve en montant le plafond par paliers jusqu'à ce que le taux d'éviction s'effondre. Le plateau, c'est la réponse.
+
+Enfin le `limits.memory` du conteneur vaut le `maxmemory` du backend multiplié par 1,3 : les métadonnées et la fragmentation de l'allocateur vivent en dehors du plafond.
+
+!!! note "`max_size` est binaire"
+    Thanos parse `2GB` comme 2 Gio, pas 2 GB. Un plafond de `1GB` par pod sur une centaine de
+    pods fait donc 100 Gio et pas 100 GB. Les 7 % d'écart passent inaperçus dans un calcul de
+    capacité et se voient sur une facture.
+
 ### Memcached ou Redis
 
 Memcached est plus simple à poser, mais il n'est pas horizontalement scalable en l'état : c'est au client de faire le sharding, et la haute dispo demande du travail. Redis coûte un peu plus cher en exploitation mais apporte Sentinel pour le failover et un vrai comportement en cluster.
+
+Dragonfly est une troisième voie qui mérite d'être connue. Il parle le protocole Redis, donc c'est un remplacement transparent côté Thanos, mais il est multi-threadé : là où Redis sature un cœur et impose du sharding pour aller au-delà, Dragonfly scale verticalement, on lui ajoute des `--proactor_threads` et on reste sur une seule instance. Pour un cache, dont la perte est bénigne, exploiter une instance unique bien placée est plus simple qu'un cluster.
+
+Trois pièges rencontrés avec son opérateur Kubernetes :
+
+- Les métriques Prometheus sortent sur un port `admin` séparé, et l'opérateur crée par défaut une NetworkPolicy qui ne l'ouvre qu'à lui-même et aux pods pairs. Prometheus reste muet, silencieusement. Les NetworkPolicies étant purement additives, il suffit d'en **ajouter** une pour le namespace de Prometheus, sans désactiver celle de l'opérateur.
+- Il n'y a pas de `/metrics` HTTP sur le port principal, qui ne parle que RESP. Se tromper de port donne un timeout qu'on met du temps à relier à une NetworkPolicy.
+- `evicted_keys_total` et `expired_keys_total` sont **déclarés sans valeur** tant qu'ils valent zéro. Prometheus n'ingère donc aucune série et un panneau affiche « No data » là où on attend 0, ce qui rend « rien évincé » indiscernable de « métrique cassée ». En attendant, le signal d'éviction utilisable est la mémoire utilisée qui rejoint `maxmemory`.
 
 La configuration est la même forme pour les 3 caches. Pour la store gateway :
 
@@ -440,6 +489,17 @@ Le `--query-range.split-interval` joue dans le même sens, puisque découper une
     Un dashboard qui coche une de ces cases ne bénéficiera jamais du cache, quelle que soit
     la taille qu'on lui donne.
 
+!!! danger "Les requêtes instantanées ne sont pas cachables du tout"
+    Le query frontend n'a de tripperware que pour 2 familles : `--query-range.response-cache-*`
+    pour `/api/v1/query_range`, et `--labels.response-cache-*` pour les endpoints de labels.
+    Il n'existe **aucune** famille `query-instant`, et aucun flag de cache pour `/api/v1/query`.
+    Les requêtes instantanées ne sont ni découpées ni cachées : elles traversent directement
+    vers le querier.
+
+Ce n'est pas un détail. Sur notre flotte, les instantanées représentent **plus de 70 % du trafic** qui atteint le query frontend, l'essentiel venant des évaluations de règles d'alerte. Autrement dit, régler le `split-interval` ou le TTL du cache n'agit que sur moins d'un tiers des requêtes. Avant de tuner le cache, mesurer la part qu'il peut réellement servir.
+
+La nuance à garder : « non caché » porte sur le *résultat*. En dessous, les lectures de blocks profitent toujours de l'index cache et du caching bucket. Et une instantanée sur des données fraîches est servie par Receive, sans jamais toucher une store gateway.
+
 ## Mettre des limites en lecture et en ingestion
 
 Logger les requêtes lentes ne suffit pas, il faut pouvoir les arrêter. Avec RF=1 et des store gateways sur spot, un seul dashboard qui balaie plusieurs mois de raw peut saturer une store qui mettra ensuite ses 30 minutes à revenir.
@@ -495,6 +555,15 @@ extraFlags:
 ```
 
 Toutes les optimisations de coût ne passent pas. Celle-là s'est payée en latence et on est revenus en arrière.
+
+!!! warning "Le p99 est aveugle aux pathologies rares"
+    Nos requêtes pathologiques représentaient 0,12 % du trafic. Un p99 se calcule sur les 99 %
+    les plus rapides : il ne peut **structurellement pas** les voir. On lisait 0,15 s au p99 là
+    où le p999 donnait 4 s et le p9999 5,3 s, soit un facteur 30 caché juste sous le seuil.
+
+Ça marche dans les deux sens. Sur un gate de concurrence, le p99 et le p999 donnaient tous les deux 10 à 17 ms, ce qui n'apprend rien : c'est le p9999 à 95 ms qui a permis d'écarter la mise en file avec certitude, pics de saturation compris.
+
+Dès qu'une pathologie touche nettement moins de 1 % des requêtes, mesurer au p999 ou au p9999, ou ne pas mesurer du tout. On a tiré deux conclusions fausses avant de s'en apercevoir.
 
 ## Réplication : le choix assumé
 
