@@ -404,6 +404,34 @@ Ce qui fait qu'une taille de cache IN-MEMORY ne mesure pas un working set, elle 
 
 Corollaire pratique : ne jamais dimensionner un cache partagé sur la taille observée du cache IN-MEMORY qu'il remplace. On surdimensionne d'un ordre de grandeur.
 
+### Le caching bucket ne se partage pas entre tenants
+
+« Un seul cache pour toute la flotte » a une limite qui n'est pas dans la doc et qui se paye
+comptant. Le caching bucket ne garde pas que des sous-plages de chunks, il garde aussi **le
+résultat de l'itération des blocks**, avec son TTL propre `blocks_iter_ttl`, à côté de
+`metafile_exists_ttl`, `metafile_doesnt_exist_ttl` et `metafile_content_ttl`.
+
+Les clés de chunks portent l'ULID du block, unique globalement, donc 2 tenants ne peuvent
+pas s'y marcher dessus. La clé du listing est le chemin du répertoire, identique pour tout
+le monde puisque c'est la racine du bucket, alors que chaque tenant a son propre bucket
+objet. Un tenant lit donc la liste de blocks d'un autre, part chercher ces ULID chez lui, ne
+les trouve pas, et classe l'intégralité en `partial` :
+
+```text
+successfully synchronized block metadata  duration=12ms  cached=0  returned=0  partial=73
+```
+
+73 blocks listés, aucun retourné. La store gateway reste `Ready`, ses probes sont vertes,
+elle ne redémarre pas, et elle ne sert plus une seule donnée historique, ce qui fait que les
+requêtes longues renvoient du résultat partiel sans erreur — bien pire qu'une panne franche,
+parce que rien n'alerte et que les chiffres affichés restent plausibles.
+
+Le piège de validation est que le mécanisme marche parfaitement sur une instance **dédiée**.
+Un canary sur un seul tenant valide le protocole, la NetworkPolicy, le TTL et le hit ratio,
+puis ne dit rigoureusement rien du partage. Avant de mutualiser, la question à trancher est
+de savoir si les clés portent le nom du bucket ou seulement le chemin de l'objet, et ça se
+lit dans le code du `CachingBucket` de sa version.
+
 ### Dimensionner le cache partagé
 
 La taille à viser est le **working set sur la fenêtre du TTL**, pas la taille actuelle du cache, qui ne dit que le plafond qu'on lui a donné. Le proxy se calcule sur le volume d'admission : `increase(items_added_total[TTL])` multiplié par la taille moyenne d'une entrée. Deux pièges.
@@ -414,7 +442,7 @@ Le second est le facteur de déduplication. Il est tentant de diviser par le nom
 
 Et le résultat reste une borne haute, parce qu'un cache qui évince réadmet en boucle les mêmes clés et gonfle le compteur d'admissions. Le vrai working set se trouve en montant le plafond par paliers jusqu'à ce que le taux d'éviction s'effondre. Le plateau, c'est la réponse.
 
-Enfin le `limits.memory` du conteneur vaut le `maxmemory` du backend multiplié par 1,3 : les métadonnées et la fragmentation de l'allocateur vivent en dehors du plafond.
+Enfin le `limits.memory` du conteneur se dimensionne sur le **RSS**, avec une marge absolue et pas un ratio. Les métadonnées et la fragmentation de l'allocateur vivent bien en dehors du `maxmemory`, mais elles ne suivent pas la taille du cache : sur une instance dont le keyspace oscille, on mesure 1,4 Gio de rétention d'allocateur pour un keyspace qui plafonne à 236 Mio et qui ne sont jamais rendus à l'OS, quand la même instance à plein remplissage n'a que 50 Mio de surcoût sur 3,2 Gio. Un ratio sous-dimensionne donc les petits plafonds et gonfle les gros, là où `maxmemory` plus une marge fixe de l'ordre de 2 Gio tient dans les 2 cas. Et le backend ne pré-alloue pas sur son plafond, ce qui se vérifie en comparant 2 instances : celle dont le `maxmemory` est 8 fois plus grand peut avoir le RSS le plus petit.
 
 !!! note "`max_size` est binaire"
     Thanos parse `2GB` comme 2 Gio, pas 2 GB. Un plafond de `1GB` par pod sur une centaine de
