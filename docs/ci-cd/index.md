@@ -14,8 +14,8 @@ Une CI lente ou mal configurée, ça coûte du temps et de l'argent. 3 articles 
 
 ### GitHub Actions
 
-- [CI durcie pour un projet Go](github/go-ci.md) — actions SHA-pinned, permissions least-privilege, zizmor, golangci-lint, govulncheck, tests multi-plateforme
-- [GoReleaser](github/goreleaser.md) — binaires multi-arch, images Docker, Helm OCI, UPX, GitHub Actions
+- [CI durcie pour un projet Go](github/go-ci.md) — actions SHA-pinned, permissions least-privilege, zizmor, golangci-lint, govulncheck, cooldown Renovate, tests multi-plateforme
+- [GoReleaser](github/goreleaser.md) — binaires multi-arch, images Docker, Helm OCI, UPX, signature cosign et provenance SLSA
 - [Cocogitto](github/cocogitto.md) — versioning sémantique automatique, CHANGELOG, GitHub Releases — comparaison avec release-please
 
 ### GitLab

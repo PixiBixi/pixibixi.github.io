@@ -1,5 +1,5 @@
 ---
-description: Publier des binaires Go multi-arch, images OCI et charts Helm en une commande avec GoReleaser — build flags, UPX, ko, ghcr.io, GitHub Actions.
+description: Publier des binaires Go multi-arch, images OCI et charts Helm en une commande avec GoReleaser — build flags, UPX, ko, ghcr.io, signature cosign, provenance SLSA, GitHub Actions.
 tags:
   - GitHub Actions
   - Go
@@ -158,7 +158,7 @@ permissions:
 
 ```yaml
       - name: Install cosign
-        uses: sigstore/cosign-installer@v3
+        uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
 ```
 
 ### Vérifier les artefacts (côté utilisateur)
@@ -179,6 +179,44 @@ cosign verify \
   --certificate-identity 'https://github.com/monorg/mon-repo/.github/workflows/release.yml@refs/tags/vX.Y.Z' \
   --certificate-oidc-issuer 'https://token.actions.githubusercontent.com' \
   ghcr.io/monorg/mon-image:vX.Y.Z
+```
+
+## Provenance SLSA
+
+Une signature cosign dit **qui** a signé, pas **comment** l'artefact a été construit. La provenance SLSA remplit ce trou : elle enregistre le repo, le workflow, le commit, le runner et les paramètres du build dans une attestation signée par l'OIDC GitHub, donc un job compromis ne peut pas produire une provenance qui prétend venir d'un autre workflow.
+
+`actions/attest-build-provenance` s'ajoute en un step après GoReleaser, plus une permission :
+
+```yaml title=".github/workflows/release.yml"
+permissions:
+  contents: write
+  packages: write
+  id-token: write
+  attestations: write   # écrire l'attestation sur la release
+
+      - name: Attest build provenance
+        uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-path: 'dist/*.tar.gz,dist/*.zip,dist/checksums.txt'
+```
+
+Pour une image OCI, la provenance s'attache au digest et non à un fichier, et `push-to-registry` la publie à côté du manifest pour que n'importe quel consommateur la retrouve sans passer par la release GitHub :
+
+```yaml
+      - uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-name: ghcr.io/monorg/mon-image
+          subject-digest: ${{ steps.image.outputs.digest }}
+          push-to-registry: true
+```
+
+Le digest se récupère dans `dist/artifacts.json`, que GoReleaser écrit en fin de run avec une entrée par artefact produit.
+
+La vérification côté utilisateur tient en une commande, sans avoir à connaître l'identité du certificat comme pour `cosign verify` :
+
+```bash
+gh attestation verify ./mon-binaire_linux_amd64.tar.gz --repo monorg/mon-repo
+gh attestation verify oci://ghcr.io/monorg/mon-image:vX.Y.Z --repo monorg/mon-repo
 ```
 
 ## Images OCI multi-arch (ko)
@@ -239,32 +277,36 @@ on:
 
 permissions:
   contents: write
-  packages: write   # push vers ghcr.io
-  id-token: write   # signature cosign keyless
+  packages: write        # push vers ghcr.io
+  id-token: write        # signature cosign keyless
+  attestations: write    # provenance SLSA
 
 jobs:
   goreleaser:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0   # GoReleaser a besoin de l'historique complet pour le changelog
+          persist-credentials: false
 
-      - uses: actions/setup-go@v7
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
-          go-version: stable
+          go-version-file: go.mod
 
       - name: Install cosign
-        uses: sigstore/cosign-installer@v3
+        uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
 
       - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v7
+        uses: goreleaser/goreleaser-action@f06c13b6b1a9625abc9e6e439d9c05a8f2190e94 # v7.2.3
         with:
           version: '~> v2'
           args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
+
+Les actions sont épinglées par SHA et le checkout ne garde pas le token, pour les raisons détaillées dans [l'article CI](go-ci.md#le-socle-de-durcissement) : un workflow de release détient `contents: write`, c'est le dernier endroit où laisser traîner un tag mutable.
 
 !!! note "fetch-depth: 0"
     Sans `fetch-depth: 0`, GitHub Actions fait un clone superficiel. GoReleaser ne peut pas générer le changelog car il n'a pas accès aux commits précédents.
