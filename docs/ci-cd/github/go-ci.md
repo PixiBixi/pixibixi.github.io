@@ -170,6 +170,16 @@ issues:
 
 Sur un repo de taille raisonnable, il n'y a aucune raison de plafonner. Un linter qui ne montre pas tout est plus dangereux qu'un linter bruyant : on lui fait confiance à tort.
 
+### La variante reviewdog
+
+Il existe une seconde action, [reviewdog/action-golangci-lint](https://github.com/reviewdog/action-golangci-lint), qui poste les findings en commentaires de PR au lieu d'annotations. Tentant quand on utilise déjà reviewdog pour goimports. Sauf que ses défauts vont à l'envers de tout ce qui précède :
+
+- `golangci_lint_version` et `reviewdog_version` valent `latest`, donc la version qui tourne change sans commit.
+- `fail_level` vaut `none`, et [le code de sortie de golangci-lint est ignoré](https://github.com/reviewdog/action-golangci-lint/blob/master/src/main.ts) dans le code de l'action : les sorties 0, 1 et 2 passent toutes. Le job est donc **vert avec des findings**, c'est reviewdog seul qui décide d'échouer.
+- `filter_mode` vaut `added`, donc seules les lignes ajoutées sont remontées. Même famille de problème que `max-same-issues` : ce qu'on ne voit pas, on le croit corrigé.
+
+Tout ça se règle (`fail_level: error`, `filter_mode: nofilter`, versions épinglées), mais il reste un plafond qu'on ne peut pas lever : sur une PR venant d'un fork, le `GITHUB_TOKEN` est en lecture seule, donc reviewdog [retombe sur les logging commands](https://github.com/reviewdog/reviewdog#graceful-degradation-for-pull-requests-from-forked-repositories), soit exactement les annotations que l'action officielle produit déjà. On garde donc l'officielle pour le gate, et reviewdog là où il apporte vraiment autre chose : un diff applicable en un clic, ce que golangci-lint ne produit pas.
+
 ## Vulnérabilités des dépendances
 
 [govulncheck](https://go.dev/blog/govulncheck) est l'outil officiel de la Go Team. Sa force : il ne signale une CVE que si ton code **appelle réellement** la fonction vulnérable, pas juste parce que le module est dans l'arbre de dépendances. Beaucoup moins de faux positifs qu'un scanner générique.
