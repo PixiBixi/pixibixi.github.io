@@ -46,3 +46,5 @@ La section la plus dense du wiki. On y trouve les fondamentaux, les outils CLI, 
 - [Avancé — Lock DDoS](advanced/lock_ddos.md) — mitiger une attaque en temps réel
 - [Misc — Auto-upgrade](misc/autoupgrade.md) — mises à jour automatiques Debian/Ubuntu
 - [Misc — Mot de passe root oublié](misc/forgot_root_password.md) — récupération sans réinstall
+- [Misc — Monter une image ISO](misc/mount_iso.md) — `mount -o loop`, udisksctl, Mount-DiskImage et hdiutil
+- [Misc — Convertir un .bin en .iso](misc/convert_bin_to_iso.md) — iat, bchunk, ccd2iso et vérification du format réel

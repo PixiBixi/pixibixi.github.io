@@ -93,7 +93,7 @@ Sur Windows, le plus rapide reste WSL avec exactement les commandes ci-dessus. L
 
 ## Et pour monter l'ISO ensuite
 
-Sous Linux, `mount -o loop` comme plus haut. Sous Windows, un double-clic monte l'image depuis Windows 8, et en PowerShell :
+Le détail des 3 systèmes est dans [monter une image ISO](mount_iso.md). Sous Windows, un double-clic suffit depuis Windows 8, et en PowerShell :
 
 ```powershell
 Mount-DiskImage -ImagePath C:\images\image.iso

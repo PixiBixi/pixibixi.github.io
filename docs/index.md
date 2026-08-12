@@ -304,6 +304,7 @@ Cette magnifique documentation a été faite avec MkDocs Material. [À propos](a
 * [Trouver les options de compilation du kernel](linux/misc/find_kernel_options.md)
 * [Réinitialiser son mot de passe root](linux/misc/forgot_root_password.md)
 * [Convertir des .bin en .iso](linux/misc/convert_bin_to_iso.md)
+* [Monter une image ISO : Linux, Windows et macOS](linux/misc/mount_iso.md)
 * [DFC, la commande DF en plus](linux/cli/dfc.md)
 * [sed : chercher et remplacer en CLI](linux/cli/sed.md)
 * [Obtenir des informations sur vos PDF](linux/misc/info_about_pdf.md)
