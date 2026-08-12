@@ -388,12 +388,16 @@ Reste un trou que la CI verte ne bouche pas : automerger une version publiée il
 
 ```json title="renovate.json"
 {
-  "matchUpdateTypes": ["major", "minor", "patch"],
+  "matchUpdateTypes": ["major", "minor", "patch", "digest"],
   "minimumReleaseAge": "5 days"
 }
 ```
 
-5 jours, c'est ce qu'applique Cilium sur son propre repo, et ça couvre à peu près la fenêtre pendant laquelle une release compromise se fait repérer. Le prix apparent, c'est un retard de 5 jours sur les patchs de sécurité, sauf que Renovate neutralise le cooldown dans sa config `vulnerabilityAlerts` (`minimumReleaseAge: null` par défaut) : les updates qui répondent à une CVE connue passent toujours tout de suite.
+5 jours couvre à peu près la fenêtre pendant laquelle une release compromise se fait repérer. Le prix apparent, c'est un retard de 5 jours sur les patchs de sécurité, sauf que Renovate neutralise le cooldown dans sa config `vulnerabilityAlerts` (`minimumReleaseAge: null` par défaut) : les updates qui répondent à une CVE connue passent toujours tout de suite.
+
+`digest` est le type qu'on oublie, et c'est le plus intéressant des quatre. Un update `digest` seul veut dire que la version n'a pas bougé mais que le SHA derrière le tag, si, donc que quelqu'un a redéplacé `v7` sur un autre commit. C'est précisément le scénario contre lequel on épingle, et c'est aussi le type le plus automergé. Il a plus besoin du cooldown que les autres.
+
+Les deux règles ne se recouvrent pas : celle-ci ne pose que `minimumReleaseAge`, l'automerge reste défini par la règle précédente sur `minor`/`patch`/`digest`. Renovate applique les settings de chaque règle indépendamment, sans héritage de l'une vers l'autre, donc un `major` récupère le cooldown et rien d'autre — il attend toujours une revue.
 
 Le cran d'après, c'est de réserver l'automerge à une allow-list d'orgs de confiance (`actions/**`, `golang.org/x/**`, `k8s.io/**`) et de passer tout le reste en revue humaine. Sur un projet à 10 dépendances directes c'est disproportionné, mais ça devient l'arbitrage à faire dès que l'arbre grossit.
 
