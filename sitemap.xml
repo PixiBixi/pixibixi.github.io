@@ -130,7 +130,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/containers/docker/use_proxy/</loc>
-    <lastmod>2026-03-12</lastmod>
+    <lastmod>2026-08-12</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/containers/docker/compose/templates/</loc>
@@ -350,7 +350,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/linux/</loc>
-    <lastmod>2026-03-14</lastmod>
+    <lastmod>2026-08-12</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/linux/advanced/lock_ddos/</loc>
@@ -378,7 +378,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/linux/centos/add_epel_repositories/</loc>
-    <lastmod>2026-03-12</lastmod>
+    <lastmod>2026-08-12</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/linux/cli/confrc/</loc>
@@ -475,6 +475,10 @@
   <url>
     <loc>https://wiki.jdelgado.fr/linux/misc/mancolor/</loc>
     <lastmod>2026-08-02</lastmod>
+  </url>
+  <url>
+    <loc>https://wiki.jdelgado.fr/linux/misc/mount_iso/</loc>
+    <lastmod>2026-08-12</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/linux/misc/rc_package/</loc>
@@ -694,7 +698,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/networking/cisco/dns/</loc>
-    <lastmod>2026-03-12</lastmod>
+    <lastmod>2026-08-12</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/networking/cisco/lldp/</loc>
@@ -754,7 +758,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/os/mac/brew/</loc>
-    <lastmod>2026-08-02</lastmod>
+    <lastmod>2026-08-12</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/os/mac/brew_xcode/</loc>
@@ -854,7 +858,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/selfhost/guacamole/</loc>
-    <lastmod>2026-04-18</lastmod>
+    <lastmod>2026-08-12</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/selfhost/h5ai/</loc>
