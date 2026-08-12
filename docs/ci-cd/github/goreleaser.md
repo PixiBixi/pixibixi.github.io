@@ -181,43 +181,18 @@ cosign verify \
   ghcr.io/monorg/mon-image:vX.Y.Z
 ```
 
-## Provenance SLSA
+### Attester la provenance des artefacts
 
-Une signature cosign dit **qui** a signé, pas **comment** l'artefact a été construit. La provenance SLSA remplit ce trou : elle enregistre le repo, le workflow, le commit, le runner et les paramètres du build dans une attestation signée par l'OIDC GitHub, donc un job compromis ne peut pas produire une provenance qui prétend venir d'un autre workflow.
-
-`actions/attest-build-provenance` s'ajoute en un step après GoReleaser, plus une permission :
+La signature dit **qui** a publié, pas **comment** l'artefact a été construit. C'est ce que couvre l'attestation SLSA, détaillée dans [Durcir une CI GitHub Actions](hardening.md#attester-comment-lartefact-a-ete-construit) — elle n'a rien de spécifique à Go ni à GoReleaser. Le seul détail propre à ce pipeline, c'est ce qu'on lui donne à attester : GoReleaser écrit tout dans `dist/`, donc les archives et le `checksums.txt` déjà signé par cosign.
 
 ```yaml title=".github/workflows/release.yml"
-permissions:
-  contents: write
-  packages: write
-  id-token: write
-  attestations: write   # écrire l'attestation sur la release
-
       - name: Attest build provenance
         uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
         with:
           subject-path: 'dist/*.tar.gz,dist/*.zip,dist/checksums.txt'
 ```
 
-Pour une image OCI, la provenance s'attache au digest et non à un fichier, et `push-to-registry` la publie à côté du manifest pour que n'importe quel consommateur la retrouve sans passer par la release GitHub :
-
-```yaml
-      - uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
-        with:
-          subject-name: ghcr.io/monorg/mon-image
-          subject-digest: ${{ steps.image.outputs.digest }}
-          push-to-registry: true
-```
-
-Le digest se récupère dans `dist/artifacts.json`, que GoReleaser écrit en fin de run avec une entrée par artefact produit.
-
-La vérification côté utilisateur tient en une commande, sans avoir à connaître l'identité du certificat comme pour `cosign verify` :
-
-```bash
-gh attestation verify ./mon-binaire_linux_amd64.tar.gz --repo monorg/mon-repo
-gh attestation verify oci://ghcr.io/monorg/mon-image:vX.Y.Z --repo monorg/mon-repo
-```
+Si le pipeline pousse aussi une image (via `kos:` plus bas), son digest se récupère dans `dist/artifacts.json`, que GoReleaser écrit en fin de run avec une entrée par artefact produit.
 
 ## Images OCI multi-arch (ko)
 
@@ -306,7 +281,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
-Les actions sont épinglées par SHA et le checkout ne garde pas le token, pour les raisons détaillées dans [l'article CI](go-ci.md#le-socle-de-durcissement) : un workflow de release détient `contents: write`, c'est le dernier endroit où laisser traîner un tag mutable.
+Les actions sont épinglées par SHA et le checkout ne garde pas le token, pour les raisons détaillées dans [l'article durcissement](hardening.md) : un workflow de release détient `contents: write`, c'est le dernier endroit où laisser traîner un tag mutable.
 
 !!! note "fetch-depth: 0"
     Sans `fetch-depth: 0`, GitHub Actions fait un clone superficiel. GoReleaser ne peut pas générer le changelog car il n'a pas accès aux commits précédents.

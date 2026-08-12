@@ -273,7 +273,8 @@ Cette magnifique documentation a été faite avec MkDocs Material. [À propos](a
 
 ### GitHub Actions
 
-* [CI GitHub Actions durcie pour un projet Go](ci-cd/github/go-ci.md)
+* [Durcir une CI GitHub Actions : pins, permissions, injections](ci-cd/github/hardening.md)
+* [CI GitHub Actions pour un projet Go](ci-cd/github/go-ci.md)
 * [GoReleaser : binaires multi-arch, images OCI et charts Helm](ci-cd/github/goreleaser.md)
 * [Cocogitto, le couteau suisse du versioning multi-langages](ci-cd/github/cocogitto.md)
 

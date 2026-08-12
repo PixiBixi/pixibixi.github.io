@@ -1,6 +1,7 @@
 ---
-description: GitLab CI/CD — optimisation des pipelines, scan d'images et CLI glab.
+description: CI/CD GitHub Actions et GitLab — durcissement supply-chain, releases automatisées, optimisation des pipelines, scan d'images et CLI glab.
 tags:
+  - GitHub Actions
   - GitLab CI
   - CI/CD
   - GitLab
@@ -8,13 +9,14 @@ tags:
 
 # CI/CD
 
-Une CI lente ou mal configurée, ça coûte du temps et de l'argent. 3 articles ici, mais denses : optimisation des pipelines GitLab, scan de sécurité d'images, et la CLI `glab` pour ne plus toucher l'interface web.
+Une CI lente ou mal configurée, ça coûte du temps et de l'argent. Une CI mal durcie, ça coûte bien plus. 7 articles : durcissement supply-chain des workflows GitHub Actions, releases automatisées, et côté GitLab l'optimisation des pipelines, le scan d'images et la CLI `glab`.
 
 ## Contenus
 
 ### GitHub Actions
 
-- [CI durcie pour un projet Go](github/go-ci.md) — actions SHA-pinned, permissions least-privilege, zizmor, golangci-lint, govulncheck, cooldown Renovate, tests multi-plateforme
+- [Durcir une CI GitHub Actions](github/hardening.md) — SHA pinning, permissions least-privilege, injection de template, zizmor, actionlint, cooldown Renovate et Dependabot, provenance SLSA
+- [CI pour un projet Go](github/go-ci.md) — `go test -race`, build multi-plateforme, golangci-lint, gocritic, govulncheck, release calculée par svu
 - [GoReleaser](github/goreleaser.md) — binaires multi-arch, images Docker, Helm OCI, UPX, signature cosign et provenance SLSA
 - [Cocogitto](github/cocogitto.md) — versioning sémantique automatique, CHANGELOG, GitHub Releases — comparaison avec release-please
 
