@@ -42,6 +42,7 @@ before:
 builds:
   - id: mon-binaire
     binary: mon-binaire
+    main: .   # défauté par GoReleaser, mais ko lit la valeur brute (voir plus bas)
     env:
       - CGO_ENABLED=0
     goos:
@@ -201,6 +202,7 @@ Si le pipeline pousse aussi une image (via `kos:` plus bas), son digest se récu
 ```yaml
 kos:
   - id: mon-binaire
+    main: .   # obligatoire depuis Go 1.27, voir l'avertissement plus bas
     repositories:
       - ghcr.io/monorg/mon-image
     base_image: gcr.io/distroless/static:nonroot
@@ -222,6 +224,9 @@ Ko génère automatiquement un manifest multi-arch et publie des SBOMs par image
 
 !!! warning "Visibilité GHCR"
     La première image publiée est privée par défaut sur GHCR, même pour un repo public. À rendre public manuellement : **GitHub → Packages → mon-image → Package settings → Change visibility**.
+
+!!! warning "Go 1.27 impose un `main:` explicite"
+    GoReleaser défaute `kos[].main` sur le `main:` du build correspondant, qui vaut `""` tant qu'on ne l'a pas écrit, et ko passe cette chaîne vide à `go list`. Go 1.26 la résolvait silencieusement en répertoire courant, Go 1.27 la rejette avec `go: invalid package: ""`. Le symptôme est trompeur : les binaires, les archives, les checksums et la formule Homebrew se construisent normalement, puis le run meurt à la toute fin sur `ko: does not contain a valid local import path ()`, sans release GitHub ni image. Poser `main: .` dans `kos:` et dans `builds:` referme le trou des deux côtés.
 
 ## Helm chart vers OCI
 
