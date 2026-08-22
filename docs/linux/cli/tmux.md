@@ -1,5 +1,5 @@
 ---
-description: Référence complète de tmux — sessions, windows, panes, raccourcis, configuration et batch SSH avec tmux-xpanes.
+description: Référence complète de tmux - sessions, windows, panes, raccourcis, configuration et batch SSH avec tmux-xpanes.
 tags:
   - Tmux
   - Terminal
@@ -28,7 +28,7 @@ brew install tmux       # macOS
 | **Window** | Onglet dans une session (comme un onglet de navigateur) |
 | **Pane** | Subdivision d'une window (split horizontal ou vertical) |
 
-Le préfixe par défaut est `Ctrl+B` — toutes les commandes ci-dessous
+Le préfixe par défaut est `Ctrl+B` - toutes les commandes ci-dessous
 s'utilisent après ce préfixe.
 
 ---
@@ -121,7 +121,7 @@ set-window-option -g mode-keys vi
 
 ## Configuration
 
-Fichier `~/.tmux.conf` — rechargeable sans redémarrer :
+Fichier `~/.tmux.conf` - rechargeable sans redémarrer :
 
 ```bash
 tmux source-file ~/.tmux.conf
@@ -182,7 +182,7 @@ tmux set-window-option synchronize-panes on
 ## tmux-xpanes : batch SSH
 
 [tmux-xpanes](https://github.com/greymd/tmux-xpanes) automatise l'ouverture
-de multiples panes — particulièrement utile pour se connecter à un batch
+de multiples panes - particulièrement utile pour se connecter à un batch
 de serveurs en parallèle.
 
 ```bash
@@ -224,10 +224,10 @@ set ttymouse=xterm2
 set mouse=a
 ```
 
-Avec neovim, `set mouse=a` suffit — `ttymouse` n'est pas nécessaire.
+Avec neovim, `set mouse=a` suffit - `ttymouse` n'est pas nécessaire.
 
 ---
 
 ## Voir aussi
 
-- [Dotfiles](confrc.md) — configuration tmux et autres outils de l'environnement de travail
+- [Dotfiles](confrc.md) - configuration tmux et autres outils de l'environnement de travail

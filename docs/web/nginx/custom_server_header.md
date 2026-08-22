@@ -40,5 +40,5 @@ more_set_headers Server: MyServer;
 
 ## Voir aussi
 
-* [Installer son Serveur Web : NGINX, PHP-FPM et MariaDB](installation.md) — Configuration nginx complète avec `server_tokens` et `more_set_headers`
-* [Forcer le SSL sous NGINX](nginx_ssl.md) — Configuration SSL pour une sécurité complète
+* [Installer son Serveur Web : NGINX, PHP-FPM et MariaDB](installation.md) - Configuration nginx complète avec `server_tokens` et `more_set_headers`
+* [Forcer le SSL sous NGINX](nginx_ssl.md) - Configuration SSL pour une sécurité complète

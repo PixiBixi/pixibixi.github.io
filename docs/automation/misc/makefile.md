@@ -1,5 +1,5 @@
 ---
-description: Générer automatiquement l'aide d'un Makefile avec grep et awk — auto-documentation des cibles
+description: Générer automatiquement l'aide d'un Makefile avec grep et awk - auto-documentation des cibles
 tags:
   - Makefile
 ---

@@ -1,5 +1,5 @@
 ---
-description: Déployer un cluster Kubernetes avec RKE via cluster.yaml — bootstrap et configuration initiale
+description: Déployer un cluster Kubernetes avec RKE via cluster.yaml - bootstrap et configuration initiale
 tags:
   - RKE
 ---
@@ -128,4 +128,4 @@ Voici un fichier hosts adapté :
 ```
 <!-- markdownlint-enable MD046 -->
 
-On active également quelques options supplémentaires comme le snapshot automatique d'etcd toutes les 6h. Des [exemples](https://rancher.com/docs/rke/latest/en/example-yamls/) sont disponibles sur le site officiel de Rancher — il est possible par exemple d'envoyer les snapshots automatiquement dans un S3.
+On active également quelques options supplémentaires comme le snapshot automatique d'etcd toutes les 6h. Des [exemples](https://rancher.com/docs/rke/latest/en/example-yamls/) sont disponibles sur le site officiel de Rancher - il est possible par exemple d'envoyer les snapshots automatiquement dans un S3.

@@ -1,5 +1,5 @@
 ---
-description: Raccourcis essentiels de Vim — fenêtres, édition texte, copie/suppression et plugins
+description: Raccourcis essentiels de Vim - fenêtres, édition texte, copie/suppression et plugins
 tags:
   - vim
 ---

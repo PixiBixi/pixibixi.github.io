@@ -1,5 +1,5 @@
 ---
-description: nginx, HAProxy, Varnish, DNS, mail et WordPress — tout ce qui tourne devant le code applicatif.
+description: nginx, HAProxy, Varnish, DNS, mail et WordPress - tout ce qui tourne devant le code applicatif.
 tags:
   - Nginx
   - HAProxy
@@ -14,23 +14,23 @@ La couche entre internet et les applications. nginx pour servir, HAProxy pour lo
 
 ## Contenus
 
-- [nginx — Installation](nginx/installation.md) — installer et configurer nginx
-- [nginx — SSL](nginx/nginx_ssl.md) — TLS et certificats
-- [nginx — IPv6](nginx/ipv6_nginx.md) — activer l'écoute IPv6
-- [nginx — PHP version custom](nginx/php_custom_version.md) — pointer vers une version PHP spécifique
-- [nginx — IP réelles](nginx/fetch_good_ips.md) — récupérer l'IP client derrière un proxy
-- [nginx — Custom server header](nginx/custom_server_header.md) — masquer ou personnaliser le header Server
-- [HAProxy — Overview](haproxy/overview.md) — guide complet, ACLs et load balancing
-- [HAProxy — exploitation au quotidien](haproxy/operations.md) — socket d'admin, mise en maintenance, IP réelle et Cloudflare
-- [HAProxy — Limite mémoire](haproxy/memory_limit.md) — configurer maxconn et buffers
-- [HAProxy — Performance tuning](haproxy/performance_tuning.md) — threads, buffers, SSL, timeouts et tuning noyau
-- [Varnish](varnish/config.md) — configuration VCL et cache HTTP
-- [DNS](dns.md) — zones, enregistrements et outils de diagnostic
-- [Mail](mail.md) — configuration serveur mail
-- [Exim — Gérer DKIM](mail/exim_manage_dkim.md) — générer et déployer les clés DKIM avec Exim
-- [FTP](ftp.md) — configuration vsftpd
-- [WordPress — Migrer la BDD](wordpress/migrate_wordpress_sql.md) — changer de domaine via SQL
-- [WordPress — Tips SQL](wordpress/tips_sql.md) — requêtes utiles pour administrer WordPress
-- [Ruby — Installation](ruby/install.md) — installer Ruby avec rbenv
-- [Benchmark — Query string aléatoire](benchmark/benchmark_random_querystring.md) — contourner le cache pour bencher
-- [Troubleshooting](troubleshooting.md) — debug HTTP, certificats et problèmes courants
+- [nginx - Installation](nginx/installation.md) - installer et configurer nginx
+- [nginx - SSL](nginx/nginx_ssl.md) - TLS et certificats
+- [nginx - IPv6](nginx/ipv6_nginx.md) - activer l'écoute IPv6
+- [nginx - PHP version custom](nginx/php_custom_version.md) - pointer vers une version PHP spécifique
+- [nginx - IP réelles](nginx/fetch_good_ips.md) - récupérer l'IP client derrière un proxy
+- [nginx - Custom server header](nginx/custom_server_header.md) - masquer ou personnaliser le header Server
+- [HAProxy - Overview](haproxy/overview.md) - guide complet, ACLs et load balancing
+- [HAProxy - exploitation au quotidien](haproxy/operations.md) - socket d'admin, mise en maintenance, IP réelle et Cloudflare
+- [HAProxy - Limite mémoire](haproxy/memory_limit.md) - configurer maxconn et buffers
+- [HAProxy - Performance tuning](haproxy/performance_tuning.md) - threads, buffers, SSL, timeouts et tuning noyau
+- [Varnish](varnish/config.md) - configuration VCL et cache HTTP
+- [DNS](dns.md) - zones, enregistrements et outils de diagnostic
+- [Mail](mail.md) - configuration serveur mail
+- [Exim - Gérer DKIM](mail/exim_manage_dkim.md) - générer et déployer les clés DKIM avec Exim
+- [FTP](ftp.md) - configuration vsftpd
+- [WordPress - Migrer la BDD](wordpress/migrate_wordpress_sql.md) - changer de domaine via SQL
+- [WordPress - Tips SQL](wordpress/tips_sql.md) - requêtes utiles pour administrer WordPress
+- [Ruby - Installation](ruby/install.md) - installer Ruby avec rbenv
+- [Benchmark - Query string aléatoire](benchmark/benchmark_random_querystring.md) - contourner le cache pour bencher
+- [Troubleshooting](troubleshooting.md) - debug HTTP, certificats et problèmes courants

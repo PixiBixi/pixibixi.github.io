@@ -1,5 +1,5 @@
 ---
-description: Méthodologie de triage des performances Linux — outils et one-liners pour diagnostiquer CPU, mémoire, I/O disque et réseau.
+description: Méthodologie de triage des performances Linux - outils et one-liners pour diagnostiquer CPU, mémoire, I/O disque et réseau.
 tags:
   - Linux
   - Performance

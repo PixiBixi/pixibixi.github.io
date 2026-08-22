@@ -18,13 +18,13 @@ intrinsèques à l'équipement : nom, modèle...
 
 Le protocole CDP permet de retrouver des propriétés intrinsèques à chaque équipement :
 
-* **Vérifier l'état physique d'une connexion** — si le CDP passe, l'interface est en *Up/Up*
-* **Obtenir des informations sur son voisin** — adresse IP, version...
+* **Vérifier l'état physique d'une connexion** - si le CDP passe, l'interface est en *Up/Up*
+* **Obtenir des informations sur son voisin** - adresse IP, version...
 * **Découvrir la topologie du réseau** en passant de machine en machine
 
 ## Condition d'utilisation
 
-CDP est un protocole Cisco — les équipements doivent être de marque Cisco.
+CDP est un protocole Cisco - les équipements doivent être de marque Cisco.
 L'interface physique doit être up et les deux machines doivent être voisines.
 
 Étant donné que l'IOS est basé sur un noyau Linux, il est possible d'implémenter CDP
@@ -115,7 +115,7 @@ exit
 
 ### Timers CDP
 
-* `cdp holdtime <x>` — durée de vie de l'information envoyée (10-255)
-* `cdp timer <x>` — période de renvoi des informations (5-254)
+* `cdp holdtime <x>` - durée de vie de l'information envoyée (10-255)
+* `cdp timer <x>` - période de renvoi des informations (5-254)
 
 Source : [ciscomadesimple.be](https://www.ciscomadesimple.be/2010/03/09/cdp-cisco-discovery-protocol/)

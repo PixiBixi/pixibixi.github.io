@@ -26,7 +26,7 @@ Deux points à activer : le cluster (`workload_pool`) et chaque node pool (`GKE_
     Identity ne fonctionne pas même si le cluster est configuré.
 
 ```hcl
-# Cluster — activer le workload pool
+# Cluster - activer le workload pool
 resource "google_container_cluster" "main" {
   # ...
   workload_identity_config {
@@ -34,7 +34,7 @@ resource "google_container_cluster" "main" {
   }
 }
 
-# Node pool — activer GKE_METADATA (déclenche un rolling update si existant)
+# Node pool - activer GKE_METADATA (déclenche un rolling update si existant)
 resource "google_container_node_pool" "default" {
   # ...
   node_config {
@@ -127,5 +127,5 @@ curl -H "Metadata-Flavor: Google" \
 
 ## Voir aussi
 
-- [GKE Spot Nodes](spot_nodes.md) — Accorder des permissions IAM aux pods Spot
-- [Commandes utiles pour la CLI Gcloud](gcloud_commands.md) — Commandes de diagnostic gcloud
+- [GKE Spot Nodes](spot_nodes.md) - Accorder des permissions IAM aux pods Spot
+- [Commandes utiles pour la CLI Gcloud](gcloud_commands.md) - Commandes de diagnostic gcloud

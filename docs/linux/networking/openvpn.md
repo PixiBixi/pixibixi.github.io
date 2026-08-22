@@ -1,5 +1,5 @@
 ---
-description: Installer et configurer un serveur VPN OpenVPN sous Linux — génération des certificats PKI avec easy-rsa v3, configuration serveur et client.
+description: Installer et configurer un serveur VPN OpenVPN sous Linux - génération des certificats PKI avec easy-rsa v3, configuration serveur et client.
 tags:
   - OpenVPN
   - VPN
@@ -10,7 +10,7 @@ tags:
 Pourquoi installer un serveur VPN ? Éviter la surveillance, contourner les géo-restrictions (Netflix, Hulu...), ou être un peu plus anonyme. La connexion étant chiffrée, on parle de **tunnel VPN**.
 
 !!! warning "VPN commerciaux français"
-    Les VPN français ont l'obligation de conserver les logs de connexion au moins **1 an** — rien ne garantit que les logs sont désactivés sur un VPN à 2$ par mois.
+    Les VPN français ont l'obligation de conserver les logs de connexion au moins **1 an** - rien ne garantit que les logs sont désactivés sur un VPN à 2$ par mois.
 
 !!! warning "Architecture"
     Le serveur VPN ne doit pas être sur la machine physique, sinon il est totalement inutile. Un petit VPS chez [Scaleway](https://www.scaleway.com/) fait très bien l'affaire, ou chez [YourServer](https://www.yourserver.se/) si on veut être encore plus discret.
@@ -19,15 +19,15 @@ OpenVPN + easy-rsa v3 sur Debian/Ubuntu. PKI complète, config serveur et client
 
 ## Installation
 
-Pour installer OpenVPN, rien de plus simple. On installe aussi easy-rsa pour la gestion des certificats — il reste ensuite quelques étapes avant d'avoir quelque chose de fonctionnel :
+Pour installer OpenVPN, rien de plus simple. On installe aussi easy-rsa pour la gestion des certificats - il reste ensuite quelques étapes avant d'avoir quelque chose de fonctionnel :
 
 ```bash
 apt install openvpn easy-rsa
 ```
 
-## PKI — Génération des certificats
+## PKI - Génération des certificats
 
-Attention, easy-rsa v3 — fini les `source vars` et `build-ca` de la v2, ça ne marche plus.
+Attention, easy-rsa v3 - fini les `source vars` et `build-ca` de la v2, ça ne marche plus.
 
 ```bash
 make-cadir /etc/openvpn/easy-rsa
@@ -88,7 +88,7 @@ verb 3
 ```
 
 !!! warning "comp-lzo"
-    `comp-lzo` est déprécié depuis OpenVPN 2.5 — ne pas l'utiliser. Ça trigger des warnings et ça expose à des attaques de type VORACLE.
+    `comp-lzo` est déprécié depuis OpenVPN 2.5 - ne pas l'utiliser. Ça trigger des warnings et ça expose à des attaques de type VORACLE.
 
 ## Ports firewall
 
@@ -102,7 +102,7 @@ Ouvrir le port suivant côté serveur :
 
 Maintenant qu'OpenVPN est configuré, il faut que la distribution Linux route correctement le trafic VPN.
 
-On active l'IP Forwarding — sans ça, les paquets entrant sur le tunnel ne sont pas retransmis vers Internet :
+On active l'IP Forwarding - sans ça, les paquets entrant sur le tunnel ne sont pas retransmis vers Internet :
 
 ```bash
 echo "net.ipv4.ip_forward=1" >> /etc/sysctl.conf
@@ -119,7 +119,7 @@ Adapter `eth0` à l'interface de sortie (`ip route get 1.1.1.1` pour la trouver)
 
 ## Démarrage
 
-Une fois la config en place, on démarre et on active au boot. Le `@server` correspond au nom du fichier de conf — ici `/etc/openvpn/server.conf` :
+Une fois la config en place, on démarre et on active au boot. Le `@server` correspond au nom du fichier de conf - ici `/etc/openvpn/server.conf` :
 
 ```bash
 systemctl enable --now openvpn@server
@@ -176,6 +176,6 @@ Ou en fichiers séparés à copier sur le client : `pki/ca.crt`, `pki/issued/cli
 
 ## Scripts d'auto-installation
 
-[OpenVPN-Install](https://github.com/Angristan/OpenVPN-install) — script Angristan, multi-distro (Debian, Ubuntu, CentOS), bonne sécu par défaut. C'est le plus maintenu.
+[OpenVPN-Install](https://github.com/Angristan/OpenVPN-install) - script Angristan, multi-distro (Debian, Ubuntu, CentOS), bonne sécu par défaut. C'est le plus maintenu.
 
-[piVPN](https://github.com/pivpn/pivpn) — interface de gestion des utilisateurs en plus, pratique sur Raspberry Pi.
+[piVPN](https://github.com/pivpn/pivpn) - interface de gestion des utilisateurs en plus, pratique sur Raspberry Pi.

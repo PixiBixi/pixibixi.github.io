@@ -1,5 +1,5 @@
 ---
-description: Remplacer netstat par ss — filtrer connexions TCP/UDP, états et statistiques avancées
+description: Remplacer netstat par ss - filtrer connexions TCP/UDP, états et statistiques avancées
 tags:
   - ss
   - Networking
@@ -198,5 +198,5 @@ Si vous voulez plus d'informations sur ss, n'hésitez pas à consulter le wiki A
 
 ## Voir aussi
 
-* [Mémo sur la commande IP](ip.md) — configuration réseau et gestion des interfaces
-* [Remplacer les commandes de base](replace_base_commands.md) — autres alternatives modernes aux outils Unix historiques
+* [Mémo sur la commande IP](ip.md) - configuration réseau et gestion des interfaces
+* [Remplacer les commandes de base](replace_base_commands.md) - autres alternatives modernes aux outils Unix historiques

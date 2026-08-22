@@ -1,5 +1,5 @@
 ---
-description: Déployer Redis en haute disponibilité — configurer Sentinel, HAproxy et réplication pour la redondance complète
+description: Déployer Redis en haute disponibilité - configurer Sentinel, HAproxy et réplication pour la redondance complète
 tags:
   - Redis
   - HA
@@ -94,7 +94,7 @@ interface privée. Par défaut, redis n'écoute que sur 127.0.0.1.
     Selon la version de Redis, `replicaof` peut ne pas fonctionner. Utiliser `slaveof` à la place.
 
 !!! danger
-    Ne pas configurer `replicaof` pour redis1 — redis1 est le master.
+    Ne pas configurer `replicaof` pour redis1 - redis1 est le master.
 
 Exemple pour redis2, à adapter pour redis3 :
 

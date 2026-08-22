@@ -1,5 +1,5 @@
 ---
-description: Installer une stack LEMP sous Linux — NGINX, PHP-FPM et MariaDB en version récente. Configuration et optimisation d'un serveur web performant.
+description: Installer une stack LEMP sous Linux - NGINX, PHP-FPM et MariaDB en version récente. Configuration et optimisation d'un serveur web performant.
 tags:
   - Nginx
 ---
@@ -258,7 +258,7 @@ internet.
 * `gzip` permet d'activer la compression gzip
 * `gzip_buffers` permet de spécifier le nombre de buffers qui vont
     être utilisés, ainsi que leur taille
-* `gzip_comp_level` spécifie l'agressivité de la compression gzip. Plus la valeur est forte (max 9), plus le CPU est sollicité — 4 est un bon compromis.
+* `gzip_comp_level` spécifie l'agressivité de la compression gzip. Plus la valeur est forte (max 9), plus le CPU est sollicité - 4 est un bon compromis.
 * `gzip_disable` permet de désactiver la compression GZip selon
     l'User-Agent (par exemple, ici on désactive la compression gzip pour `IE4 à IE6`)
 * `gzip_min_length` spécifie la longueur minimale d'un élément qui doit être gzippé. Il dépend du header *Content-Length*
@@ -313,7 +313,7 @@ voir carrément entrainer **un refus du navigateur**. Nous activons
 Pour avoir une bonne cipher list et de bons paramètres SSL, voir le [Wiki
 Mozilla](https://wiki.mozilla.org/Security/Server_Side_TLS).
 
-La configuration CSP (Content Security Policy) n'est pas couverte ici — c'est un protocole délicat à mettre en place, voir [content-security-policy.com](https://content-security-policy.com/).
+La configuration CSP (Content Security Policy) n'est pas couverte ici - c'est un protocole délicat à mettre en place, voir [content-security-policy.com](https://content-security-policy.com/).
 
 Voici désormais des snippets utiles pour ses différents blocks nginx :
 
@@ -404,7 +404,7 @@ pour la configuration de l'OPcache. La variable
 ```
 
 Pour cet exemple, 10000 fichiers sont largement suffisants. Aucune
-astuce n'existe pour calculer *opcache.memory_consumption* — il faut surveiller le monitoring.
+astuce n'existe pour calculer *opcache.memory_consumption* - il faut surveiller le monitoring.
 
 ## Installer et configurer MariaDB
 
@@ -442,7 +442,7 @@ apt-get install mariadb-server
 Pendant l'installation de **mariadb-server**, une fenêtre demande de spécifier un password.
 
 !!! danger
-    Cette fenêtre définit le **root password** MariaDB. Utiliser un mot de passe solide — tous les sites hébergés sont exposés si ce mot de passe est faible ou vide.
+    Cette fenêtre définit le **root password** MariaDB. Utiliser un mot de passe solide - tous les sites hébergés sont exposés si ce mot de passe est faible ou vide.
 
 Et on finit par le script made in MariaDB pour sécuriser le tout
 
@@ -452,6 +452,6 @@ mysql_secure_installation
 
 ## Voir aussi
 
-* [Forcer le SSL sous NGINX](nginx_ssl.md) — Configuration SSL/TLS et redirection HTTPS
-* [Configurer nginx pour utiliser IPv6](ipv6_nginx.md) — Support IPv6 dans nginx
-* [Installer une version custom de PHP](php_custom_version.md) — Utiliser le dépôt Sury pour des versions récentes
+* [Forcer le SSL sous NGINX](nginx_ssl.md) - Configuration SSL/TLS et redirection HTTPS
+* [Configurer nginx pour utiliser IPv6](ipv6_nginx.md) - Support IPv6 dans nginx
+* [Installer une version custom de PHP](php_custom_version.md) - Utiliser le dépôt Sury pour des versions récentes

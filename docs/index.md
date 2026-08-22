@@ -1,8 +1,8 @@
 ---
-description: Wiki SRE/Platform Engineer — Linux, Kubernetes, Cloud, CI/CD, Monitoring. 226 articles pratiques en français.
+description: Wiki SRE/Platform Engineer - Linux, Kubernetes, Cloud, CI/CD, Monitoring. 226 articles pratiques en français.
 ---
 
-# Wiki SRE — Kubernetes, HAProxy, Linux, Terraform
+# Wiki SRE - Kubernetes, HAProxy, Linux, Terraform
 
 226 articles, du mémo de 10 lignes au tutoriel complet : commandes
 copy-pasteable, configs qui tournent vraiment et les gotchas croisés en route.
@@ -122,7 +122,7 @@ Le plan complet est ci-dessous, sinon la recherche fait le job.
 - [Golang : Définir automatiquement son GOMEMLIMIT/GOMAXPROCS](kubernetes/deployment/gomaxprocs_gomemlimit_kubernetes.md)
 - [Spegel : Un OCI registry cache stateless](kubernetes/deployment/local_image_cache.md)
 - [ValidatingAdmissionPolicy : admission control sans webhook](kubernetes/deployment/validating_admission_policy.md)
-- [StatefulSet — podManagementPolicy : OrderedReady vs Parallel](kubernetes/deployment/statefulset_pod_management_policy.md)
+- [StatefulSet - podManagementPolicy : OrderedReady vs Parallel](kubernetes/deployment/statefulset_pod_management_policy.md)
 
 ### ArgoCD
 
@@ -178,7 +178,7 @@ Le plan complet est ci-dessous, sinon la recherche fait le job.
 
 ### MongoDB
 
-- [MongoDB — Dump et import d'indexes](databases/mongodb/dump-import-indexes.md)
+- [MongoDB - Dump et import d'indexes](databases/mongodb/dump-import-indexes.md)
 
 ## Cloud
 
@@ -188,7 +188,7 @@ Le plan complet est ci-dessous, sinon la recherche fait le job.
 - [Commandes utiles pour la CLI Gcloud](cloud/gcloud/gcloud_commands.md)
 - [GKE Spot Nodes](cloud/gcloud/spot_nodes.md)
 - [GKE Workload Identity](cloud/gcloud/workload_identity.md)
-- [GKE — Capacité réelle des nodes](cloud/gcloud/gke_node_capacity.md)
+- [GKE - Capacité réelle des nodes](cloud/gcloud/gke_node_capacity.md)
 
 ### AWS
 
@@ -207,7 +207,7 @@ Le plan complet est ci-dessous, sinon la recherche fait le job.
 ### Stack LGTM
 
 - [Netdata, Prometheus et Grafana : une stack de monitoring simple et puissante](monitoring/lgtm/simple_monitoring_stack.md)
-- [Grafana Alloy — remplacer Promtail (et tout le reste)](monitoring/lgtm/alloy.md)
+- [Grafana Alloy - remplacer Promtail (et tout le reste)](monitoring/lgtm/alloy.md)
 - [Thanos at scale : archi, perf et FinOps](monitoring/lgtm/thanos.md)
 - [Générer des alertes depuis Loki](monitoring/lgtm/loki_alerting.md)
 - [Écrire une métrique custom pour node_exporter](monitoring/lgtm/custom_metrics_nodeexporter.md)

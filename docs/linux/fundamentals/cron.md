@@ -1,5 +1,5 @@
 ---
-description: Planifier des tâches avec cron — crontab, dossiers cron.* et variables d'environnement
+description: Planifier des tâches avec cron - crontab, dossiers cron.* et variables d'environnement
 tags:
   - cron
 ---

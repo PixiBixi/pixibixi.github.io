@@ -1,5 +1,5 @@
 ---
-description: Créer et gérer un cluster Proxmox — redondance réseau, quorum et migration de VMs
+description: Créer et gérer un cluster Proxmox - redondance réseau, quorum et migration de VMs
 tags:
   - Proxmox
   - HA

@@ -10,7 +10,7 @@ tags:
 
 Par défaut Kubernetes n'empêche rien : un pod sans limits, un container `privileged`,
 un Service NodePort exposé sur tous les nœuds... Avant v1.30 on réglait ça avec [Kyverno](https://kyverno.io/),
-OPA Gatekeeper, ou un webhook maison — tous avec leur lot d'infra à opérer.
+OPA Gatekeeper, ou un webhook maison - tous avec leur lot d'infra à opérer.
 
 Depuis v1.30 c'est natif avec **ValidatingAdmissionPolicy** et du CEL.
 
@@ -19,8 +19,8 @@ Depuis v1.30 c'est natif avec **ValidatingAdmissionPolicy** et du CEL.
 
 2 ressources à connaître :
 
-- `ValidatingAdmissionPolicy` — la règle (quoi vérifier, comment)
-- `ValidatingAdmissionPolicyBinding` — le binding (où l'appliquer, comment réagir)
+- `ValidatingAdmissionPolicy` - la règle (quoi vérifier, comment)
+- `ValidatingAdmissionPolicyBinding` - le binding (où l'appliquer, comment réagir)
 
 ## Structure de base
 
@@ -74,7 +74,7 @@ spec:
 | --- | --- |
 | `object` | La ressource en cours de création/modification |
 | `oldObject` | L'ancienne version de la ressource (UPDATE uniquement) |
-| `request` | L'AdmissionRequest — contient `request.userInfo`, `request.operation`… |
+| `request` | L'AdmissionRequest - contient `request.userInfo`, `request.operation`… |
 | `params` | La ressource de paramètres liée via `paramRef` (si configurée) |
 
 ## Exemples pratiques
@@ -106,7 +106,7 @@ spec:
 
 ### Bloquer les Services NodePort
 
-Un NodePort ouvre un port sur chaque nœud du cluster — c'est une faille potentielle.
+Un NodePort ouvre un port sur chaque nœud du cluster - c'est une faille potentielle.
 Dans 99.9% des cas on veut un LoadBalancer devant.
 
 ```yaml
@@ -155,7 +155,7 @@ EOF
 
 ### Limiter aux registries autorisés (avec params)
 
-On passe la liste des registries via une ConfigMap — ça évite de modifier la policy pour changer la liste.
+On passe la liste des registries via une ConfigMap - ça évite de modifier la policy pour changer la liste.
 
 ```yaml
 apiVersion: admissionregistration.k8s.io/v1
@@ -259,7 +259,7 @@ validations:
 
 ## auditAnnotations : savoir ce qui pose problème
 
-En mode `Audit`, on sait qu'il y a des violations — mais pas lesquelles. `auditAnnotations` permet de logger des données précises dans les audit logs du kube-apiserver via une expression CEL, sans bloquer la requête.
+En mode `Audit`, on sait qu'il y a des violations - mais pas lesquelles. `auditAnnotations` permet de logger des données précises dans les audit logs du kube-apiserver via une expression CEL, sans bloquer la requête.
 
 Utile pendant la phase de rollout : avant de passer en `Deny`, on sait exactement quels workloads ont un problème et pourquoi.
 
@@ -307,11 +307,11 @@ Dans les audit logs :
 }
 ```
 
-Sans `requests`, le scheduler place le pod à l'aveugle — c'est le cas le plus dangereux, bien plus que l'absence de `limits`.
+Sans `requests`, le scheduler place le pod à l'aveugle - c'est le cas le plus dangereux, bien plus que l'absence de `limits`.
 
 ## Exclure des namespaces système
 
-`matchConditions` filtre les requêtes avant évaluation — utile pour exclure `kube-system`, `kube-public` ou les namespaces d'opérateurs :
+`matchConditions` filtre les requêtes avant évaluation - utile pour exclure `kube-system`, `kube-public` ou les namespaces d'opérateurs :
 
 ```yaml
 spec:
@@ -327,7 +327,7 @@ spec:
 
 Ne jamais passer directement en `Deny` en production. Les 3 étapes :
 
-**1. Audit** — log les violations sans bloquer
+**1. Audit** - log les violations sans bloquer
 
 ```yaml
 validationActions: [Audit]
@@ -335,7 +335,7 @@ validationActions: [Audit]
 
 Les violations apparaissent dans les audit logs du kube-apiserver sous l'annotation `validation.policy.admission.k8s.io/validation_failure`.
 
-**2. Warn** — retourne un warning HTTP au client, visible dans `kubectl`
+**2. Warn** - retourne un warning HTTP au client, visible dans `kubectl`
 
 ```yaml
 validationActions: [Warn, Audit]
@@ -346,7 +346,7 @@ Warning: require-resource-limits: Tous les containers doivent avoir des limits C
 deployment.apps/my-app created
 ```
 
-**3. Deny** — bloque effectivement la requête
+**3. Deny** - bloque effectivement la requête
 
 ```yaml
 validationActions: [Deny]
@@ -359,11 +359,11 @@ validationActions: [Deny]
 
 `failurePolicy` contrôle ce qui se passe si la policy elle-même plante (erreur d'évaluation CEL, param introuvable...) :
 
-- `Fail` (défaut) — l'erreur bloque la requête
-- `Ignore` — l'erreur est ignorée, la requête passe
+- `Fail` (défaut) - l'erreur bloque la requête
+- `Ignore` - l'erreur est ignorée, la requête passe
 
 En général, `Fail` est le bon choix pour du security enforcement. `Ignore` peut servir pendant la phase de test sur des policies expérimentales.
 
 ## Voir aussi
 
-- [HAProxy : Reverse proxy](../../web/haproxy/overview.md) — load balancer L4/L7 en production, alternative aux Services NodePort
+- [HAProxy : Reverse proxy](../../web/haproxy/overview.md) - load balancer L4/L7 en production, alternative aux Services NodePort

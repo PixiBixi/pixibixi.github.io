@@ -1,5 +1,5 @@
 ---
-description: Installer plusieurs logiciels en une seule fois avec Ninite — automatiser le setup d'un poste Windows
+description: Installer plusieurs logiciels en une seule fois avec Ninite - automatiser le setup d'un poste Windows
 tags:
   - Windows
 ---

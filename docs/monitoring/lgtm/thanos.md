@@ -99,8 +99,8 @@ Mais attention à ce qu'on y lira. Le querier global attend **tous** les stacks 
 On a chassé longtemps des requêtes coûteuses avant de comprendre que les plus lentes étaient triviales. Un sélecteur sur 9 séries qui met 26 secondes ne coûte rien à calculer, il attend. Le levier n'est alors ni le cache ni le sizing : c'est de réduire le fan-out, en s'assurant que les external labels annoncés par chaque stack permettent au querier global d'élaguer ceux qui ne peuvent pas matcher, ou d'accepter `--query.partial-response` pour borner la queue.
 
 !!! warning "Partial response et alerting ne font pas bon ménage"
-    Si les principaux appelants sont des règles d'alerte — et c'est souvent le cas, elles
-    tournent en continu là où un dashboard n'est ouvert que par intermittence — une réponse
+    Si les principaux appelants sont des règles d'alerte - et c'est souvent le cas, elles
+    tournent en continu là où un dashboard n'est ouvert que par intermittence - une réponse
     incomplète peut sous-rapporter silencieusement et ne pas déclencher. Borner la latence au
     prix d'une alerte qui rate n'est pas un bon échange.
 
@@ -423,7 +423,7 @@ successfully synchronized block metadata  duration=12ms  cached=0  returned=0  p
 
 73 blocks listés, aucun retourné. La store gateway reste `Ready`, ses probes sont vertes,
 elle ne redémarre pas, et elle ne sert plus une seule donnée historique, ce qui fait que les
-requêtes longues renvoient du résultat partiel sans erreur — bien pire qu'une panne franche,
+requêtes longues renvoient du résultat partiel sans erreur - bien pire qu'une panne franche,
 parce que rien n'alerte et que les chiffres affichés restent plausibles.
 
 Le piège de validation est que le mécanisme marche parfaitement sur une instance **dédiée**.
@@ -436,7 +436,7 @@ lit dans le code du `CachingBucket` de sa version.
 
 La taille à viser est le **working set sur la fenêtre du TTL**, pas la taille actuelle du cache, qui ne dit que le plafond qu'on lui a donné. Le proxy se calcule sur le volume d'admission : `increase(items_added_total[TTL])` multiplié par la taille moyenne d'une entrée. Deux pièges.
 
-Le premier est de lire ça sur un instantané. Un `increase` pris à un moment donné est un point au hasard, et il sous-estime lourdement les stacks en dents de scie : sur l'un des nôtres, 0,24 Gio en snapshot contre 9 Gio au P95 du glissant sur 24 h. Facteur 37. Il faut le **P95 de la fenêtre TTL glissante sur 24 h au minimum**, donc une subquery avec un pas explicite — une subquery sans pas est un moyen fiable de faire tomber le querier.
+Le premier est de lire ça sur un instantané. Un `increase` pris à un moment donné est un point au hasard, et il sous-estime lourdement les stacks en dents de scie : sur l'un des nôtres, 0,24 Gio en snapshot contre 9 Gio au P95 du glissant sur 24 h. Facteur 37. Il faut le **P95 de la fenêtre TTL glissante sur 24 h au minimum**, donc une subquery avec un pas explicite - une subquery sans pas est un moyen fiable de faire tomber le querier.
 
 Le second est le facteur de déduplication. Il est tentant de diviser par le nombre de pods, mais des store gateways shardées cachent des blocks **disjoints** : seuls les replicas d'un même shard cachent la même chose. Avec 3 shards et 2 replicas, on divise par 2, pas par 6. Se tromper là sous-dimensionne d'un facteur 3.
 
@@ -644,6 +644,6 @@ helm:
 
 ## Voir aussi
 
-- [Grafana Alloy](alloy.md) — la collecte en amont, le `remote_write` pointe vers Receive au lieu de Mimir
-- [GKE Spot Nodes](../../cloud/gcloud/spot_nodes.md) — la même ligne de partage entre workloads évictables et critiques
-- [Netdata, Prometheus et Grafana](simple_monitoring_stack.md) — la stack de départ, avant que la rétention devienne un problème
+- [Grafana Alloy](alloy.md) - la collecte en amont, le `remote_write` pointe vers Receive au lieu de Mimir
+- [GKE Spot Nodes](../../cloud/gcloud/spot_nodes.md) - la même ligne de partage entre workloads évictables et critiques
+- [Netdata, Prometheus et Grafana](simple_monitoring_stack.md) - la stack de départ, avant que la rétention devienne un problème

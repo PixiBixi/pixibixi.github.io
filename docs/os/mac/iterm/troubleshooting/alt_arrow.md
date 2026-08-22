@@ -1,5 +1,5 @@
 ---
-description: Corriger le raccourci Alt+Flèche dans iTerm2 — activer le preset Natural Text Editing
+description: Corriger le raccourci Alt+Flèche dans iTerm2 - activer le preset Natural Text Editing
 tags:
   - iTerm2
   - macOS

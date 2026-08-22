@@ -69,7 +69,7 @@ considérable.
 ## Précautions
 
 !!! warning
-    ControlMaster a des limitations — les transferts `rsync` ou `scp` volumineux peuvent échouer. Désactiver ponctuellement avec `ControlMaster none` pour ces opérations.
+    ControlMaster a des limitations - les transferts `rsync` ou `scp` volumineux peuvent échouer. Désactiver ponctuellement avec `ControlMaster none` pour ces opérations.
 
 ## Troubleshooting
 

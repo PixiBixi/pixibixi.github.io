@@ -18,8 +18,8 @@ l'avantage du LLDP est qu'il est compatible sur toutes les plateformes sans modi
 
 Le protocole LLDP permet de retrouver des propriétés intrinsèques à chaque équipement :
 
-* **Vérifier l'état physique d'une connexion** — si le LLDP passe, l'interface est en *Up/Up*
-* **Obtenir des informations sur son voisin** — adresse IP, version...
+* **Vérifier l'état physique d'une connexion** - si le LLDP passe, l'interface est en *Up/Up*
+* **Obtenir des informations sur son voisin** - adresse IP, version...
 * **Découvrir la topologie du réseau** en passant de machine en machine
 
 ## Utilisation
@@ -106,5 +106,5 @@ exit
 
 ### Timers LLDP
 
-* `lldp holdtime <x>` — durée de vie de l'information envoyée (10-255)
-* `lldp timer <x>` — période de renvoi des informations (5-254)
+* `lldp holdtime <x>` - durée de vie de l'information envoyée (10-255)
+* `lldp timer <x>` - période de renvoi des informations (5-254)

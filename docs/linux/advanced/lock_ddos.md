@@ -1,5 +1,5 @@
 ---
-description: Mitigation d'un DDoS Layer 7 — identification, blocage réseau, filtrage HAProxy et NGINX, tuning PHP-FPM et arbre de décision.
+description: Mitigation d'un DDoS Layer 7 - identification, blocage réseau, filtrage HAProxy et NGINX, tuning PHP-FPM et arbre de décision.
 tags:
   - Security
   - DDoS
@@ -82,7 +82,7 @@ Voir [ipset](../security/ipset.md) pour la gestion persistante des sets.
 
 ## Étape 3 : filtrage HAProxy
 
-HAProxy est la première couche applicative — c'est là qu'on filtre le plus
+HAProxy est la première couche applicative - c'est là qu'on filtre le plus
 efficacement avec le moins d'impact sur les workers backend.
 
 ### Rate limiting par IP

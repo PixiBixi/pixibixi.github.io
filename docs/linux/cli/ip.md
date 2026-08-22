@@ -1,5 +1,5 @@
 ---
-description: Remplacer ifconfig par ip — configuration réseau, routes, ARP et statistiques
+description: Remplacer ifconfig par ip - configuration réseau, routes, ARP et statistiques
 tags:
   - ip
   - Networking
@@ -161,5 +161,5 @@ ip link set dev eth0 arp off
 
 ## Voir aussi
 
-- [La commande ss](ss.md) — inspecter les connexions réseau (remplace netstat)
-- [Simuler des conditions réseau sur Linux](limit_bandwidth.md) — utilise les interfaces ip pour contrôler la bande passante
+- [La commande ss](ss.md) - inspecter les connexions réseau (remplace netstat)
+- [Simuler des conditions réseau sur Linux](limit_bandwidth.md) - utilise les interfaces ip pour contrôler la bande passante

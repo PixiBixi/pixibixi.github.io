@@ -1,5 +1,5 @@
 ---
-description: Mettre à jour PostgreSQL vers une nouvelle version majeure avec pg_upgrade — migration des données et configuration
+description: Mettre à jour PostgreSQL vers une nouvelle version majeure avec pg_upgrade - migration des données et configuration
 tags:
   - PostgreSQL
 ---

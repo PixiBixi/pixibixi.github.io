@@ -1,5 +1,5 @@
 ---
-description: Déployer un cluster Galera MySQL haute disponibilité — réplication synchrone multi-maître avec détection de défaillance
+description: Déployer un cluster Galera MySQL haute disponibilité - réplication synchrone multi-maître avec détection de défaillance
 tags:
   - MySQL
   - Galera
@@ -8,7 +8,7 @@ tags:
 
 # Créer son cluster Galera
 
-Réseau high speed (Gbps minimum) non routé, latence minimale, disques SSD — c'est la base.
+Réseau high speed (Gbps minimum) non routé, latence minimale, disques SSD - c'est la base.
 Chaque nœud est master : réplication multi-master synchrone. On ne load-balance **pas** les écritures,
 uniquement les lectures.
 
@@ -88,7 +88,7 @@ node3$ systemctl start mariadb
 `wsrep_cluster_size` doit passer à 3.
 
 !!! warning "InnoDB uniquement"
-    Galera fonctionne **uniquement** en InnoDB. MyISAM est encore expérimental — à éviter en production.
+    Galera fonctionne **uniquement** en InnoDB. MyISAM est encore expérimental - à éviter en production.
 
 ## Troubleshooting
 
@@ -102,7 +102,7 @@ rm -rf /var/lib/mysql && systemctl start mariadb
 
 Tout est re-importé depuis le nœud primary actuel via SST.
 
-### Cluster arrêté proprement — safe_to_bootstrap
+### Cluster arrêté proprement - safe_to_bootstrap
 
 Si tous les nœuds sont arrêtés proprement (ex: maintenance), Galera refuse de redémarrer
 sans savoir quel nœud a les données les plus récentes.

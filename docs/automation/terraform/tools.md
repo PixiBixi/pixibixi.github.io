@@ -1,5 +1,5 @@
 ---
-description: Outils essentiels Terraform — tfswitch, terraform-docs, tflint, tfsec, checkov et Infracost pour le versionning, la sécurité et le coût
+description: Outils essentiels Terraform - tfswitch, terraform-docs, tflint, tfsec, checkov et Infracost pour le versionning, la sécurité et le coût
 tags:
   - Terraform
   - FinOps
@@ -68,5 +68,5 @@ la facture totale. Branché en commentaire automatique sur une MR, il évite le 
 
 ## Voir aussi
 
-* [Cheatsheet Terraform](cheatsheet.md) — commandes essentielles à connaître
-* [Accélerer Terraform](speedup.md) — parallélisme et optimisations de performance
+* [Cheatsheet Terraform](cheatsheet.md) - commandes essentielles à connaître
+* [Accélerer Terraform](speedup.md) - parallélisme et optimisations de performance

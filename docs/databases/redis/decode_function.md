@@ -12,7 +12,7 @@ Redis supporte les fonctions Lua depuis Redis 7.0 (via `FUNCTION LOAD`). Pour in
 FUNCTION LIST WITHCODE
 ```
 
-`WITHCODE` inclut le code source de chaque fonction — pratique pour auditer ce qui tourne en prod.
+`WITHCODE` inclut le code source de chaque fonction - pratique pour auditer ce qui tourne en prod.
 
 Exemple de sortie :
 

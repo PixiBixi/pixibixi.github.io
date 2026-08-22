@@ -1,20 +1,20 @@
 ---
-description: Capacité réelle des nodes GKE — CPU et RAM allouables après réservations système, par taille de node.
+description: Capacité réelle des nodes GKE - CPU et RAM allouables après réservations système, par taille de node.
 tags:
   - GKE
   - FinOps
 ---
 
-# GKE — Capacité réelle des nodes
+# GKE - Capacité réelle des nodes
 
 Sur GKE, le node size annoncé et ce que K8S voit réellement sont deux choses différentes.
 GKE réserve une part du CPU et de la RAM pour ses composants système, et ce n'est pas négligeable sur les petits gabarits.
 
-Source : [GKE — Plan node sizes / Resource reservations](https://docs.cloud.google.com/kubernetes-engine/docs/concepts/plan-node-sizes#resource_reservations)
+Source : [GKE - Plan node sizes / Resource reservations](https://docs.cloud.google.com/kubernetes-engine/docs/concepts/plan-node-sizes#resource_reservations)
 
 !!! warning "Chiffres valables en avril 2026"
     Ces valeurs reflètent la documentation GKE au moment de l'écriture de cet article.
-    GCP peut modifier les formules de réservation à tout moment — vérifier la source officielle ci-dessus avant de dimensionner en production.
+    GCP peut modifier les formules de réservation à tout moment - vérifier la source officielle ci-dessus avant de dimensionner en production.
 
 ## Ce qui est réservé
 
@@ -56,4 +56,4 @@ La RAM, en revanche, pique sur les petits nodes : sur un 4 GiB, on perd 27,5% av
 
 ## Voir aussi
 
-- [GKE Spot Nodes](spot_nodes.md) — Réduire les coûts en complément du dimensionnement
+- [GKE Spot Nodes](spot_nodes.md) - Réduire les coûts en complément du dimensionnement

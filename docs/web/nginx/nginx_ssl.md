@@ -24,5 +24,5 @@ fonctionnement du site web.
 
 ## Voir aussi
 
-* [Installer son Serveur Web : NGINX, PHP-FPM et MariaDB](installation.md) — Configuration complète de nginx avec SSL
-* [Être encore plus safe en customisant son header Server NGINX](custom_server_header.md) — Sécurité additionnelle via les headers
+* [Installer son Serveur Web : NGINX, PHP-FPM et MariaDB](installation.md) - Configuration complète de nginx avec SSL
+* [Être encore plus safe en customisant son header Server NGINX](custom_server_header.md) - Sécurité additionnelle via les headers

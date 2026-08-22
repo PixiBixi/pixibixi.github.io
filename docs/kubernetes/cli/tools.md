@@ -42,7 +42,7 @@ un bon overview de notre cluster rapidement
 
 ## Voir aussi
 
-* [Commandes utiles](useful_commands.md) — gestion courante des pods et déploiements
-* [Commandes avancées](advanced_commands.md) — requêtes jsonpath et jq avancées
-* [Plugins Krew](krew_plugins.md) — plugins kubectl pour étendre les fonctionnalités
-* [Gérer son kubeconfig](kubeconfig.md) — kubectx, kubeswitch et konfig pour les contextes
+* [Commandes utiles](useful_commands.md) - gestion courante des pods et déploiements
+* [Commandes avancées](advanced_commands.md) - requêtes jsonpath et jq avancées
+* [Plugins Krew](krew_plugins.md) - plugins kubectl pour étendre les fonctionnalités
+* [Gérer son kubeconfig](kubeconfig.md) - kubectx, kubeswitch et konfig pour les contextes

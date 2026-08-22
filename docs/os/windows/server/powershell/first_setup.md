@@ -1,5 +1,5 @@
 ---
-description: Configuration initiale d'un Windows Server — renommer le serveur et l'intégrer à un domaine AD
+description: Configuration initiale d'un Windows Server - renommer le serveur et l'intégrer à un domaine AD
 tags:
   - Windows Server
   - PowerShell

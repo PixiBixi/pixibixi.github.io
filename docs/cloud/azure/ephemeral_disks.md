@@ -1,5 +1,5 @@
 ---
-description: Utiliser les disques éphémères Azure pour réduire les coûts sur les VMs Spot — configuration et contraintes
+description: Utiliser les disques éphémères Azure pour réduire les coûts sur les VMs Spot - configuration et contraintes
 tags:
   - Azure
   - Disk

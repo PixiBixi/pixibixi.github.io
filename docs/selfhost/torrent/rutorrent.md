@@ -1,5 +1,5 @@
 ---
-description: Déployer ruTorrent avec Docker — interface web pour rTorrent en configuration multi-utilisateur
+description: Déployer ruTorrent avec Docker - interface web pour rTorrent en configuration multi-utilisateur
 tags:
   - ruTorrent
   - BitTorrent

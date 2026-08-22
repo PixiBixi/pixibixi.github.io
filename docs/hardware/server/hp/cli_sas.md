@@ -1,5 +1,5 @@
 ---
-description: Gérer les contrôleurs RAID HP Smart Array en CLI — configuration, état et opérations sur disques
+description: Gérer les contrôleurs RAID HP Smart Array en CLI - configuration, état et opérations sur disques
 tags:
   - HP
   - SAS

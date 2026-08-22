@@ -44,5 +44,5 @@ La communauté prometheus met en libre services [quelques scripts](https://githu
 
 ## Voir aussi
 
-- [Netdata, Prometheus et Grafana : une stack de monitoring simple et puissante](simple_monitoring_stack.md) — architecture complète de collecte des métriques
-- [Grafana Alloy](alloy.md) — alternative moderne pour collecter logs et métriques
+- [Netdata, Prometheus et Grafana : une stack de monitoring simple et puissante](simple_monitoring_stack.md) - architecture complète de collecte des métriques
+- [Grafana Alloy](alloy.md) - alternative moderne pour collecter logs et métriques

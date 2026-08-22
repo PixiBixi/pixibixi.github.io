@@ -1,5 +1,5 @@
 ---
-description: Récupération GRUB depuis un live CD — procédure chroot, variantes BIOS et UEFI, gestion LVM, erreurs courantes et checklist.
+description: Récupération GRUB depuis un live CD - procédure chroot, variantes BIOS et UEFI, gestion LVM, erreurs courantes et checklist.
 tags:
   - GRUB
   - Recovery

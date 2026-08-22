@@ -1,5 +1,5 @@
 ---
-description: Streamer sa musique auto-hébergée avec Koel — installation Docker ou manuelle, configuration et transcodage FLAC
+description: Streamer sa musique auto-hébergée avec Koel - installation Docker ou manuelle, configuration et transcodage FLAC
 tags:
   - Koel
   - Music
@@ -126,7 +126,7 @@ Pour une install sans build des assets (archive pré-compilée) :
 composer koel:init -- --no-assets
 ```
 
-Le compte admin par défaut : `admin@koel.dev` / `KoelIsCool` — à changer immédiatement.
+Le compte admin par défaut : `admin@koel.dev` / `KoelIsCool` - à changer immédiatement.
 
 Les variables essentielles à vérifier dans `.env` après init :
 

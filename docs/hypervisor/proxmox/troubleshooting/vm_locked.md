@@ -10,7 +10,7 @@ tags:
 Sous promxox, de ma faible expérience, il est fréquent d'avoir un
 problème de VM locked. Pour cela, 2 moyens
 
-!!! warning "Suppression manuelle — dernier recours"
+!!! warning "Suppression manuelle - dernier recours"
     Supprimer le fichier de lock à la main. S'assurer que la VM n'est pas en cours de migration ou de snapshot.
 
 Le premier est de supprimer le fichier de lock à la main :

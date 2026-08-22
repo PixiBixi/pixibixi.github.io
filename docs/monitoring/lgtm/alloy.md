@@ -1,14 +1,14 @@
 ---
-description: Grafana Alloy — le collecteur universel qui remplace Promtail et Grafana Agent. Config, pipelines logs/métriques/traces, migration depuis Promtail.
+description: Grafana Alloy - le collecteur universel qui remplace Promtail et Grafana Agent. Config, pipelines logs/métriques/traces, migration depuis Promtail.
 tags:
   - Alloy
   - Promtail
   - OpenTelemetry
 ---
 
-# Grafana Alloy — remplacer Promtail (et tout le reste)
+# Grafana Alloy - remplacer Promtail (et tout le reste)
 
-Promtail est en fin de vie. Grafana Agent aussi. Alloy est le successeur officiel depuis avril 2024 — un collecteur universel qui gère logs, métriques et traces dans un seul binaire avec un langage de config déclaratif. Alloy complète la [stack LGTM](simple_monitoring_stack.md) en unifiant la collecte des données.
+Promtail est en fin de vie. Grafana Agent aussi. Alloy est le successeur officiel depuis avril 2024 - un collecteur universel qui gère logs, métriques et traces dans un seul binaire avec un langage de config déclaratif. Alloy complète la [stack LGTM](simple_monitoring_stack.md) en unifiant la collecte des données.
 
 La syntaxe change complètement, mais la migration est assistée.
 
@@ -24,9 +24,9 @@ loki.source.file "app_logs" {
 }
 ```
 
-On connecte les composants en passant les exports d'un composant comme argument d'un autre — `loki.write.default.receiver` est l'export `receiver` du composant `loki.write` nommé `default`.
+On connecte les composants en passant les exports d'un composant comme argument d'un autre - `loki.write.default.receiver` est l'export `receiver` du composant `loki.write` nommé `default`.
 
-L'UI de debug est dispo sur `http://localhost:12345` — elle affiche le graphe des composants et leur état en temps réel.
+L'UI de debug est dispo sur `http://localhost:12345` - elle affiche le graphe des composants et leur état en temps réel.
 
 ## Installation
 
@@ -84,7 +84,7 @@ alloy convert \
   promtail-config.yaml
 ```
 
-Le résultat est fonctionnel mais souvent verbeux — ça vaut le coup de simplifier à la main ensuite. La commande supporte aussi `--source-format=static` (Grafana Agent static mode).
+Le résultat est fonctionnel mais souvent verbeux - ça vaut le coup de simplifier à la main ensuite. La commande supporte aussi `--source-format=static` (Grafana Agent static mode).
 
 ## Pipelines
 
@@ -159,7 +159,7 @@ loki.write "default" {
 
 ### Métriques → Prometheus / Mimir
 
-Alloy embarque [27+ exporters Prometheus intégrés](https://grafana.com/docs/alloy/latest/reference/components/prometheus/) — `unix` (node_exporter), `mysql`, `postgres`, `redis`, `kafka`, `elasticsearch`, `blackbox`... — pas besoin de binaire séparé.
+Alloy embarque [27+ exporters Prometheus intégrés](https://grafana.com/docs/alloy/latest/reference/components/prometheus/) : `unix` (node_exporter), `mysql`, `postgres`, `redis`, `kafka`, `elasticsearch`, `blackbox`... Pas besoin de binaire séparé.
 
 Pour collecter les métriques système avec l'exporter Unix intégré :
 
@@ -185,7 +185,7 @@ prometheus.remote_write "mimir" {
     (`http://thanos-receive:19291/api/v1/receive`). Tout le reste de la config Alloy
     est identique. Voir [Thanos at scale](thanos.md).
 
-Les métriques de l'exporter ne passent pas par `/metrics` mais par l'API composant — remplacer `node` par le label utilisé dans la config :
+Les métriques de l'exporter ne passent pas par `/metrics` mais par l'API composant - remplacer `node` par le label utilisé dans la config :
 
 ```bash
 curl -s http://localhost:12345/api/v0/component/prometheus.exporter.unix.node/metrics | head -20
@@ -215,7 +215,7 @@ prometheus.scrape "k8s_services" {
 
 ### Prometheus Operator (ServiceMonitor / PodMonitor)
 
-Si Prometheus Operator est déjà en place, les équipes définissent leurs targets via des CRDs `ServiceMonitor` et `PodMonitor` — Alloy peut les lire directement. L'intérêt : migrer de Prometheus vers Alloy + Mimir sans toucher aux configs des applications.
+Si Prometheus Operator est déjà en place, les équipes définissent leurs targets via des CRDs `ServiceMonitor` et `PodMonitor` - Alloy peut les lire directement. L'intérêt : migrer de Prometheus vers Alloy + Mimir sans toucher aux configs des applications.
 
 ```alloy
 prometheus.operator.servicemonitors "default" {
@@ -249,7 +249,7 @@ prometheus.operator.servicemonitors "apps" {
 }
 ```
 
-En mode clustered (plusieurs instances Alloy), le bloc `clustering` distribue les targets par consistent hashing — chaque instance scrape une partie des ServiceMonitors :
+En mode clustered (plusieurs instances Alloy), le bloc `clustering` distribue les targets par consistent hashing - chaque instance scrape une partie des ServiceMonitors :
 
 ```alloy
 prometheus.operator.servicemonitors "apps" {
@@ -284,7 +284,7 @@ otelcol.exporter.otlp "tempo" {
 
 ## Alerting avec Mimir
 
-Sans Prometheus local, l'évaluation des règles PromQL est assurée par le **Mimir Ruler**. Alloy synchronise les CRDs Prometheus Operator vers Mimir — les équipes continuent de déployer leurs `PrometheusRule` et `AlertmanagerConfig` sans rien changer.
+Sans Prometheus local, l'évaluation des règles PromQL est assurée par le **Mimir Ruler**. Alloy synchronise les CRDs Prometheus Operator vers Mimir - les équipes continuent de déployer leurs `PrometheusRule` et `AlertmanagerConfig` sans rien changer.
 
 ### Règles (PrometheusRule → Mimir Ruler)
 
@@ -310,7 +310,7 @@ mimir.rules.kubernetes "default" {
 }
 ```
 
-En multi-tenant, `tenant_id` est obligatoire — Mimir renvoie un `401` sans le header `X-Scope-OrgID` :
+En multi-tenant, `tenant_id` est obligatoire - Mimir renvoie un `401` sans le header `X-Scope-OrgID` :
 
 ```alloy
 mimir.rules.kubernetes "default" {
@@ -321,7 +321,7 @@ mimir.rules.kubernetes "default" {
 
 ### Config Alertmanager (AlertmanagerConfig → Mimir)
 
-`mimir.alerts.kubernetes` synchronise les `AlertmanagerConfig` CRDs vers l'Alertmanager de Mimir. Composant expérimental — passer `--stability.level=experimental` au lancement d'Alloy.
+`mimir.alerts.kubernetes` synchronise les `AlertmanagerConfig` CRDs vers l'Alertmanager de Mimir. Composant expérimental - passer `--stability.level=experimental` au lancement d'Alloy.
 
 ```alloy
 mimir.alerts.kubernetes "default" {
@@ -337,7 +337,7 @@ mimir.alerts.kubernetes "default" {
 ```
 
 !!! warning "RBAC requis"
-    Les deux composants accèdent à l'API Kubernetes — créer un `ClusterRole` avec accès en lecture sur les CRDs Prometheus Operator.
+    Les deux composants accèdent à l'API Kubernetes - créer un `ClusterRole` avec accès en lecture sur les CRDs Prometheus Operator.
 
 <!-- markdownlint-disable MD046 -->
 ```yaml
@@ -354,7 +354,7 @@ rules:
 
 ## Multiline parsing
 
-Par défaut, Alloy envoie une entrée Loki par ligne de log. Pour les stack traces et les exceptions, c'est la galère — chaque ligne arrive séparément, impossible de corréler.
+Par défaut, Alloy envoie une entrée Loki par ligne de log. Pour les stack traces et les exceptions, c'est la galère - chaque ligne arrive séparément, impossible de corréler.
 
 `stage.multiline` agrège les lignes jusqu'à ce que `firstline` matche à nouveau (ou que `max_wait_time` expire).
 
@@ -383,7 +383,7 @@ java.lang.NullPointerException: Cannot invoke method foo()
     at com.example.MyController.handle(MyController.java:18)
 ```
 
-Les lignes de continuation commencent par une tab ou `Caused by:` — le `firstline` matche le timestamp.
+Les lignes de continuation commencent par une tab ou `Caused by:` - le `firstline` matche le timestamp.
 
 ```alloy
 loki.process "java_logs" {
@@ -441,7 +441,7 @@ main.(*Server).handleRequest(...)
 panic: runtime error: index out of range [3] with length 3
 ```
 
-Les panics Go commencent par `goroutine` ou `panic:` — on matche les deux.
+Les panics Go commencent par `goroutine` ou `panic:` - on matche les deux.
 
 ```alloy
 loki.process "go_logs" {
@@ -457,13 +457,13 @@ loki.process "go_logs" {
 
 ### JSON avec stack trace dans un champ
 
-Pattern fréquent avec les frameworks modernes (Logback JSON, structlog...) — le log est une ligne JSON mais le champ `stack_trace` contient un multiline.
+Pattern fréquent avec les frameworks modernes (Logback JSON, structlog...) - le log est une ligne JSON mais le champ `stack_trace` contient un multiline.
 
 ```json
 {"time":"2024-01-15T10:23:45Z","level":"error","msg":"boom","stack_trace":"goroutine 1...\n\tat main.go:42"}
 ```
 
-Dans ce cas, **pas besoin de multiline** — chaque ligne est déjà un événement complet. On parse le JSON directement :
+Dans ce cas, **pas besoin de multiline** - chaque ligne est déjà un événement complet. On parse le JSON directement :
 
 ```alloy
 loki.process "json_logs" {
@@ -486,7 +486,7 @@ loki.process "json_logs" {
 
 ## Logs systemd (journal)
 
-Sur du bare metal ou des VMs, les logs applicatifs passent souvent par journald plutôt que des fichiers. `loki.source.journal` lit directement le journal systemd — pas besoin de `local.file_match`.
+Sur du bare metal ou des VMs, les logs applicatifs passent souvent par journald plutôt que des fichiers. `loki.source.journal` lit directement le journal systemd - pas besoin de `local.file_match`.
 
 ```alloy
 loki.source.journal "systemd" {
@@ -531,7 +531,7 @@ loki.write "default" {
 }
 ```
 
-Les labels disponibles depuis `__journal_*` correspondent aux champs journald standards — `_SYSTEMD_UNIT`, `_HOSTNAME`, `PRIORITY`, `_COMM`, etc. On les liste avec :
+Les labels disponibles depuis `__journal_*` correspondent aux champs journald standards - `_SYSTEMD_UNIT`, `_HOSTNAME`, `PRIORITY`, `_COMM`, etc. On les liste avec :
 
 ```bash
 journalctl -o json | head -1 | jq 'keys'
@@ -570,7 +570,7 @@ docker run -d \
   run /etc/alloy/config.alloy
 ```
 
-`/etc/machine-id` est requis — Alloy s'en sert pour identifier le journal local. Sans `--network host`, journald n'est pas accessible depuis le conteneur.
+`/etc/machine-id` est requis - Alloy s'en sert pour identifier le journal local. Sans `--network host`, journald n'est pas accessible depuis le conteneur.
 
 Pour vérifier que les logs arrivent bien dans Loki après démarrage :
 
@@ -584,7 +584,7 @@ curl -s http://loki:3100/loki/api/v1/labels | jq '.data'
 
 ## Helm values K8s (DaemonSet)
 
-Configuration minimale pour déployer Alloy en DaemonSet sur K8s — collecte des logs de tous les pods :
+Configuration minimale pour déployer Alloy en DaemonSet sur K8s - collecte des logs de tous les pods :
 
 ```yaml
 alloy:
@@ -664,8 +664,8 @@ Les erreurs courantes :
 
 ## Voir aussi
 
-- [Netdata, Prometheus et Grafana : une stack de monitoring simple et puissante](simple_monitoring_stack.md) — architecture et composants LGTM
-- [Générer des alertes depuis Loki](loki_alerting.md) — alerting basé sur les logs collectés
-- [Ecrire une métrique custom pour node_exporter](custom_metrics_nodeexporter.md) — métriques complémentaires via textfile
-- [Quelques tips pour la stack LGTM](tips_lgtm.md) — API calls pratiques
-- [Commandes utiles pour K8S](../../kubernetes/cli/useful_commands.md) — kubectl pour déboguer les pods Alloy en DaemonSet
+- [Netdata, Prometheus et Grafana : une stack de monitoring simple et puissante](simple_monitoring_stack.md) - architecture et composants LGTM
+- [Générer des alertes depuis Loki](loki_alerting.md) - alerting basé sur les logs collectés
+- [Ecrire une métrique custom pour node_exporter](custom_metrics_nodeexporter.md) - métriques complémentaires via textfile
+- [Quelques tips pour la stack LGTM](tips_lgtm.md) - API calls pratiques
+- [Commandes utiles pour K8S](../../kubernetes/cli/useful_commands.md) - kubectl pour déboguer les pods Alloy en DaemonSet

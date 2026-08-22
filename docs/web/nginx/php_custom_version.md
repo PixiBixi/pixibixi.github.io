@@ -26,4 +26,4 @@ apt update && apt install -y php8.2-fpm
 
 ## Voir aussi
 
-* [Installer son Serveur Web : NGINX, PHP-FPM et MariaDB](installation.md) — Configuration complète de PHP-FPM avec nginx
+* [Installer son Serveur Web : NGINX, PHP-FPM et MariaDB](installation.md) - Configuration complète de PHP-FPM avec nginx

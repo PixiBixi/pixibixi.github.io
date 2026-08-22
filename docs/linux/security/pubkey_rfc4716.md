@@ -19,7 +19,7 @@ ssh-keygen -e -f privkey
 ```
 
 !!! warning
-    Mettre la privkey en `chmod 400` — une clé privée world-readable est rejetée par ssh.
+    Mettre la privkey en `chmod 400` - une clé privée world-readable est rejetée par ssh.
 
 Il est également possible de faire la même commande pour la clé publique
 

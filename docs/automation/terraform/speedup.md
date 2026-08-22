@@ -1,5 +1,5 @@
 ---
-description: Accélérer Terraform — parallélisme, cache des providers et optimisations CI pour des déploiements plus rapides
+description: Accélérer Terraform - parallélisme, cache des providers et optimisations CI pour des déploiements plus rapides
 tags:
   - Terraform
 ---
@@ -10,7 +10,7 @@ Pour accélerer Terraform, quelques bonnes pratiques. Complémentaire aux [comma
 
 ## Parallélisme
 
-Par défaut, si on dispose d'un large nombre de ressources, le parallélisme de Terraform est seulement de 10 — Terraform ne va pas effectuer plus de 10 opérations en parallèle.
+Par défaut, si on dispose d'un large nombre de ressources, le parallélisme de Terraform est seulement de 10 - Terraform ne va pas effectuer plus de 10 opérations en parallèle.
 
 Pour ça, augmenter le `-parallelism` à une valeur supérieure.
 
@@ -108,5 +108,5 @@ terraform init  0.35s user 0.12s system 15% cpu 3.078 total
 
 ## Voir aussi
 
-* [Cheatsheet Terraform](cheatsheet.md) — commandes essentielles (plan, apply, etc.)
-* [Tools Terraform indispensables](tools.md) — tfswitch, tfsec et checkov
+* [Cheatsheet Terraform](cheatsheet.md) - commandes essentielles (plan, apply, etc.)
+* [Tools Terraform indispensables](tools.md) - tfswitch, tfsec et checkov

@@ -1,5 +1,5 @@
 ---
-description: Optimiser sa CI GitLab — buildah, fastzip, GIT_DEPTH, interruptible, cache policy, feature flags et DAG pour des pipelines plus rapides
+description: Optimiser sa CI GitLab - buildah, fastzip, GIT_DEPTH, interruptible, cache policy, feature flags et DAG pour des pipelines plus rapides
 tags:
   - GitLab CI
   - CI/CD
@@ -11,7 +11,7 @@ Les CI c'est bien, une CI optimisée c'est mieux. Voici quelques tips pour l'opt
 
 ## Clone superficiel
 
-Sur un gros repo, le `git clone` peut représenter 30-50% du temps d'un job. `GIT_DEPTH: 1` ne récupère que le dernier commit — suffisant dans 95% des cas.
+Sur un gros repo, le `git clone` peut représenter 30-50% du temps d'un job. `GIT_DEPTH: 1` ne récupère que le dernier commit - suffisant dans 95% des cas.
 
 ```yaml
 variables:
@@ -69,8 +69,8 @@ variables:
 
 2 autres feature flags utiles :
 
-- **`FF_TIMESTAMPS: "true"`** — ajoute des timestamps dans les logs, pratique pour identifier où un job rame
-- **`FF_ENABLE_BASH_EXIT_CODE_CHECK: "true"`** — force la détection d'erreur dans les pipes bash (`cmd1 | cmd2` masque sinon l'exit code de `cmd1`)
+- **`FF_TIMESTAMPS: "true"`** - ajoute des timestamps dans les logs, pratique pour identifier où un job rame
+- **`FF_ENABLE_BASH_EXIT_CODE_CHECK: "true"`** - force la détection d'erreur dans les pipes bash (`cmd1 | cmd2` masque sinon l'exit code de `cmd1`)
 
 ```yaml
 variables:
@@ -148,7 +148,7 @@ D'autres caches sont possibles pour d'autres langages (Go, Ruby...), voir la [do
 
 ## Cache policy
 
-Par défaut, chaque job fait un pull + push du cache. Les jobs de test ou de lint n'ont pas besoin de repusher — ils consomment juste le cache généré par le build.
+Par défaut, chaque job fait un pull + push du cache. Les jobs de test ou de lint n'ont pas besoin de repusher - ils consomment juste le cache généré par le build.
 
 ```yaml
 build-job:
@@ -180,7 +180,7 @@ test-job:
     NODE_ENV: test  # uniquement ce dont on a besoin
 ```
 
-## DAG — parallélisme réel
+## DAG - parallélisme réel
 
 Les stages s'exécutent en séquence même si les jobs sont indépendants. Avec `needs:`, on court-circuite les stages et on lance un job dès que ses dépendances sont terminées.
 

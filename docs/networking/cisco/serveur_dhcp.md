@@ -1,5 +1,5 @@
 ---
-description: Configurer un serveur DHCP directement sur un routeur Cisco IOS — pools, exclusions et options
+description: Configurer un serveur DHCP directement sur un routeur Cisco IOS - pools, exclusions et options
 tags:
   - Cisco
   - DHCP

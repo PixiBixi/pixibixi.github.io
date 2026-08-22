@@ -1,5 +1,5 @@
 ---
-description: Configuration de l'environnement de travail — zsh, aliases, fonctions, git, SSH, tmux et Wezterm via le dépôt dotfiles.
+description: Configuration de l'environnement de travail - zsh, aliases, fonctions, git, SSH, tmux et Wezterm via le dépôt dotfiles.
 tags:
   - Dotfiles
   - Zsh
@@ -72,7 +72,7 @@ HISTSIZE=1000000000
 SAVEHIST=1000000000
 ```
 
-Un milliard d'entrées — l'historique ne se perd plus jamais.
+Un milliard d'entrées - l'historique ne se perd plus jamais.
 
 ### Prompt
 
@@ -120,8 +120,8 @@ le détail de chaque outil.
 
 ## Voir aussi
 
-- [tmux](tmux.md) — configuration de session persistante
-- [Remplacer les commandes de base](replace_base_commands.md) — alternatives modernes à df, rm, ls, cat, etc.
+- [tmux](tmux.md) - configuration de session persistante
+- [Remplacer les commandes de base](replace_base_commands.md) - alternatives modernes à df, rm, ls, cat, etc.
 
 ### Kubernetes
 
@@ -151,7 +151,7 @@ alias pullrecursive='git pull --recurse-submodules'
 
 ## Fonctions personnalisées
 
-### `extract` — décompression universelle
+### `extract` - décompression universelle
 
 Identifie l'extension et applique la commande adaptée :
 
@@ -163,7 +163,7 @@ extract archive.rar      # rar x
 # ... gzip, bzip2, xz, lzma, uncompress
 ```
 
-### `kevents` — événements Kubernetes formatés
+### `kevents` - événements Kubernetes formatés
 
 Affiche les événements d'un cluster en tableau trié et paginé :
 
@@ -174,7 +174,7 @@ kevents
 
 Utilise `kubectl get events -o json | jq` + `column` + `less`.
 
-### `mergebranch` — merge GitLab via CLI
+### `mergebranch` - merge GitLab via CLI
 
 Approuve et merge la branche courante en une commande via `glab` :
 
@@ -241,7 +241,7 @@ L'identité (nom, email) change automatiquement selon le répertoire du projet.
     allowedSignersFile = ~/.ssh/allowed_signers
 ```
 
-La signature se fait via une clé SSH plutôt que GPG — plus simple à gérer.
+La signature se fait via une clé SSH plutôt que GPG - plus simple à gérer.
 
 ### Autres réglages notables
 

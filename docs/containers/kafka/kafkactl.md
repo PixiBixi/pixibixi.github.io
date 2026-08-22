@@ -1,5 +1,5 @@
 ---
-description: Administrer un cluster Kafka avec kafkactl — topics, partitions, réplication et opérations de maintenance
+description: Administrer un cluster Kafka avec kafkactl - topics, partitions, réplication et opérations de maintenance
 tags:
   - Kafka
   - kafkactl

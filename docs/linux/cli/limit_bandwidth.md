@@ -1,5 +1,5 @@
 ---
-description: Simuler des conditions réseau — latence, perte de paquets et limitation de bande passante
+description: Simuler des conditions réseau - latence, perte de paquets et limitation de bande passante
 tags:
   - tc
   - Bandwidth
@@ -89,4 +89,4 @@ On bride ici le traffic de eth0 en DL/UL a 1mbps
 
 ## Voir aussi
 
-- [Mémo sur la commande IP](ip.md) — configuration des interfaces réseau
+- [Mémo sur la commande IP](ip.md) - configuration des interfaces réseau

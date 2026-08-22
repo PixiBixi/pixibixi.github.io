@@ -1,5 +1,5 @@
 ---
-description: Déployer une stack de monitoring avec Prometheus, Grafana et Netdata sous Linux — installation, configuration des exporters et alerting.
+description: Déployer une stack de monitoring avec Prometheus, Grafana et Netdata sous Linux - installation, configuration des exporters et alerting.
 tags:
   - Prometheus
   - Grafana
@@ -560,10 +560,10 @@ La communauté Grafana met à votre disposition énormement de [dashboards](http
 
 ## Voir aussi
 
-* [Générer des alertes depuis Loki](loki_alerting.md) — alerting avec LogQL via AlertManager
-* [Ecrire une métrique custom pour node_exporter](custom_metrics_nodeexporter.md) — étendre les métriques collectées
-* [Grafana Alloy](alloy.md) — collecteur universel logs/métriques/traces
-* [Quelques tips pour la stack LGTM](tips_lgtm.md) — API calls et astuces
+* [Générer des alertes depuis Loki](loki_alerting.md) - alerting avec LogQL via AlertManager
+* [Ecrire une métrique custom pour node_exporter](custom_metrics_nodeexporter.md) - étendre les métriques collectées
+* [Grafana Alloy](alloy.md) - collecteur universel logs/métriques/traces
+* [Quelques tips pour la stack LGTM](tips_lgtm.md) - API calls et astuces
 
 ## Trucs & Astuces
 

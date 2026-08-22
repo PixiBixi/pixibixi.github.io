@@ -57,4 +57,4 @@ Pour information, **%a** a la vraie IP dans le cadre de l'utilisation de `remote
 
 ## Voir aussi
 
-* [Installer son Serveur Web : NGINX, PHP-FPM et MariaDB](installation.md) — Configuration nginx complète avec reverse proxy
+* [Installer son Serveur Web : NGINX, PHP-FPM et MariaDB](installation.md) - Configuration nginx complète avec reverse proxy
