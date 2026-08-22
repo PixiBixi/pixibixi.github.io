@@ -8,7 +8,7 @@ Senior Platform Engineer chez [Equativ](https://equativ.com), je gère au quotid
 
 Ce wiki existe depuis 2017. Au départ c'était des notes perso pour ne pas refaire deux fois la même recherche. Avec le temps ça a grossi - 240+ articles sur Linux, Kubernetes, Cloud, CI/CD, monitoring, réseaux.
 
-Le contenu est orienté pratique : commandes copy-pasteable, configs réelles, gotchas de prod. Pas de "introduction à Docker", pas de théorie.
+Le contenu est orienté pratique : commandes copy-pasteable, configs réelles, gotchas de prod. Du mémo de 10 lignes au tutoriel complet.
 
 ## Parcours
 
@@ -30,11 +30,30 @@ Le contenu est orienté pratique : commandes copy-pasteable, configs réelles, g
 
 ## Open source
 
-- [dockerfiles](https://github.com/PixiBixi/dockerfiles) - collection de Dockerfiles custom
-- [nginx-ensite](https://github.com/PixiBixi/nginx-ensite) - équivalent de a2ensite pour nginx
-- [Script-Debug-MonDedie](https://github.com/PixiBixi/Script-Debug-MonDedie) - outil de debug communautaire
-- [kubearch](https://github.com/PixiBixi/kubearch) - exporter Prometheus pour le support d'architecture des images K8s
-- [dotfiles](https://github.com/PixiBixi/dotfiles) - config Zsh, Neovim, Wezterm, tmux
+Les projets du moment :
+
+- [gopen](https://github.com/PixiBixi/gopen) (Go) : ouvre le repo git dans le browser sur
+  la branche et le dossier courants. Gère le fichier précis, la ligne ou la plage de lignes,
+  le choix du remote, la copie de l'URL sans ouvrir le browser, et parle GitHub, GitLab,
+  Bitbucket, Azure DevOps, Gitea, Gogs et CodeCommit.
+- [kubectl-klens](https://github.com/PixiBixi/kubectl-klens) (Go) : plugin kubectl
+  d'inspection de cluster en lecture seule. Un dispatcher, une vingtaine de raccourcis, les
+  formes singulier et pluriel interchangeables. Distribué via un index krew custom.
+- [kubearch](https://github.com/PixiBixi/kubearch) (Go) : exporter Prometheus qui remonte
+  les architectures supportées par chaque image du cluster, sans pull des layers. Il lit les
+  manifest lists depuis le registry. Pratique pour piloter une migration arm64 et repérer les
+  images qui bloquent.
+- [freshrss-summary](https://github.com/PixiBixi/freshrss-summary) (Python) : score et trie
+  les articles FreshRSS non lus par pertinence (SRE, Kubernetes, ArgoCD, Terraform).
+  FastAPI, SQLite et un chart Helm pour le déployer.
+- [dotfiles](https://github.com/PixiBixi/dotfiles) : config Zsh, Neovim, Wezterm, tmux.
+
+Les anciens, toujours en ligne :
+
+- [nginx-ensite](https://github.com/PixiBixi/nginx-ensite) : équivalent de a2ensite pour nginx.
+- [dockerfiles](https://github.com/PixiBixi/dockerfiles) : collection de Dockerfiles custom.
+- [Script-Debug-MonDedie](https://github.com/PixiBixi/Script-Debug-MonDedie) : outil de debug
+  écrit pour la communauté MonDedie, archivé depuis.
 
 ## Certifications
 
