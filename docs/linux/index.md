@@ -73,5 +73,6 @@ La section la plus dense du wiki. On y trouve les fondamentaux, les outils CLI, 
 - [Misc - Options de compilation du kernel](misc/find_kernel_options.md) - /proc/config.gz et /boot
 - [Misc - Métadonnées PDF](misc/info_about_pdf.md) - exiftool : auteur, dates, compression
 - [Misc - Sous-titres en CLI](misc/subs.md) - addic7ed-cli
+- [Misc - Installer Ruby](misc/install_ruby.md) - rbenv, ruby-build et switch de versions
 - [Distributions - Groupe wheel sous BSD](bsd/wheel_group.md) - autoriser su à un utilisateur
 - [Distributions - Dépôt EPEL](centos/add_epel_repositories.md) - epel-release sur RHEL, Rocky et AlmaLinux 8, 9 et 10

@@ -101,6 +101,7 @@ Le plan complet est ci-dessous, sinon la recherche fait le job.
 - [Convertir des .bin en .iso](linux/misc/convert_bin_to_iso.md)
 - [Monter une image ISO : Linux, Windows et macOS](linux/misc/mount_iso.md)
 - [Obtenir des informations sur vos PDF](linux/misc/info_about_pdf.md)
+- [Installer Ruby](linux/misc/install_ruby.md)
 
 ### Autres distributions
 
@@ -304,10 +305,9 @@ Le plan complet est ci-dessous, sinon la recherche fait le job.
 
 - [Benchmark avec une random query string](web/benchmark/benchmark_random_querystring.md)
 
-### TLS & Ruby
+### Troubleshooting
 
 - [Troubleshooting TLS : MOZILLA_PKIX_ERROR](web/troubleshooting.md)
-- [Installer Ruby](web/ruby/install.md)
 
 ## Networking
 

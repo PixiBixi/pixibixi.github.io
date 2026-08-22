@@ -31,6 +31,5 @@ La couche entre internet et les applications. nginx pour servir, HAProxy pour lo
 - [FTP](ftp.md) - configuration vsftpd
 - [WordPress - Migrer la BDD](wordpress/migrate_wordpress_sql.md) - changer de domaine via SQL
 - [WordPress - Tips SQL](wordpress/tips_sql.md) - requêtes utiles pour administrer WordPress
-- [Ruby - Installation](ruby/install.md) - installer Ruby avec rbenv
 - [Benchmark - Query string aléatoire](benchmark/benchmark_random_querystring.md) - contourner le cache pour bencher
 - [Troubleshooting](troubleshooting.md) - debug HTTP, certificats et problèmes courants
