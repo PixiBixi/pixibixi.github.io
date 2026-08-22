@@ -1,5 +1,5 @@
 ---
-description: Commandes kubectl avancées — jsonpath, jq, requêtes sur pods/nœuds et débogage de ressources Kubernetes
+description: Commandes kubectl avancées - jsonpath, jq, requêtes sur pods/nœuds et débogage de ressources Kubernetes
 tags:
   - kubectl
 ---
@@ -117,6 +117,6 @@ Le flag `-L` ajoute n'importe quel label en colonne. Bien pratique sur GKE pour 
 
 ## Voir aussi
 
-* [Commandes utiles](useful_commands.md) — gestion des pods, déploiements et débogage courant
-* [Outils pour K8S](tools.md) — kubectx, stern, kubecolor et autres utilitaires d'optimisation
-* [Plugins Krew](krew_plugins.md) — plugins essentiels pour étendre kubectl
+* [Commandes utiles](useful_commands.md) - gestion des pods, déploiements et débogage courant
+* [Outils pour K8S](tools.md) - kubectx, stern, kubecolor et autres utilitaires d'optimisation
+* [Plugins Krew](krew_plugins.md) - plugins essentiels pour étendre kubectl

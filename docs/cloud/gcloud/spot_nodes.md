@@ -1,5 +1,5 @@
 ---
-description: Réduire les coûts GKE avec les Spot VMs — configuration des node pools, taints, tolérances et bonnes pratiques pour la production.
+description: Réduire les coûts GKE avec les Spot VMs - configuration des node pools, taints, tolérances et bonnes pratiques pour la production.
 tags:
   - GKE
   - GCP
@@ -20,10 +20,10 @@ En pratique GCP les reprend rarement et conviennent à une majorité de workload
 
 On ne met jamais uniquement des Spot Nodes. Le pattern standard c'est deux pools :
 
-* Pool `system` — On-Demand, pour kube-system, ingress, monitoring, ArgoCD
-* Pool `spot` — Spot VM, pour les workloads applicatifs, batch, CI runners
+* Pool `system` - On-Demand, pour kube-system, ingress, monitoring, ArgoCD
+* Pool `spot` - Spot VM, pour les workloads applicatifs, batch, CI runners
 
-Le choix du type de machine (machine_type) impacte la capacité réelle allouable — voir [GKE — Capacité réelle des nodes](gke_node_capacity.md) pour bien dimensionner.
+Le choix du type de machine (machine_type) impacte la capacité réelle allouable, voir [GKE - Capacité réelle des nodes](gke_node_capacity.md) pour bien dimensionner.
 
 ```hcl
 resource "google_container_node_pool" "system" {
@@ -81,7 +81,7 @@ spec:
       effect: NoSchedule
   nodeSelector:
     cloud.google.com/gke-spot: "true"
-  # GCP donne 30s de préavis max — on reste en dessous
+  # GCP donne 30s de préavis max - on reste en dessous
   terminationGracePeriodSeconds: 25
   containers:
     - name: my-app
@@ -110,7 +110,7 @@ spec:
 
 La vraie question : **ce nœud détient-il un state critique non répliqué instantanément ?**
 
-Le tableau ci-dessous donne des exemples courants mais chaque appli est différente — à évaluer au cas par cas selon son architecture réelle.
+Le tableau ci-dessous donne des exemples courants mais chaque appli est différente - à évaluer au cas par cas selon son architecture réelle.
 
 | Workload | Spot OK ? | Pourquoi |
 |----------|:---------:|---------|
@@ -122,7 +122,7 @@ Le tableau ci-dessous donne des exemples courants mais chaque appli est différe
 | DB replica / standby | ✅ | Ne détient pas les écritures actives |
 | Prometheus avec `remote_write` | ✅ | State flushé en continu, perte négligeable |
 | Prometheus sans `remote_write` | ❌ | Perte de la TSDB locale à la reprise |
-| DB primary / leader | ❌ | Failover ~30-60s, GCP donne 30s — fenêtre trop serrée |
+| DB primary / leader | ❌ | Failover ~30-60s, GCP donne 30s - fenêtre trop serrée |
 | StatefulSet sans réplication | ❌ | State local non répliqué |
 
 ## Autoscaler : plusieurs pools pour limiter le risque
@@ -151,5 +151,5 @@ kubectl drain <node-name> --ignore-daemonsets --delete-emptydir-data --grace-per
 
 ## Voir aussi
 
-* [GKE — Capacité réelle des nodes](gke_node_capacity.md) — Dimensionner les nodes pour optimiser le ROI
-* [GKE Workload Identity](workload_identity.md) — Accorder les bonnes permissions aux pods sur Spot nodes
+* [GKE - Capacité réelle des nodes](gke_node_capacity.md) - Dimensionner les nodes pour optimiser le ROI
+* [GKE Workload Identity](workload_identity.md) - Accorder les bonnes permissions aux pods sur Spot nodes

@@ -73,7 +73,7 @@ echo "show stat" | socat stdio /run/haproxy/admin.sock \
 Celles qui sortent quand ça part en vrille :
 
 ```bash
-# Sessions en cours, avec leur âge — pour trouver ce qui traîne
+# Sessions en cours, avec leur âge - pour trouver ce qui traîne
 echo "show sess" | socat stdio /run/haproxy/admin.sock
 
 # Dernières erreurs vues par HAProxy (requêtes malformées, réponses backend invalides)
@@ -156,6 +156,6 @@ Akamai, `Fastly-Client-IP` chez Fastly.
 
 ## Voir aussi
 
-- [Reverse proxy : HAProxy](overview.md) — la configuration de base
-- [HAProxy : performance tuning](performance_tuning.md) — nbthread, maxconn, TLS et sysctls
-- [Limiter un DDoS applicatif](../../linux/advanced/lock_ddos.md) — rate limiting et stick-tables en situation
+- [Reverse proxy : HAProxy](overview.md) - la configuration de base
+- [HAProxy : performance tuning](performance_tuning.md) - nbthread, maxconn, TLS et sysctls
+- [Limiter un DDoS applicatif](../../linux/advanced/lock_ddos.md) - rate limiting et stick-tables en situation

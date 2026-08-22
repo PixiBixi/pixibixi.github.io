@@ -1,5 +1,5 @@
 ---
-description: Redimensionner les PVC d'un StatefulSet Kubernetes — procédure pour contourner la limitation by-design et resize les volumes sans recréer le StatefulSet.
+description: Redimensionner les PVC d'un StatefulSet Kubernetes - procédure pour contourner la limitation by-design et resize les volumes sans recréer le StatefulSet.
 tags:
   - PVC
   - StatefulSet
@@ -17,7 +17,7 @@ Heureusement, tout est possible eheh
 * On delete le statefulset **sans** toucher les pods associés : `kubectl delete sts my-statefulset --cascade=orphan`
 
 !!! warning
-    Le flag `--cascade=orphan` est critique — sans lui, les pods sont supprimés avec le StatefulSet.
+    Le flag `--cascade=orphan` est critique - sans lui, les pods sont supprimés avec le StatefulSet.
 
 * On modifie le template PVC dans le statefulset : `kubectl edit sts my-statefulset`
 

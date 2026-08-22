@@ -55,7 +55,7 @@ tag_prefix = "v"          # obligatoire si vos tags existants sont en v*
 [commit_types]
 # Types custom pour le changelog
 refacto = { changelog_title = "Refactoring" }
-# perf ne bumpe pas par défaut — voir « Logique de bump »
+# perf ne bumpe pas par défaut - voir « Logique de bump »
 perf = { changelog_title = "Performance Improvements", bump_patch = true }
 
 [changelog]
@@ -243,7 +243,7 @@ repos:
 
     | v3 | v4 |
     |---|---|
-    | `check: true` (défaut) | `command: check` — **obligatoire** |
+    | `check: true` (défaut) | `command: check` - **obligatoire** |
     | `check-latest-tag-only: true` | `args: --from-latest-tag` |
     | `release: true` | `command: bump` + `args` |
 
@@ -251,7 +251,7 @@ repos:
     fait sortir le script en erreur : `Error: No command specified`. Le job release
     échoue à chaque push sur master.
 
-    v4 embarque aussi cog 6.4.0 au lieu de 6.3.0 — à garder en tête si un
+    v4 embarque aussi cog 6.4.0 au lieu de 6.3.0 - à garder en tête si un
     comportement de bump change.
 <!-- markdownlint-enable MD046 -->
 

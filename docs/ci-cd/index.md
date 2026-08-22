@@ -1,5 +1,5 @@
 ---
-description: CI/CD GitHub Actions et GitLab — durcissement supply-chain, releases automatisées, optimisation des pipelines, scan d'images et CLI glab.
+description: CI/CD GitHub Actions et GitLab - durcissement supply-chain, releases automatisées, optimisation des pipelines, scan d'images et CLI glab.
 tags:
   - GitHub Actions
   - GitLab CI
@@ -15,13 +15,13 @@ Une CI lente ou mal configurée, ça coûte du temps et de l'argent. Une CI mal 
 
 ### GitHub Actions
 
-- [Durcir une CI GitHub Actions](github/hardening.md) — SHA pinning, permissions least-privilege, injection de template, zizmor, actionlint, cooldown Renovate et Dependabot, provenance SLSA
-- [CI pour un projet Go](github/go-ci.md) — `go test -race`, build multi-plateforme, golangci-lint, gocritic, govulncheck, release calculée par svu
-- [GoReleaser](github/goreleaser.md) — binaires multi-arch, images Docker, Helm OCI, UPX, signature cosign et provenance SLSA
-- [Cocogitto](github/cocogitto.md) — versioning sémantique automatique, CHANGELOG, GitHub Releases — comparaison avec release-please
+- [Durcir une CI GitHub Actions](github/hardening.md) - SHA pinning, permissions least-privilege, injection de template, zizmor, actionlint, cooldown Renovate et Dependabot, provenance SLSA
+- [CI pour un projet Go](github/go-ci.md) - `go test -race`, build multi-plateforme, golangci-lint, gocritic, govulncheck, release calculée par svu
+- [GoReleaser](github/goreleaser.md) - binaires multi-arch, images Docker, Helm OCI, UPX, signature cosign et provenance SLSA
+- [Cocogitto](github/cocogitto.md) - versioning sémantique automatique, CHANGELOG, GitHub Releases - comparaison avec release-please
 
 ### GitLab
 
-- [Optimiser sa CI GitLab](gitlab/ci/optimize.md) — clone superficiel, cache, DAG et feature flags
-- [Scanner les images](gitlab/ci/scan_image.md) — intégrer un scan de vulnérabilités dans la CI
-- [GitLab CLI](gitlab/cli.md) — `glab` pour gérer MRs, pipelines et issues en ligne de commande
+- [Optimiser sa CI GitLab](gitlab/ci/optimize.md) - clone superficiel, cache, DAG et feature flags
+- [Scanner les images](gitlab/ci/scan_image.md) - intégrer un scan de vulnérabilités dans la CI
+- [GitLab CLI](gitlab/cli.md) - `glab` pour gérer MRs, pipelines et issues en ligne de commande

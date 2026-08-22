@@ -1,11 +1,11 @@
 ---
-description: Exporter et réimporter les indexes MongoDB avec mongosh — cloner de prod vers staging, migrer entre clusters.
+description: Exporter et réimporter les indexes MongoDB avec mongosh - cloner de prod vers staging, migrer entre clusters.
 tags:
   - MongoDB
   - Index
 ---
 
-# MongoDB — Dump et import d'indexes
+# MongoDB - Dump et import d'indexes
 
 Pas de commande native `mongodump` pour les indexes seuls. On passe par `mongosh` avec un script JS pour les extraire en JSON, puis on les réinjecte sur la cible.
 
@@ -34,7 +34,7 @@ print(JSON.stringify(dump, null, 2));
 
 ### Sauvegarder dans un fichier
 
-Le flag `--quiet` supprime la bannière de connexion — sans lui le JSON est invalide.
+Le flag `--quiet` supprime la bannière de connexion - sans lui le JSON est invalide.
 
 ```bash
 mongosh "mongodb://host:27017/mydb" --quiet --eval '
@@ -48,7 +48,7 @@ mongosh "mongodb://host:27017/mydb" --quiet --eval '
 
 ## Réimport des indexes
 
-`mongosh` ne supporte pas le module `fs` de Node — on injecte le JSON via une variable shell et `--eval` :
+`mongosh` ne supporte pas le module `fs` de Node - on injecte le JSON via une variable shell et `--eval` :
 
 ```bash
 INDEXES=$(cat /tmp/indexes_dump.json)
@@ -71,7 +71,7 @@ mongosh "mongodb://target-host:27017/mydb" --quiet --eval "
         db.getCollection(collName).createIndex(key, opts);
         print('[OK] ' + collName + '.' + idx.name);
       } catch(e) {
-        print('[SKIP] ' + collName + '.' + idx.name + ' — ' + e.message);
+        print('[SKIP] ' + collName + '.' + idx.name + ' - ' + e.message);
       }
     });
   });
@@ -82,7 +82,7 @@ mongosh "mongodb://target-host:27017/mydb" --quiet --eval "
 
 | Propriété | Comportement |
 | --------- | ------------ |
-| `_id` index | Toujours ignoré — MongoDB le crée automatiquement |
+| `_id` index | Toujours ignoré - MongoDB le crée automatiquement |
 | `unique`, `sparse` | Préservés |
 | `expireAfterSeconds` (TTL) | Préservé |
 | `partialFilterExpression` | Préservé |
@@ -129,7 +129,7 @@ mongosh "mongodb://target-host:27017/mydb" --quiet --eval "
         db.getCollection(collName).createIndex(key, opts);
         print('[OK] ' + collName + '.' + idx.name);
       } catch(e) {
-        print('[SKIP] ' + collName + '.' + idx.name + ' — ' + e.message);
+        print('[SKIP] ' + collName + '.' + idx.name + ' - ' + e.message);
       }
     });
   });

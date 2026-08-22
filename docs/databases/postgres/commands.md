@@ -1,5 +1,5 @@
 ---
-description: Commandes utiles PostgreSQL — inspecter les index, les tailles de table et exporter les résultats en CSV
+description: Commandes utiles PostgreSQL - inspecter les index, les tailles de table et exporter les résultats en CSV
 tags:
   - PostgreSQL
 ---

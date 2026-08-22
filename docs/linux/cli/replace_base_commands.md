@@ -1,5 +1,5 @@
 ---
-description: Alternatives modernes aux commandes Unix de base — lsd, bat, fd, dust, ripgrep, procs, dog, httpie et plus, la plupart écrites en Rust.
+description: Alternatives modernes aux commandes Unix de base - lsd, bat, fd, dust, ripgrep, procs, dog, httpie et plus, la plupart écrites en Rust.
 tags:
   - Rust
   - Productivity
@@ -8,8 +8,8 @@ tags:
 
 # Remplacer les commandes de base Linux
 
-Les commandes Unix historiques font le job, mais des alternatives modernes
-— souvent écrites en Rust — offrent une meilleure ergonomie, une sortie
+Les commandes Unix historiques font le job, mais des alternatives modernes,
+souvent écrites en Rust, offrent une meilleure ergonomie, une sortie
 colorisée, et parfois des gains de performance significatifs.
 
 !!! note "Installation"
@@ -223,7 +223,7 @@ http --download example.com/file.zip
 
 ### `gzip` → `pigz`
 
-[pigz](https://zlib.net/pigz/) est un `gzip` multithread — gain de
+[pigz](https://zlib.net/pigz/) est un `gzip` multithread - gain de
 performance de ×3 sur les machines multi-cœurs :
 
 ```bash
@@ -288,16 +288,16 @@ glow                    # naviguer dans les .md du répertoire
 | `ls` | `lsd` | Rust | `alias ls='lsd'` |
 | `cat` | `bat` | Rust | `alias cat='bat --style=plain'` |
 | `find` | `fd` | Rust | `alias f='fd'` |
-| `du` | `dust` | Rust | — |
+| `du` | `dust` | Rust | - |
 | `df` | `dfc` | C | `alias df='dfc'` |
 | `rm` | `rip` | Rust | `alias rm='rip'` |
-| `grep` | `ripgrep` | Rust | — |
-| `top` | `htop` / `bottom` | C / Rust | — |
-| `ps` | `procs` | Rust | — |
+| `grep` | `ripgrep` | Rust | - |
+| `top` | `htop` / `bottom` | C / Rust | - |
+| `ps` | `procs` | Rust | - |
 | `dig` | `dog` | Rust | `alias dig='dog'` |
-| `ping`/`mtr` | `trippy` | Rust | — |
-| `curl` | `httpie` | Python | — |
-| `gzip` | `pigz` | C | — |
+| `ping`/`mtr` | `trippy` | Rust | - |
+| `curl` | `httpie` | Python | - |
+| `gzip` | `pigz` | C | - |
 | `git diff` | `delta` | Rust | (pager git) |
 | `vim` | `nvim` | C | `alias vim='nvim'` |
 
@@ -305,6 +305,6 @@ glow                    # naviguer dans les .md du répertoire
 
 ## Voir aussi
 
-- [Dotfiles](confrc.md) — configuration des aliases et intégration dans le shell
-- [La commande find](find.md) — syntaxe complète de find (avant de migrer vers fd)
-- [DFC, la commande DF en plus](dfc.md) — alternative légère à du/df
+- [Dotfiles](confrc.md) - configuration des aliases et intégration dans le shell
+- [La commande find](find.md) - syntaxe complète de find (avant de migrer vers fd)
+- [DFC, la commande DF en plus](dfc.md) - alternative légère à du/df

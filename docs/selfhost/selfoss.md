@@ -1,5 +1,5 @@
 ---
-description: Agréger ses flux RSS avec Selfoss — installation, configuration MySQL et gestion des sources
+description: Agréger ses flux RSS avec Selfoss - installation, configuration MySQL et gestion des sources
 tags:
   - Selfoss
   - RSS

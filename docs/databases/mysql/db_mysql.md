@@ -1,5 +1,5 @@
 ---
-description: Restaurer la base de données système MySQL — recréer la structure initiale après une suppression accidentelle
+description: Restaurer la base de données système MySQL - recréer la structure initiale après une suppression accidentelle
 tags:
   - MySQL
 ---

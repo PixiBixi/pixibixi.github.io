@@ -1,5 +1,5 @@
 ---
-description: Générer automatiquement plusieurs ArgoCD Applications depuis une seule ressource ApplicationSet — générateurs list, git, cluster et matrix.
+description: Générer automatiquement plusieurs ArgoCD Applications depuis une seule ressource ApplicationSet - générateurs list, git, cluster et matrix.
 tags:
   - ArgoCD
   - GitOps
@@ -61,7 +61,7 @@ generators:
           replicas: "5"
 ```
 
-### Git — Répertoires
+### Git - Répertoires
 
 Une Application par répertoire qui matche le pattern. Utile pour le pattern App of Apps.
 
@@ -76,7 +76,7 @@ generators:
           exclude: true
 ```
 
-### Git — Fichiers
+### Git - Fichiers
 
 Une Application par fichier JSON/YAML qui matche. Pratique pour des configs par environnement.
 
@@ -114,7 +114,7 @@ generators:
 
 ### Matrix
 
-Combine deux générateurs — 3 clusters × 4 apps = 12 Applications générées.
+Combine deux générateurs - 3 clusters × 4 apps = 12 Applications générées.
 
 ```yaml
 generators:
@@ -234,5 +234,5 @@ kubectl annotate applicationset my-appset -n argocd \
 
 ## Voir aussi
 
-- [Sync Options](sync_options.md) — contrôler le comportement du déploiement
-- [Sync Waves & Hooks](sync_waves.md) — ordonner les ressources sur plusieurs clusters
+- [Sync Options](sync_options.md) - contrôler le comportement du déploiement
+- [Sync Waves & Hooks](sync_waves.md) - ordonner les ressources sur plusieurs clusters

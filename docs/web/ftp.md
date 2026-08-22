@@ -1,5 +1,5 @@
 ---
-description: Installer et configurer un serveur FTP avec PureFTPd — authentification, SSL et utilisateurs virtuels
+description: Installer et configurer un serveur FTP avec PureFTPd - authentification, SSL et utilisateurs virtuels
 tags:
   - FTP
 ---

@@ -1,5 +1,5 @@
 ---
-description: Utilisation de strace pour déboguer les processus Linux — filtrage des appels système, attach multi-process et diagnostics courants.
+description: Utilisation de strace pour déboguer les processus Linux - filtrage des appels système, attach multi-process et diagnostics courants.
 tags:
   - Debugging
   - Observability
@@ -198,5 +198,5 @@ grep "openat" /tmp/service_debug.log | grep -v " = [0-9]"
 | ----- | ----- |
 | `ltrace` | Trace les appels aux bibliothèques partagées (libc, etc.) |
 | `perf trace` | Alternative plus performante à strace (moins d'overhead) |
-| `bpftrace` | Traçage avancé via eBPF — scripts personnalisables |
+| `bpftrace` | Traçage avancé via eBPF - scripts personnalisables |
 | `lsof -p <PID>` | Fichiers et sockets ouverts (sans trace des appels) |

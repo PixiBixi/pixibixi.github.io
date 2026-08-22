@@ -1,5 +1,5 @@
 ---
-description: Configurer un serveur DNS autoritaire et résolveur avec BIND9 — zones, enregistrements et sécurité
+description: Configurer un serveur DNS autoritaire et résolveur avec BIND9 - zones, enregistrements et sécurité
 tags:
   - DNS
 ---
@@ -15,7 +15,7 @@ Un NS est un enregistrement DNS permettant d'avoir son propre serveur autoritair
 Prenons l'exemple avec **wiki.jdelgado.fr** :
 
 1. On interroge les ***root servers***, par exemple *g.root-servers.net*
-2. Ce serveur indique le serveur à contacter — ici les serveurs autoritaires **du TLD .fr** : *x.dns.fr*
+2. Ce serveur indique le serveur à contacter - ici les serveurs autoritaires **du TLD .fr** : *x.dns.fr*
 3. Ces serveurs indiquent quel serveur autoritaire **du nom de domaine**, dans notre cas **ns1.jdelgado.fr**
 4. Et on obtient enfin l'IP du serveur.
 
@@ -30,7 +30,7 @@ et l'espionnage du FAI.
 
 Si on veut éviter le flicage sans monter son propre résolveur, il existe des projets comme
 [OpenNIC](https://www.opennicproject.org/) qui liste le résolveur DNS libre le plus proche, ou
-[DNS Watch](https://dns.watch/index) — résolveur libre IPv4/IPv6 sans log avec support DNSSEC.
+[DNS Watch](https://dns.watch/index) - résolveur libre IPv4/IPv6 sans log avec support DNSSEC.
 
 ## Installation
 
@@ -47,10 +47,10 @@ Pour vérifier que BIND9 est bien installé, `dig +short google.fr` doit retourn
 
 Le dossier de configuration BIND9 contient 4 fichiers :
 
-* `named.conf` — recense tous les fichiers de configuration
-* `named.conf.default-zones` — zones par défaut
-* `named.conf.local` — vide par défaut, c'est ici qu'on fait toutes les modifications
-* `named.conf.options` — configuration de base avec toutes les options
+* `named.conf` - recense tous les fichiers de configuration
+* `named.conf.default-zones` - zones par défaut
+* `named.conf.local` - vide par défaut, c'est ici qu'on fait toutes les modifications
+* `named.conf.options` - configuration de base avec toutes les options
 
 Ne pas oublier d'éditer `/etc/resolv.conf` sous Linux pour utiliser le résolveur local.
 
@@ -58,7 +58,7 @@ Ne pas oublier d'éditer `/etc/resolv.conf` sous Linux pour utiliser le résolve
 
 Un serveur autoritaire fait "autorité" sur une zone donnée et gère toutes les redirections (MX, A, CNAME...).
 
-Généralement le registrar fait aussi serveur DNS, mais c'est souvent une usine à gaz — un simple BIND fait
+Généralement le registrar fait aussi serveur DNS, mais c'est souvent une usine à gaz - un simple BIND fait
 l'affaire et est simple à mettre en œuvre.
 
 Il faut d'abord mettre à jour la liste des NS chez le registrar :

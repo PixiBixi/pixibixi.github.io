@@ -1,5 +1,5 @@
 ---
-description: Extraire les métadonnées d'un PDF avec exiftool — auteur, dates et informations de compression
+description: Extraire les métadonnées d'un PDF avec exiftool - auteur, dates et informations de compression
 tags:
   - PDF
 ---

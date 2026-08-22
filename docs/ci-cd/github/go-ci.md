@@ -1,5 +1,5 @@
 ---
-description: Une CI GitHub Actions pour un projet Go — go test -race, build multi-plateforme, golangci-lint, gocritic, govulncheck, suggestions reviewdog en PR et release calculée par svu.
+description: Une CI GitHub Actions pour un projet Go - go test -race, build multi-plateforme, golangci-lint, gocritic, govulncheck, suggestions reviewdog en PR et release calculée par svu.
 tags:
   - GitHub Actions
   - Go
@@ -118,7 +118,7 @@ linters:
 
 ### gocritic et les gros structs copiés
 
-Le set standard ne dit rien des copies de structs. Sur un projet qui manipule des objets Kubernetes, ça compte : un `corev1.Pod` pèse **1192 octets**, un `Node` 768, un `Container` 408 — mesuré au `unsafe.Sizeof`. Un `for _, p := range pods` copie donc 1,2 ko par tour, et un helper qui prend un `corev1.Pod` en paramètre le recopie à chaque appel.
+Le set standard ne dit rien des copies de structs. Sur un projet qui manipule des objets Kubernetes, ça compte : un `corev1.Pod` pèse **1192 octets**, un `Node` 768, un `Container` 408 - mesuré au `unsafe.Sizeof`. Un `for _, p := range pods` copie donc 1,2 ko par tour, et un helper qui prend un `corev1.Pod` en paramètre le recopie à chaque appel.
 
 Le tag `performance` de [gocritic](https://go-critic.com/) attrape exactement ça, via `rangeValCopy` et `hugeParam`. Il n'est pas activé par défaut :
 
@@ -201,7 +201,7 @@ Il couvre aussi les vulnérabilités de la toolchain Go elle-même, pas seulemen
 
 ## Feedback direct dans la PR
 
-Faire échouer un job, c'est bien. Dire quoi corriger et où, c'est mieux. [reviewdog](https://github.com/reviewdog/reviewdog) poste les problèmes en suggestions inline sur la PR, applicables en un clic. Rien de spécifique à Go là-dedans, il avale la sortie de n'importe quel linter — l'exemple ici est juste le workflow de formatage.
+Faire échouer un job, c'est bien. Dire quoi corriger et où, c'est mieux. [reviewdog](https://github.com/reviewdog/reviewdog) poste les problèmes en suggestions inline sur la PR, applicables en un clic. Rien de spécifique à Go là-dedans, il avale la sortie de n'importe quel linter - l'exemple ici est juste le workflow de formatage.
 
 ```yaml title=".github/workflows/go-format.yml"
 permissions:
@@ -238,7 +238,7 @@ Une CI fiable débloque un cran d'automatisation de plus : faire du type de comm
 
 ### Faire du commit le déclencheur de version
 
-Le chaînon manquant : relier le contenu d'une PR mergée à un numéro de version. Les commits conventionnels le permettent — `feat` → bump mineur, `fix` → bump patch. Renovate sait taguer ses commits par type d'update, ce qui suffit à décider du bump :
+Le chaînon manquant : relier le contenu d'une PR mergée à un numéro de version. Les commits conventionnels le permettent - `feat` → bump mineur, `fix` → bump patch. Renovate sait taguer ses commits par type d'update, ce qui suffit à décider du bump :
 
 ```json title="renovate.json"
 "packageRules": [
@@ -266,11 +266,11 @@ Le chaînon manquant : relier le contenu d'une PR mergée à un numéro de versi
 | tout | github-actions | `chore(deps):` | aucune |
 
 !!! note "Pourquoi les actions ne déclenchent pas de release"
-    Un bump d'action CI ne change pas le binaire livré — il n'a aucune raison de produire une nouvelle version. On le garde en `chore` : mergé automatiquement, mais invisible pour le versioning. Chaque bump de module Go, lui, est compilé dans l'artefact et justifie une release.
+    Un bump d'action CI ne change pas le binaire livré - il n'a aucune raison de produire une nouvelle version. On le garde en `chore` : mergé automatiquement, mais invisible pour le versioning. Chaque bump de module Go, lui, est compilé dans l'artefact et justifie une release.
 
 ### Le workflow : taguer puis publier, en un seul job
 
-[`svu`](https://github.com/caarlos0/svu) lit les commits depuis le dernier tag et calcule le prochain `vX.Y.Z` ; un appel API pose le tag, GoReleaser enchaîne dans le même job. Le garde-fou est dans la comparaison : `svu next` renvoie **la version courante** quand rien ne justifie de release, donc `next == current` signifie « ne rien faire » — aucune release parasite sur un simple `docs:` ou `chore:`.
+[`svu`](https://github.com/caarlos0/svu) lit les commits depuis le dernier tag et calcule le prochain `vX.Y.Z` ; un appel API pose le tag, GoReleaser enchaîne dans le même job. Le garde-fou est dans la comparaison : `svu next` renvoie **la version courante** quand rien ne justifie de release, donc `next == current` signifie « ne rien faire » - aucune release parasite sur un simple `docs:` ou `chore:`.
 
 ```yaml title=".github/workflows/release.yml"
 on:
@@ -314,26 +314,26 @@ jobs:
           echo "new_tag=${next}" >> "$GITHUB_OUTPUT"
       - if: github.ref_type == 'tag' || steps.tag.outputs.new_tag != ''
         run: git fetch --tags --force
-      # setup-go + GoReleaser, gardés par la même condition — voir l'article GoReleaser
+      # setup-go + GoReleaser, gardés par la même condition - voir l'article GoReleaser
 ```
 
-`go install` passe par le proxy de modules Go, donc la version de svu est vérifiée contre la base de checksums — et le pin en variable d'env est suivi par Renovate via un `customManager` regex. Créer le tag par l'API plutôt qu'avec `git push` permet de garder `persist-credentials: false` sur le checkout.
+`go install` passe par le proxy de modules Go, donc la version de svu est vérifiée contre la base de checksums - et le pin en variable d'env est suivi par Renovate via un `customManager` regex. Créer le tag par l'API plutôt qu'avec `git push` permet de garder `persist-credentials: false` sur le checkout.
 
 !!! warning "`perf:` ne déclenche pas de release"
     svu applique la spec Conventional Commits à la lettre : seuls `fix` (patch) et `feat` (mineur) sont normatifs. Un `perf:` seul ne sort donc **aucune** version, et sa config ne permet pas d'ajouter des mots-clés. Si un gain de perf doit être livré tout de suite, il se type `fix:`. Le flag `--v0` évite au passage qu'un breaking change fasse sauter un projet en `0.x` directement en `v1.0.0`.
 
 <!-- markdownlint-disable MD046 -->
 !!! note "Pourquoi pas une action toute faite ?"
-    Le réflexe est d'utiliser `mathieudutour/github-tag-action`, la plus répandue pour ça. Elle est **abandonnée** : plus de release depuis mars 2024, plus de commit depuis juin 2024, et toujours `using: node20` — donc une alerte de dépréciation à chaque release, sans version vers laquelle migrer. Épingler par SHA protège d'un tag repointé, pas d'un projet mort.
+    Le réflexe est d'utiliser `mathieudutour/github-tag-action`, la plus répandue pour ça. Elle est **abandonnée** : plus de release depuis mars 2024, plus de commit depuis juin 2024, et toujours `using: node20` - donc une alerte de dépréciation à chaque release, sans version vers laquelle migrer. Épingler par SHA protège d'un tag repointé, pas d'un projet mort.
 
     Les remplaçantes évidentes ne tiennent pas l'examen : `anothrNick/github-tag-action` ne fait **pas** de conventional commits (elle cherche des hashtags `#major`/`#minor`/`#patch`, et détourner ses tokens donne un match de sous-chaîne où « prefix » déclenche un patch) ; `TriPSs/conventional-changelog-action` fonctionne mais écrit un `CHANGELOG.md` par défaut, ce qui salit l'arbre que GoReleaser va lire ; `release-please` et consorts imposent un modèle de release PR, soit exactement le clic humain que l'automerge cherche à supprimer.
 
     D'où le choix d'un CLI maintenu qui ne fait que le calcul, plus un appel API. Leçon générale : sur un chemin de release qui détient `contents: write`, la maintenance de la dépendance compte autant que ses fonctionnalités.
 <!-- markdownlint-enable MD046 -->
 
-Pourquoi tout dans un seul job, plutôt qu'un workflow qui tague et un autre qui publie sur le tag ? Parce qu'un tag poussé avec le `GITHUB_TOKEN` par défaut **ne re-déclenche pas** de workflow — garde-fou anti-boucle de GitHub. Séparer les deux imposerait un PAT dédié juste pour ré-armer le second workflow. En enchaînant calcul-du-tag et publication dans le même run, on s'en passe. La double condition (`ref_type == 'tag'` ou nouveau tag calculé) préserve l'échappatoire manuelle : un `v*` poussé à la main court-circuite le calcul et publie directement.
+Pourquoi tout dans un seul job, plutôt qu'un workflow qui tague et un autre qui publie sur le tag ? Parce qu'un tag poussé avec le `GITHUB_TOKEN` par défaut **ne re-déclenche pas** de workflow - garde-fou anti-boucle de GitHub. Séparer les deux imposerait un PAT dédié juste pour ré-armer le second workflow. En enchaînant calcul-du-tag et publication dans le même run, on s'en passe. La double condition (`ref_type == 'tag'` ou nouveau tag calculé) préserve l'échappatoire manuelle : un `v*` poussé à la main court-circuite le calcul et publie directement.
 
-Résultat : Renovate merge un `minor` de dépendance, la CI passe, une version mineure sort et est publiée — sans qu'une main touche à un tag.
+Résultat : Renovate merge un `minor` de dépendance, la CI passe, une version mineure sort et est publiée - sans qu'une main touche à un tag.
 
 ## Récap
 
@@ -349,4 +349,4 @@ Ce qui fait la différence entre une CI Go qui marche et une CI Go qu'on laisse 
 - Et par-dessus, le [socle de durcissement](hardening.md) commun à tous les workflows
 
 !!! tip "Et après le CI ?"
-    Une fois le CI vert et un tag posé — à la main ou calculé par la CI (voir plus haut) — c'est [GoReleaser](goreleaser.md) qui prend le relais : binaires multi-arch, images OCI, signatures cosign, publication Homebrew.
+    Une fois le CI vert et un tag posé, à la main ou calculé par la CI (voir plus haut), c'est [GoReleaser](goreleaser.md) qui prend le relais : binaires multi-arch, images OCI, signatures cosign, publication Homebrew.

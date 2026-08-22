@@ -1,5 +1,5 @@
 ---
-description: Configurer Sublime Text 3 — thèmes Material, plugins essentiels et raccourcis pour développeurs
+description: Configurer Sublime Text 3 - thèmes Material, plugins essentiels et raccourcis pour développeurs
 tags:
   - Sublime Text
 ---
@@ -335,7 +335,7 @@ actuellement d'un plugin indispensable pour un usage convenable de
 SublimeText
 
 !!! warning
-    La plupart des plugins Package Control ne sont plus maintenus — préférer l'installation depuis le dépôt Git officiel du plugin.
+    La plupart des plugins Package Control ne sont plus maintenus - préférer l'installation depuis le dépôt Git officiel du plugin.
 
 ### PHP
 

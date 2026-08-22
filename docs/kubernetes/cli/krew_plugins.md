@@ -16,7 +16,7 @@ brew install krew
 kubectl krew install < ./Plugins_Krew
 ```
 
-Depuis [brew bundle v4.5](https://github.com/Homebrew/brew/pull/21802), les plugins Krew sont aussi gérables directement dans un `Brewfile` — pratique pour centraliser tout son setup dans un seul endroit :
+Depuis [brew bundle v4.5](https://github.com/Homebrew/brew/pull/21802), les plugins Krew sont aussi gérables directement dans un `Brewfile` - pratique pour centraliser tout son setup dans un seul endroit :
 
 ```ruby
 brew "krew"
@@ -48,6 +48,6 @@ N'hésitez pas à voir la [liste des plugins Krew](https://krew.sigs.k8s.io/plug
 
 ## Voir aussi
 
-* [Commandes utiles](useful_commands.md) — gestion courante des pods et ressources
-* [Commandes avancées](advanced_commands.md) — requêtes jsonpath et débogage poussé
-* [Outils pour K8S](tools.md) — kubectx, stern, kubecolor et alternatives à kubectl natif
+* [Commandes utiles](useful_commands.md) - gestion courante des pods et ressources
+* [Commandes avancées](advanced_commands.md) - requêtes jsonpath et débogage poussé
+* [Outils pour K8S](tools.md) - kubectx, stern, kubecolor et alternatives à kubectl natif

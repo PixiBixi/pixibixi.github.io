@@ -1,5 +1,5 @@
 ---
-description: Commandes git essentielles — gestion de branches, nettoyage et configuration .gitconfig
+description: Commandes git essentielles - gestion de branches, nettoyage et configuration .gitconfig
 tags:
   - Git
 ---
@@ -63,4 +63,4 @@ décidé d'utiliser les alias du .gitconfig disponible sur
 
 ## Voir aussi
 
-* [Réduire la taille de son repository Git](rework_files.md) — techniques avancées pour nettoyer un dépôt trop volumineux
+* [Réduire la taille de son repository Git](rework_files.md) - techniques avancées pour nettoyer un dépôt trop volumineux

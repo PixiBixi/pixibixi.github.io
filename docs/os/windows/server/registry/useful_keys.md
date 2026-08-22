@@ -1,5 +1,5 @@
 ---
-description: Clés de registre Windows utiles — Shutdown Event Tracker, DHCP, autologon et paramètres de dépannage
+description: Clés de registre Windows utiles - Shutdown Event Tracker, DHCP, autologon et paramètres de dépannage
 tags:
   - Windows
   - Registry
@@ -43,7 +43,7 @@ quelques clés plus bas.
 ## Activer l'Autologon
 
 !!! danger
-    L'autologon est une faille de sécurité — les credentials sont stockés en clair dans le registre. À utiliser uniquement sur des postes physiquement sécurisés.
+    L'autologon est une faille de sécurité - les credentials sont stockés en clair dans le registre. À utiliser uniquement sur des postes physiquement sécurisés.
 
 Pour l'activité, voici la clé à modifier :
 

@@ -21,7 +21,7 @@ Pour y parvenir, plusieurs méthodes sont disponibles :
 Dans ce tutoriel, nous allons appliquer la dernière règle qui est la plus optimisée. iptables charge un module appelé *xt_conntrack* qui s'occupe d'analyser les trames.
 
 !!! warning
-    Un trop grand nombre de règles iptables entraine une **importante** dégradation de la stack TCP/IP — phénomène observé de nombreuses fois.
+    Un trop grand nombre de règles iptables entraine une **importante** dégradation de la stack TCP/IP - phénomène observé de nombreuses fois.
 
 C'est pour cela que nous utilisons ipset qui nous permet de créer des listes d'IP.
 

@@ -1,5 +1,5 @@
 ---
-description: Configuration VCL complète de Varnish — caching, compression, purge, cookies et optimisations WordPress
+description: Configuration VCL complète de Varnish - caching, compression, purge, cookies et optimisations WordPress
 tags:
   - Varnish
 ---

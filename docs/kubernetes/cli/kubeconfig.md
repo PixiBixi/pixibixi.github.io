@@ -62,4 +62,4 @@ konfig split tools > tools.yaml
 
 ## Voir aussi
 
-* [Outils pour K8S](tools.md) — kubectx, kubeswitch et konfig pour gérer plusieurs clusters
+* [Outils pour K8S](tools.md) - kubectx, kubeswitch et konfig pour gérer plusieurs clusters

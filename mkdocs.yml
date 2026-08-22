@@ -1,5 +1,5 @@
 site_name: Jérémy Wiki
-site_description: "Wiki SRE/infra — 240+ articles pratiques sur Kubernetes, HAProxy, Terraform, Linux, monitoring et cloud par Jérémy Delgado"
+site_description: "Wiki SRE/infra - 240+ articles pratiques sur Kubernetes, HAProxy, Terraform, Linux, monitoring et cloud par Jérémy Delgado"
 site_author: "Jérémy DELGADO"
 site_url: "https://wiki.jdelgado.fr/"
 
@@ -77,7 +77,7 @@ plugins:
         'kubernetes/deployment/golang_kubernetes_limit.md': 'kubernetes/deployment/gomaxprocs_gomemlimit_kubernetes.md'
         'mess/fibre_optique/info_transceiver.md': 'misc/fibre_optique/info_transceiver.md'
         'mess/download/netflix_subs.md': 'misc/download/netflix_subs.md'
-        # Phase 1 — databases/ extracted from linux/
+        # Phase 1 - databases/ extracted from linux/
         'linux/mysql/advanced_commands.md': 'databases/mysql/advanced_commands.md'
         'linux/mysql/db_mysql.md': 'databases/mysql/db_mysql.md'
         'linux/mysql/galera_gluster.md': 'databases/mysql/galera_gluster.md'
@@ -91,7 +91,7 @@ plugins:
         'linux/redis/decode_function.md': 'databases/redis/decode_function.md'
         'linux/memcached/misc_commands.md': 'databases/memcached/misc_commands.md'
         'linux/elasticsearch/log_slow_queries.md': 'databases/elasticsearch/log_slow_queries.md'
-        # Phase 2 — monitoring/, selfhost/, automation/ promoted from linux/
+        # Phase 2 - monitoring/, selfhost/, automation/ promoted from linux/
         'linux/monitoring/check_mk/add_slack_notification.md': 'monitoring/check_mk/add_slack_notification.md'
         'linux/monitoring/eztools.md': 'monitoring/eztools.md'
         'linux/monitoring/lgtm/custom_metrics_nodeexporter.md': 'monitoring/lgtm/custom_metrics_nodeexporter.md'
@@ -118,7 +118,7 @@ plugins:
         'linux/automatisation/terraform/cheatsheet.md': 'automation/terraform/cheatsheet.md'
         'linux/automatisation/terraform/speedup.md': 'automation/terraform/speedup.md'
         'linux/automatisation/terraform/tools.md': 'automation/terraform/tools.md'
-        # Phase 3 — web/ expanded from linux/hosting/
+        # Phase 3 - web/ expanded from linux/hosting/
         'linux/hosting/lemp/custom_server_header.md': 'web/nginx/custom_server_header.md'
         'linux/hosting/lemp/fetch_good_ips.md': 'web/nginx/fetch_good_ips.md'
         'linux/hosting/lemp/installation.md': 'web/nginx/installation.md'
@@ -129,7 +129,7 @@ plugins:
         'linux/hosting/lemp/haproxy/cloudflare.md': 'web/haproxy/operations.md'
         'linux/hosting/lemp/haproxy/keep_real_ip.md': 'web/haproxy/operations.md'
         'linux/hosting/lemp/haproxy/maintenance.md': 'web/haproxy/operations.md'
-        # Phase 8 — four HAProxy stubs merged into operations.md
+        # Phase 8 - four HAProxy stubs merged into operations.md
         'web/haproxy/api.md': 'web/haproxy/operations.md'
         'web/haproxy/cloudflare.md': 'web/haproxy/operations.md'
         'web/haproxy/keep_real_ip.md': 'web/haproxy/operations.md'
@@ -138,12 +138,13 @@ plugins:
         'linux/hosting/lemp/haproxy/overview.md': 'web/haproxy/overview.md'
         'linux/advanced/varnish/config.md': 'web/varnish/config.md'
         'linux/hosting/mail/exim_manage_dkim.md': 'web/mail/exim_manage_dkim.md'
-        'linux/hosting/ruby/install.md': 'web/ruby/install.md'
+        'linux/hosting/ruby/install.md': 'linux/misc/install_ruby.md'
+        'web/ruby/install.md': 'linux/misc/install_ruby.md'
         'linux/hosting/dns.md': 'web/dns.md'
         'linux/hosting/ftp.md': 'web/ftp.md'
         'linux/hosting/mail.md': 'web/mail.md'
         'linux/hosting/troubleshooting.md': 'web/troubleshooting.md'
-        # Phase 4 — os/ section (mac + windows + code)
+        # Phase 4 - os/ section (mac + windows + code)
         'mac/brew.md': 'os/mac/brew.md'
         'mac/brew_xcode.md': 'os/mac/brew_xcode.md'
 
@@ -170,7 +171,7 @@ plugins:
         'windows/server/powershell/useful_vars.md': 'os/windows/server/powershell/useful_vars.md'
         'windows/server/registry/useful_keys.md': 'os/windows/server/registry/useful_keys.md'
         'code/st3.md': 'os/misc/st3.md'
-        # Phase 5 — containers/ and ci-cd/ sections
+        # Phase 5 - containers/ and ci-cd/ sections
 
         'docker/use_proxy.md': 'containers/docker/use_proxy.md'
         'docker/compose/templates.md': 'containers/docker/compose/templates.md'
@@ -178,7 +179,7 @@ plugins:
         'gitlab/ci/optimize.md': 'ci-cd/gitlab/ci/optimize.md'
         'gitlab/ci/scan_image.md': 'ci-cd/gitlab/ci/scan_image.md'
         'gitlab/cli.md': 'ci-cd/gitlab/cli.md'
-        # Phase 6 — linux/ internal cleanup
+        # Phase 6 - linux/ internal cleanup
         'linux/advanced/shell/debug_slowness_ohmyzsh.md': 'linux/shell/debug_slowness_ohmyzsh.md'
         'linux/advanced/shell/template_bash_script.md': 'linux/shell/template_bash_script.md'
         'linux/advanced/shell/tips_bash.md': 'linux/shell/tips_bash.md'
@@ -189,7 +190,7 @@ plugins:
         'linux/advanced/cli/extend_partition.md': 'linux/storage/extend_partition.md'
         'linux/misc/create_raid.md': 'linux/storage/create_raid.md'
         'ssh/pubkey_rfc4716.md': 'linux/security/pubkey_rfc4716.md'
-        # Phase 7 — networking/ consolidation
+        # Phase 7 - networking/ consolidation
 
         'pfsense/update_bogon_list.md': 'networking/pfsense/update_bogon_list.md'
         'pfsense/network/gateway_outside_network.md': 'networking/pfsense/network/gateway_outside_network.md'

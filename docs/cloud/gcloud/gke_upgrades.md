@@ -26,4 +26,4 @@ Il peut être important de préciser le `CLOUDSDK_CORE_PROJECT` si nous souhaito
 
 ## Voir aussi
 
-- [Commandes utiles pour la CLI Gcloud](gcloud_commands.md) — Autres opérations GKE
+- [Commandes utiles pour la CLI Gcloud](gcloud_commands.md) - Autres opérations GKE

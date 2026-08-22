@@ -1,5 +1,5 @@
 ---
-description: Créer des fichiers torrent en ligne de commande avec mktorrent — compilation et options de création
+description: Créer des fichiers torrent en ligne de commande avec mktorrent - compilation et options de création
 tags:
   - mktorrent
   - BitTorrent

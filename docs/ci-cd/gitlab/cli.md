@@ -1,5 +1,5 @@
 ---
-description: Utiliser la CLI officielle GitLab — cloner des dépôts, créer des MR, gérer les clés SSH et configurer plusieurs instances
+description: Utiliser la CLI officielle GitLab - cloner des dépôts, créer des MR, gérer les clés SSH et configurer plusieurs instances
 tags:
   - GitLab
   - CLI

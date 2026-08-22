@@ -1,5 +1,5 @@
 ---
-description: Contrôler l'ordre de déploiement avec les sync waves et les hooks ArgoCD — PreSync, PostSync, SyncFail et gestion des dépendances.
+description: Contrôler l'ordre de déploiement avec les sync waves et les hooks ArgoCD - PreSync, PostSync, SyncFail et gestion des dépendances.
 tags:
   - ArgoCD
   - GitOps
@@ -56,7 +56,7 @@ spec:
 
 !!! danger "Blocage total du sync"
     Pour passer à la wave suivante, toutes les ressources de la wave courante doivent être
-    `Healthy`. Si un StatefulSet reste en `Progressing`, tout le déploiement est gelé —
+    `Healthy`. Si un StatefulSet reste en `Progressing`, tout le déploiement est gelé -
     l'app ne se met plus à jour jusqu'à intervention manuelle.
 
 !!! warning "À utiliser avec parcimonie"
@@ -198,5 +198,5 @@ kubectl logs -n my-app job/db-migrate
 
 ## Voir aussi
 
-- [Sync Options](sync_options.md) — `PruneLast`, `ServerSideApply` et autres comportements de sync
-- [ApplicationSet](applicationset.md) — déployer la même app sur plusieurs clusters avec les waves
+- [Sync Options](sync_options.md) - `PruneLast`, `ServerSideApply` et autres comportements de sync
+- [ApplicationSet](applicationset.md) - déployer la même app sur plusieurs clusters avec les waves

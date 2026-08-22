@@ -1,5 +1,5 @@
 ---
-description: Guide complet de la commande find sous Linux — recherche par nom, taille, date, permissions et exécution d'actions sur les résultats.
+description: Guide complet de la commande find sous Linux - recherche par nom, taille, date, permissions et exécution d'actions sur les résultats.
 tags:
   - find
 ---
@@ -134,4 +134,4 @@ n'a pas besoin d'être echaper))
 
 ## Voir aussi
 
-* [Remplacer les commandes de base](replace_base_commands.md) — alternative fd, plus rapide et respectant `.gitignore`
+* [Remplacer les commandes de base](replace_base_commands.md) - alternative fd, plus rapide et respectant `.gitignore`

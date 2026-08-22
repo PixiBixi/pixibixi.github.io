@@ -1,5 +1,5 @@
 ---
-description: Gérer les comptes utilisateurs MySQL — créer, renommer, authentifier et attribuer les privilèges d'accès
+description: Gérer les comptes utilisateurs MySQL - créer, renommer, authentifier et attribuer les privilèges d'accès
 tags:
   - MySQL
 ---

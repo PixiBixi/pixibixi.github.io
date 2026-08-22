@@ -1,5 +1,5 @@
 ---
-description: Publier des binaires Go multi-arch, images OCI et charts Helm en une commande avec GoReleaser — build flags, UPX, ko, ghcr.io, signature cosign, provenance SLSA, GitHub Actions.
+description: Publier des binaires Go multi-arch, images OCI et charts Helm en une commande avec GoReleaser - build flags, UPX, ko, ghcr.io, signature cosign, provenance SLSA, GitHub Actions.
 tags:
   - GitHub Actions
   - Go
@@ -103,7 +103,7 @@ Gains mesurés sur la layer binaire de [kubearch](https://github.com/PixiBixi/ku
 | Arch | Sans UPX (v0.2.0) | Avec UPX (v0.3.1) | Gain |
 |------|-------------------|-------------------|------|
 | amd64 | 14,91 MB | 8,34 MB | **-44%** |
-| arm64 | — | 6,61 MB | — |
+| arm64 | - | 6,61 MB | - |
 
 ```yaml
 upx:
@@ -146,7 +146,7 @@ docker_signs:
 !!! note "Pourquoi signer le checksum plutôt que chaque archive ?"
     `checksums.txt` contient les SHA256 de tous les artefacts. Signer ce fichier couvre tout : on vérifie la signature une fois, puis le SHA256 de chaque archive.
 
-### GitHub Actions — permissions requises
+### GitHub Actions - permissions requises
 
 Deux ajouts par rapport au workflow de base :
 
@@ -184,7 +184,7 @@ cosign verify \
 
 ### Attester la provenance des artefacts
 
-La signature dit **qui** a publié, pas **comment** l'artefact a été construit. C'est ce que couvre l'attestation SLSA, détaillée dans [Durcir une CI GitHub Actions](hardening.md#attester-comment-lartefact-a-ete-construit) — elle n'a rien de spécifique à Go ni à GoReleaser. Le seul détail propre à ce pipeline, c'est ce qu'on lui donne à attester : GoReleaser écrit tout dans `dist/`, donc les archives et le `checksums.txt` déjà signé par cosign.
+La signature dit **qui** a publié, pas **comment** l'artefact a été construit. C'est ce que couvre l'attestation SLSA, détaillée dans [Durcir une CI GitHub Actions](hardening.md#attester-comment-lartefact-a-ete-construit) - elle n'a rien de spécifique à Go ni à GoReleaser. Le seul détail propre à ce pipeline, c'est ce qu'on lui donne à attester : GoReleaser écrit tout dans `dist/`, donc les archives et le `checksums.txt` déjà signé par cosign.
 
 ```yaml title=".github/workflows/release.yml"
       - name: Attest build provenance
@@ -217,7 +217,7 @@ kos:
     bare: true   # ghcr.io/monorg/mon-image:1.2.3 (sans suffixe binaire)
 ```
 
-Ko génère automatiquement un manifest multi-arch et publie des SBOMs par image. Il utilise le `GITHUB_TOKEN` pour s'authentifier sur `ghcr.io` — aucun `docker login` ni step buildx requis dans le workflow CI.
+Ko génère automatiquement un manifest multi-arch et publie des SBOMs par image. Il utilise le `GITHUB_TOKEN` pour s'authentifier sur `ghcr.io` - aucun `docker login` ni step buildx requis dans le workflow CI.
 
 !!! note "Pas de Dockerfile nécessaire"
     Pour un binaire Go pur (`CGO_ENABLED=0`), ko remplace entièrement le duo `Dockerfile.release` + `docker_manifests`. Pour les builds locaux de développement (avec un vrai Dockerfile multi-stage), on peut garder un `Dockerfile` séparé.

@@ -1,5 +1,5 @@
 ---
-description: Configurer iSCSI sur Windows Server — démarrer le service, ajouter des cibles et monter les LUN
+description: Configurer iSCSI sur Windows Server - démarrer le service, ajouter des cibles et monter les LUN
 tags:
   - PowerShell
   - iSCSI

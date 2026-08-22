@@ -1,5 +1,5 @@
 ---
-description: Déboguer et réparer une réplication MySQL primaire/réplica — résoudre les erreurs de relay log et relancer la synchronisation
+description: Déboguer et réparer une réplication MySQL primaire/réplica - résoudre les erreurs de relay log et relancer la synchronisation
 tags:
   - MySQL
   - Replication

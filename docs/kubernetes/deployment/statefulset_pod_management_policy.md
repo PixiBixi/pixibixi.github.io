@@ -1,11 +1,11 @@
 ---
-description: "podManagementPolicy dans les StatefulSets Kubernetes : OrderedReady vs Parallel — quand utiliser chaque mode et impact sur les rolling updates."
+description: "podManagementPolicy dans les StatefulSets Kubernetes : OrderedReady vs Parallel - quand utiliser chaque mode et impact sur les rolling updates."
 tags:
   - StatefulSet
   - Kubernetes
 ---
 
-# StatefulSet — podManagementPolicy
+# StatefulSet - podManagementPolicy
 
 Par défaut, un StatefulSet démarre ses pods un par un dans l'ordre : `pod-0` doit être Running et Ready avant que `pod-1` démarre. C'est `OrderedReady`.
 
@@ -46,12 +46,12 @@ Dès que les pods n'ont pas besoin de se connaître au démarrage :
 - Workers de queue (chaque pod consomme un shard indépendant)
 - Batch jobs avec PVC dédiés par pod
 
-`Parallel` divise le temps de rollout par N — sur un StatefulSet de 10 replicas, ça peut faire la différence entre 2 min et 20 min.
+`Parallel` divise le temps de rollout par N - sur un StatefulSet de 10 replicas, ça peut faire la différence entre 2 min et 20 min.
 
 ## Impact sur les rolling updates
 
 Avec `OrderedReady`, même avec `maxUnavailable: 2`, Kubernetes recréé les pods un par un.
-Avec `Parallel`, `maxUnavailable` est pleinement respecté — on peut vraiment updater N pods à la fois.
+Avec `Parallel`, `maxUnavailable` est pleinement respecté - on peut vraiment updater N pods à la fois.
 
 ```yaml
 spec:

@@ -103,4 +103,4 @@ echo "alias df=dfc" >> ~/.bashrc
 
 ## Voir aussi
 
-- [Remplacer les commandes de base](replace_base_commands.md) — alternatives modernes à df et autres utilitaires Unix
+- [Remplacer les commandes de base](replace_base_commands.md) - alternatives modernes à df et autres utilitaires Unix

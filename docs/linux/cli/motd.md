@@ -87,4 +87,4 @@ l'être), mais il fait ce qu'on lui demande.
 
 ## Voir aussi
 
-- [Dotfiles](confrc.md) — configuration centralisée de l'environnement de travail
+- [Dotfiles](confrc.md) - configuration centralisée de l'environnement de travail

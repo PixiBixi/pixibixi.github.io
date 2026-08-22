@@ -1,5 +1,5 @@
 ---
-description: Commandes utiles pour la CLI Azure — gestion des ressources, AKS, réseau et identités
+description: Commandes utiles pour la CLI Azure - gestion des ressources, AKS, réseau et identités
 tags:
   - Azure
   - CLI

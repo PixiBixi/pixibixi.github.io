@@ -1,5 +1,5 @@
 ---
-description: Référence des commandes kubectl pour Kubernetes — gestion des pods, déploiements, services, ConfigMaps, debugging et commandes avancées.
+description: Référence des commandes kubectl pour Kubernetes - gestion des pods, déploiements, services, ConfigMaps, debugging et commandes avancées.
 tags:
   - kubectl
 ---
@@ -111,7 +111,7 @@ Permet de forcer le refresh de tous les ExternalSecrets qui sont en erreur
 
 ---
 
-Le Cluster Autoscaler publie son état dans un ConfigMap `cluster-autoscaler-status` dans `kube-system`. On lit ça avec `kubectl describe configmap` (alias `kdcm`) — utile pour savoir si le CA est en bonne santé, s'il y a un scale-up/down en cours, ou s'il est en backoff sur un node group.
+Le Cluster Autoscaler publie son état dans un ConfigMap `cluster-autoscaler-status` dans `kube-system`. On lit ça avec `kubectl describe configmap` (alias `kdcm`) - utile pour savoir si le CA est en bonne santé, s'il y a un scale-up/down en cours, ou s'il est en backoff sur un node group.
 
 ??? note "cluster-autoscaler-status"
     ```bash
@@ -157,14 +157,14 @@ Le Cluster Autoscaler publie son état dans un ConfigMap `cluster-autoscaler-sta
 
     Les champs clés à surveiller :
 
-    - **`Health`** — `Healthy` = tout va bien ; `Unhealthy` = des nodes ne s'enregistrent pas
-    - **`ScaleUp`** — `NoActivity` = pas de scale-up en cours ; `InProgress` = scale-up déclenché
-    - **`ScaleDown`** — `NoCandidates` = rien à supprimer ; si on voit un candidat et que ça dure, le CA est peut-être en backoff
+    - **`Health`** - `Healthy` = tout va bien ; `Unhealthy` = des nodes ne s'enregistrent pas
+    - **`ScaleUp`** - `NoActivity` = pas de scale-up en cours ; `InProgress` = scale-up déclenché
+    - **`ScaleDown`** - `NoCandidates` = rien à supprimer ; si on voit un candidat et que ça dure, le CA est peut-être en backoff
     - **`cloudProviderTarget`** = taille cible du node group côté cloud provider
     - **`minSize` / `maxSize`** = bornes configurées sur le node group
 
 ## Voir aussi
 
-* [Commandes avancées](advanced_commands.md) — requêtes jsonpath, jq, et débogage avancé
-* [Plugins Krew](krew_plugins.md) — outils essentiels pour améliorer la productivité
-* [Outils pour K8S](tools.md) — kubectx, stern, kubecolor et autres utilities
+* [Commandes avancées](advanced_commands.md) - requêtes jsonpath, jq, et débogage avancé
+* [Plugins Krew](krew_plugins.md) - outils essentiels pour améliorer la productivité
+* [Outils pour K8S](tools.md) - kubectx, stern, kubecolor et autres utilities

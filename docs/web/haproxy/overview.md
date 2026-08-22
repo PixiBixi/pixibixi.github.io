@@ -1,5 +1,5 @@
 ---
-description: Guide complet de HAproxy — configuration, load balancing, ACLs, TLS et exemples pratiques
+description: Guide complet de HAproxy - configuration, load balancing, ACLs, TLS et exemples pratiques
 tags:
   - HAProxy
 ---
@@ -128,7 +128,7 @@ en tant que root, mais en tant qu'haproxy.
     <!-- markdownlint-disable-next-line -->
     * `nbproc` (multi-processus) est **déprécié depuis HAProxy 2.5** et **supprimé en 2.9**. Ne plus utiliser cette directive.
 * `cpu-map` permet de binder chaque thread sur un core CPU dédié. La syntaxe avec `nbthread` : `cpu-map auto:<thread-range> <cpu-range>`
-* `daemon` permet de lancer HAproxy en tant que daemon. Indépendant de `nbthread` — les deux directives n'ont aucune dépendance l'une envers l'autre.
+* `daemon` permet de lancer HAproxy en tant que daemon. Indépendant de `nbthread` - les deux directives n'ont aucune dépendance l'une envers l'autre.
 * `ssl-default-bind-ciphers` configure les ciphers **TLS 1.2**. `ssl-default-bind-ciphersuites` configure les ciphers **TLS 1.3** (directive distincte, obligatoire pour couvrir les deux versions). `ssl-default-bind-options` configure les versions autorisées et options associées.
     <!-- markdownlint-disable-next-line -->
     * La fondation Mozilla propose un [configurateur](https://ssl-config.mozilla.org/#server=haproxy&version=3.3&config=intermediate) pour HAProxy 3.x. Le profil Intermediate est adapté pour une utilisation en production.
@@ -292,7 +292,7 @@ Les backends sont la force de HAproxy, entièrement modulables. Voici quelques e
 
 2 serveurs dénommés respectivement server1 et server2 sur
 les IPs 10.0.1.3 et 10.0.1.4 écoutant sur le port 80. Aucun paramètre
-spécifique sur un éventuel check de disponibilité — chacun recevra 50% du traffic.
+spécifique sur un éventuel check de disponibilité - chacun recevra 50% du traffic.
 
 #### Multiples avec persistance
 

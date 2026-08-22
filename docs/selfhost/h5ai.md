@@ -1,5 +1,5 @@
 ---
-description: Partager ses fichiers en ligne avec H5ai — installation, configuration Nginx et authentification basique
+description: Partager ses fichiers en ligne avec H5ai - installation, configuration Nginx et authentification basique
 tags:
   - h5ai
 ---

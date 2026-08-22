@@ -7,7 +7,7 @@ tags:
 
 # Spegel : Un OCI registry cache stateless
 
-Dans les clusters Kubernetes, chaque nœud pull les images depuis des registres distants — ce qui surcharge ces registres et peut déclencher des rate limits (notamment sur DockerHub). **Spegel** est un proxy de cache d'images local qui vise à résoudre ce problème en accélérant la distribution des images.
+Dans les clusters Kubernetes, chaque nœud pull les images depuis des registres distants - ce qui surcharge ces registres et peut déclencher des rate limits (notamment sur DockerHub). **Spegel** est un proxy de cache d'images local qui vise à résoudre ce problème en accélérant la distribution des images.
 
 !!! warning "Containerd uniquement"
     Spegel ne prend en charge que **Containerd**, pas Docker.

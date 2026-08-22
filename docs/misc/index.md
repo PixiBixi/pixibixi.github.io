@@ -1,5 +1,5 @@
 ---
-description: Ressources transverses — performances Linux, scripts utiles, fibre optique et liens de référence.
+description: Ressources transverses - performances Linux, scripts utiles, fibre optique et liens de référence.
 tags:
   - Linux
   - Performance
@@ -12,10 +12,10 @@ Tout ce qui ne rentre pas ailleurs. Performances Linux, scripts réutilisables, 
 
 ## Contenus
 
-- [Performances Linux](linux_performances.md) — méthodologie de triage CPU/mémoire/I/O et outils par couche
-- [Optimisation](optimization.md) — techniques d'optimisation système
-- [Liens en vrac](useful_links.md) — ressources externes classées par domaine
-- [Sources](sources.md) — bibliographie et sources de documentation
-- [Template GitHub](github_template.md) — templates d'issues et pull requests
-- [Fibre optique — Info transceiver](fibre_optique/info_transceiver.md) — identifier et diagnostiquer un transceiver SFP
-- [Téléchargement — Sous-titres Netflix](download/netflix_subs.md) — extraire les sous-titres
+- [Performances Linux](linux_performances.md) - méthodologie de triage CPU/mémoire/I/O et outils par couche
+- [Optimisation](optimization.md) - techniques d'optimisation système
+- [Liens en vrac](useful_links.md) - ressources externes classées par domaine
+- [Sources](sources.md) - bibliographie et sources de documentation
+- [Template GitHub](github_template.md) - templates d'issues et pull requests
+- [Fibre optique - Info transceiver](fibre_optique/info_transceiver.md) - identifier et diagnostiquer un transceiver SFP
+- [Téléchargement - Sous-titres Netflix](download/netflix_subs.md) - extraire les sous-titres

@@ -1,5 +1,5 @@
 ---
-description: Installer et configurer Munin pour la supervision système — installation, plugins et tableaux de bord
+description: Installer et configurer Munin pour la supervision système - installation, plugins et tableaux de bord
 tags:
   - Munin
   - Monitoring
@@ -179,4 +179,4 @@ sudo systemctl restart spawn-fcgi-munin-html.service
 
 ### Test grandeur nature
 
-Aller faire un tour sur la page <http://munin.fqdn.grd> — des jolis graphiques cliquables devraient apparaître sous peu.
+Aller faire un tour sur la page <http://munin.fqdn.grd> - des jolis graphiques cliquables devraient apparaître sous peu.

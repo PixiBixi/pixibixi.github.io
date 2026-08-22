@@ -7,7 +7,7 @@ tags:
 
 # Récupérer son fichier rkestate
 
-Le fichier rkestate contient la description complète du cluster Kubernetes — indispensable pour ajouter ou supprimer un node. Si on ne l'a plus, pas de panique, plusieurs méthodes permettent de le récupérer.
+Le fichier rkestate contient la description complète du cluster Kubernetes - indispensable pour ajouter ou supprimer un node. Si on ne l'a plus, pas de panique, plusieurs méthodes permettent de le récupérer.
 
 !!! warning "Spécifique à RKE1, en fin de vie"
     Le `rkestate` est un mécanisme propre à **RKE1**, dont le support Rancher s'est arrêté

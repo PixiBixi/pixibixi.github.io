@@ -1,5 +1,5 @@
 ---
-description: Les sync options ArgoCD — CreateNamespace, ServerSideApply, Replace, PruneLast, Force, Delete=confirm et les autres gotchas de prod.
+description: Les sync options ArgoCD - CreateNamespace, ServerSideApply, Replace, PruneLast, Force, Delete=confirm et les autres gotchas de prod.
 tags:
   - ArgoCD
   - GitOps
@@ -72,7 +72,7 @@ syncOptions:
   - ServerSideApply=true
 ```
 
-SSA résout les conflits de field managers — chaque outil "possède" ses champs, ArgoCD ne touche que les siens.
+SSA résout les conflits de field managers - chaque outil "possède" ses champs, ArgoCD ne touche que les siens.
 
 Pour désactiver SSA sur une ressource spécifique quand c'est activé au niveau de l'Application :
 
@@ -85,7 +85,7 @@ metadata:
 !!! warning "Migration client → server side apply"
     Migrer une ressource déjà gérée en client-side apply vers SSA peut déclencher des conflits.
     Forcer avec `--server-side --force-conflicts` lors du premier sync manuel. La migration des
-    managed fields est automatique (`ClientSideApplyMigration=true` par défaut) — désactivable
+    managed fields est automatique (`ClientSideApplyMigration=true` par défaut) - désactivable
     avec `ClientSideApplyMigration=false` si ça cause des problèmes.
 
 ---
@@ -103,7 +103,7 @@ metadata:
 ```
 
 !!! warning
-    À éviter en global sur l'Application — un `Replace` sur un Service supprime et recrée l'objet, ce qui change le ClusterIP et casse les connexions en cours.
+    À éviter en global sur l'Application - un `Replace` sur un Service supprime et recrée l'objet, ce qui change le ClusterIP et casse les connexions en cours.
 
 Si `Replace=true` et `ServerSideApply=true` sont tous les deux définis, `Replace` a la priorité.
 
@@ -120,7 +120,7 @@ metadata:
 ```
 
 !!! danger
-    **Destructif** — interruption de service garantie sur les Deployments. Réserver aux Jobs uniquement.
+    **Destructif** - interruption de service garantie sur les Deployments. Réserver aux Jobs uniquement.
 
 ---
 
@@ -196,7 +196,7 @@ metadata:
     argocd.argoproj.io/sync-options: Delete=confirm
 ```
 
-Typique sur les PVCs — évite de perdre des données si quelqu'un supprime l'Application par erreur.
+Typique sur les PVCs - évite de perdre des données si quelqu'un supprime l'Application par erreur.
 
 ---
 
@@ -249,7 +249,7 @@ spec:
       - RespectIgnoreDifferences=true
 ```
 
-Utile pour cohabiter avec un HPA — ArgoCD ignore le champ `replicas` géré par le HPA et
+Utile pour cohabiter avec un HPA - ArgoCD ignore le champ `replicas` géré par le HPA et
 ne l'écrase plus à chaque sync. Ne fonctionne que si la ressource existe déjà dans le cluster.
 
 ---
@@ -297,5 +297,5 @@ syncOptions:
 
 ## Voir aussi
 
-- [Sync Waves & Hooks](sync_waves.md) — contrôler l'ordre de déploiement avec les waves
-- [ApplicationSet](applicationset.md) — déployer automatiquement sur plusieurs clusters
+- [Sync Waves & Hooks](sync_waves.md) - contrôler l'ordre de déploiement avec les waves
+- [ApplicationSet](applicationset.md) - déployer automatiquement sur plusieurs clusters

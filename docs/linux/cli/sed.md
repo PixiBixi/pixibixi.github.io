@@ -1,5 +1,5 @@
 ---
-description: Référence complète de sed — substitution, filtrage par adresse, suppression de lignes, insertion et cas pratiques pour l'édition de flux.
+description: Référence complète de sed - substitution, filtrage par adresse, suppression de lignes, insertion et cas pratiques pour l'édition de flux.
 tags:
   - sed
   - Text Processing
@@ -9,7 +9,7 @@ tags:
 
 !!! warning "Mac / BSD sed"
     Sur macOS, `sed` est la version BSD. Installer **gnu-sed** via Homebrew :
-    `brew install gnu-sed` — puis utiliser `gsed` ou ajuster le PATH.
+    `brew install gnu-sed` - puis utiliser `gsed` ou ajuster le PATH.
 
 sed (Stream EDitor) lit un flux ligne par ligne et applique des expressions.
 Sa syntaxe de base :
@@ -142,7 +142,7 @@ sed '3,$d' file
 
 ## Affichage ciblé
 
-Avec `-n`, sed n'affiche rien par défaut — `p` affiche explicitement :
+Avec `-n`, sed n'affiche rien par défaut - `p` affiche explicitement :
 
 ```bash
 # Afficher uniquement la ligne 5
@@ -246,4 +246,4 @@ sed -E 's/\x1B\[[0-9;]*[mK]//g' file
 
 ## Voir aussi
 
-- [Remplacer les commandes de base](replace_base_commands.md) — alternatives Rust pour la recherche et le traitement de texte
+- [Remplacer les commandes de base](replace_base_commands.md) - alternatives Rust pour la recherche et le traitement de texte

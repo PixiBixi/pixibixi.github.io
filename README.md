@@ -8,7 +8,7 @@ Personal knowledge base built with [MkDocs Material](https://squidfunk.github.io
 ## Setup
 
 Needs [uv](https://docs.astral.sh/uv/), plus `pre-commit` and `cwebp` on the `PATH`
-(`brew install pre-commit webp`) — neither is pulled in by `uv sync`.
+(`brew install pre-commit webp`) - neither is pulled in by `uv sync`.
 
 ```sh
 uv sync
@@ -34,7 +34,7 @@ tags:
 Quote the description if it contains a colon, otherwise the YAML block silently renders as
 plain text. Directory-wide tags come from `.meta.yml` files.
 
-The sidebar is generated from the directory tree, but the landing pages are not — link the
+The sidebar is generated from the directory tree, but the landing pages are not - link the
 new file from `docs/index.md` **and** `docs/<section>/index.md`.
 
 ## Lint & build
@@ -44,7 +44,7 @@ pre-commit run --all-files
 uv run mkdocs build --strict     # warnings are fatal, same as CI
 ```
 
-The WebP hook converts any staged JPG/PNG under `docs/`, then exits 1 on purpose — re-run
+The WebP hook converts any staged JPG/PNG under `docs/`, then exits 1 on purpose - re-run
 `git commit` to pick up the converted files.
 
 ## Deploy

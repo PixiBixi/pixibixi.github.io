@@ -24,7 +24,7 @@ argo-cd:
 
 Ici on définit un compte `mysuperSA` avec l'autorisation `get` sur toutes les applications de tous les projets ArgoCD (`*/*`).
 
-La syntaxe des politiques ArgoCD : `p, <role/user/group>, <resource>, <action>, <object>, <effect>` — voir la [documentation RBAC ArgoCD](https://argo-cd.readthedocs.io/en/stable/operator-manual/rbac/).
+La syntaxe des politiques ArgoCD : `p, <role/user/group>, <resource>, <action>, <object>, <effect>` - voir la [documentation RBAC ArgoCD](https://argo-cd.readthedocs.io/en/stable/operator-manual/rbac/).
 
 On vérifie que le compte existe :
 
@@ -42,5 +42,5 @@ argocd account generate-token --account mysuperSA
 
 ## Voir aussi
 
-- [ApplicationSet](applicationset.md) — déployer la même app sur plusieurs clusters
-- [Sync Options](sync_options.md) — contrôler le comportement lors du déploiement
+- [ApplicationSet](applicationset.md) - déployer la même app sur plusieurs clusters
+- [Sync Options](sync_options.md) - contrôler le comportement lors du déploiement

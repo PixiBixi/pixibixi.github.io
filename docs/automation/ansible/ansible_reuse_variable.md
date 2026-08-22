@@ -1,5 +1,5 @@
 ---
-description: Accéder aux variables d'un hôte spécifique dans Ansible avec hostvars — partage de variables entre hôtes
+description: Accéder aux variables d'un hôte spécifique dans Ansible avec hostvars - partage de variables entre hôtes
 tags:
   - Ansible
 ---
