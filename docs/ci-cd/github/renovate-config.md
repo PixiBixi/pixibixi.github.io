@@ -27,11 +27,36 @@ Sortie sur une config saine :
  INFO: Config validated successfully against 1 file(s)
 ```
 
-Deux détails de l'invocation valent le détour, parce qu'ils changent ce qui est réellement vérifié.
+Deux détails de l'invocation valent le détour.
 
-**Épingler la version.** `--package renovate` sans tag laisse npx servir ce qu'il a en cache, qui peut être vieux de plusieurs majeures. Les 2 versions ne valident pas la même chose, et l'ancienne ne connaît même pas `--version`.
+**Épingler la version.** `--package renovate` sans tag, qui est la forme de la [doc officielle](https://docs.renovatebot.com/config-validation/), laisse npx servir ce qu'il a en cache. Le mien datait de plusieurs majeures et refusait une config que la 44 accepte, ce qui suffit à conclure l'inverse de la réalité sur le point qu'on cherchait à vérifier.
 
-**Ne pas passer le nom du fichier.** Avec `renovate-config-validator renovate.json`, la version 44 annonce `Validating renovate.json as global config` et valide contre le schéma de la config globale, celle d'une instance self-hosted. Les contrôles propres à une config de repo sautent, et une config fautive ressort verte. Sans argument, il détecte le fichier lui-même et annonce `Validating renovate.json`, ce qui est la bonne ligne à voir passer.
+**Savoir dans quel mode il tourne.** Passer un chemin en argument fait valider le fichier comme config **globale**, celle d'une instance self-hosted, et pas comme config de repo. `--no-global` force le mode repo, et la première ligne de sortie dit toujours lequel a tourné :
+
+```text
+ INFO: Validating renovate.json as global config
+ INFO: Validating renovate.json as repo config
+```
+
+Sans argument du tout, il détecte les emplacements par défaut et prend le mode repo. Je n'ai pas trouvé de cas où le mode change le verdict, une clé inconnue est refusée dans les 2, mais autant valider dans le mode qui correspond au fichier.
+
+`--strict` fait en plus échouer la validation quand une migration de config est nécessaire, ce que Renovate propose sinon via une case à cocher dans le dependency dashboard.
+
+## Le hook pre-commit, qui épingle la version pour vous
+
+Renovate publie [ses hooks](https://github.com/renovatebot/pre-commit-hooks), et leur `rev` **est** la version de Renovate. Le problème de cache npx disparaît, puisque le hook installe `renovate@<rev>` en dépendance :
+
+```yaml title=".pre-commit-config.yaml"
+repos:
+  - repo: https://github.com/renovatebot/pre-commit-hooks
+    rev: 44.39.2
+    hooks:
+      - id: renovate-config-validator
+```
+
+Le hook matche `renovate.json`, `.renovaterc`, `renovate.json5` et leurs variantes, et demande pre-commit 3.6.0 au minimum. Comme pre-commit passe les fichiers matchés en arguments, il valide en mode global : ajouter `args: [--no-global]` remet le mode repo.
+
+Renovate met à jour ce `rev` tout seul, donc le validateur suit la version qui tourne réellement sur le dépôt.
 
 ## Documenter une config sans la casser
 
