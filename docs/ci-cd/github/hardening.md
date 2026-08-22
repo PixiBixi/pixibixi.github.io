@@ -88,7 +88,7 @@ runs-on: ubuntu-latest
 runs-on: ubuntu-24.04
 ```
 
-On nomme la version que `-latest` désigne aujourd'hui, pas la plus récente qui existe : `ubuntu-26.04` est disponible mais en preview, alors que `ubuntu-latest` reste sur 24.04. Côté macOS c'est l'inverse du réflexe, `macos-latest` pointe déjà sur macOS 26, donc écrire `macos-15` downgraderait le runner sans le dire. Renovate a un manager `github-runners` qui suit ces labels comme le reste, donc le pin ne fige rien : il transforme juste une migration subie en PR qu'on relit.
+On nomme la version que `-latest` désigne aujourd'hui, pas la plus récente qui existe : `ubuntu-26.04` est disponible mais en preview, alors que `ubuntu-latest` reste sur 24.04. Côté macOS c'est l'inverse du réflexe, `macos-latest` pointe déjà sur macOS 26, donc écrire `macos-15` downgraderait le runner sans le dire. Renovate suit ces labels via sa datasource `github-runners`, alimentée par le manager `github-actions` qui lit les workflows, donc le pin ne fige rien : il transforme juste une migration subie en PR qu'on relit. La nuance compte dans une `packageRule` : `github-runners` dans `matchManagers` ne matche rien, et Renovate 44 l'accepte sans broncher, voir [valider une config Renovate](renovate-config.md).
 
 ## Injection de template : le `${{ }}` passe avant bash
 
