@@ -1,10 +1,10 @@
 # Jérémy Wiki
 
-> Wiki SRE/infra — 240+ articles pratiques sur Kubernetes, HAProxy, Terraform, Linux, monitoring et cloud par Jérémy Delgado, Senior Platform Engineer.
+> Wiki SRE/infra - 240+ articles pratiques sur Kubernetes, HAProxy, Terraform, Linux, monitoring et cloud par Jérémy Delgado, Senior Platform Engineer.
 
 ## Sections
 
-- [Linux](https://wiki.jdelgado.fr/linux/): CLI, sécurité, shell, systemd, stockage, networking — administration système Debian/Ubuntu
+- [Linux](https://wiki.jdelgado.fr/linux/): CLI, sécurité, shell, systemd, stockage, networking - administration système Debian/Ubuntu
 - [Kubernetes](https://wiki.jdelgado.fr/kubernetes/): kubectl, ArgoCD, déploiements, troubleshooting, operators, RKE, Rancher
 - [Cloud](https://wiki.jdelgado.fr/cloud/): GCP (GKE, Workload Identity, Spot Nodes), AWS (CLI, IAM), Azure
 - [Databases](https://wiki.jdelgado.fr/databases/): MySQL, PostgreSQL, Redis, Elasticsearch, MongoDB, Memcached
