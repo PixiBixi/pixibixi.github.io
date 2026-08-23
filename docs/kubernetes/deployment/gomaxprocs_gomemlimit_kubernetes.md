@@ -147,3 +147,10 @@ Avec **HPA** sur des métriques CPU custom : un `GOMAXPROCS` trop élevé crée 
 ## Ces variables fonctionnent hors Kubernetes
 
 `GOMEMLIMIT` et `GOMAXPROCS` sont des variables d'environnement standard du runtime Go. On peut les injecter via `Dockerfile` (`ENV`), systemd (`Environment=`), ou directement depuis le code (`runtime.GOMAXPROCS(n)`). K8S n'est qu'un vecteur parmi d'autres.
+
+## Voir aussi
+
+- [Thanos at scale](../../monitoring/lgtm/thanos.md) - un cas réel où le `GOMEMLIMIT` de Receive évite l'OOM kill
+- [GKE - Capacité réelle des nodes](../../cloud/gcloud/gke_node_capacity.md) - la capacité qui reste vraiment pour poser des limits
+- [PDB et topology spread](pdb_topology_spread.md) - ce qui arrive à ces pods pendant un drain
+- [CI Go sur GitHub Actions](../../ci-cd/github/go-ci.md) - tester et linter le binaire avant qu'il tourne en cluster

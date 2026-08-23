@@ -61,3 +61,9 @@ spec:
     rollingUpdate:
       maxUnavailable: 3
 ```
+
+## Voir aussi
+
+- [Resize les PVC de son StatefulSet](../troubleshooting/resize_pvc_statefulset.md) - l'ordre de redémarrage compte pendant un resize
+- [PDB et topology spread](pdb_topology_spread.md) - le budget d'éviction qui s'ajoute à cette policy pendant un drain
+- [Comment rollout restart un composant Strimzi](../operator/strimzi/rollout_strimzi.md) - le cas d'un StatefulSet piloté par un opérateur

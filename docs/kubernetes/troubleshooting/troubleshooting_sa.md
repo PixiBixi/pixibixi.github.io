@@ -86,3 +86,10 @@ Par ailleurs, la bonne pratique est de ne pas utiliser le ServiceAccount par dé
 ```bash
 kubectl get pods --all-namespaces -o jsonpath='{range .items[?(@.spec.serviceAccountName == "default")]}{.metadata.namespace} {.metadata.name}{"\n"}{end}' 2>/dev/null
 ```
+
+## Voir aussi
+
+- [Créer son service account ArgoCD](../argocd/argocd_sa.md) - le cas d'un SA à usage programmatique
+- [GKE Workload Identity](../../cloud/gcloud/workload_identity.md) - quand le problème est le lien entre le SA Kubernetes et le SA GCP
+- [Alloy](../../monitoring/lgtm/alloy.md) - un exemple de RBAC à donner à un agent qui scrape tout le cluster
+- [Kubernetes : Commandes Avancées](../cli/advanced_commands.md) - les requêtes jsonpath pour fouiller les SA

@@ -94,3 +94,10 @@ spegel-l75n8 registry {"time":"2025-10-25T16:34:14.236101335Z","level":"INFO","s
 ```
 
 L'image n'est pas disponible sur le nœud et est donc créée. Au 2ème pull, on s'aperçoit que celui-ci ne dure que quelques millisecondes vs une dizaine de secondes au premier pull.
+
+## Voir aussi
+
+- [Docker derrière un proxy](../../containers/docker/use_proxy.md) - l'autre façon de ne pas retélécharger la même image
+- [ValidatingAdmissionPolicy](validating_admission_policy.md) - restreindre les registries autorisées à l'admission
+- [GoReleaser](../../ci-cd/github/goreleaser.md) - le bout de chaîne qui pousse les images que Spegel va cacher
+- [Kubernetes : Commandes Avancées](../cli/advanced_commands.md) - inspecter ce que containerd a réellement en local
