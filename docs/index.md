@@ -124,6 +124,7 @@ Le plan complet est ci-dessous, sinon la recherche fait le job.
 - [Spegel : Un OCI registry cache stateless](kubernetes/deployment/local_image_cache.md)
 - [ValidatingAdmissionPolicy : admission control sans webhook](kubernetes/deployment/validating_admission_policy.md)
 - [StatefulSet - podManagementPolicy : OrderedReady vs Parallel](kubernetes/deployment/statefulset_pod_management_policy.md)
+- [PDB et topology spread : ne pas bloquer un upgrade de node pool](kubernetes/deployment/pdb_topology_spread.md)
 
 ### ArgoCD
 

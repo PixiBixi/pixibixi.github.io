@@ -22,6 +22,7 @@ On fait tourner des workloads Kubernetes depuis des années - RKE, Rancher, GKE,
 - [Deployment - StatefulSet podManagementPolicy](deployment/statefulset_pod_management_policy.md) - OrderedReady vs Parallel
 - [Deployment - Cache d'images local](deployment/local_image_cache.md) - éviter les pulls répétés
 - [Deployment - Validating Admission Policy](deployment/validating_admission_policy.md) - CEL policies sans webhook
+- [Deployment - PDB et topology spread](deployment/pdb_topology_spread.md) - ne pas bloquer un upgrade de node pool
 - [ArgoCD - Service Accounts](argocd/argocd_sa.md) - RBAC et accès programmatique
 - [ArgoCD - ApplicationSet](argocd/applicationset.md) - déployer sur plusieurs clusters
 - [ArgoCD - Sync Waves](argocd/sync_waves.md) - ordonnancer les déploiements
