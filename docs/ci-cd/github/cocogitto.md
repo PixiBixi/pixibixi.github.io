@@ -313,3 +313,10 @@ perd le titre de section par défaut du type.
 - Équipe avec review obligatoire avant release
 - Tu veux un gate humain explicite sur chaque release
 - Tu travailles déjà avec les PR GitHub comme unité de travail
+
+## Voir aussi
+
+- [GoReleaser](goreleaser.md) - construire et publier les artefacts que cocogitto vient de tagger
+- [CI Go sur GitHub Actions](go-ci.md) - les jobs qui doivent passer avant qu'un bump ait un sens
+- [Hardening des workflows GitHub Actions](hardening.md) - protéger le token qui pousse le tag et la release
+- [Valider une config Renovate](renovate-config.md) - garder les commits automerge conformes à la convention
