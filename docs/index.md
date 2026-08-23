@@ -238,7 +238,7 @@ Le plan complet est ci-dessous, sinon la recherche fait le job.
 
 ### Makefile
 
-- [Makefile : à quoi ça sert ?](automation/misc/makefile.md)
+- [Makefile : cibles, dépendances de fichiers et auto-documentation](automation/misc/makefile.md)
 
 ## CI/CD
 
