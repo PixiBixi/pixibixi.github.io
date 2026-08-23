@@ -7,7 +7,7 @@ tags:
 
 # Munin : l'outil de supervision sans fioritures
 
-## Installation sous Debian 8.0 Jessie
+## Installation sous Debian et Ubuntu
 
 ### Explications
 
@@ -23,7 +23,7 @@ parties :
 
 ### Installation
 
-Il faut posséder une **Debian Jessie** à jour. Sans modification du fichier *Preferences* pour APT, installer munin revient à installer munin (master) et munin-node. On se positionne sur un schéma le plus simple possible : munin et munin-node sur la même machine. Sur **Debian Wheezy**, remplacer **apt** par **apt-get** et **systemctl** par **service**.
+Munin est dans les dépôts, donc rien à compiler. Sans toucher au fichier *Preferences* d'APT, installer `munin` tire le master et `munin-node` avec lui. On se positionne sur le schéma le plus simple : munin et munin-node sur la même machine.
 
 ```sh
 sudo apt install munin
@@ -82,9 +82,7 @@ On installe spawn-fcgi :
 apt install spawn-fcgi
 ```
 
-On récupère les fichiers d'init (pour Jessie, il est aussi possible de
-créer une unité adéquate pour systemd mais je n'ai pas modifié ces
-fichiers depuis Wheezy et ils continuent de fonctionner avec Jessie) :
+On récupère les fichiers d'init. Attention, ce sont des scripts sysvinit, écrits à l'époque de Wheezy et jamais retouchés depuis : ils passent encore via la couche de compatibilité de systemd, mais sur une distribution récente il vaut mieux en faire une vraie unit, voir [Créer son service systemd](../linux/systemd/create_unit.md).
 
 ```sh
 sudo wget http://files.julienschmidt.com/public/cfg/munin/spawn-fcgi-munin-html
