@@ -139,7 +139,7 @@ Le plan complet est ci-dessous, sinon la recherche fait le job.
 
 ### Troubleshooting
 
-- [Resize les PVC de son Statefulset](kubernetes/troubleshooting/resize_pvc_statefulset.md)
+- [Resize les PVC de son StatefulSet : cascade orphan et pièges](kubernetes/troubleshooting/resize_pvc_statefulset.md)
 - [Debug son ServiceAccount Kubernetes](kubernetes/troubleshooting/troubleshooting_sa.md)
 
 ### Rancher & RKE

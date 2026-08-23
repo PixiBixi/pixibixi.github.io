@@ -32,4 +32,4 @@ On fait tourner des workloads Kubernetes depuis des années - RKE, Rancher, GKE,
 - [RKE - Récupérer le rkestate](rke/recover_rkestate.md) - restaurer l'état en cas de perte
 - [Rancher - Reset password](rancher/reset_password.md) - récupérer l'accès admin
 - [Troubleshooting - Service Accounts](troubleshooting/troubleshooting_sa.md) - debug RBAC et permissions
-- [Troubleshooting - Resize PVC StatefulSet](troubleshooting/resize_pvc_statefulset.md) - agrandir un volume attaché à un StatefulSet
+- [Troubleshooting - Resize PVC StatefulSet](troubleshooting/resize_pvc_statefulset.md) - agrandir un volume attaché à un StatefulSet, cascade orphan et pièges ArgoCD
