@@ -4,7 +4,6 @@ tags:
   - Sublime Text
 ---
 
-<!-- markdownlint-disable -->
 # SublimeText : Le codage Efficace
 
 ![Sublimetext](./_img/st3header.webp)
@@ -33,6 +32,7 @@ En règle général, si **X** fait une action, **MAJ + X** fera l'action
 opposée. Par exemple, **Tab** indente la ligne, alors que **MAJ + Tab**
 « désindentera » la ligne.
 
+<!-- markdownlint-disable MD003 MD024 MD036 -->
 ### Sublime Text
 
 Edition
@@ -148,11 +148,12 @@ Code Formatter
 
   **CTRL + Alt + F**
 
-## Fenêtrage
+<!-- markdownlint-enable MD003 MD024 MD036 -->
+
+## Découpage des fenêtres
 
 De base, comme toute application, sublime texte dispose d'**une seule
 fenêtre principale**, puis nous pouvons faire différents découpages :
-
 
 ## Configuraton
 
@@ -312,7 +313,6 @@ Appabar](https://github.com/equinusocio/material-theme-appbar), celle-ci
 completera votre thème avec une couleur originale pour la liste des
 fichiers.
 
-
 <https://github.com/equinusocio/material-theme-appbar>'
 <https://github.com/jamiewilson/predawn>'
 <https://gist.github.com/PixiBixi/e401f57cb05f070d0a96d1859302225a>
@@ -377,7 +377,7 @@ SublimeText
 
 <https://github.com/liamja/sublime-nfo>
 
-### SQL ###
+### SQL
 
 <https://github.com/freewizard/SublimeFormatSQL>
 
@@ -400,4 +400,3 @@ SublimeText
 <https://github.com/BoundInCode/AutoFileName>
 
 <https://wbond.net/sublime_packages/sftp>
-<!-- markdownlint-enable -->
