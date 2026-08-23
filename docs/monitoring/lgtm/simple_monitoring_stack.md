@@ -131,7 +131,7 @@ Docker, j'ai donc utilisé les 2 méthodes.
 Évidemment, il est nécessaire d'avoir une installation Docker à jour.
 Pour cela, il suffit de suivre les [instructions
 officielles](https://docs.docker.com/install). Une fois cela fait, 2
-méthodes de lancement possible : via docker ou docker-compose. Encore
+méthodes de lancement possible : via docker ou docker compose. Encore
 une fois, j'utilise compose pour une question de cohérence. Tous mes
 containers sont ordonnancés dans un fichier docker-compose.yml, les 2
 méthodes seront présentées :
@@ -167,7 +167,7 @@ méthodes seront présentées :
           - /sys:/host/sys:ro
     ```
 
-Et pour le lancer : `docker-compose up -d`
+Et pour le lancer : `docker compose up -d`
 
 Dans les 2 cas, il est possible de mettre Netdata derrière un
 reverse-proxy pour plus de sécurité. Lorsque Netdata est lancé, il sera
@@ -201,7 +201,7 @@ permet de s'abstraire de toutes les questions posées à l'utilisateur.
 
 #### Docker
 
-Toujours selon les 2 méthodes, via docker run ou docker-compose :
+Toujours selon les 2 méthodes, via docker run ou docker compose :
 
 ??? note "Prometheus : Running with docker"
     ```bash
