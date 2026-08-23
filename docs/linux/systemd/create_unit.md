@@ -31,7 +31,7 @@ trouvaient dans `/etc/init.d`.
 
 Concrètement, voici un exemple type d'unit :
 
-<!-- markdownlint-disable -->
+<!-- markdownlint-disable MD034 -->
 ??? example "Simple unit file : /etc/systemd/system/prometheus.service"
     ```bash
     [Unit]
@@ -50,7 +50,7 @@ Concrètement, voici un exemple type d'unit :
     [Install]
     WantedBy=multi-user.target
     ```
-<!-- markdownlint-enable -->
+<!-- markdownlint-enable MD034 -->
 
 Il s'agit d'une unit extrêmement simple.
 
@@ -131,7 +131,7 @@ toujours utiliser cette target.
 Un service template est appelé ainsi car il s'agit d'un service
 pouvant être utilisé :
 
-<!-- markdownlint-disable -->
+<!-- markdownlint-disable MD034 -->
 ??? example "Simple unit file : /etc/systemd/system/openvpn@.service"
     ```bash
     [Unit]
@@ -160,7 +160,7 @@ pouvant être utilisé :
     [Install]
     WantedBy=multi-user.target
     ```
-<!-- markdownlint-enable -->
+<!-- markdownlint-enable MD034 -->
 
 Comme nous pouvons déjà l'observer dans le nom de l'unit, celle-ci
 contient un **@**. Celui-ci signifie qu'il s'agit d'un template.
@@ -175,10 +175,8 @@ contient ici un %i indiquant une variable systemd. Ici, le %i signifie
 que nous prenons tous les caractères tapés après l'@ lors du start du
 service.
 
-    <!-- markdownlint-disable-next-line -->
-    * Par exemple *systemctl start <openvpn@toto.service>*, notre variable `%i` contiendra toto.
+  * Par exemple `systemctl start openvpn@toto.service`, notre variable `%i` contiendra toto.
 
-<!-- markdownlint-disable MD013 -->
 * `%t` contenu dans la directive ExecStart est le répertoire d'exécution. Il existe une tonne de variables de ce genre, une liste complète est disponible sur [la documentation](https://www.freedesktop.org/software/systemd/man/systemd.unit.html#Specifiers) du projet.
 
 * `CapabilityBoundingSet` nous permet de définir à quelles
