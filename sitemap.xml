@@ -54,7 +54,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/ci-cd/github/cocogitto/</loc>
-    <lastmod>2026-08-22</lastmod>
+    <lastmod>2026-08-23</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/ci-cd/github/go-ci/</loc>
@@ -226,7 +226,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/hardware/server/hp/cli_sas/</loc>
-    <lastmod>2026-08-22</lastmod>
+    <lastmod>2026-08-23</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/hardware/server/hp/run_ilo/</loc>
@@ -318,11 +318,11 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/kubernetes/deployment/gomaxprocs_gomemlimit_kubernetes/</loc>
-    <lastmod>2026-08-22</lastmod>
+    <lastmod>2026-08-23</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/kubernetes/deployment/local_image_cache/</loc>
-    <lastmod>2026-08-22</lastmod>
+    <lastmod>2026-08-23</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/kubernetes/deployment/pdb_topology_spread/</loc>
@@ -330,7 +330,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/kubernetes/deployment/statefulset_pod_management_policy/</loc>
-    <lastmod>2026-08-22</lastmod>
+    <lastmod>2026-08-23</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/kubernetes/deployment/validating_admission_policy/</loc>
@@ -358,7 +358,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/kubernetes/troubleshooting/troubleshooting_sa/</loc>
-    <lastmod>2026-03-12</lastmod>
+    <lastmod>2026-08-23</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/linux/</loc>
@@ -614,7 +614,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/linux/systemd/create_unit/</loc>
-    <lastmod>2026-08-02</lastmod>
+    <lastmod>2026-08-23</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/misc/</loc>
@@ -658,7 +658,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/monitoring/munin/</loc>
-    <lastmod>2026-08-22</lastmod>
+    <lastmod>2026-08-23</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/monitoring/check_mk/add_slack_notification/</loc>
@@ -678,7 +678,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/monitoring/lgtm/simple_monitoring_stack/</loc>
-    <lastmod>2026-08-22</lastmod>
+    <lastmod>2026-08-23</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/monitoring/lgtm/thanos/</loc>
@@ -790,7 +790,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/os/misc/st3/</loc>
-    <lastmod>2026-08-22</lastmod>
+    <lastmod>2026-08-23</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/os/windows/desktop/tips/hosts_file/</loc>
@@ -866,7 +866,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/selfhost/</loc>
-    <lastmod>2026-08-22</lastmod>
+    <lastmod>2026-08-23</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/selfhost/ajenti/</loc>
@@ -898,7 +898,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/selfhost/youtubedl/</loc>
-    <lastmod>2026-08-22</lastmod>
+    <lastmod>2026-08-23</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/selfhost/torrent/mktorrent/</loc>
