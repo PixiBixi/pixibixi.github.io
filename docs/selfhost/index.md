@@ -19,6 +19,6 @@ Faire tourner ses propres services plutôt que de dépendre de tiers. Cloud pers
 - [h5ai](h5ai.md) - index de fichiers web élégant
 - [Ajenti](ajenti.md) - panneau d'administration serveur
 - [Sonerezh](sonerezh.md) - alternative à Koel pour le streaming musical
-- [youtube-dl](youtubedl.md) - télécharger des vidéos en ligne de commande
+- [yt-dlp](youtubedl.md) - formats, templates de sortie, download-archive et automatisation systemd
 - [Torrent - mktorrent](torrent/mktorrent.md) - créer des fichiers .torrent
 - [Torrent - Rutorrent](torrent/rutorrent.md) - client BitTorrent web

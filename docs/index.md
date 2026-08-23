@@ -366,7 +366,7 @@ Le plan complet est ci-dessous, sinon la recherche fait le job.
 - [Selfoss, son Reader RSS self-hosted](selfhost/selfoss.md)
 - [NextCloud, son cloud personnel](selfhost/nextcloud.md)
 - [Sonerezh](selfhost/sonerezh.md)
-- [Sauvegarder ses vidéos avec YoutubeDL et sa GUI](selfhost/youtubedl.md)
+- [yt-dlp : télécharger et archiver ses vidéos en CLI](selfhost/youtubedl.md)
 - [Gérer son serveur en ligne via Ajenti](selfhost/ajenti.md)
 - [Streamer sa musique depuis Koel](selfhost/koel.md)
 - [Partager ses fichiers avec H5ai](selfhost/h5ai.md)
