@@ -266,7 +266,7 @@ repos:
 | `feat:` | minor (`1.2.3 → 1.3.0`) |
 | `feat!:` ou `BREAKING CHANGE` | major (`1.2.3 → 2.0.0`) |
 | `perf:`, `refactor:` | aucun bump (configurable, voir ci-dessous) |
-| `chore:`, `docs:`, `ci:` | aucun bump |
+| `chore:`, `docs:`, `ci:` | aucun bump (configurable, voir ci-dessous) |
 
 <!-- markdownlint-disable MD046 -->
 !!! warning "`perf:` ne déclenche aucune release"
@@ -290,8 +290,33 @@ Pour qu'un type déclenche un bump, `[commit_types]` accepte `bump_patch` et `bu
 perf = { changelog_title = "Performance Improvements", bump_patch = true }
 ```
 
-Reprendre `changelog_title` explicitement : un `CommitConfig` défini sans ce champ
-perd le titre de section par défaut du type.
+Un type que cocogitto connaît déjà garde son titre de section même sans le redéclarer :
+en 7.0.0, un `chore = { bump_patch = true }` sort toujours sous « Miscellaneous Chores ».
+Pour un type inventé maison il n'y a aucun défaut à conserver et `changelog_title` est
+ce qui lui donne une section plutôt que de le laisser hors du CHANGELOG.
+
+Le type qu'on finit par vouloir bumper n'est d'ailleurs pas `perf:` mais `chore:`.
+Renovate et Dependabot rangent sous ce type tout ce qui n'est pas une dépendance de
+production. Le piège est exactement celui de l'optimisation : le bump atterrit sur
+master, aucun tag ne sort et la dépendance corrigée n'est jamais reconstruite si l'image
+et le chart sont conditionnés à `bumped == 'true'`. Elle est à jour dans le lockfile et
+absente de ce qui tourne.
+
+```toml title="cog.toml"
+[commit_types]
+chore = { bump_patch = true }
+```
+
+`bump_patch` plutôt que `bump_minor`. Ce n'est pas une question de goût. Un bot qui
+vérifie tous les jours produit plusieurs merges par semaine : en minor le numéro atteint
+la v1.15.0 en un mois sans qu'une seule fonctionnalité soit sortie et le minor ne veut
+plus rien dire le jour où une vraie feature arrive. En patch la version reste lisible et
+dit ce qu'elle est, du contenu qui bouge sans surface nouvelle.
+
+!!! warning "La règle vaut pour tous les `chore:`"
+    `[commit_types]` est indexé par type, pas par scope : le réglage s'applique à
+    `chore(docs)` comme à `chore(deps)`. Un simple rangement de documentation coupera
+    lui aussi une release, avec son image et son chart.
 
 !!! tip "Vérifier avant de pousser"
     `cog bump --auto --dry-run` répond `No conventional commits...` ou la version
