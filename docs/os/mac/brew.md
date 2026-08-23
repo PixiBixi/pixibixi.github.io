@@ -32,7 +32,7 @@ echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
 eval "$(/opt/homebrew/bin/brew shellenv)"
 ```
 
-Sur un Mac Intel, le préfixe est `/usr/local`, déjà dans le `PATH`, et rien de tout ça n'est nécessaire. `brew --prefix` dit dans quel cas on est, ce qui est utile dans un script de bootstrap qui doit marcher sur les deux.
+Sur un Mac Intel, le préfixe est `/usr/local`, déjà dans le `PATH` et rien de tout ça n'est nécessaire. `brew --prefix` dit dans quel cas on est, ce qui est utile dans un script de bootstrap qui doit marcher sur les deux.
 
 ## Les commandes du quotidien
 
@@ -56,7 +56,7 @@ brew update    # met à jour le catalogue de formules, pas les paquets
 brew upgrade   # met à jour les paquets installés
 ```
 
-`brew upgrade` seul ne touche pas les casks sur les versions récentes ; il faut le demander, et `--greedy` inclut les applications qui se mettent à jour toutes seules (à éviter, elles gèrent déjà leur propre update) :
+`brew upgrade` seul ne touche pas les casks sur les versions récentes ; il faut le demander et `--greedy` inclut les applications qui se mettent à jour toutes seules (à éviter, elles gèrent déjà leur propre update) :
 
 ```bash
 brew upgrade --cask
@@ -92,7 +92,7 @@ brew cleanup        # le faire
 du -sh "$(brew --cache)"
 ```
 
-`brew autoremove` retire les dépendances devenues orphelines, et `brew leaves` liste ce qu'on a installé explicitement, par opposition à ce qui est venu en dépendance. Utile pour reprendre un Brewfile à zéro sur une machine encrassée.
+`brew autoremove` retire les dépendances devenues orphelines et `brew leaves` liste ce qu'on a installé explicitement, par opposition à ce qui est venu en dépendance. Utile pour reprendre un Brewfile à zéro sur une machine encrassée.
 
 ## Dépannage
 

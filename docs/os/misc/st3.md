@@ -14,7 +14,7 @@ SublimeText est actuellement l'un des éditeurs les plus prisés du
 moment. Et pour cause, SublimeText gère une multitude de formats,
 dispose d'une tonne de fonctionnalités, tout ça en étant simple
 d'utilisation. Malgré le fait que SublimeText est de base un excellent
-éditeur, il existe une multitude d'astuces, de shortcuts, et de plugins
+éditeur, il existe une multitude d'astuces, de shortcuts et de plugins
 pour encore le rendre encore plus performant, c'est ce que nous allons
 voir dans ce post.
 
@@ -165,7 +165,7 @@ Les modifications que nous allons faire (Et même celles pour les
 plugins) n'affectent par la configuration par défaut, ce qui nous
 permet de toujours avoir de vue les options par défaut si nécéssaire.
 
-L'écriture des fichiers de configuration se fait en JSON, et est donc
+L'écriture des fichiers de configuration se fait en JSON et est donc
 facilement compréhensible.
 
 Voici mon fichier de configuration Sublime Text :
@@ -236,7 +236,7 @@ Nous allons décrire chaque ligne :
     passer à un Line Ending format UNIX
 * `shift_tab_unindent` : Autre option assez pratique, elle nous
     permet de se situer n'importe où dans la ligne pour défaire
-    l'indentation, et non plus seulement au début de la ligne
+    l'indentation et non plus seulement au début de la ligne
 * `show_encoding` : Affiche l'encodage actuel du fichier, pratique
     pour vérifier si l'on est en UTF-8
 * `translate_tabs_to_spaces` : Convertit les tabs en espace. Peut

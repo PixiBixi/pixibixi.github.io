@@ -165,6 +165,6 @@ Le Cluster Autoscaler publie son état dans un ConfigMap `cluster-autoscaler-sta
 
 ## Voir aussi
 
-* [Commandes avancées](advanced_commands.md) - requêtes jsonpath, jq, et débogage avancé
+* [Commandes avancées](advanced_commands.md) - requêtes jsonpath, jq et débogage avancé
 * [Plugins Krew](krew_plugins.md) - outils essentiels pour améliorer la productivité
 * [Outils pour K8S](tools.md) - kubectx, stern, kubecolor et autres utilities

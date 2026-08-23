@@ -8,9 +8,9 @@ tags:
 
 # Terragrunt : structure du monorepo, dépendances et orchestration en CI
 
-Passé une dizaine d'environnements, un repo Terraform devient un exercice de copier-coller : le même bloc `backend`, le même `provider google`, les mêmes `required_providers` dupliqués partout, et le jour où on change de bucket de state il faut ouvrir 40 fichiers. Terragrunt règle ce problème en générant ces fichiers, et il en amène de nouveaux dès qu'on branche les units entre elles.
+Passé une dizaine d'environnements, un repo Terraform devient un exercice de copier-coller : le même bloc `backend`, le même `provider google`, les mêmes `required_providers` dupliqués partout et le jour où on change de bucket de state il faut ouvrir 40 fichiers. Terragrunt règle ce problème en générant ces fichiers et il en amène de nouveaux dès qu'on branche les units entre elles.
 
-Les exemples ci-dessous sont sur Terragrunt 1.x, où la CLI a été refondue : `run-all` a disparu au profit de `terragrunt run --all`, et `render-json` au profit de `terragrunt render`. Si on tombe sur un tutoriel qui parle encore de `run-all`, il date d'avant.
+Les exemples ci-dessous sont sur Terragrunt 1.x, où la CLI a été refondue : `run-all` a disparu au profit de `terragrunt run --all` et `render-json` au profit de `terragrunt render`. Si on tombe sur un tutoriel qui parle encore de `run-all`, il date d'avant.
 
 ## Une arborescence par blast radius
 
@@ -41,7 +41,7 @@ Les fichiers `env.hcl` et `region.hcl` ne sont pas des units, juste des porteurs
 
 ## Sortir le backend et le provider du code
 
-C'est le seul vrai argument de vente de Terragrunt : le `root.hcl` décrit une fois le backend et le provider, et chaque unit les récupère par héritage.
+C'est le seul vrai argument de vente de Terragrunt : le `root.hcl` décrit une fois le backend et le provider et chaque unit les récupère par héritage.
 
 ```hcl title="root.hcl"
 locals {
@@ -78,7 +78,7 @@ EOF
 inputs = merge(local.env, local.region)
 ```
 
-Le `prefix = path_relative_to_include()` est la ligne qui fait tout le travail : le chemin de l'unit dans le repo devient le chemin de son state dans le bucket. Deux units ne peuvent pas se marcher dessus, et on retrouve un state à partir de son dossier sans avoir à chercher.
+Le `prefix = path_relative_to_include()` est la ligne qui fait tout le travail : le chemin de l'unit dans le repo devient le chemin de son state dans le bucket. Deux units ne peuvent pas se marcher dessus et on retrouve un state à partir de son dossier sans avoir à chercher.
 
 Chaque unit se contente ensuite de pointer son module et de passer ses inputs :
 
@@ -104,7 +104,7 @@ Le `ref=v1.4.0` est ce qui rend un apply reproductible. Une source sur `main` ve
 
 ## Chaîner les units avec dependency
 
-Un `dependency` fait 2 choses en même temps : il lit les outputs d'une autre unit, et il pose une arête dans le DAG qui garantit l'ordre d'exécution.
+Un `dependency` fait 2 choses en même temps : il lit les outputs d'une autre unit et il pose une arête dans le DAG qui garantit l'ordre d'exécution.
 
 ```hcl
 dependency "vpc" {
@@ -124,11 +124,11 @@ inputs = {
 }
 ```
 
-Les `mock_outputs` existent parce qu'un `run --all plan` sur un environnement neuf lit les outputs d'units qui n'ont pas encore de state, et échouerait sinon. On les cantonne à `validate`, `plan` et `init` : c'est ce que fait `mock_outputs_allowed_terraform_commands`, et c'est ce qui empêche un `apply` de partir avec `mock-network` en dur dans la conf.
+Les `mock_outputs` existent parce qu'un `run --all plan` sur un environnement neuf lit les outputs d'units qui n'ont pas encore de state et échouerait sinon. On les cantonne à `validate`, `plan` et `init` : c'est ce que fait `mock_outputs_allowed_terraform_commands` et c'est ce qui empêche un `apply` de partir avec `mock-network` en dur dans la conf.
 
 ## Les mocks qui masquent une vraie erreur
 
-Le piège arrive quand une unit est bien appliquée mais qu'un output a été renommé côté module. Terragrunt ne trouve plus `network_name`, retombe sur le mock, et le `plan` sort propre avec une valeur bidon. On ne le voit qu'à l'apply, ou pire, jamais, si la ressource accepte la valeur.
+Le piège arrive quand une unit est bien appliquée mais qu'un output a été renommé côté module. Terragrunt ne trouve plus `network_name`, retombe sur le mock et le `plan` sort propre avec une valeur bidon. On ne le voit qu'à l'apply, ou pire, jamais, si la ressource accepte la valeur.
 
 La parade est `mock_outputs_merge_strategy_with_state`, qui fusionne le state réel avec les mocks au lieu de choisir l'un ou l'autre en bloc :
 
@@ -140,7 +140,7 @@ dependency "vpc" {
 }
 ```
 
-En `shallow`, un output présent dans le state gagne toujours sur son mock, et seuls les outputs réellement absents sont mockés. Un output disparu reste donc absent et fait échouer le plan, ce qui est le comportement qu'on veut.
+En `shallow`, un output présent dans le state gagne toujours sur son mock et seuls les outputs réellement absents sont mockés. Un output disparu reste donc absent et fait échouer le plan, ce qui est le comportement qu'on veut.
 
 ## Ordonner sans lire d'output
 
@@ -188,7 +188,7 @@ Les autres flags qui servent réellement en CI :
 - `--provider-cache` monte un registry local et arrête de retélécharger le même provider pour chaque unit
 
 !!! danger "run --all apply ajoute -auto-approve tout seul"
-    C'est le comportement par défaut, sans confirmation par unit. Sur un monorepo de prod, on ne le lance qu'après avoir relu le plan, et on garde `--no-auto-approve` sous la main pour les runs manuels.
+    C'est le comportement par défaut, sans confirmation par unit. Sur un monorepo de prod, on ne le lance qu'après avoir relu le plan et on garde `--no-auto-approve` sous la main pour les runs manuels.
 
 Le flag à ne jamais mettre en CI, c'est `--queue-ignore-dag-order` : il applique tout en parallèle sans respecter les dépendances. Ça sert à débloquer une situation à la main, jamais dans un pipeline.
 
@@ -249,8 +249,8 @@ C'est puissant et c'est aussi une couche d'indirection en plus. Sur 3 environnem
 
 ## Les pièges qui coûtent une heure
 
-- **Le `root.hcl` ne s'appelait pas comme ça avant.** L'ancienne convention mettait la conf racine dans un `terragrunt.hcl` à la racine, et `find_in_parent_folders()` sans argument le trouvait. C'est déprécié : on nomme le fichier `root.hcl` et on passe le nom explicitement. Sinon Terragrunt peut remonter jusqu'à un `terragrunt.hcl` qui n'était pas prévu pour ça.
-- **Le `.terragrunt-cache` grossit sans fin.** Chaque unit garde sa copie du module et de ses providers. Sur un monorepo, ça se compte en dizaines de Go. `--provider-cache` règle la partie providers, et un `find . -type d -name ".terragrunt-cache" -prune -exec rm -rf {} +` règle le reste quand la CI commence à se plaindre du disque.
+- **Le `root.hcl` ne s'appelait pas comme ça avant.** L'ancienne convention mettait la conf racine dans un `terragrunt.hcl` à la racine et `find_in_parent_folders()` sans argument le trouvait. C'est déprécié : on nomme le fichier `root.hcl` et on passe le nom explicitement. Sinon Terragrunt peut remonter jusqu'à un `terragrunt.hcl` qui n'était pas prévu pour ça.
+- **Le `.terragrunt-cache` grossit sans fin.** Chaque unit garde sa copie du module et de ses providers. Sur un monorepo, ça se compte en dizaines de Go. `--provider-cache` règle la partie providers et un `find . -type d -name ".terragrunt-cache" -prune -exec rm -rf {} +` règle le reste quand la CI commence à se plaindre du disque.
 - **Un state par unit veut dire un lock par unit.** C'est l'avantage recherché, mais 2 pipelines qui tournent sur la même branche vont se bloquer proprement sur une unit et pas sur les autres, donc un `run --all` peut échouer à moitié. C'est là que `--fail-fast` évite un état bancal.
 - **`inputs` n'est pas `variables`.** Terragrunt passe les `inputs` en variables d'environnement `TF_VAR_*`. Une variable non déclarée dans le module est ignorée en silence, sans erreur : une faute de frappe dans un nom d'input ne se voit que par la valeur par défaut qui s'applique.
 

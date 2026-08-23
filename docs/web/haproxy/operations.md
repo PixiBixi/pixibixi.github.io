@@ -8,7 +8,7 @@ tags:
 # HAProxy : exploitation au quotidien
 
 Tout ce qu'on fait sur un HAProxy en production sans le redémarrer : lire les stats, sortir
-un node du pool, et récupérer la vraie IP du client quand il y a un CDN devant.
+un node du pool et récupérer la vraie IP du client quand il y a un CDN devant.
 
 ## Le socket d'admin
 

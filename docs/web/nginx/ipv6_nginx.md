@@ -7,7 +7,7 @@ tags:
 
 # Configurer nginx pour utiliser IPv6
 
-Configurer l'IPv6 et nginx est un vrai casse-tête, et je ne vous parle
+Configurer l'IPv6 et nginx est un vrai casse-tête et je ne vous parle
 même pas lorsque l'on a plusieurs vhosts.
 
 Tout d'abord, **2 vérifications** sont à faire au préalable pour être
@@ -24,7 +24,7 @@ Si cela ping, nous sommes déjà sûr que votre hôte dispose d'une
 **connexion IPv6**.
 
 Maintenant, pour être sur que **nginx**, nous affichons les options de
-compilation nginx, et nous devons apercevoir `--with-ipv6`
+compilation nginx et nous devons apercevoir `--with-ipv6`
 
 ```bash
 nginx -V | grep --with-ipv6

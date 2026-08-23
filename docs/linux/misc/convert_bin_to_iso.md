@@ -1,5 +1,5 @@
 ---
-description: "Convertir un fichier .bin en .iso sous Linux avec iat, bchunk ou ccd2iso, vérifier le format réel avec file, monter l'image pour contrôler le résultat, et les cas où un simple renommage suffit."
+description: "Convertir un fichier .bin en .iso sous Linux avec iat, bchunk ou ccd2iso, vérifier le format réel avec file, monter l'image pour contrôler le résultat et les cas où un simple renommage suffit."
 tags:
   - ISO
 ---
@@ -44,7 +44,7 @@ apt install bchunk
 bchunk image.bin image.cue sortie
 ```
 
-Il produit `sortie01.iso` pour la piste de données, et un `.cdr` par piste audio. Les `.cdr` sont du PCM brut, convertibles en WAV avec `ffmpeg` si besoin :
+Il produit `sortie01.iso` pour la piste de données et un `.cdr` par piste audio. Les `.cdr` sont du PCM brut, convertibles en WAV avec `ffmpeg` si besoin :
 
 ```bash
 ffmpeg -f s16le -ar 44100 -ac 2 -i sortie02.cdr piste02.wav
@@ -60,7 +60,7 @@ FILE "image.bin" BINARY
 
 ## Avec ccd2iso, pour les images CloneCD
 
-CloneCD produit un trio `.img` + `.ccd` + `.sub`, et le `.img` est parfois renommé en `.bin`. Dans ce cas, ni `iat` ni `bchunk` ne donnent un résultat correct :
+CloneCD produit un trio `.img` + `.ccd` + `.sub` et le `.img` est parfois renommé en `.bin`. Dans ce cas, ni `iat` ni `bchunk` ne donnent un résultat correct :
 
 ```bash
 apt install ccd2iso
@@ -93,7 +93,7 @@ Sur Windows, le plus rapide reste WSL avec exactement les commandes ci-dessus. L
 
 ## Et pour monter l'ISO ensuite
 
-Le détail des 3 systèmes est dans [monter une image ISO](mount_iso.md). Sous Windows, un double-clic suffit depuis Windows 8, et en PowerShell :
+Le détail des 3 systèmes est dans [monter une image ISO](mount_iso.md). Sous Windows, un double-clic suffit depuis Windows 8 et en PowerShell :
 
 ```powershell
 Mount-DiskImage -ImagePath C:\images\image.iso

@@ -73,4 +73,4 @@ Imaginons que nous voulons upgrade notre NIC ayant comme ligne PCI 18:00.0, son 
 root@hostname:/home/user# flint -d <device_name> -i <binary image> burn
 ```
 
-Un petit restart, un recommence la commande mstflint, et hop, firmware upgraded :)
+Un petit restart, un recommence la commande mstflint et hop, firmware upgraded :)

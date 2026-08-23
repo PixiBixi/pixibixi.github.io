@@ -16,7 +16,7 @@ Dans les clusters Kubernetes, chaque nœud pull les images depuis des registres 
 
 Spegel est déployé sur chaque nœud en daemonset. Contrairement à un pull-through cache classique, il ne stocke rien en plus : il expose les layers déjà présents dans le content store de Containerd. La vraie valeur ajoutée est le **P2P** : les nœuds se partagent les images entre eux au lieu de retaper systématiquement sur le registre distant.
 
-Chaque nœud monte un réseau P2P avec libp2p et une DHT Kademlia, et annonce les digests qu'il possède localement. Quand un nœud tente de tirer une image :
+Chaque nœud monte un réseau P2P avec libp2p et une DHT Kademlia et annonce les digests qu'il possède localement. Quand un nœud tente de tirer une image :
 
 ![Spegel Overview](./_img/spegel_overview.gif)
 

@@ -19,5 +19,5 @@ dpkg --list |grep "^rc" | cut -d " " -f 3 | xargs dpkg --purge
 ```
 
 Via cette commande, nous choisissons uniquement les paquets commençant
-par « rc », puis nous prenons leur nom, et enfin, pour chacune des
+par « rc », puis nous prenons leur nom et enfin, pour chacune des
 lignes, nous faisons un *dpkg --purge*

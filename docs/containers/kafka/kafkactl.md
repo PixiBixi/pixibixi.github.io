@@ -11,7 +11,7 @@ Manageant quelques clusters Kafka, je devais effectuer quelques opérations de m
 
 Si vous êtes familiers avec l'univers Kafka, vous savez à quel point ces opérations sont chiantes.
 
-Il y'a peu, j'ai découvert un outil changeant ma manière de travailler avec Kafka, [kafkactl](https://github.com/deviceinsight/kafkactl). Son nom n'est pas sans vous rappeler le binary `kubectl`, et c'est normal. Tout comme ce dernier, il est écrit en go et possède les même notions (Utilisation de contexts, keyword get/describe)...
+Il y'a peu, j'ai découvert un outil changeant ma manière de travailler avec Kafka, [kafkactl](https://github.com/deviceinsight/kafkactl). Son nom n'est pas sans vous rappeler le binary `kubectl` et c'est normal. Tout comme ce dernier, il est écrit en go et possède les même notions (Utilisation de contexts, keyword get/describe)...
 
 Sous mac, l'installer est d'une simplicité enfantine
 

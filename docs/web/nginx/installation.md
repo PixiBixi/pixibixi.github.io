@@ -213,7 +213,7 @@ de même certains points importants à conserver :
 * `resolver` permet de spécifier les DNS utilisés dans les logs pour résoudre les noms de domaines
 
 La directive *more_set_headers* permet de ne pas dévoiler son serveur
-web, et n'est disponible que via le package **nginx-extras**. Voir [Être encore plus safe en customisant son header Server NGINX](custom_server_header.md).
+web et n'est disponible que via le package **nginx-extras**. Voir [Être encore plus safe en customisant son header Server NGINX](custom_server_header.md).
 
 On inclut également différents fichiers :
 
@@ -300,7 +300,7 @@ sur ses sites web. Voir [Forcer le SSL sous NGINX](nginx_ssl.md) pour les direct
 
 Certaines lignes sont importantes tels que **ssl_ciphers** qui
 permet de sélectionner quels ciphers seront utilisés pour coder
-l'échange entre son serveur web, et son client. Cette ligne est
+l'échange entre son serveur web et son client. Cette ligne est
 extrêmement importante car il y a actuellement de nombreux ciphers
 utilisés mais qui sont totalement dépassés. **ssl_protocols** permet lui
 également de ne pas passés par des protocoles complètement troués.

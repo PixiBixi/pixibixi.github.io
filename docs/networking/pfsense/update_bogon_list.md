@@ -8,5 +8,5 @@ tags:
 
 Pour mettre à jour la **Bogons List** via
 l'interface graphique, il faut aller dans **Diagnostics**, **Tables**.
-Et en **Table** on sélectionne **bogons**, et on peut enfin mettre à
+Et en **Table** on sélectionne **bogons** et on peut enfin mettre à
 jour la liste.

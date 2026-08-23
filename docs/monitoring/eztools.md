@@ -43,7 +43,7 @@ chmod +x eZServerMonitor.sh
 ```
 
 Et enfin, une chose qui n'est pas obligée mais je déplace le fichier
-dans un répertoire de mon `$PATH`, et je le renomme en quelque chose de
+dans un répertoire de mon `$PATH` et je le renomme en quelque chose de
 simple comme monitor pour y accéder simplement
 
 ```bash

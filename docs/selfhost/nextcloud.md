@@ -9,7 +9,7 @@ tags:
 Nextcloud est une solution de stockage et de partage de fichiers en ligne. Il s'agit d'un logiciel gratuit se basant sur MySQL / PHP (et accessoirement redis).
 
 !!! danger
-    NextCloud n'est **pas** une solution de backup. Répliquer ses données sur un autre support de stockage, et a minima installer NextCloud sur un RAID1 pour se prémunir d'une défaillance hardware.
+    NextCloud n'est **pas** une solution de backup. Répliquer ses données sur un autre support de stockage et a minima installer NextCloud sur un RAID1 pour se prémunir d'une défaillance hardware.
 
 Nous sommes à ce jour à la version 23, vous pouvez consulter le
 [changelog](https://nextcloud.com/changelog/)
@@ -57,7 +57,7 @@ EOF
 Enfin, le vhost NGINX adéquate à NextCloud, disponible
 [ici](https://paste.jdelgado.fr/?3660056e57032240#d0OxuhjFWsyISwO83uoAjpe8935L/M9Q13STRFvCzzA=)
 
-Une fois tout ceci fait, on se rend sur notre server_name, et on remplit
+Une fois tout ceci fait, on se rend sur notre server_name et on remplit
 les infos comme il demande, vous avez désormais un NextCloud utilisable
 
 ## Configuration de NextCloud

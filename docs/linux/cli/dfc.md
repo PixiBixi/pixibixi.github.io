@@ -10,7 +10,7 @@ tags:
 ## Présentation
 
 **dfc** est un petit utilitaire rendant la commande **df** dépassée. En
-effet, dfc est beaucoup plus clair que la commande df, et supporte
+effet, dfc est beaucoup plus clair que la commande df et supporte
 également les couleurs.
 
 Comme des images sont plus représentatives, voilà les deux commandes :

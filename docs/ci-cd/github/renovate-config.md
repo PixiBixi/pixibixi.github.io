@@ -1,5 +1,5 @@
 ---
-description: "Valider une config Renovate avec renovate-config-validator : clés inconnues, managers qui n'existent pas, et le silence de Renovate sur les forks avec forkProcessing."
+description: "Valider une config Renovate avec renovate-config-validator : clés inconnues, managers qui n'existent pas et le silence de Renovate sur les forks avec forkProcessing."
 tags:
   - GitHub Actions
   - CI/CD
@@ -7,9 +7,9 @@ tags:
   - Supply chain
 ---
 
-# Renovate : valider la config, et son silence sur les forks
+# Renovate : valider la config et son silence sur les forks
 
-Une `renovate.json` invalide ne se signale pas toujours. Certaines erreurs font ouvrir une issue et arrêtent toutes les PR, d'autres sont ignorées en silence, et sur un fork Renovate peut ne jamais rien faire sans que ça apparaisse nulle part. Les 3 cas sont arrivés sur 2 repos le même après-midi. Le validateur en attrape une partie, et il faut savoir laquelle.
+Une `renovate.json` invalide ne se signale pas toujours. Certaines erreurs font ouvrir une issue et arrêtent toutes les PR, d'autres sont ignorées en silence et sur un fork Renovate peut ne jamais rien faire sans que ça apparaisse nulle part. Les 3 cas sont arrivés sur 2 repos le même après-midi. Le validateur en attrape une partie et il faut savoir laquelle.
 
 ## Valider avant de pousser
 
@@ -31,7 +31,7 @@ Deux détails de l'invocation valent le détour.
 
 **Épingler la version.** `--package renovate` sans tag, qui est la forme de la [doc officielle](https://docs.renovatebot.com/config-validation/), laisse npx servir ce qu'il a en cache. Le mien datait de plusieurs majeures et refusait une config que la 44 accepte, ce qui suffit à conclure l'inverse de la réalité sur le point qu'on cherchait à vérifier.
 
-**Savoir dans quel mode il tourne.** Passer un chemin en argument fait valider le fichier comme config **globale**, celle d'une instance self-hosted, et pas comme config de repo. `--no-global` force le mode repo, et la première ligne de sortie dit toujours lequel a tourné :
+**Savoir dans quel mode il tourne.** Passer un chemin en argument fait valider le fichier comme config **globale**, celle d'une instance self-hosted et pas comme config de repo. `--no-global` force le mode repo et la première ligne de sortie dit toujours lequel a tourné :
 
 ```text
  INFO: Validating renovate.json as global config
@@ -44,7 +44,7 @@ Sans argument du tout, il détecte les emplacements par défaut et prend le mode
 
 ## Le hook pre-commit, qui épingle la version pour vous
 
-Renovate publie [ses hooks](https://github.com/renovatebot/pre-commit-hooks), et leur `rev` **est** la version de Renovate. Le problème de cache npx disparaît, puisque le hook installe `renovate@<rev>` en dépendance :
+Renovate publie [ses hooks](https://github.com/renovatebot/pre-commit-hooks) et leur `rev` **est** la version de Renovate. Le problème de cache npx disparaît, puisque le hook installe `renovate@<rev>` en dépendance :
 
 ```yaml title=".pre-commit-config.yaml"
 repos:
@@ -54,7 +54,7 @@ repos:
       - id: renovate-config-validator
 ```
 
-Le hook matche `renovate.json`, `.renovaterc`, `renovate.json5` et leurs variantes, et demande pre-commit 3.6.0 au minimum. Comme pre-commit passe les fichiers matchés en arguments, il valide en mode global : ajouter `args: [--no-global]` remet le mode repo.
+Le hook matche `renovate.json`, `.renovaterc`, `renovate.json5` et leurs variantes et demande pre-commit 3.6.0 au minimum. Comme pre-commit passe les fichiers matchés en arguments, il valide en mode global : ajouter `args: [--no-global]` remet le mode repo.
 
 Renovate met à jour ce `rev` tout seul, donc le validateur suit la version qui tourne réellement sur le dépôt.
 
@@ -80,14 +80,14 @@ Renovate ouvre alors une issue `Action Required: Fix Renovate Configuration` et 
 
 ## github-runners : une datasource, pas un manager
 
-[`github-runners`](https://docs.renovatebot.com/modules/datasource/github-runners/) suit les labels de runner (`ubuntu-24.04`, `macos-15`). C'est une **datasource**, il n'existe pas de page de manager pour elle, et les labels sont détectés par le manager `github-actions` qui lit les workflows. Donc une règle sur `github-actions` seul les couvre déjà.
+[`github-runners`](https://docs.renovatebot.com/modules/datasource/github-runners/) suit les labels de runner (`ubuntu-24.04`, `macos-15`). C'est une **datasource**, il n'existe pas de page de manager pour elle et les labels sont détectés par le manager `github-actions` qui lit les workflows. Donc une règle sur `github-actions` seul les couvre déjà.
 
 | Ce qu'on veut | La clé |
 |---|---|
 | Tout ce que le manager github-actions détecte, actions et labels de runner | `"matchManagers": ["github-actions"]` |
 | Seulement les labels de runner | `"matchDatasources": ["github-runners"]` |
 
-Et c'est là que le validateur ne sert à rien. Renovate 44 accepte n'importe quelle chaîne dans `matchManagers`, y compris `ceci-nexiste-absolument-pas`, et sort en succès. Une version plus ancienne refusait, avec la liste des managers valides dans le message :
+Et c'est là que le validateur ne sert à rien. Renovate 44 accepte n'importe quelle chaîne dans `matchManagers`, y compris `ceci-nexiste-absolument-pas` et sort en succès. Une version plus ancienne refusait, avec la liste des managers valides dans le message :
 
 ```text
 ERROR: Found errors in configuration
@@ -96,11 +96,11 @@ ERROR: Found errors in configuration
   Supported managers are: (ansible, ..., github-actions, gitlabci, ...)"
 ```
 
-Ce contrôle a disparu, donc sur ce point c'est la doc qui tranche, pas l'outil. Une règle qui cible un manager inexistant ne matche rien et ne le dit pas : elle a l'air de fonctionner, et le `semanticCommitType` ou le `groupName` qu'elle porte ne s'applique jamais.
+Ce contrôle a disparu, donc sur ce point c'est la doc qui tranche, pas l'outil. Une règle qui cible un manager inexistant ne matche rien et ne le dit pas : elle a l'air de fonctionner et le `semanticCommitType` ou le `groupName` qu'elle porte ne s'applique jamais.
 
 ## Le silence de Renovate sur les forks
 
-`forkProcessing` vaut `disabled` par défaut, donc sur un fork Renovate n'ouvre ni PR d'onboarding, ni dependency dashboard, ni issue de config, et c'est le défaut le plus coûteux à diagnostiquer parce qu'il ne produit aucun signal.
+`forkProcessing` vaut `disabled` par défaut, donc sur un fork Renovate n'ouvre ni PR d'onboarding, ni dependency dashboard, ni issue de config et c'est le défaut le plus coûteux à diagnostiquer parce qu'il ne produit aucun signal.
 
 Sur un repo créé par fork, sans savoir que l'option existe, on regarde une config correcte en se demandant pourquoi rien ne bouge.
 

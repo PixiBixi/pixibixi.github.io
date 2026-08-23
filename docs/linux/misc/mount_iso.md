@@ -1,5 +1,5 @@
 ---
-description: "Monter une image ISO sous Linux avec mount -o loop, sous Windows 10 et 11 en double-clic ou avec Mount-DiskImage en PowerShell, et sous macOS avec hdiutil, sans logiciel tiers."
+description: "Monter une image ISO sous Linux avec mount -o loop, sous Windows 10 et 11 en double-clic ou avec Mount-DiskImage en PowerShell et sous macOS avec hdiutil, sans logiciel tiers."
 tags:
   - ISO
 ---
@@ -10,7 +10,7 @@ Monter une ISO, c'est la rendre accessible comme un lecteur, sans la graver ni l
 
 ## Linux
 
-Le point de montage doit exister avant, et l'opération demande les droits root :
+Le point de montage doit exister avant et l'opération demande les droits root :
 
 ```bash
 sudo mkdir -p /mnt/iso
@@ -57,7 +57,7 @@ Quand il s'agit de récupérer 2 fichiers, le montage est superflu. `7z` lit les
 
 Depuis Windows 8, un double-clic sur une ISO la monte et lui attribue une lettre de lecteur. L'éjection se fait par un clic droit sur le lecteur, puis *Éjecter*.
 
-Si le double-clic ouvre un autre programme, c'est qu'une application (souvent WinRAR ou 7-Zip) s'est associée à l'extension. Le clic droit puis *Ouvrir avec → Explorateur Windows* rétablit le comportement natif pour cette fois, et *Choisir une autre application → Toujours* le rend définitif.
+Si le double-clic ouvre un autre programme, c'est qu'une application (souvent WinRAR ou 7-Zip) s'est associée à l'extension. Le clic droit puis *Ouvrir avec → Explorateur Windows* rétablit le comportement natif pour cette fois et *Choisir une autre application → Toujours* le rend définitif.
 
 En PowerShell, ce qui est indispensable dans un script :
 

@@ -7,7 +7,7 @@ tags:
 
 # Cisco : désactiver la résolution DNS (no ip domain-lookup)
 
-Une faute de frappe en mode enable, et IOS considère le mot comme un nom d'hôte à résoudre. Le terminal se bloque une trentaine de secondes, sans qu'aucune touche ne réponde. Deux commandes suppriment ce comportement, et la plupart des réponses n'en donnent qu'une.
+Une faute de frappe en mode enable et IOS considère le mot comme un nom d'hôte à résoudre. Le terminal se bloque une trentaine de secondes, sans qu'aucune touche ne réponde. Deux commandes suppriment ce comportement et la plupart des réponses n'en donnent qu'une.
 
 ## La première commande
 
@@ -19,7 +19,7 @@ Router# configure terminal
 Router(config)# no ip domain-lookup
 ```
 
-Sur IOS 15 et au-delà, la commande a perdu son tiret. Les deux formes coexistent selon les versions, et la complétion par tabulation tranche en une seconde :
+Sur IOS 15 et au-delà, la commande a perdu son tiret. Les deux formes coexistent selon les versions et la complétion par tabulation tranche en une seconde :
 
 ```cisco
 Router(config)# no ip domain lookup
@@ -27,7 +27,7 @@ Router(config)# no ip domain lookup
 
 ## La seconde, celle qu'on oublie
 
-`no ip domain-lookup` empêche la résolution, mais IOS tente encore d'ouvrir une session Telnet vers ce qu'il a pris pour un hôte, et le blocage reste. Il faut lui retirer ce réflexe, ligne par ligne :
+`no ip domain-lookup` empêche la résolution, mais IOS tente encore d'ouvrir une session Telnet vers ce qu'il a pris pour un hôte et le blocage reste. Il faut lui retirer ce réflexe, ligne par ligne :
 
 ```cisco
 Router(config)# line con 0

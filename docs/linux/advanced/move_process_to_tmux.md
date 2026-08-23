@@ -24,7 +24,7 @@ c'est effectué, il faut dissocier le processus du TTY.
 └─$ jobs -l
 ```
 
-Une fois que c'est OK, on ouvre un tmux, et on attach le processus au
+Une fois que c'est OK, on ouvre un tmux et on attach le processus au
 nouveau TTY avec reptyr
 
 ```bash

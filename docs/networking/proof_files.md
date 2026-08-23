@@ -14,7 +14,7 @@ serveur. Evidemment, plusieurs critères rentrent en jeu, tel que la
 location physique de son serveur, sa bandwidth théorie/garantie, son
 peering...
 
-Par exemple, si l'on a un serveur Gbps chez Online, et que l'on
+Par exemple, si l'on a un serveur Gbps chez Online et que l'on
 effectue un test sur un serveur appartenant à Online, le test ne
 reflétera pas le débit réel, étant donner qu'on dispose généralement
 d'une bande passante importante.
@@ -29,7 +29,7 @@ importante bande passante (Généralement du Gbps vroi 10Gbps) afin
 d'effectuer des tests de vitesse avec différents hébergeur. Il existe
 des fichier de différente taille selon les différents hébergeurs (1Go,
 2.5Go...) Cela permet de refléter le débit réel d'un réseau avec un
-autre réseau, et donc de tester son peering
+autre réseau et donc de tester son peering
 
 ## Liste des proofs files disponibles
 
@@ -63,7 +63,7 @@ Voici le rendu du script :
 
 iperf est un logiciel nécessitant un serveur et un client compatible
 IPv4 et IPv6, se basant sur les protocoles UDP, TCP et SCTP disponible
-sur Windows, Linux, et même Android et iOS.
+sur Windows, Linux et même Android et iOS.
 
 Il s'agit de la solution la plus pure pour tester la vitesse d'un
 réseau car une multitude d'options sont disponibles : taille du paquet,
@@ -84,7 +84,7 @@ iperf -c ping.online.net -i 2 -t 2 -r
 
 Dans cette commande, nous pouvons voir que nous lancons iperf en mode
 client (-c) sur l'hôte *ping.online.net*, que nous faisons 2 essais (-t
-2), et que nous faisons un test bi-directionnel (-r), quand au (-i 2),
+2) et que nous faisons un test bi-directionnel (-r), quand au (-i 2),
 celui-ci signifie que nous attendons 2 secondes avant de faire le
 prochain test.
 
@@ -104,12 +104,12 @@ serveur (soit 5001, le port par défaut), ainsi que la *TCP Window
 Size* (85KB)
 
 Suivi des informations côté client, qui sont logiquement les mêmes que
-celle serveur, soit TCP, port 5001, et une Window Size +/- identique
+celle serveur, soit TCP, port 5001 et une Window Size +/- identique
 (Ici, 0.3KB de différence, soit un gain négligable)
 
 Et enfin, nous observons enfin les données qui nous sont utiles. Tout
 d'abord, sous l'identifiant « 5 », il s'agit des données qui sont
-envoyées par le serveur, et enfin, sous le champ 4, les données qui
+envoyées par le serveur et enfin, sous le champ 4, les données qui
 sont réellement reçus par le serveur « hôte ».
 
 Nous pouvons apercevoir d'une perte de 10mbps, ce qui est plutôt

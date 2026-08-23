@@ -7,7 +7,7 @@ tags:
 
 # Configurer un proxy HTTP pour Docker
 
-Docker derrière un proxy, ça rate parce qu'il n'y a pas un proxy à configurer mais **trois**, et qu'ils ne servent pas au même moment. Exporter `HTTP_PROXY` dans son shell ne fait rien du tout : le `docker pull` est exécuté par le daemon, pas par le client, et le daemon ne voit pas l'environnement du shell.
+Docker derrière un proxy, ça rate parce qu'il n'y a pas un proxy à configurer mais **trois** et qu'ils ne servent pas au même moment. Exporter `HTTP_PROXY` dans son shell ne fait rien du tout : le `docker pull` est exécuté par le daemon, pas par le client et le daemon ne voit pas l'environnement du shell.
 
 | Ce qu'on veut faire passer | Où se configure le proxy |
 |---|---|
@@ -64,7 +64,7 @@ Ne pas mettre les deux méthodes en place en même temps : si `daemon.json` et l
 
 ## Le proxy du build et des conteneurs
 
-Le daemon configuré, `docker pull` marche, et un `RUN apt update` dans un Dockerfile échoue quand même. C'est normal, le build tourne dans un conteneur qui n'hérite de rien. La configuration côté client injecte les variables dans tous les builds et tous les `docker run` :
+Le daemon configuré, `docker pull` marche et un `RUN apt update` dans un Dockerfile échoue quand même. C'est normal, le build tourne dans un conteneur qui n'hérite de rien. La configuration côté client injecte les variables dans tous les builds et tous les `docker run` :
 
 ```json title="~/.docker/config.json"
 {
@@ -78,7 +78,7 @@ Le daemon configuré, `docker pull` marche, et un `RUN apt update` dans un Docke
 }
 ```
 
-Ce fichier appartient à l'utilisateur qui lance `docker`, donc celui de root n'est pas lu quand on passe par `sudo docker` avec `sudo` qui préserve `$HOME`, et inversement. C'est la deuxième cause de « ça marche chez moi ».
+Ce fichier appartient à l'utilisateur qui lance `docker`, donc celui de root n'est pas lu quand on passe par `sudo docker` avec `sudo` qui préserve `$HOME` et inversement. C'est la deuxième cause de « ça marche chez moi ».
 
 Ponctuellement, on peut faire la même chose en arguments de build, sans rien écrire sur le disque :
 

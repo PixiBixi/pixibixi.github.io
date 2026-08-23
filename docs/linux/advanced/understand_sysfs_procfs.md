@@ -180,7 +180,7 @@ sécurité du CPU
     ```
 
 La première colonne correspond à l'IRQ, les CPUs aux différents cores
-de notre machine, et la dernière au nom de l'interruption. Il s'agit
+de notre machine et la dernière au nom de l'interruption. Il s'agit
 ici d'un extrait, le système dispose de bien plus d'IRQ que celles-ci
 et sont variables selon vos composant systèmes.
 
@@ -274,7 +274,7 @@ Dans ce notre exemple ci-dessus :
 
 ## Système de fichier /sys
 
-Là où `/proc` expose surtout des process et du legacy kernel, `sysfs` expose le modèle de périphériques du noyau : un objet kernel = un répertoire, un attribut = un fichier contenant une seule valeur. C'est là que se trouvent la quasi-totalité des tunables hardware, et la plupart sont accessibles en écriture.
+Là où `/proc` expose surtout des process et du legacy kernel, `sysfs` expose le modèle de périphériques du noyau : un objet kernel = un répertoire, un attribut = un fichier contenant une seule valeur. C'est là que se trouvent la quasi-totalité des tunables hardware et la plupart sont accessibles en écriture.
 
 ### Structure de base de /sys
 
@@ -315,7 +315,7 @@ Le scheduler par défaut est rarement le bon sur du NVMe. `rotational` à `0` co
 λ jeremy ~ → cat /sys/block/nvme0n1/queue/rotational
 0
 
-# Read-ahead en Ko, et profondeur de queue
+# Read-ahead en Ko et profondeur de queue
 λ jeremy ~ → cat /sys/block/nvme0n1/queue/read_ahead_kb
 128
 λ jeremy ~ → cat /sys/block/nvme0n1/queue/nr_requests

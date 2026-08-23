@@ -1,5 +1,5 @@
 ---
-description: "ipset : créer et gérer des listes d'IP et de réseaux pour iptables, types de sets, persistance au reboot, rechargement atomique par swap, erreurs Hash is full et set in use, et l'équivalent natif sous nftables."
+description: "ipset : créer et gérer des listes d'IP et de réseaux pour iptables, types de sets, persistance au reboot, rechargement atomique par swap, erreurs Hash is full et set in use et l'équivalent natif sous nftables."
 tags:
   - ipset
   - Firewall
@@ -7,7 +7,7 @@ tags:
 
 # ipset : gérer des listes d'IP pour iptables et nftables
 
-Bloquer 10 000 IP avec 10 000 règles iptables, ça marche jusqu'au jour où ça ne marche plus : le noyau parcourt la chaîne règle par règle, donc le coût par paquet croît linéairement avec la liste. ipset stocke les mêmes IP dans une table de hachage consultée en temps constant, et iptables n'a plus qu'**une seule** règle qui pointe dessus.
+Bloquer 10 000 IP avec 10 000 règles iptables, ça marche jusqu'au jour où ça ne marche plus : le noyau parcourt la chaîne règle par règle, donc le coût par paquet croît linéairement avec la liste. ipset stocke les mêmes IP dans une table de hachage consultée en temps constant et iptables n'a plus qu'**une seule** règle qui pointe dessus.
 
 ```bash
 apt install ipset
@@ -54,7 +54,7 @@ iptables -I INPUT -m set --match-set blocklist src -j DROP
 
 ## La limite par défaut qui surprend
 
-Un set de type hash accepte **65536 entrées par défaut**, et l'ajout au-delà échoue avec `Hash is full, cannot add more elements`. Une blocklist pays dépasse ce seuil sans difficulté, donc on dimensionne à la création :
+Un set de type hash accepte **65536 entrées par défaut** et l'ajout au-delà échoue avec `Hash is full, cannot add more elements`. Une blocklist pays dépasse ce seuil sans difficulté, donc on dimensionne à la création :
 
 ```bash
 ipset create blocklist hash:net maxelem 1000000
@@ -74,7 +74,7 @@ ipset create bruteforce hash:ip timeout 3600
 ipset add bruteforce 203.0.113.7 timeout 600
 ```
 
-Le compte à rebours restant s'affiche dans le listing, et un `ipset add` sur une IP déjà présente remet le compteur à zéro.
+Le compte à rebours restant s'affiche dans le listing et un `ipset add` sur une IP déjà présente remet le compteur à zéro.
 
 ## Les commandes du quotidien
 
@@ -88,7 +88,7 @@ ipset flush blocklist           # Vider sans détruire
 ipset destroy blocklist         # Détruire
 ```
 
-`ipset list` sur un set d'un million d'entrées inonde le terminal : `-t` donne la taille et le nombre d'éléments sans le contenu, et c'est ce qu'on veut 9 fois sur 10.
+`ipset list` sur un set d'un million d'entrées inonde le terminal : `-t` donne la taille et le nombre d'éléments sans le contenu et c'est ce qu'on veut 9 fois sur 10.
 
 ## Recharger une liste sans ouvrir de fenêtre
 
@@ -170,4 +170,4 @@ ipset-translate restore < sets.ipset
 nft list ruleset
 ```
 
-À noter que sur les distributions récentes, `iptables` est déjà un frontend sur nftables (`iptables-nft`), et ipset continue d'y fonctionner. La migration n'est donc pas urgente, mais un nouveau setup n'a pas de raison de commencer avec ipset.
+À noter que sur les distributions récentes, `iptables` est déjà un frontend sur nftables (`iptables-nft`) et ipset continue d'y fonctionner. La migration n'est donc pas urgente, mais un nouveau setup n'a pas de raison de commencer avec ipset.

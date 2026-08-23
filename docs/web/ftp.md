@@ -35,7 +35,7 @@ apt show pure-ftpd
 ## Configuration
 
 Lorsque nous installons **Pure-FTPd**, son exécutable se place dans
-*/usr/sbin*, et divers fichiers dans */etc/pure-ftpd*
+*/usr/sbin* et divers fichiers dans */etc/pure-ftpd*
 
 Par défaut, voici ce que contient répertoire :
 

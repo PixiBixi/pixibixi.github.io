@@ -23,7 +23,7 @@ Heureusement, tout est possible eheh. L'idée est de supprimer l'objet StatefulS
 
 ## Vérifier que la StorageClass autorise l'expansion
 
-C'est le point de blocage numéro 1, et il n'a rien à voir avec le StatefulSet. Sans `allowVolumeExpansion: true`, le patch du PVC est refusé par l'admission :
+C'est le point de blocage numéro 1 et il n'a rien à voir avec le StatefulSet. Sans `allowVolumeExpansion: true`, le patch du PVC est refusé par l'admission :
 
 ```bash
 kubectl get sc -o custom-columns='NAME:.metadata.name,PROVISIONER:.provisioner,EXPANSION:.allowVolumeExpansion'
@@ -138,7 +138,7 @@ Les causes réelles, dans l'ordre de fréquence :
 
 - **quota disque du projet ou de la région atteint.** L'événement le dit explicitement, avec le code du provider.
 - **taille non alignée sur le pas du provider.** Certains disques ne s'allouent que par multiples, une demande de `137Gi` peut être refusée là où `140Gi` passe.
-- **limite de taille du type de disque.** Un `pd-balanced` et un `hyperdisk` n'ont pas les mêmes plafonds, et le message ne le rappelle pas toujours.
+- **limite de taille du type de disque.** Un `pd-balanced` et un `hyperdisk` n'ont pas les mêmes plafonds et le message ne le rappelle pas toujours.
 - **le node n'a plus de slot d'attachement.** Rien à voir avec la taille, mais ça bloque la phase de resize du filesystem.
 
 Si la demande était trop grande et que le provider la refuse définitivement, le PVC reste coincé entre son ancienne capacité et sa nouvelle requête. Kubernetes sait revenir en arrière sur la requête, à condition que le feature gate `RecoverVolumeExpansionFailure` soit actif sur le cluster : on repatche `spec.resources.requests.storage` vers une valeur plus petite que celle demandée, mais jamais plus petite que `status.capacity`.

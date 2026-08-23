@@ -26,4 +26,4 @@ Il faut télécharger un JAR ici :
 !!! warning
     L'URL est case-sensitive.
 
-On rentre alors son IP ILO et son identifiant, et tout est ok :)
+On rentre alors son IP ILO et son identifiant et tout est ok :)

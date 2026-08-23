@@ -109,7 +109,7 @@ find report -name *log* -exec rm {} ';
 ```
 
 Recherche tous les fichiers comprenant la chaine *log* et les supprime
-(Le {} indique le fichier courant, et le ''; est **indispensable** (Le
+(Le {} indique le fichier courant et le ''; est **indispensable** (Le
 '' sert juste à echaper le *;* ))
 
 ------------------------------------------------------------------------

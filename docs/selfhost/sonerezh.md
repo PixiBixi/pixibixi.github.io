@@ -26,7 +26,7 @@ Il s'agit d'un projet que je suis d'avant sa création via le blog de
 Guillaume Leduc. Je l'ai toujours suivi avec attention, car il me
 semblait excellent.
 
-Le fait est qu'aujourd'hui, le projet a presque 450 stars sur Github,
+Le fait est qu'aujourd'hui, le projet a presque 450 stars sur Github
 et a dépassé de loin les attentes des développeurs
 
 ## Pré-requis

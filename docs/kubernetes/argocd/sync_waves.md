@@ -14,7 +14,7 @@ qui démarre avant sa ConfigMap, une migration qui tourne pendant que l'appli re
 
 ## Sync Waves
 
-ArgoCD applique wave par wave en ordre croissant, et attend que tout soit `Healthy` avant de passer à la suivante.
+ArgoCD applique wave par wave en ordre croissant et attend que tout soit `Healthy` avant de passer à la suivante.
 
 ```yaml
 metadata:
@@ -61,8 +61,8 @@ spec:
 
 !!! warning "À utiliser avec parcimonie"
     Dans beaucoup de cas, les sync waves ne sont pas la bonne solution. Elles introduisent
-    une dépendance d'ordre rigide difficile à maintenir, et un seul composant unhealthy bloque
-    tous les autres. Préférer les hooks (`PreSync`) pour les cas simples comme une migration DB,
+    une dépendance d'ordre rigide difficile à maintenir et un seul composant unhealthy bloque
+    tous les autres. Préférer les hooks (`PreSync`) pour les cas simples comme une migration DB
     et réserver les waves aux topologies vraiment complexes avec des dépendances fortes.
 
 ## Hooks

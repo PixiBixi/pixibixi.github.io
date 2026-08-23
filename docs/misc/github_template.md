@@ -10,7 +10,7 @@ Si vous avez un repository à fort influence, vous avez comme il est
 gênant de n'avoir qu'une partie des informations lors d'un issue, ou
 alors un Pull Request qui ne détaille pas ses modifications.
 
-Heureusement, GitHub a pensé à nous, et il est possible de créer des
+Heureusement, GitHub a pensé à nous et il est possible de créer des
 templates afin d'avoir une structure.
 
 Voici un exemple de Pull Request et d'Issue pour le repo [aframe](https://github.com/aframevr/aframe/issues/new) :
