@@ -7,16 +7,16 @@ tags:
 
 # Mes meilleurs plugins Krew
 
-Au quotidien, j'utilise mes différents plugins Krew. Ils me sont d'une importance vitale dans mon workflow. La liste exhaustive est [disponible dans mon Github](https://github.com/PixiBixi/dotfiles/blob/master/Plugins_Krew)
+Au quotidien, j'utilise mes différents plugins Krew. Ils me sont d'une importance vitale dans mon workflow. La liste exhaustive est [dans le Brewfile de mes dotfiles](https://github.com/PixiBixi/dotfiles/blob/master/packages/Brewfile), sur les lignes `krew "..."`
 
-Pour installer krew et importer ma liste de plugin, rien de plus facile sur mac :
+Ça n'a pas toujours été le cas, longtemps la liste vivait dans un fichier texte à part, un plugin par ligne, qu'on rejoue comme ça :
 
 ```bash
 brew install krew
-kubectl krew install < ./Plugins_Krew
+kubectl krew install < ./mes_plugins
 ```
 
-Depuis [brew bundle v4.5](https://github.com/Homebrew/brew/pull/21802), les plugins Krew sont aussi gérables directement dans un `Brewfile` - pratique pour centraliser tout son setup dans un seul endroit :
+Depuis [brew bundle v4.5](https://github.com/Homebrew/brew/pull/21802), les plugins Krew sont gérables directement dans un `Brewfile` - pratique pour centraliser tout son setup dans un seul endroit :
 
 ```ruby
 brew "krew"
