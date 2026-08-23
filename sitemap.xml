@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://wiki.jdelgado.fr/</loc>
-    <lastmod>2026-08-22</lastmod>
+    <lastmod>2026-08-23</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/about/</loc>
@@ -14,7 +14,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/automation/</loc>
-    <lastmod>2026-08-22</lastmod>
+    <lastmod>2026-08-23</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/automation/ansible/ansible/</loc>
@@ -30,7 +30,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/automation/misc/makefile/</loc>
-    <lastmod>2026-08-22</lastmod>
+    <lastmod>2026-08-23</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/automation/terraform/cheatsheet/</loc>
@@ -39,6 +39,10 @@
   <url>
     <loc>https://wiki.jdelgado.fr/automation/terraform/speedup/</loc>
     <lastmod>2026-08-22</lastmod>
+  </url>
+  <url>
+    <loc>https://wiki.jdelgado.fr/automation/terraform/terragrunt/</loc>
+    <lastmod>2026-08-23</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/automation/terraform/tools/</loc>
@@ -274,7 +278,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/kubernetes/</loc>
-    <lastmod>2026-08-22</lastmod>
+    <lastmod>2026-08-23</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/kubernetes/argocd/applicationset/</loc>
@@ -321,6 +325,10 @@
     <lastmod>2026-08-22</lastmod>
   </url>
   <url>
+    <loc>https://wiki.jdelgado.fr/kubernetes/deployment/pdb_topology_spread/</loc>
+    <lastmod>2026-08-23</lastmod>
+  </url>
+  <url>
     <loc>https://wiki.jdelgado.fr/kubernetes/deployment/statefulset_pod_management_policy/</loc>
     <lastmod>2026-08-22</lastmod>
   </url>
@@ -346,7 +354,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/kubernetes/troubleshooting/resize_pvc_statefulset/</loc>
-    <lastmod>2026-08-22</lastmod>
+    <lastmod>2026-08-23</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/kubernetes/troubleshooting/troubleshooting_sa/</loc>
