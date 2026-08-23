@@ -18,4 +18,5 @@ tags:
 - [Terraform Cheatsheet](terraform/cheatsheet.md) - commandes et patterns courants
 - [Terraform - Accélérer les plans](terraform/speedup.md) - optimisations pour les gros states
 - [Terraform Tools](terraform/tools.md) - outillage autour de Terraform
+- [Terragrunt](terraform/terragrunt.md) - structure du monorepo, dependency, run --all et filtres de CI
 - [Makefile](misc/makefile.md) - automatiser les tâches projet avec make

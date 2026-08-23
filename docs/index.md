@@ -227,6 +227,7 @@ Le plan complet est ci-dessous, sinon la recherche fait le job.
 - [Cheatsheet terraform](automation/terraform/cheatsheet.md)
 - [Tools Terraform indispensables](automation/terraform/tools.md)
 - [Accélerer Terraform](automation/terraform/speedup.md)
+- [Terragrunt : structure du monorepo, dépendances et orchestration en CI](automation/terraform/terragrunt.md)
 
 ### Ansible
 
