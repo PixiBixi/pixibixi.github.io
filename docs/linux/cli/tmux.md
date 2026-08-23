@@ -9,7 +9,7 @@ tags:
 # tmux
 
 tmux est un multiplexeur de terminal : il permet de gérer plusieurs fenêtres
-et panneaux dans une seule session, de détacher/réattacher des sessions, et
+et panneaux dans une seule session, de détacher/réattacher des sessions et
 de lancer des processus persistants même après déconnexion SSH.
 
 ```bash

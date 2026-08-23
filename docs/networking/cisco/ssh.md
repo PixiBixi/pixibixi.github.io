@@ -18,7 +18,7 @@ afin de générer les keys)
     Router(config)# ip domain-name jdelgado.fr
 ```
 
-Maintenant, on génère les clés (Je recommande une taille de 1024b, et
+Maintenant, on génère les clés (Je recommande une taille de 1024b et
 non 512)
 
 ```cisco

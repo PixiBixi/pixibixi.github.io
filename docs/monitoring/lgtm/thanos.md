@@ -355,7 +355,7 @@ Le blast radius se réduit aussi, puisqu'une requête de 6 mois ne tape que le s
 
 !!! warning "Faire chevaucher les plages, volontairement"
     Les bornes ci-dessus se recouvrent d'une heure ou d'un jour et ce n'est pas une erreur.
-    La doc Thanos recommande explicitement le chevauchement : le querier sait fusionner, et
+    La doc Thanos recommande explicitement le chevauchement : le querier sait fusionner et
     ça évite un trou si un shard est indisponible. À l'inverse, des bornes jointives au
     millimètre garantissent une fenêtre aveugle dès qu'un replica manque.
 

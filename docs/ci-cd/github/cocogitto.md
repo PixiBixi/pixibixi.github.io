@@ -277,7 +277,7 @@ repos:
     No conventional commits for your repository that required a bump.
     ```
 
-    Le piège est que tout a l'air de fonctionner : `release` passe en success, et
+    Le piège est que tout a l'air de fonctionner : `release` passe en success et
     ce sont les jobs conditionnés par `bumped == 'true'` (build Docker, publication
     Helm) qui sont *skipped*. L'optimisation reste sur master et ne sortira qu'au
     prochain `fix:` sans rapport, qui l'embarquera au passage.

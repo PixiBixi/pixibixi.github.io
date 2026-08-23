@@ -17,7 +17,7 @@ d'avoir au minimum la version 5.5 de PHP.
 
 ## Installation
 
-Tout d'abord, nous devons faire un lien symbolique vers notre www, et
+Tout d'abord, nous devons faire un lien symbolique vers notre www et
 le folder que nous souhaitons rendre accessible publiquement.
 
 Pour moi, je souhaite rendre `/home/jeremy/files/` accessible publiquement

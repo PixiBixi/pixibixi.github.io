@@ -12,7 +12,7 @@ Concrètement: voilà le rendu finale de la manipulation :
 
 ![Man color](./_img/man_color.webp)
 
-Cela améliore grandement la lisibilité de la commande man je trouve, et
+Cela améliore grandement la lisibilité de la commande man je trouve et
 la rend plus agréable à l'utiliser. Il se peut que les couleurs soient
 plus agressives, j'utilise un thème un peu moins flashy pour reposer
 les yeux :D

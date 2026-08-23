@@ -1261,7 +1261,7 @@ qu'il ne sait pas faire, c'est répliquer ce disque, downsampler les
 vieilles données et répondre à une requête qui couvre plusieurs
 Prometheus à la fois. 2 options ici : VictoriaMetrics ou Thanos.
 
-Les deux parlent PromQL, donc pas de nouveau langage à apprendre, et
+Les deux parlent PromQL, donc pas de nouveau langage à apprendre et
 aucun des deux n'est monolithique : chaque fonction est un binaire
 distinct, ce qui permet de scale les composants indépendamment sur
 Kubernetes.
