@@ -51,7 +51,7 @@ $ git clone https://github.com/rbenv/ruby-build.git
 $ PREFIX=/usr/local ./ruby-build/install.sh
 ```
 
-Puis comme rbenv, on liste les versions dispo, et on installe celle qu'on veut :
+Puis comme rbenv, on liste les versions dispo et on installe celle qu'on veut :
 
 ```bash
 ruby-build --definitions

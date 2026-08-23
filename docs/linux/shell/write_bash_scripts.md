@@ -226,7 +226,7 @@ l: ligne 4: firstname : variable sans liaison
 ```
 
 * `-o pipefail` : Sans cette option, une erreur dans un pipe sera
-    masquée, et ne sera pas interceptée par le paramètre **-e**
+    masquée et ne sera pas interceptée par le paramètre **-e**
 
 ### Template de script
 

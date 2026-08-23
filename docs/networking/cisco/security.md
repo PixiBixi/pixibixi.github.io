@@ -8,7 +8,7 @@ tags:
 # Switch Cisco : Accroître la sécurité
 
 Etant donner que le routeur est au coeur d'un réseau, il est très
-important de ne pas négliger la sécurité de celui-ci, et voici comment
+important de ne pas négliger la sécurité de celui-ci et voici comment
 le sécurité au maximum
 
 ## Désactivation des interfaces inutilisées
@@ -57,7 +57,7 @@ secondes)
 
 ## Taille de mots de passe minimum
 
-Afin d'éviter le bruteforce, et de casser un mot de passe à cause
+Afin d'éviter le bruteforce et de casser un mot de passe à cause
 d'une complexité trop faible, nous pouvons limiter le nomre de
 caractères minimum d'un passwords (8 étant pas mal)
 
@@ -80,7 +80,7 @@ celle-ci sera automatiquement desactivée
 
 ## DHCP Snooping
 
-Le DHCP Snooping consiste à une attaque MITM, et un serveur DHCP pirate
+Le DHCP Snooping consiste à une attaque MITM et un serveur DHCP pirate
 va se faire passer pour un serveur legit, afin de fournir des
 informations étonnées (Mauvaise passerelle, mauvais DNS..)
 
@@ -89,7 +89,7 @@ informations étonnées (Mauvaise passerelle, mauvais DNS..)
 ```
 
 A partir de ce moment, tous les ports seront considérés comme étant
-« untrust », et donc aucun ne sera capable de fournir du DHCP. Il nous
+« untrust » et donc aucun ne sera capable de fournir du DHCP. Il nous
 faut donc placer un port comme étant « trust »
 
 ```cisco

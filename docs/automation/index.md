@@ -8,7 +8,7 @@ tags:
 
 # Automation
 
-Écrire les choses à la main une seule fois, c'est acceptable. Deux fois, c'est un script. Trois fois, c'est de l'infra as code. Cette section regroupe Ansible pour la config management, Terraform pour le provisioning, et Makefile pour coller tout ça ensemble.
+Écrire les choses à la main une seule fois, c'est acceptable. Deux fois, c'est un script. Trois fois, c'est de l'infra as code. Cette section regroupe Ansible pour la config management, Terraform pour le provisioning et Makefile pour coller tout ça ensemble.
 
 ## Contenus
 

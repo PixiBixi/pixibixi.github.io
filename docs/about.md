@@ -34,7 +34,7 @@ Les projets du moment :
 
 - [gopen](https://github.com/PixiBixi/gopen) (Go) : ouvre le repo git dans le browser sur
   la branche et le dossier courants. Gère le fichier précis, la ligne ou la plage de lignes,
-  le choix du remote, la copie de l'URL sans ouvrir le browser, et parle GitHub, GitLab,
+  le choix du remote, la copie de l'URL sans ouvrir le browser et parle GitHub, GitLab,
   Bitbucket, Azure DevOps, Gitea, Gogs et CodeCommit.
 - [kubectl-klens](https://github.com/PixiBixi/kubectl-klens) (Go) : plugin kubectl
   d'inspection de cluster en lecture seule. Un dispatcher, une vingtaine de raccourcis, les

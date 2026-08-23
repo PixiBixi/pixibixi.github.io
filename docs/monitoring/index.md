@@ -10,7 +10,7 @@ tags:
 
 # Monitoring
 
-Sans monitoring, on debug à l'aveugle. Cette section couvre la stack LGTM (Loki, Grafana, Tempo, Prometheus) pour le monitoring moderne, check_mk pour les infras on-premise, et Munin pour les vieux parcs.
+Sans monitoring, on debug à l'aveugle. Cette section couvre la stack LGTM (Loki, Grafana, Tempo, Prometheus) pour le monitoring moderne, check_mk pour les infras on-premise et Munin pour les vieux parcs.
 
 ## Contenus
 

@@ -157,7 +157,7 @@ pg_last_wal_replay_lsn        | 24A8E/9DBBBE48
 pg_last_xact_replay_timestamp | 2022-12-01 11:46:05.427305+01
 ```
 
-Nous voyons actuellement que le noeud client est en mode de récupération, et qu'il n'est pas "en pause" de réplication. Il lit actuellement le dernier segment qu'il a reçu, qui est le segment du 1er décembre à 11h45.
+Nous voyons actuellement que le noeud client est en mode de récupération et qu'il n'est pas "en pause" de réplication. Il lit actuellement le dernier segment qu'il a reçu, qui est le segment du 1er décembre à 11h45.
 
 Si `pg_last_wal_receive_lsn` et `pg_last_wal_replay_lsn` étaient différents. Nous pourrions déterminer combien de Go manquent au nœud de secours, par exemple :
 

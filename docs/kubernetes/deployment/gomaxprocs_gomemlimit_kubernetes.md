@@ -1,5 +1,5 @@
 ---
-description: GOMAXPROCS et GOMEMLIMIT dans Kubernetes - CFS throttling, resourceFieldRef, uber-go/automaxprocs. Pourquoi Go sature le CPU sans dépasser ses limits, et comment le corriger.
+description: GOMAXPROCS et GOMEMLIMIT dans Kubernetes - CFS throttling, resourceFieldRef, uber-go/automaxprocs. Pourquoi Go sature le CPU sans dépasser ses limits et comment le corriger.
 tags:
   - Go
   - Resources
@@ -92,7 +92,7 @@ Une seule ligne dans `main.go` suffit :
 import _ "go.uber.org/automaxprocs"
 ```
 
-L'import blank déclenche l'`init()` du package. Automaxprocs gère les fractions de CPU, fonctionne hors K8S (Docker, systemd cgroups), et s'adapte si les limits changent entre deux restarts.
+L'import blank déclenche l'`init()` du package. Automaxprocs gère les fractions de CPU, fonctionne hors K8S (Docker, systemd cgroups) et s'adapte si les limits changent entre deux restarts.
 
 Préférer cette approche si les pods ont des limits fractionnaires ou si l'app tourne sur plusieurs environnements.
 

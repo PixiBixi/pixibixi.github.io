@@ -10,7 +10,7 @@ tags:
 
 # Databases
 
-Les bases de données, c'est là où tout se passe quand ça plante. Cette section couvre l'essentiel : MySQL en cluster Galera, PostgreSQL avec sa réplication, Redis en HA, et quelques outils pour Elasticsearch et Memcached.
+Les bases de données, c'est là où tout se passe quand ça plante. Cette section couvre l'essentiel : MySQL en cluster Galera, PostgreSQL avec sa réplication, Redis en HA et quelques outils pour Elasticsearch et Memcached.
 
 ## Contenus
 

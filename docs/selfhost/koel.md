@@ -114,7 +114,7 @@ pnpm install
 
 ### Initialisation et configuration
 
-`composer koel:init` gère tout en une commande : migrations, génération de clé, création du compte admin, et build des assets :
+`composer koel:init` gère tout en une commande : migrations, génération de clé, création du compte admin et build des assets :
 
 ```bash
 composer koel:init

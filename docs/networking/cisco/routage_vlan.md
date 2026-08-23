@@ -8,7 +8,7 @@ tags:
 
 # Cisco : Routage Inter-VLAN
 
-Une fois les VLAN fait, ceux-ci sont isolés logiquement, et ne peuvent
+Une fois les VLAN fait, ceux-ci sont isolés logiquement et ne peuvent
 donc communiquer entrent-eux.
 
 Nous devons donc agir au niveau du routeur pour faire en sorte qu'ils

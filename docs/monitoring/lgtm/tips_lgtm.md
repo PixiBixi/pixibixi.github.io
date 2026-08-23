@@ -65,7 +65,7 @@ curl -s -H "Authorization: Bearer $GRAFANA_TOKEN" \
 
 ## Tempo
 
-Vérifier que Tempo répond, et lister les tags indexés sur lesquels on peut chercher une trace
+Vérifier que Tempo répond et lister les tags indexés sur lesquels on peut chercher une trace
 
 ```sh
 curl -s http://127.0.0.1:3200/api/echo

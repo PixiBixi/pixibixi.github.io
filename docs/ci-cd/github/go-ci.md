@@ -10,7 +10,7 @@ tags:
 
 # CI GitHub Actions pour un projet Go
 
-Une CI Go, ce n'est pas juste `go test`. Test multi-plateforme, lint, scan de vulnérabilités, et une release qui se déclenche toute seule sur le type de commit. Tout ce qui suit tourne sur `push` et `pull_request`, mesuré sur un vrai repo public : [gopen](https://github.com/PixiBixi/gopen).
+Une CI Go, ce n'est pas juste `go test`. Test multi-plateforme, lint, scan de vulnérabilités et une release qui se déclenche toute seule sur le type de commit. Tout ce qui suit tourne sur `push` et `pull_request`, mesuré sur un vrai repo public : [gopen](https://github.com/PixiBixi/gopen).
 
 !!! tip "Le socle de durcissement est traité à part"
     Épinglage par SHA, `permissions:`, `persist-credentials`, injection de template, zizmor et actionlint ne dépendent pas du langage et vivent dans [Durcir une CI GitHub Actions](hardening.md). Tous les workflows ci-dessous les appliquent.
@@ -85,7 +85,7 @@ golangci-lint agrège des dizaines de linters en un seul binaire, un seul passag
     version: v2.12.2
 ```
 
-La config vit dans `.golangci.yml`. Le principe : partir du set standard, ajouter ce qui apporte de la valeur, et **justifier chaque exclusion en commentaire** pour que le prochain qui lit comprenne pourquoi.
+La config vit dans `.golangci.yml`. Le principe : partir du set standard, ajouter ce qui apporte de la valeur et **justifier chaque exclusion en commentaire** pour que le prochain qui lit comprenne pourquoi.
 
 ```yaml title=".golangci.yml"
 version: "2"
@@ -118,7 +118,7 @@ linters:
 
 ### gocritic et les gros structs copiés
 
-Le set standard ne dit rien des copies de structs. Sur un projet qui manipule des objets Kubernetes, ça compte : un `corev1.Pod` pèse **1192 octets**, un `Node` 768, un `Container` 408 - mesuré au `unsafe.Sizeof`. Un `for _, p := range pods` copie donc 1,2 ko par tour, et un helper qui prend un `corev1.Pod` en paramètre le recopie à chaque appel.
+Le set standard ne dit rien des copies de structs. Sur un projet qui manipule des objets Kubernetes, ça compte : un `corev1.Pod` pèse **1192 octets**, un `Node` 768, un `Container` 408 - mesuré au `unsafe.Sizeof`. Un `for _, p := range pods` copie donc 1,2 ko par tour et un helper qui prend un `corev1.Pod` en paramètre le recopie à chaque appel.
 
 Le tag `performance` de [gocritic](https://go-critic.com/) attrape exactement ça, via `rangeValCopy` et `hugeParam`. Il n'est pas activé par défaut :
 
@@ -152,13 +152,13 @@ Tout dans le bruit. Le calcul de départ, « 56 Mo recopiés par exécution », 
 Ce que le check apporte quand même : il empêche de réintroduire le motif là où il *coûterait* vraiment, dans une slice de `Pod` à durée de vie longue ou une boucle imbriquée.
 
 !!! warning "Un finding de linter n'est pas un gain de perf"
-    `hugeParam` et `rangeValCopy` disent qu'une copie existe, pas qu'elle coûte. Sur un binaire dont le temps part en attente réseau, la réponse est souvent « rien du tout ». On mesure avant d'annoncer un gain, et quand le gain n'existe pas, le commit se type `chore`, pas `perf`.
+    `hugeParam` et `rangeValCopy` disent qu'une copie existe, pas qu'elle coûte. Sur un binaire dont le temps part en attente réseau, la réponse est souvent « rien du tout ». On mesure avant d'annoncer un gain et quand le gain n'existe pas, le commit se type `chore`, pas `perf`.
 
 ### Le piège des findings masqués
 
-Celui-là vaut pour tous les linters, pas seulement gocritic. Par défaut, golangci-lint **cache une partie de ce qu'il trouve** : 50 findings par linter, et surtout 3 occurrences par message identique.
+Celui-là vaut pour tous les linters, pas seulement gocritic. Par défaut, golangci-lint **cache une partie de ce qu'il trouve** : 50 findings par linter et surtout 3 occurrences par message identique.
 
-Trente sites copiant chacun `1192 bytes` produisent trente messages au texte identique, dont trois s'affichent. On corrige les trois, on relance, trois nouveaux apparaissent. Sur `klens`, le premier passage annonçait 25 problèmes : des fichiers entiers n'étaient jamais sortis, et la correction paraissait finie alors qu'il en restait.
+Trente sites copiant chacun `1192 bytes` produisent trente messages au texte identique, dont trois s'affichent. On corrige les trois, on relance, trois nouveaux apparaissent. Sur `klens`, le premier passage annonçait 25 problèmes : des fichiers entiers n'étaient jamais sortis et la correction paraissait finie alors qu'il en restait.
 
 ```yaml title=".golangci.yml"
 issues:
@@ -175,10 +175,10 @@ Sur un repo de taille raisonnable, il n'y a aucune raison de plafonner. Un linte
 Il existe une seconde action, [reviewdog/action-golangci-lint](https://github.com/reviewdog/action-golangci-lint), qui poste les findings en commentaires de PR au lieu d'annotations. Tentant quand on utilise déjà reviewdog pour goimports. Sauf que ses défauts vont à l'envers de tout ce qui précède :
 
 - `golangci_lint_version` et `reviewdog_version` valent `latest`, donc la version qui tourne change sans commit.
-- `fail_level` vaut `none`, et [le code de sortie de golangci-lint est ignoré](https://github.com/reviewdog/action-golangci-lint/blob/master/src/main.ts) dans le code de l'action : les sorties 0, 1 et 2 passent toutes. Le job est donc **vert avec des findings**, c'est reviewdog seul qui décide d'échouer.
+- `fail_level` vaut `none` et [le code de sortie de golangci-lint est ignoré](https://github.com/reviewdog/action-golangci-lint/blob/master/src/main.ts) dans le code de l'action : les sorties 0, 1 et 2 passent toutes. Le job est donc **vert avec des findings**, c'est reviewdog seul qui décide d'échouer.
 - `filter_mode` vaut `added`, donc seules les lignes ajoutées sont remontées. Même famille de problème que `max-same-issues` : ce qu'on ne voit pas, on le croit corrigé.
 
-Tout ça se règle (`fail_level: error`, `filter_mode: nofilter`, versions épinglées), mais il reste un plafond qu'on ne peut pas lever : sur une PR venant d'un fork, le `GITHUB_TOKEN` est en lecture seule, donc reviewdog [retombe sur les logging commands](https://github.com/reviewdog/reviewdog#graceful-degradation-for-pull-requests-from-forked-repositories), soit exactement les annotations que l'action officielle produit déjà. On garde donc l'officielle pour le gate, et reviewdog là où il apporte vraiment autre chose : un diff applicable en un clic, ce que golangci-lint ne produit pas.
+Tout ça se règle (`fail_level: error`, `filter_mode: nofilter`, versions épinglées), mais il reste un plafond qu'on ne peut pas lever : sur une PR venant d'un fork, le `GITHUB_TOKEN` est en lecture seule, donc reviewdog [retombe sur les logging commands](https://github.com/reviewdog/reviewdog#graceful-degradation-for-pull-requests-from-forked-repositories), soit exactement les annotations que l'action officielle produit déjà. On garde donc l'officielle pour le gate et reviewdog là où il apporte vraiment autre chose : un diff applicable en un clic, ce que golangci-lint ne produit pas.
 
 ## Vulnérabilités des dépendances
 
@@ -230,11 +230,11 @@ jobs:
 
 Le job reformate le code, puis reviewdog compare avec ce qui a été poussé et propose le diff en commentaire. Même mécanique pour le Markdown avec `reviewdog/action-markdownlint` et `reporter: github-pr-review`.
 
-Le `go install ... @latest` qu'on écrit par réflexe est le même problème qu'un tag d'action : la version installée change sans commit, et un compte upstream compromis livre directement dans le job. Le proxy Go vérifie bien le checksum, mais d'une version qu'on n'a pas choisie, d'où le pin en variable d'env que Renovate suit via le commentaire `# renovate:`.
+Le `go install ... @latest` qu'on écrit par réflexe est le même problème qu'un tag d'action : la version installée change sans commit et un compte upstream compromis livre directement dans le job. Le proxy Go vérifie bien le checksum, mais d'une version qu'on n'a pas choisie, d'où le pin en variable d'env que Renovate suit via le commentaire `# renovate:`.
 
 ## Releases pilotées par les commits
 
-Une CI fiable débloque un cran d'automatisation de plus : faire du type de commit le déclencheur d'une release, et laisser Renovate merger ses PR tout seul. La partie automerge (et le cooldown qui la rend sûre) est dans [l'article durcissement](hardening.md#automerger-sans-avaler-une-release-compromise) ; ce qui suit est le maillon d'après, propre au repo Go. Pour la même mécanique sans Go ni GoReleaser, avec CHANGELOG généré et comparaison à release-please, voir [Cocogitto](cocogitto.md).
+Une CI fiable débloque un cran d'automatisation de plus : faire du type de commit le déclencheur d'une release et laisser Renovate merger ses PR tout seul. La partie automerge (et le cooldown qui la rend sûre) est dans [l'article durcissement](hardening.md#automerger-sans-avaler-une-release-compromise) ; ce qui suit est le maillon d'après, propre au repo Go. Pour la même mécanique sans Go ni GoReleaser, avec CHANGELOG généré et comparaison à release-please, voir [Cocogitto](cocogitto.md).
 
 ### Faire du commit le déclencheur de version
 
@@ -320,13 +320,13 @@ jobs:
 `go install` passe par le proxy de modules Go, donc la version de svu est vérifiée contre la base de checksums - et le pin en variable d'env est suivi par Renovate via un `customManager` regex. Créer le tag par l'API plutôt qu'avec `git push` permet de garder `persist-credentials: false` sur le checkout.
 
 !!! warning "`perf:` ne déclenche pas de release"
-    svu applique la spec Conventional Commits à la lettre : seuls `fix` (patch) et `feat` (mineur) sont normatifs. Un `perf:` seul ne sort donc **aucune** version, et sa config ne permet pas d'ajouter des mots-clés. Si un gain de perf doit être livré tout de suite, il se type `fix:`. Le flag `--v0` évite au passage qu'un breaking change fasse sauter un projet en `0.x` directement en `v1.0.0`.
+    svu applique la spec Conventional Commits à la lettre : seuls `fix` (patch) et `feat` (mineur) sont normatifs. Un `perf:` seul ne sort donc **aucune** version et sa config ne permet pas d'ajouter des mots-clés. Si un gain de perf doit être livré tout de suite, il se type `fix:`. Le flag `--v0` évite au passage qu'un breaking change fasse sauter un projet en `0.x` directement en `v1.0.0`.
 
 <!-- markdownlint-disable MD046 -->
 !!! note "Pourquoi pas une action toute faite ?"
-    Le réflexe est d'utiliser `mathieudutour/github-tag-action`, la plus répandue pour ça. Elle est **abandonnée** : plus de release depuis mars 2024, plus de commit depuis juin 2024, et toujours `using: node20` - donc une alerte de dépréciation à chaque release, sans version vers laquelle migrer. Épingler par SHA protège d'un tag repointé, pas d'un projet mort.
+    Le réflexe est d'utiliser `mathieudutour/github-tag-action`, la plus répandue pour ça. Elle est **abandonnée** : plus de release depuis mars 2024, plus de commit depuis juin 2024 et toujours `using: node20` - donc une alerte de dépréciation à chaque release, sans version vers laquelle migrer. Épingler par SHA protège d'un tag repointé, pas d'un projet mort.
 
-    Les remplaçantes évidentes ne tiennent pas l'examen : `anothrNick/github-tag-action` ne fait **pas** de conventional commits (elle cherche des hashtags `#major`/`#minor`/`#patch`, et détourner ses tokens donne un match de sous-chaîne où « prefix » déclenche un patch) ; `TriPSs/conventional-changelog-action` fonctionne mais écrit un `CHANGELOG.md` par défaut, ce qui salit l'arbre que GoReleaser va lire ; `release-please` et consorts imposent un modèle de release PR, soit exactement le clic humain que l'automerge cherche à supprimer.
+    Les remplaçantes évidentes ne tiennent pas l'examen : `anothrNick/github-tag-action` ne fait **pas** de conventional commits (elle cherche des hashtags `#major`/`#minor`/`#patch` et détourner ses tokens donne un match de sous-chaîne où « prefix » déclenche un patch) ; `TriPSs/conventional-changelog-action` fonctionne mais écrit un `CHANGELOG.md` par défaut, ce qui salit l'arbre que GoReleaser va lire ; `release-please` et consorts imposent un modèle de release PR, soit exactement le clic humain que l'automerge cherche à supprimer.
 
     D'où le choix d'un CLI maintenu qui ne fait que le calcul, plus un appel API. Leçon générale : sur un chemin de release qui détient `contents: write`, la maintenance de la dépendance compte autant que ses fonctionnalités.
 <!-- markdownlint-enable MD046 -->
@@ -344,7 +344,7 @@ Ce qui fait la différence entre une CI Go qui marche et une CI Go qu'on laisse 
 - golangci-lint épinglé, exclusions justifiées, `max-same-issues: 0` pour ne rien masquer
 - gocritic sur le tag `performance`, avec un `sizeThreshold` qui vise les objets d'API
 - govulncheck pour les CVE réellement atteignables
-- reviewdog pour un feedback actionnable en PR, et aucun outil installé en `@latest`
+- reviewdog pour un feedback actionnable en PR et aucun outil installé en `@latest`
 - Release calculée par svu depuis les commits conventionnels, dans le même job que GoReleaser
 - Et par-dessus, le [socle de durcissement](hardening.md) commun à tous les workflows
 

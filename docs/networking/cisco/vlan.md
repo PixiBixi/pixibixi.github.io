@@ -28,7 +28,7 @@ On se place dans le mode approprié
     Router>en
     Router#configure terminal
 
-On sélectionne l'interface, lui attribue l'IP, et l'active
+On sélectionne l'interface, lui attribue l'IP et l'active
 
     Router(config)#interface G0/0
     Router(config-if)#ip address 192.168.0.1 255.255.255.0

@@ -10,7 +10,7 @@ tags:
 
 Les commandes Unix historiques font le job, mais des alternatives modernes,
 souvent écrites en Rust, offrent une meilleure ergonomie, une sortie
-colorisée, et parfois des gains de performance significatifs.
+colorisée et parfois des gains de performance significatifs.
 
 !!! note "Installation"
     Tous ces outils sont disponibles via Homebrew (`brew install <tool>`)
@@ -22,7 +22,7 @@ colorisée, et parfois des gains de performance significatifs.
 
 ### `ls` → `lsd`
 
-[lsd](https://github.com/lsd-rs/lsd) ajoute icônes, couleurs, et une vue
+[lsd](https://github.com/lsd-rs/lsd) ajoute icônes, couleurs et une vue
 arborescente intégrée :
 
 ```bash
@@ -43,7 +43,7 @@ lsd --tree --depth 2  # limiter la profondeur
 ### `cat` → `bat`
 
 [bat](https://github.com/sharkdp/bat) ajoute numéros de ligne, coloration
-syntaxique, intégration git, et pagination automatique :
+syntaxique, intégration git et pagination automatique :
 
 ```bash
 bat script.sh            # affichage colorisé
@@ -59,7 +59,7 @@ gauche par rapport à l'index git.
 ### `find` → `fd`
 
 [fd](https://github.com/sharkdp/fd) est plus rapide, respecte `.gitignore`
-par défaut, et a une syntaxe simplifiée :
+par défaut et a une syntaxe simplifiée :
 
 ```bash
 fd pattern              # recherche par nom (récursif)

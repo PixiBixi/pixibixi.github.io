@@ -18,7 +18,7 @@ Le paquet est dans les dépôts de base, donc rien à télécharger :
 dnf install epel-release
 ```
 
-Puis on active `CRB` (CodeReady Builder), qui contient les bibliothèques de développement dont beaucoup de paquets EPEL dépendent. Sans lui, l'installation échoue plus tard sur des dépendances introuvables, et l'erreur ne mentionne jamais CRB :
+Puis on active `CRB` (CodeReady Builder), qui contient les bibliothèques de développement dont beaucoup de paquets EPEL dépendent. Sans lui, l'installation échoue plus tard sur des dépendances introuvables et l'erreur ne mentionne jamais CRB :
 
 ```bash
 # EL9 et EL10
@@ -54,7 +54,7 @@ rpm -qi epel-release
 
 Un `dnf repolist` qui affiche `epel` sans `crb` est exactement la configuration qui marche pour les paquets simples et casse sur les autres, plusieurs jours plus tard.
 
-## epel-next, et quand en avoir besoin
+## epel-next et quand en avoir besoin
 
 Sur CentOS Stream uniquement, `epel-next` complète EPEL pour les paquets qui doivent être recompilés en avance de phase, parce que Stream est en amont de RHEL. Sur Rocky, Alma ou RHEL, il n'a pas lieu d'être :
 

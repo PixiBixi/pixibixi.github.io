@@ -8,7 +8,7 @@ tags:
 
 # speedtest-cli : mesurer le débit d'un serveur Linux en CLI
 
-Le réflexe, c'est `apt install speedtest-cli`. Sauf que ce paquet-là est le client Python de sivel, **archivé sur GitHub** depuis 2024, dernière release en avril 2021. Il fonctionne encore la plupart du temps, mais quand il tombe en panne personne ne le réparera. 4 outils se partagent le terrain aujourd'hui, et ils ne mesurent pas la même chose.
+Le réflexe, c'est `apt install speedtest-cli`. Sauf que ce paquet-là est le client Python de sivel, **archivé sur GitHub** depuis 2024, dernière release en avril 2021. Il fonctionne encore la plupart du temps, mais quand il tombe en panne personne ne le réparera. 4 outils se partagent le terrain aujourd'hui et ils ne mesurent pas la même chose.
 
 ## Quel client installer
 
@@ -119,7 +119,7 @@ JSON=$(speedtest -f json --accept-license --accept-gdpr)
 mv "${OUT}.tmp" "$OUT"
 ```
 
-Un test consomme 1 à 2 Go de trafic sur un lien rapide. À 4 mesures par heure ça fait plusieurs centaines de Go par mois, facturés sur la plupart des clouds. Une mesure toutes les 6h est un compromis raisonnable, et on met le cron à une minute aléatoire pour ne pas taper le même serveur que tout le monde à l'heure pile.
+Un test consomme 1 à 2 Go de trafic sur un lien rapide. À 4 mesures par heure ça fait plusieurs centaines de Go par mois, facturés sur la plupart des clouds. Une mesure toutes les 6h est un compromis raisonnable et on met le cron à une minute aléatoire pour ne pas taper le même serveur que tout le monde à l'heure pile.
 
 ## Mesurer sans rien installer
 
@@ -130,11 +130,11 @@ curl -o /dev/null -w 'debit: %{speed_download} o/s  temps: %{time_total}s\n' \
   https://speed.hetzner.de/100MB.bin
 ```
 
-Une seule connexion là aussi, donc sous-estimation sur les liens rapides, et le résultat dépend entièrement de la qualité du lien vers ce serveur précis. C'est bon pour répondre à « est-ce que ça télécharge à 50 Ko/s ou à 50 Mo/s », pas pour qualifier un lien.
+Une seule connexion là aussi, donc sous-estimation sur les liens rapides et le résultat dépend entièrement de la qualité du lien vers ce serveur précis. C'est bon pour répondre à « est-ce que ça télécharge à 50 Ko/s ou à 50 Mo/s », pas pour qualifier un lien.
 
 ## Débit entre 2 de ses serveurs
 
-Un speedtest mesure le lien vers Internet, pas le lien entre 2 machines. Pour ça, `iperf3` est l'outil correct, et il faut le lancer des deux côtés :
+Un speedtest mesure le lien vers Internet, pas le lien entre 2 machines. Pour ça, `iperf3` est l'outil correct et il faut le lancer des deux côtés :
 
 ```bash
 # Côté serveur
@@ -144,7 +144,7 @@ iperf3 -s
 iperf3 -c 10.0.0.1 -P 4 -t 30
 ```
 
-Sans `-P`, un flux unique plafonne sur les liens à forte latence à cause de la fenêtre TCP, et on mesure le RTT plutôt que le débit.
+Sans `-P`, un flux unique plafonne sur les liens à forte latence à cause de la fenêtre TCP et on mesure le RTT plutôt que le débit.
 
 ## Le client Python, si on y tient
 
@@ -165,7 +165,7 @@ speedtest-cli --csv
 | `--secure` | Force HTTPS pour le test |
 | `--list` / `--server ID` | Liste les serveurs, en impose un |
 
-L'erreur qu'on rencontre le plus avec lui est `Cannot retrieve speedtest configuration`, quand speedtest.net renvoie un 403 sur l'API historique. `--secure` la contourne parfois, sinon il n'y a rien à réparer côté client puisque le projet est archivé, et c'est le moment de passer au binaire Ookla.
+L'erreur qu'on rencontre le plus avec lui est `Cannot retrieve speedtest configuration`, quand speedtest.net renvoie un 403 sur l'API historique. `--secure` la contourne parfois, sinon il n'y a rien à réparer côté client puisque le projet est archivé et c'est le moment de passer au binaire Ookla.
 
 ## Alternative : speed-cloudflare-cli
 

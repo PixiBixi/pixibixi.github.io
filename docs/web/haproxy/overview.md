@@ -346,7 +346,7 @@ option httpchk GET / HTTP/1.1\r\nHost:\ www.jdelgado.fr\r\nUser-Agent:\ haproxy_
 http-check expect status 200
 ```
 
-Ce test est légèrement plus détaillé. On spécifie ici un Host à utiliser (`www.jdelgado.fr`) ainsi que l'user-agent, et on attend un retour 200 (OK).
+Ce test est légèrement plus détaillé. On spécifie ici un Host à utiliser (`www.jdelgado.fr`) ainsi que l'user-agent et on attend un retour 200 (OK).
 
 #### Check spécifiques
 

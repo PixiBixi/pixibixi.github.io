@@ -7,16 +7,16 @@ tags:
 
 # Apache Guacamole : un bastion RDP, SSH et VNC dans le navigateur
 
-Guacamole est une passerelle d'accès distant sans client : le poste de l'utilisateur n'a besoin que d'un navigateur, et c'est le serveur Guacamole qui ouvre la session RDP, SSH ou VNC vers la machine cible. Rien à installer côté client, rien à ouvrir côté cible autre que le port vers le serveur Guacamole.
+Guacamole est une passerelle d'accès distant sans client : le poste de l'utilisateur n'a besoin que d'un navigateur et c'est le serveur Guacamole qui ouvre la session RDP, SSH ou VNC vers la machine cible. Rien à installer côté client, rien à ouvrir côté cible autre que le port vers le serveur Guacamole.
 
 ## Pourquoi l'utiliser comme bastion
 
-C'est l'usage qui justifie le mieux la mise en place, et il repose sur une propriété simple : les machines cibles n'ont plus besoin d'être joignables depuis l'extérieur.
+C'est l'usage qui justifie le mieux la mise en place et il repose sur une propriété simple : les machines cibles n'ont plus besoin d'être joignables depuis l'extérieur.
 
 - **Un seul point d'entrée exposé**, le serveur Guacamole en HTTPS. Le 3389 et le 22 restent fermés côté Internet.
 - **Aucun agent sur les cibles**, contrairement à la plupart des solutions de PAM. Guacamole parle les protocoles natifs, la machine cible ne sait pas qu'elle est derrière un bastion.
 - **Enregistrement de session** pour RDP et VNC, sous forme de flux rejouable, ce qui répond à une bonne partie des exigences d'audit.
-- **MFA** via TOTP ou Duo, et authentification centralisée par LDAP, SAML ou OpenID Connect avec les extensions officielles.
+- **MFA** via TOTP ou Duo et authentification centralisée par LDAP, SAML ou OpenID Connect avec les extensions officielles.
 - Les identifiants des cibles sont stockés dans Guacamole, donc l'utilisateur peut se connecter à un serveur **sans jamais connaître son mot de passe**.
 
 Le revers, c'est que le serveur Guacamole devient une cible de premier ordre : il détient les credentials de tout le parc. Il se traite comme un composant critique, sur un réseau à part, avec ses mises à jour suivies.
@@ -29,11 +29,11 @@ L'architecture surprend au début parce qu'elle ne ressemble pas à une applicat
 2. **La webapp Java** (`guacamole.war`), servie par un Tomcat, traduit le protocole Guacamole en HTML5 pour le navigateur.
 3. **Le backend d'authentification**, soit un fichier `user-mapping.xml`, soit une base PostgreSQL ou MySQL, qui stocke utilisateurs, connexions et permissions.
 
-Si le Java rebute, c'est le moment de le savoir : Tomcat est incontournable dans une installation classique, et seule la version conteneurisée le rend invisible.
+Si le Java rebute, c'est le moment de le savoir : Tomcat est incontournable dans une installation classique et seule la version conteneurisée le rend invisible.
 
 ## Installation avec Docker Compose
 
-C'est la voie la plus courte, et celle qui évite la compilation de guacd et ses dépendances FreeRDP. La base doit être initialisée avec un schéma que l'image sait générer elle-même :
+C'est la voie la plus courte et celle qui évite la compilation de guacd et ses dépendances FreeRDP. La base doit être initialisée avec un schéma que l'image sait générer elle-même :
 
 ```bash
 mkdir -p ~/guacamole/init
@@ -99,7 +99,7 @@ location / {
 }
 ```
 
-Le `proxy_cookie_path` est ce qui manque le plus souvent : sans lui, le cookie de session est posé sur `/guacamole/` alors que l'utilisateur navigue sur `/`, et la connexion boucle sur l'écran de login.
+Le `proxy_cookie_path` est ce qui manque le plus souvent : sans lui, le cookie de session est posé sur `/guacamole/` alors que l'utilisateur navigue sur `/` et la connexion boucle sur l'écran de login.
 
 ## Les types de connexion
 
@@ -163,7 +163,7 @@ basic-user-mapping: /etc/guacamole/user-mapping.xml
 sudo systemctl restart tomcat10 guacd
 ```
 
-`user-mapping.xml` convient pour une poignée de connexions statiques, mais il ne permet ni gestion des droits ni changement de mot de passe par l'utilisateur. Dès qu'il y a plus de 2 personnes, la base PostgreSQL est le bon choix, et c'est celui de la version Docker plus haut.
+`user-mapping.xml` convient pour une poignée de connexions statiques, mais il ne permet ni gestion des droits ni changement de mot de passe par l'utilisateur. Dès qu'il y a plus de 2 personnes, la base PostgreSQL est le bon choix et c'est celui de la version Docker plus haut.
 
 ## Quand préférer autre chose
 

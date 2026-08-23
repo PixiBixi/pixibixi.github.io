@@ -46,13 +46,13 @@ yt-dlp -F "$URL"
 
 ## Nommer les fichiers proprement
 
-Le template de sortie évite le dossier fourre-tout avec 400 fichiers dont on ne sait plus rien. Les champs se combinent, et on peut reformater une date à la volée.
+Le template de sortie évite le dossier fourre-tout avec 400 fichiers dont on ne sait plus rien. Les champs se combinent et on peut reformater une date à la volée.
 
 ```bash
 yt-dlp -o "%(uploader)s/%(upload_date>%Y-%m-%d)s - %(title)s [%(id)s].%(ext)s" "$URL"
 ```
 
-Le `[%(id)s]` dans le nom n'est pas décoratif : c'est ce qui permet de retrouver la source d'un fichier des mois plus tard, et ce sur quoi certains scanners de médiathèque s'appuient. Sur un système de fichiers qui n'aime pas l'unicode, `--restrict-filenames` remplace tout ce qui n'est pas ASCII.
+Le `[%(id)s]` dans le nom n'est pas décoratif : c'est ce qui permet de retrouver la source d'un fichier des mois plus tard et ce sur quoi certains scanners de médiathèque s'appuient. Sur un système de fichiers qui n'aime pas l'unicode, `--restrict-filenames` remplace tout ce qui n'est pas ASCII.
 
 ## Ne pas retélécharger deux fois
 
@@ -83,7 +83,7 @@ yt-dlp --cookies-from-browser firefox "$URL"
 yt-dlp --concurrent-fragments 4 "$URL"
 ```
 
-`--cookies-from-browser` est celle qui débloque le plus de situations, et c'est aussi celle à manier avec précaution : elle envoie une session authentifiée. On ne la met pas dans un script qui tourne sur une machine partagée.
+`--cookies-from-browser` est celle qui débloque le plus de situations et c'est aussi celle à manier avec précaution : elle envoie une session authentifiée. On ne la met pas dans un script qui tourne sur une machine partagée.
 
 ## Mettre ses options dans un fichier de conf
 

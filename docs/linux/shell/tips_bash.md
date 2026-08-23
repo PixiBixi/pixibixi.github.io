@@ -30,7 +30,7 @@ HISTIGNORE="ls *:man *:history:clear:GCP_KEY*"
 ```
 
 Nous permet de ne pas logger toutes les commandes, ici, nous ignorons
-clear, tous les ls, tous les man, et notre clé GCP.
+clear, tous les ls, tous les man et notre clé GCP.
 
 ## Divers
 

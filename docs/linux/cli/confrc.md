@@ -12,7 +12,7 @@ tags:
 L'ensemble de mes fichiers de configuration est disponible sur
 [GitHub](https://github.com/PixiBixi/dotfiles). Ce dépôt centralise la
 configuration de mon environnement de travail : shell, éditeur, outils
-de développement, et amorçage d'un nouveau poste.
+de développement et amorçage d'un nouveau poste.
 
 ## Bootstrap
 
@@ -25,7 +25,7 @@ brew bundle install --file=Brewfile
 
 Il installe l'intégralité de la toolchain : outils CLI (ripgrep, bat, fzf,
 lsd, fd...), Kubernetes (kubectl, helm, krew, kubeswitch...), cloud providers
-(AWS CLI, gcloud, az...), IaC (Terraform, Vault, Consul), et applications
+(AWS CLI, gcloud, az...), IaC (Terraform, Vault, Consul) et applications
 GUI (Arc, DBeaver, TablePlus...).
 
 Le script `init_mac.sh` orchestre l'installation complète de manière

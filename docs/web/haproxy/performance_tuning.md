@@ -93,7 +93,7 @@ global
     # ... etc, un cpu-map par groupe aligné sur les L3 caches
 ```
 
-Le principe : un thread group par L3 cache. Les threads du même groupe communiquent à bas coût (même cache), et les groupes entre eux se parlent le moins possible.
+Le principe : un thread group par L3 cache. Les threads du même groupe communiquent à bas coût (même cache) et les groupes entre eux se parlent le moins possible.
 
 En 3.2+, une seule ligne remplace tout ça :
 
@@ -141,7 +141,7 @@ global
     cpu-policy performance
 ```
 
-Ou manuellement, dédier les premiers cœurs aux IRQ NIC via `irqbalance` ou `smp_affinity`, et mapper HAProxy sur les cœurs restants.
+Ou manuellement, dédier les premiers cœurs aux IRQ NIC via `irqbalance` ou `smp_affinity` et mapper HAProxy sur les cœurs restants.
 
 !!! warning
     Ne pas utiliser `irqbalance` en même temps qu'un pinning manuel via `smp_affinity` - ils se marchent dessus.
@@ -309,7 +309,7 @@ Le handshake TLS est l'opération la plus coûteuse en CPU. Le type de certifica
 | RSA 2048 | ~1 261 sign/s | ~4 629 sign/s |
 | RSA 4096 | ~191 sign/s | ~761 sign/s |
 
-Le x86 est 1.4x à 4x plus rapide par cœur selon l'algo, mais le ratio entre ECDSA et RSA reste le même partout : ECDSA P-256 est ~15x plus rapide que RSA 2048, et RSA 4096 est ~6x plus lent que RSA 2048.
+Le x86 est 1.4x à 4x plus rapide par cœur selon l'algo, mais le ratio entre ECDSA et RSA reste le même partout : ECDSA P-256 est ~15x plus rapide que RSA 2048 et RSA 4096 est ~6x plus lent que RSA 2048.
 
 En intégrant le prix (GCP spot, standard-16, avril 2026 : C4a ~179$/mois, C4d ~216$/mois), le x86 reste aussi plus rentable en crypto pur :
 
@@ -343,7 +343,7 @@ Le choix des ciphers affecte à la fois la sécurité et le CPU. Le bulk encrypt
 
 #### TLS 1.3 vs 1.2
 
-TLS 1.3 est plus rapide que TLS 1.2 : le handshake passe de 2 RTT à 1 RTT, et les cipher suites sont simplifiées (plus de négociation complexe). Forcer TLS 1.2 minimum :
+TLS 1.3 est plus rapide que TLS 1.2 : le handshake passe de 2 RTT à 1 RTT et les cipher suites sont simplifiées (plus de négociation complexe). Forcer TLS 1.2 minimum :
 
 ```haproxy
 global
@@ -415,7 +415,7 @@ global
 `ssl-default-bind-ciphersuites` gère TLS 1.3 (ciphersuites fixes, peu de choix). `ssl-default-bind-ciphers` gère TLS 1.2 - l'ordre compte, les premiers sont préférés.
 
 !!! warning
-    Ne pas activer `ssl-default-bind-options prefer-client-ciphers` sauf cas très spécifique - ça laisse le client choisir le cipher, et un client mal configuré peut forcer un cipher lent.
+    Ne pas activer `ssl-default-bind-options prefer-client-ciphers` sauf cas très spécifique - ça laisse le client choisir le cipher et un client mal configuré peut forcer un cipher lent.
 
 ### Rate limiting SSL
 
@@ -499,7 +499,7 @@ global
     tune.pool-low-fd-ratio 80
 ```
 
-Par défaut, HAProxy commence à recycler les connexions idle quand il atteint ~75% des FD disponibles, et s'arrête quand il redescend à ~25%. Sur du trafic avec de longs keep-alive (beaconing, long-polling), ce comportement par défaut tue les connexions backend poolées trop tôt, ce qui force des reconnexions TCP inutiles et consomme du CPU.
+Par défaut, HAProxy commence à recycler les connexions idle quand il atteint ~75% des FD disponibles et s'arrête quand il redescend à ~25%. Sur du trafic avec de longs keep-alive (beaconing, long-polling), ce comportement par défaut tue les connexions backend poolées trop tôt, ce qui force des reconnexions TCP inutiles et consomme du CPU.
 
 Monter les ratios à 90/80 préserve le pool de connexions plus longtemps et ne recycle qu'en cas de vrai manque de FD.
 
@@ -845,7 +845,7 @@ Voir comment HAProxy a réparti ses threads sur les CPUs (3.2+) :
 haproxy -dc -f /etc/haproxy/haproxy.cfg
 ```
 
-Affiche les thread groups, le nombre de threads par groupe, et les CPU sets associés.
+Affiche les thread groups, le nombre de threads par groupe et les CPU sets associés.
 
 ### Contention CPU
 

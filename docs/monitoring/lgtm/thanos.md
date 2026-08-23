@@ -11,17 +11,17 @@ tags:
 # Thanos at scale : archi, perf et FinOps
 
 !!! warning "Écrit pour Thanos 0.42"
-    Les flags et leurs valeurs par défaut bougent d'une version à l'autre, et certains sont
+    Les flags et leurs valeurs par défaut bougent d'une version à l'autre et certains sont
     dépréciés en silence, comme `--store.grpc.series-sample-limit` remplacé par
     `--store.limits.request-samples`. Vérifier contre la doc de sa propre version avant de
-    copier quoi que ce soit, et ne rien lire ici comme un optimum : ce sont les arbitrages
+    copier quoi que ce soit et ne rien lire ici comme un optimum : ce sont les arbitrages
     qu'on a faits avec nos contraintes, pas une configuration de référence.
 
 Un Prometheus garde ses métriques aussi longtemps qu'on le lui demande. On pose
 `--storage.tsdb.retention.time`, ou `--storage.tsdb.retention.size` si on préfère plafonner
-en volume, et c'est réglé. La rétention n'a jamais été le problème.
+en volume et c'est réglé. La rétention n'a jamais été le problème.
 
-Le problème est ailleurs. La TSDB vit sur un seul disque sans réplication, et elle grossit
+Le problème est ailleurs. La TSDB vit sur un seul disque sans réplication et elle grossit
 linéairement parce que Prometheus ne downsample pas. Surtout, elle ne sait répondre que
 pour elle-même alors qu'avec une vingtaine de clusters on veut une requête qui les traverse
 toutes.
@@ -57,7 +57,7 @@ Le vrai critère de choix est ailleurs : un stack isolé par tenant, ou un clust
 - Mimir et VictoriaMetrics poussent vers un backend unique et multi-tenant, avec des limites par tenant
 - Thanos Receive permet le multi-tenant, mais rien n'oblige à l'utiliser ainsi
 
-On a pris le chemin inverse du manuel : un jeu complet de composants par cluster source. Chaque cluster a son bucket, son namespace, son receive, ses store gateways, son querier. Ça multiplie les composants, et c'est assumé.
+On a pris le chemin inverse du manuel : un jeu complet de composants par cluster source. Chaque cluster a son bucket, son namespace, son receive, ses store gateways, son querier. Ça multiplie les composants et c'est assumé.
 
 Ce qu'on y gagne :
 
@@ -69,7 +69,7 @@ Ce qu'on y perd : une vingtaine de compactors, de queriers et de store gateways 
 
 ## L'architecture high-level
 
-Un stack complet par tenant, et au-dessus un querier global qui fait le fan-out sur tous les queriers régionaux.
+Un stack complet par tenant et au-dessus un querier global qui fait le fan-out sur tous les queriers régionaux.
 
 ![Topologie Thanos multi-tenant avec le querier global au-dessus des stacks régionaux](./_img/thanos-topology.svg)
 
@@ -106,7 +106,7 @@ On a chassé longtemps des requêtes coûteuses avant de comprendre que les plus
 
 Et il y a un effet de bord qu'on ne voit pas venir : **une réponse partielle n'est jamais cachée**. Le query frontend refuse de cacher les réponses partielles comme celles assorties d'un warning, ce qui veut dire qu'on perd le cache **précisément** au moment où il servirait le plus. Les requêtes passent en partiel, donc deviennent non cachables, donc chaque rafraîchissement repart de zéro sur une infrastructure déjà en souffrance. C'est un amplificateur, pas un amortisseur.
 
-Le flag ne fixe qu'un défaut, et les clients peuvent le surcharger par requête avec le paramètre `partial_response`. La voie médiane est donc de laisser le défaut désactivé, ce qui protège les règles d'alerte et le cache, et de l'activer uniquement sur la datasource Grafana des humains, où une réponse partielle assortie d'un warning vaut mieux qu'un spinner de 25 secondes.
+Le flag ne fixe qu'un défaut et les clients peuvent le surcharger par requête avec le paramètre `partial_response`. La voie médiane est donc de laisser le défaut désactivé, ce qui protège les règles d'alerte et le cache et de l'activer uniquement sur la datasource Grafana des humains, où une réponse partielle assortie d'un warning vaut mieux qu'un spinner de 25 secondes.
 
 ## Le chemin d'une métrique
 
@@ -116,11 +116,11 @@ La couleur porte l'essentiel : tout ce qui est stateless et rejouable tourne sur
 
 ## Éviter le trafic inter-zone
 
-Chaque flèche du schéma précédent est du trafic facturé. Receive qui uploade ses blocks, la store gateway qui les retélécharge à chaque miss de cache, les séries qui remontent en gRPC vers le querier, puis le fan-out du querier global sur tous les régionaux. À une vingtaine de tenants le volume est conséquent, et personne ne le regarde parce qu'il n'apparaît pas sur la ligne compute.
+Chaque flèche du schéma précédent est du trafic facturé. Receive qui uploade ses blocks, la store gateway qui les retélécharge à chaque miss de cache, les séries qui remontent en gRPC vers le querier, puis le fan-out du querier global sur tous les régionaux. À une vingtaine de tenants le volume est conséquent et personne ne le regarde parce qu'il n'apparaît pas sur la ligne compute.
 
 Sur GCP, un transfert entre 2 zones d'une même région est facturé, alors qu'il est gratuit à l'intérieur d'une zone. On colle donc tous les composants d'un stack dans la même zone, au lieu de laisser le scheduler les répartir pour faire de la haute dispo.
 
-Le bucket suit la même logique mais à la maille région, un bucket GCS étant régional et pas zonal. Depuis une VM de la même région la sortie ne coûte rien, alors qu'un bucket dans une autre région ou en multi-région se paye à chaque lecture, et la store gateway lit beaucoup.
+Le bucket suit la même logique mais à la maille région, un bucket GCS étant régional et pas zonal. Depuis une VM de la même région la sortie ne coûte rien, alors qu'un bucket dans une autre région ou en multi-région se paye à chaque lecture et la store gateway lit beaucoup.
 
 !!! warning "Le prix : plus de redondance de zone"
     Un stack dans une seule zone tombe avec sa zone. C'est le même arbitrage que le RF=1 :
@@ -163,23 +163,23 @@ Le prix à payer se voit à la reprise. Une store gateway peut mettre jusqu'à *
   for: 30m      # et pas 5m : la reprise après éviction spot est lente
 ```
 
-Reste une question qu'on oublie de se poser : pendant ces 30 minutes, que voit l'utilisateur ? Ça dépend de `--query.partial-response`, activé par défaut. La query renvoie ce qu'elle a pu récupérer, assorti d'un warning, plutôt qu'une erreur. Un dashboard affiche donc un graphe avec un trou dedans, et le trou ne se voit pas forcément.
+Reste une question qu'on oublie de se poser : pendant ces 30 minutes, que voit l'utilisateur ? Ça dépend de `--query.partial-response`, activé par défaut. La query renvoie ce qu'elle a pu récupérer, assorti d'un warning, plutôt qu'une erreur. Un dashboard affiche donc un graphe avec un trou dedans et le trou ne se voit pas forcément.
 
-C'est le bon comportement pour du dashboard temps réel, beaucoup moins pour une règle d'alerting ou un rapport de capacité. Le paramètre se surcharge par requête, et une réponse partielle n'est jamais mise en cache.
+C'est le bon comportement pour du dashboard temps réel, beaucoup moins pour une règle d'alerting ou un rapport de capacité. Le paramètre se surcharge par requête et une réponse partielle n'est jamais mise en cache.
 
 Le tout tourne sur des instances ARM, ce qui se cumule avec le spot sur le ratio prix/performance. La tolération `arch=arm64` est posée sur tous les composants.
 
 ## Receive : le composant le plus cher
 
-Receive garde la head de sa TSDB en mémoire, donc sa consommation ne suit pas le débit d'ingestion mais le **nombre de séries actives**. Doubler la fréquence de scrape ne change presque rien, ajouter un label à forte cardinalité fait exploser la facture, et comme c'est le seul composant en on-demand chaque Gio y coûte plus cher qu'ailleurs.
+Receive garde la head de sa TSDB en mémoire, donc sa consommation ne suit pas le débit d'ingestion mais le **nombre de séries actives**. Doubler la fréquence de scrape ne change presque rien, ajouter un label à forte cardinalité fait exploser la facture et comme c'est le seul composant en on-demand chaque Gio y coûte plus cher qu'ailleurs.
 
 On ne plafonne pas cette RAM, on agit sur ce qui la fait grossir.
 
-Le levier le moins cher reste de réduire le nombre de séries. Le `write_relabel_configs` vu plus haut agit avant l'ingestion donc il ne coûte rien, et le `head_series_limit` par tenant plafonne ensuite ce qu'un cluster peut pousser.
+Le levier le moins cher reste de réduire le nombre de séries. Le `write_relabel_configs` vu plus haut agit avant l'ingestion donc il ne coûte rien et le `head_series_limit` par tenant plafonne ensuite ce qu'un cluster peut pousser.
 
-Vient ensuite le sharding du hashring. Avec l'algorithme Ketama les séries se répartissent sur plusieurs pods de Receive au lieu de se concentrer sur un seul, la RAM par pod baisse d'autant, et des gabarits plus petits sont plus faciles à placer.
+Vient ensuite le sharding du hashring. Avec l'algorithme Ketama les séries se répartissent sur plusieurs pods de Receive au lieu de se concentrer sur un seul, la RAM par pod baisse d'autant et des gabarits plus petits sont plus faciles à placer.
 
-Le plus structurant est de séparer le routing de l'ingestion. Quand `--receive.local-endpoint` n'est pas défini, un Receive tourne en mode routeur pur et transmet les écritures sans rien stocker localement. On peut alors poser beaucoup de routeurs légers devant peu d'ingesters, et ne payer de la RAM que sur ces derniers.
+Le plus structurant est de séparer le routing de l'ingestion. Quand `--receive.local-endpoint` n'est pas défini, un Receive tourne en mode routeur pur et transmet les écritures sans rien stocker localement. On peut alors poser beaucoup de routeurs légers devant peu d'ingesters et ne payer de la RAM que sur ces derniers.
 
 !!! warning "Ce qu'on n'active pas sans raison"
     Les caches de postings étendus (`--tsdb.head.expanded-postings-cache-size` et son
@@ -209,7 +209,7 @@ compactor:
   retentionResolution1h: 430d
 ```
 
-430 jours plutôt que 365, parce que comparer un pic saisonnier à celui de l'année d'avant demande un peu de marge, et 2 mois de plus ne coûtent presque rien à cette résolution.
+430 jours plutôt que 365, parce que comparer un pic saisonnier à celui de l'année d'avant demande un peu de marge et 2 mois de plus ne coûtent presque rien à cette résolution.
 
 Et c'est là que le downsampling devient intéressant : la longue traîne est quasi gratuite. Passer de 15 secondes à 1 heure, c'est 240 fois moins de points. Les 430 jours en résolution horaire pèsent une fraction des 45 jours en résolution native. Garder un an ne coûte pas 12 fois 2 mois.
 
@@ -218,7 +218,7 @@ Et c'est là que le downsampling devient intéressant : la longue traîne est qu
     versions downsamplées, donc lui seul peut décider quoi supprimer. Une politique de cycle
     de vie côté object storage supprime ou archive à l'aveugle.
 
-Le retour d'expérience qui circule sur le sujet est instructif. Une équipe a basculé 6 mois de blocks vers une classe d'archivage pour économiser une cinquantaine de dollars mensuels de stockage. Le compactor a voulu compacter des blocks devenus illisibles sans restauration préalable, a échoué, et a retenté toutes les 5 minutes en boucle. Les requêtes objet sont passées de 1,1 million à 40 millions par jour, soit 13 dollars à 480 dollars sur la seule ligne API, et l'économie de stockage a été payée 10 fois.
+Le retour d'expérience qui circule sur le sujet est instructif. Une équipe a basculé 6 mois de blocks vers une classe d'archivage pour économiser une cinquantaine de dollars mensuels de stockage. Le compactor a voulu compacter des blocks devenus illisibles sans restauration préalable, a échoué et a retenté toutes les 5 minutes en boucle. Les requêtes objet sont passées de 1,1 million à 40 millions par jour, soit 13 dollars à 480 dollars sur la seule ligne API et l'économie de stockage a été payée 10 fois.
 
 Dans le même ordre d'idées, les paliers du compactor doivent rester alignés sur ce que les store gateways servent réellement, sinon on paye pour des blocks que personne n'interroge, ou on cherche de la donnée que la rétention a déjà supprimée.
 
@@ -238,9 +238,9 @@ extraFlags:
 
 Un mot sur `--no-debug.halt-on-error` : le compactor sort en erreur au lieu de continuer en silence. On préfère un job rouge à un bucket qui se dégrade sans que personne ne le voie.
 
-Ce garde-fou a une limite qu'il faut connaître. Le downsampling peut se terminer sur un warning du type `empty chunks happened, skip series` sans jamais passer en erreur, donc sans halte, et la rétention supprimera ensuite les blocks raw alors qu'aucun remplaçant downsamplé n'a été produit. Le halt ne couvre que les vraies erreurs, pas les succès assortis d'un warning, ce qui oblige à surveiller les logs du compactor et pas seulement ses codes de sortie.
+Ce garde-fou a une limite qu'il faut connaître. Le downsampling peut se terminer sur un warning du type `empty chunks happened, skip series` sans jamais passer en erreur, donc sans halte et la rétention supprimera ensuite les blocks raw alors qu'aucun remplaçant downsamplé n'a été produit. Le halt ne couvre que les vraies erreurs, pas les succès assortis d'un warning, ce qui oblige à surveiller les logs du compactor et pas seulement ses codes de sortie.
 
-Les 3 flags de concurrence sont à 1 ou 2 volontairement. Ils valent 1 par défaut, et la doc recommande d'allouer un cœur CPU par unité de `--compact.concurrency`. Les monter transforme un job court en job cher.
+Les 3 flags de concurrence sont à 1 ou 2 volontairement. Ils valent 1 par défaut et la doc recommande d'allouer un cœur CPU par unité de `--compact.concurrency`. Les monter transforme un job court en job cher.
 
 !!! warning "2 flags à ne pas activer à l'aveugle"
     `--deduplication.func=penalty` sert à dédupliquer des replicas Prometheus qui ne sont
@@ -248,11 +248,11 @@ Les 3 flags de concurrence sont à 1 ou 2 volontairement. Ils valent 1 par défa
     `irate`. Quant à `--compact.enable-vertical-compaction`, il fusionne des flux de blocks :
     si 2 producteurs différents publient avec les **mêmes external labels**, leurs séries
     se mélangent et deviennent inexploitables. C'est pour ça que chaque tenant a son propre
-    jeu d'external labels, et c'est non négociable.
+    jeu d'external labels et c'est non négociable.
 
 ## Compacter sans payer le disque 24h/24
 
-C'est l'optimisation la plus rentable de la stack, et celle qui a le plus d'effets de bord.
+C'est l'optimisation la plus rentable de la stack et celle qui a le plus d'effets de bord.
 
 Un compactor déployé en Deployment tourne 24h/24 avec son PVC attaché en permanence. Sauf qu'il ne travaille réellement que quelques minutes toutes les quelques heures. Sur une vingtaine de stacks, ça fait une vingtaine de disques facturés en continu pour un usage marginal.
 
@@ -301,7 +301,7 @@ Il faut la neutraliser et la remplacer par des règles qui interrogent l'état d
 
 La fenêtre de 12 heures tolère un cycle manqué. `ThanosCompactCronJobFailed` reste du best-effort. Le `ttlSecondsAfterFinished` à 600 fait disparaître le Job 10 minutes après son échec, donc la fenêtre de détection est courte.
 
-Ces 2 règles disent si le job tourne, pas s'il fait son travail. Un compactor peut réussir tous ses runs, avoir `thanos_compact_halted` à 0, et laisser le backlog s'accumuler parce que la concurrency ne suit pas le volume produit. Le bucket grossit alors en continu sans que rien ne s'allume. Depuis la v0.24 il expose de quoi le voir venir.
+Ces 2 règles disent si le job tourne, pas s'il fait son travail. Un compactor peut réussir tous ses runs, avoir `thanos_compact_halted` à 0 et laisser le backlog s'accumuler parce que la concurrency ne suit pas le volume produit. Le bucket grossit alors en continu sans que rien ne s'allume. Depuis la v0.24 il expose de quoi le voir venir.
 
 ```yaml
 # Compactions planifiées qui ne sont jamais faites
@@ -325,7 +325,7 @@ Une store gateway qui sert tout le bucket doit être dimensionnée pour la requ�
 
 Or les 2 profils d'accès n'ont rien à voir :
 
-- les données récentes sont interrogées en permanence, sur un petit volume, et doivent répondre vite
+- les données récentes sont interrogées en permanence, sur un petit volume et doivent répondre vite
 - les données anciennes sont interrogées rarement, mais chaque requête scanne énormément et supporte d'être lente
 
 On a donc découpé la store gateway en 3 shards par plage de temps, avec 2 replicas chacun. Le plus récent démarre à 3 heures, parce qu'en dessous c'est Receive qui sert encore la donnée depuis sa TSDB.
@@ -354,22 +354,22 @@ Le dimensionnement suit le profil d'accès. Chaque shard est taillé pour son us
 Le blast radius se réduit aussi, puisqu'une requête de 6 mois ne tape que le shard historique. Elle peut le saturer sans mettre par terre celui qui sert le dernier jour.
 
 !!! warning "Faire chevaucher les plages, volontairement"
-    Les bornes ci-dessus se recouvrent d'une heure ou d'un jour, et ce n'est pas une erreur.
+    Les bornes ci-dessus se recouvrent d'une heure ou d'un jour et ce n'est pas une erreur.
     La doc Thanos recommande explicitement le chevauchement : le querier sait fusionner, et
     ça évite un trou si un shard est indisponible. À l'inverse, des bornes jointives au
     millimètre garantissent une fenêtre aveugle dès qu'un replica manque.
 
 Le filtrage se fait au niveau du chunk et pas de l'échantillon, donc un shard peut renvoyer des points hors de sa plage annoncée. La découverte des blocks est aussi asynchrone, à l'intervalle de `--sync-block-duration` qui vaut 15 minutes par défaut, ce qui s'ajoute au délai d'upload.
 
-Ce découpage temporel n'est pas le seul possible. Quand c'est le bucket d'un seul tenant qui devient trop gros, le sharding par labels externes via `--selector.relabel-config` répond mieux, et les 2 se combinent.
+Ce découpage temporel n'est pas le seul possible. Quand c'est le bucket d'un seul tenant qui devient trop gros, le sharding par labels externes via `--selector.relabel-config` répond mieux et les 2 se combinent.
 
 ## Payer de la capacité disque pour acheter du débit
 
-La store gateway tournait au départ sur `emptyDir`, donc sur le disque de boot du nœud. Sur les gabarits qu'on avait choisis, le téléchargement des index-headers au démarrage saturait ce disque : les instances sont IO bound, et un store qui doit rapatrier ses index-headers y passe un temps déraisonnable. Ce sont ces mêmes minutes qu'on retrouve dans les 30 minutes de reprise après éviction.
+La store gateway tournait au départ sur `emptyDir`, donc sur le disque de boot du nœud. Sur les gabarits qu'on avait choisis, le téléchargement des index-headers au démarrage saturait ce disque : les instances sont IO bound et un store qui doit rapatrier ses index-headers y passe un temps déraisonnable. Ce sont ces mêmes minutes qu'on retrouve dans les 30 minutes de reprise après éviction.
 
 D'où un PVC dédié pour la store gateway, dimensionné pour le débit et non pour la place.
 
-Sur les disques provisionnés de GCP, Hyperdisk en l'occurrence, le débit et les IOPS ne sont pas offerts avec la capacité : ils sont provisionnés, et **plafonnés à 500 IOPS par Gio**. Le plancher utilisable tourne autour de 3000 IOPS, ce qui impose au minimum 6 Gio rien que pour y avoir droit. On monte donc le volume d'index-header à 20 Gio alors qu'il ne contient pas 20 Gio de données : on achète des IOPS, la capacité vient avec.
+Sur les disques provisionnés de GCP, Hyperdisk en l'occurrence, le débit et les IOPS ne sont pas offerts avec la capacité : ils sont provisionnés et **plafonnés à 500 IOPS par Gio**. Le plancher utilisable tourne autour de 3000 IOPS, ce qui impose au minimum 6 Gio rien que pour y avoir droit. On monte donc le volume d'index-header à 20 Gio alors qu'il ne contient pas 20 Gio de données : on achète des IOPS, la capacité vient avec.
 
 C'est l'inverse du réflexe habituel, qui est de tailler au plus juste. Ici la capacité est bon marché comparée au débit provisionné, donc sur-dimensionner le disque est le moyen le moins cher d'avoir des performances.
 
@@ -382,7 +382,7 @@ C'est l'inverse du réflexe habituel, qui est de tailler au plus juste. Ici la c
 
 ## Un seul cache chaud pour toute la flotte
 
-Thanos a 3 caches, et par défaut ils sont tous les 3 en mémoire du process :
+Thanos a 3 caches et par défaut ils sont tous les 3 en mémoire du process :
 
 - l'index cache de la store gateway (`--index-cache.config`), qui garde les postings et les séries
 - le caching bucket (`--store.caching-bucket.config`), qui garde les sous-plages de chunks et les métadonnées de blocks
@@ -400,7 +400,7 @@ Un backend partagé règle les 2 problèmes d'un coup. Un seul cache chaud pour 
     son plafond, en accumulant des entrées trop vieilles pour être servies. On mesure 0
     éviction pendant que le nombre d'entrées triple.
 
-Ce qui fait qu'une taille de cache IN-MEMORY ne mesure pas un working set, elle mesure **depuis combien de temps le pod tourne**. En basculant sur un backend Redis avec un vrai TTL, on a vu le cache tomber à un dixième du nombre d'entrées et le hit ratio **monter** de 76 à 91 %. Les 90 % d'entrées en trop étaient du poids mort : périmées, incapables de servir un hit, et occupant la RAM quand même.
+Ce qui fait qu'une taille de cache IN-MEMORY ne mesure pas un working set, elle mesure **depuis combien de temps le pod tourne**. En basculant sur un backend Redis avec un vrai TTL, on a vu le cache tomber à un dixième du nombre d'entrées et le hit ratio **monter** de 76 à 91 %. Les 90 % d'entrées en trop étaient du poids mort : périmées, incapables de servir un hit et occupant la RAM quand même.
 
 Corollaire pratique : ne jamais dimensionner un cache partagé sur la taille observée du cache IN-MEMORY qu'il remplace. On surdimensionne d'un ordre de grandeur.
 
@@ -415,28 +415,28 @@ Les clés de chunks portent l'ULID du block, unique globalement, donc 2 tenants 
 pas s'y marcher dessus. La clé du listing est le chemin du répertoire, identique pour tout
 le monde puisque c'est la racine du bucket, alors que chaque tenant a son propre bucket
 objet. Un tenant lit donc la liste de blocks d'un autre, part chercher ces ULID chez lui, ne
-les trouve pas, et classe l'intégralité en `partial` :
+les trouve pas et classe l'intégralité en `partial` :
 
 ```text
 successfully synchronized block metadata  duration=12ms  cached=0  returned=0  partial=73
 ```
 
 73 blocks listés, aucun retourné. La store gateway reste `Ready`, ses probes sont vertes,
-elle ne redémarre pas, et elle ne sert plus une seule donnée historique, ce qui fait que les
+elle ne redémarre pas et elle ne sert plus une seule donnée historique, ce qui fait que les
 requêtes longues renvoient du résultat partiel sans erreur - bien pire qu'une panne franche,
 parce que rien n'alerte et que les chiffres affichés restent plausibles.
 
 Le piège de validation est que le mécanisme marche parfaitement sur une instance **dédiée**.
 Un canary sur un seul tenant valide le protocole, la NetworkPolicy, le TTL et le hit ratio,
 puis ne dit rigoureusement rien du partage. Avant de mutualiser, la question à trancher est
-de savoir si les clés portent le nom du bucket ou seulement le chemin de l'objet, et ça se
+de savoir si les clés portent le nom du bucket ou seulement le chemin de l'objet et ça se
 lit dans le code du `CachingBucket` de sa version.
 
 ### Dimensionner le cache partagé
 
 La taille à viser est le **working set sur la fenêtre du TTL**, pas la taille actuelle du cache, qui ne dit que le plafond qu'on lui a donné. Le proxy se calcule sur le volume d'admission : `increase(items_added_total[TTL])` multiplié par la taille moyenne d'une entrée. Deux pièges.
 
-Le premier est de lire ça sur un instantané. Un `increase` pris à un moment donné est un point au hasard, et il sous-estime lourdement les stacks en dents de scie : sur l'un des nôtres, 0,24 Gio en snapshot contre 9 Gio au P95 du glissant sur 24 h. Facteur 37. Il faut le **P95 de la fenêtre TTL glissante sur 24 h au minimum**, donc une subquery avec un pas explicite - une subquery sans pas est un moyen fiable de faire tomber le querier.
+Le premier est de lire ça sur un instantané. Un `increase` pris à un moment donné est un point au hasard et il sous-estime lourdement les stacks en dents de scie : sur l'un des nôtres, 0,24 Gio en snapshot contre 9 Gio au P95 du glissant sur 24 h. Facteur 37. Il faut le **P95 de la fenêtre TTL glissante sur 24 h au minimum**, donc une subquery avec un pas explicite - une subquery sans pas est un moyen fiable de faire tomber le querier.
 
 Le second est le facteur de déduplication. Il est tentant de diviser par le nombre de pods, mais des store gateways shardées cachent des blocks **disjoints** : seuls les replicas d'un même shard cachent la même chose. Avec 3 shards et 2 replicas, on divise par 2, pas par 6. Se tromper là sous-dimensionne d'un facteur 3.
 
@@ -451,13 +451,13 @@ Enfin le `limits.memory` du conteneur se dimensionne sur le **RSS**, avec une ma
 
 ### Memcached ou Redis
 
-Memcached est plus simple à poser, mais il n'est pas horizontalement scalable en l'état : c'est au client de faire le sharding, et la haute dispo demande du travail. Redis coûte un peu plus cher en exploitation mais apporte Sentinel pour le failover et un vrai comportement en cluster.
+Memcached est plus simple à poser, mais il n'est pas horizontalement scalable en l'état : c'est au client de faire le sharding et la haute dispo demande du travail. Redis coûte un peu plus cher en exploitation mais apporte Sentinel pour le failover et un vrai comportement en cluster.
 
 Dragonfly est une troisième voie qui mérite d'être connue. Il parle le protocole Redis, donc c'est un remplacement transparent côté Thanos, mais il est multi-threadé : là où Redis sature un cœur et impose du sharding pour aller au-delà, Dragonfly scale verticalement, on lui ajoute des `--proactor_threads` et on reste sur une seule instance. Pour un cache, dont la perte est bénigne, exploiter une instance unique bien placée est plus simple qu'un cluster.
 
 Trois pièges rencontrés avec son opérateur Kubernetes :
 
-- Les métriques Prometheus sortent sur un port `admin` séparé, et l'opérateur crée par défaut une NetworkPolicy qui ne l'ouvre qu'à lui-même et aux pods pairs. Prometheus reste muet, silencieusement. Les NetworkPolicies étant purement additives, il suffit d'en **ajouter** une pour le namespace de Prometheus, sans désactiver celle de l'opérateur.
+- Les métriques Prometheus sortent sur un port `admin` séparé et l'opérateur crée par défaut une NetworkPolicy qui ne l'ouvre qu'à lui-même et aux pods pairs. Prometheus reste muet, silencieusement. Les NetworkPolicies étant purement additives, il suffit d'en **ajouter** une pour le namespace de Prometheus, sans désactiver celle de l'opérateur.
 - Il n'y a pas de `/metrics` HTTP sur le port principal, qui ne parle que RESP. Se tromper de port donne un timeout qu'on met du temps à relier à une NetworkPolicy.
 - `evicted_keys_total` et `expired_keys_total` sont **déclarés sans valeur** tant qu'ils valent zéro. Prometheus n'ingère donc aucune série et un panneau affiche « No data » là où on attend 0, ce qui rend « rien évincé » indiscernable de « métrique cassée ». En attendant, le signal d'éviction utilisable est la mémoire utilisée qui rejoint `maxmemory`.
 
@@ -488,7 +488,7 @@ args:
 
 !!! warning "Le piège du failover Sentinel"
     Après une bascule, les composants Thanos continuent de parler à l'ancien master, devenu
-    replica, et on récolte des `can't write against a read only replica`. Il faut pointer
+    replica et on récolte des `can't write against a read only replica`. Il faut pointer
     Thanos sur le service Sentinel et renseigner `master_name`, pour que le client demande
     à Sentinel qui est le master courant au lieu de le supposer.
 
@@ -499,7 +499,7 @@ Un mot sur `cache_size` : à une valeur non nulle, il active un cache côté cli
 
 ### Le gain côté facture
 
-Le listing du bucket est un poste à part. Chaque replica de store gateway découvre les nouveaux blocks de son côté, et 2 flags pilotent ce que ça coûte.
+Le listing du bucket est un poste à part. Chaque replica de store gateway découvre les nouveaux blocks de son côté et 2 flags pilotent ce que ça coûte.
 
 `--block-discovery-strategy` décide comment on liste. La stratégie `concurrent`, celle par défaut, lance un appel par répertoire et fait donc N+1 requêtes. La stratégie `recursive` itère sur tout le bucket : moins d'appels, mais une itération plus lente.
 
@@ -507,20 +507,20 @@ Le listing du bucket est un poste à part. Chaque replica de store gateway déco
 
 Sur une centaine de pods qui listent chacun de leur côté, les 2 arbitrages valent d'être posés.
 
-Les appels à l'object storage sont facturés à la requête, et le trafic sortant l'est au volume. Un cache partagé et chaud coupe les 2, et un replica qui redémarre ne repaye pas ce que ses voisins ont déjà téléchargé.
+Les appels à l'object storage sont facturés à la requête et le trafic sortant l'est au volume. Un cache partagé et chaud coupe les 2 et un replica qui redémarre ne repaye pas ce que ses voisins ont déjà téléchargé.
 
 Le `--query-range.split-interval` joue dans le même sens, puisque découper une requête longue en tranches de 12h rend chaque tranche réutilisable, alors que sans découpage une plage un peu différente rate le cache en entier. C'est aussi pour ça que `--query-range.align-range-with-step` compte : aligner les bornes sur le pas fait retomber les requêtes sur les mêmes clés.
 
 !!! tip "Ce qui n'est jamais mis en cache"
     Le query frontend refuse de cacher les requêtes avec `dedup=false`, celles qui portent
-    des store matchers, celles en partial response, et toute réponse assortie d'un warning.
+    des store matchers, celles en partial response et toute réponse assortie d'un warning.
     Un dashboard qui coche une de ces cases ne bénéficiera jamais du cache, quelle que soit
     la taille qu'on lui donne.
 
 !!! danger "Les requêtes instantanées ne sont pas cachables du tout"
     Le query frontend n'a de tripperware que pour 2 familles : `--query-range.response-cache-*`
-    pour `/api/v1/query_range`, et `--labels.response-cache-*` pour les endpoints de labels.
-    Il n'existe **aucune** famille `query-instant`, et aucun flag de cache pour `/api/v1/query`.
+    pour `/api/v1/query_range` et `--labels.response-cache-*` pour les endpoints de labels.
+    Il n'existe **aucune** famille `query-instant` et aucun flag de cache pour `/api/v1/query`.
     Les requêtes instantanées ne sont ni découpées ni cachées : elles traversent directement
     vers le querier.
 
@@ -544,7 +544,7 @@ extraFlags:
 
 Les 2 premiers remplacent `--store.grpc.touched-series-limit` et `--store.grpc.series-sample-limit`, qui sont dépréciés. Tous valent 0 par défaut, c'est-à-dire aucune limite.
 
-Côté ingestion c'est plus intéressant financièrement, parce que Receive est on-demand donc le plus cher au vCPU, et que rien ne le protège d'un tenant qui explose en cardinalité.
+Côté ingestion c'est plus intéressant financièrement, parce que Receive est on-demand donc le plus cher au vCPU et que rien ne le protège d'un tenant qui explose en cardinalité.
 
 ```yaml
 # --receive.limits-config-file
@@ -565,7 +565,7 @@ write:
     Query API que Receive interroge toutes les 15 secondes pour connaître le nombre de
     séries actives par tenant. Si cet endpoint est injoignable, Receive **arrête de limiter**
     et se contente de logger. La donnée étant par nature en retard, on dépasse toujours un
-    peu la limite, et la fonctionnalité est marquée expérimentale.
+    peu la limite et la fonctionnalité est marquée expérimentale.
 
 Le dépassement se traduit par un HTTP 413 côté client. Prometheus ne sait pas découper une requête trop grosse pour la renvoyer, donc ce qui est refusé est perdu. Une limite trop basse ne ralentit pas un tenant, elle lui fait des trous dans ses métriques.
 
@@ -601,7 +601,7 @@ Il n'est activé nulle part. **Le facteur de réplication réel est de 1.**
 
 La résilience ne repose donc pas sur la duplication de l'ingestion, mais sur 2 autres choses : la rétention locale de la TSDB (12 heures de head) et l'upload continu vers l'object storage. Si un receive tombe, on perd la fenêtre non uploadée de ce tenant, pas l'historique.
 
-C'est un arbitrage coût contre disponibilité, pas un oubli. Un facteur de réplication supérieur à 1 multiplie la mémoire, puisque chaque replica maintient sa propre copie des séries en RAM, et on parle du composant qui est justement en on-demand. Le flag reste prêt pour basculer un tenant précis si son SLA le justifie.
+C'est un arbitrage coût contre disponibilité, pas un oubli. Un facteur de réplication supérieur à 1 multiplie la mémoire, puisque chaque replica maintient sa propre copie des séries en RAM et on parle du composant qui est justement en on-demand. Le flag reste prêt pour basculer un tenant précis si son SLA le justifie.
 
 Le raisonnement se retourne d'ailleurs, parce qu'avec RF=2 et au moins 2 replicas une éviction devient survivable, donc receive pourrait descendre sur spot comme le reste et on récupérerait l'économie sur le composant le plus cher. Ce qu'on paierait à la place, c'est une archi nettement plus complexe, avec le hashring à maintenir, le receive-controller qui le recalcule à chaque changement de topologie et les rééquilibrages qui vont avec. On a préféré payer de l'on-demand plutôt que de la complexité.
 
@@ -625,7 +625,7 @@ values/thanos-<type>/     surcharge par type de bucket
 values/thanos-<tenant>/   surcharge dédiée à un tenant
 ```
 
-L'option qui rend le tout praticable est `ignoreMissingValueFiles: true` : chaque étage devient optionnel. On déclare les 4 couches partout, et seules celles qui existent s'appliquent.
+L'option qui rend le tout praticable est `ignoreMissingValueFiles: true` : chaque étage devient optionnel. On déclare les 4 couches partout et seules celles qui existent s'appliquent.
 
 Les versions récentes d'ArgoCD acceptent le glob dans `valueFiles`. Une couche découpée en 12 fichiers par composant tient alors en 1 ligne au lieu de 12 :
 

@@ -236,7 +236,7 @@ repos:
 !!! warning "cocogitto-action : nom du dépôt et migration v3 → v4"
     L'action vit sous `cocogitto/cocogitto-action`. Les exemples qui traînent en
     ligne référencent souvent `oknozor/cocogitto-action` : c'est le même dépôt,
-    transféré du compte personnel du mainteneur vers l'organisation, et ça ne
+    transféré du compte personnel du mainteneur vers l'organisation et ça ne
     fonctionne que par la redirection GitHub. Autant pointer le nom canonique.
 
     La **v4 est cassante** et l'échec est silencieux au moment du bump :

@@ -9,9 +9,9 @@ tags:
 
 # PDB et topology spread : ne pas bloquer un upgrade de node pool
 
-Un upgrade de node pool qui reste 1h sur le même node, c'est un PDB. Pas un souci de quota, pas un souci de CSI : quelqu'un a écrit un budget qui n'autorise aucune éviction, et l'API refuse poliment de sortir le pod. Le pire, c'est que le PDB fait exactement ce qu'on lui a demandé.
+Un upgrade de node pool qui reste 1h sur le même node, c'est un PDB. Pas un souci de quota, pas un souci de CSI : quelqu'un a écrit un budget qui n'autorise aucune éviction et l'API refuse poliment de sortir le pod. Le pire, c'est que le PDB fait exactement ce qu'on lui a demandé.
 
-## Ce qu'un PDB protège, et ce qu'il ne protège pas
+## Ce qu'un PDB protège et ce qu'il ne protège pas
 
 Un PodDisruptionBudget ne s'applique qu'aux **évictions volontaires**, celles qui passent par l'API Eviction. C'est la moitié de l'histoire que les gens oublient.
 
@@ -53,13 +53,13 @@ Le pourcentage est arrondi **vers le haut** pour `minAvailable` et vers le haut 
 
 ## Les configurations qui bloquent un drain à vie
 
-3 écritures produisent un budget à zéro éviction autorisée, et donc un node qu'on ne pourra jamais vider :
+3 écritures produisent un budget à zéro éviction autorisée et donc un node qu'on ne pourra jamais vider :
 
 - `minAvailable` égal au nombre de replicas. Un `minAvailable: 3` sur 3 pods : aucune marge, jamais.
 - `maxUnavailable: 0`. C'est la façon la plus directe de dire « ne touche à rien ».
 - `minAvailable: 1` sur un deployment à 1 replica. Le classique, parce que ça a l'air raisonnable écrit comme ça.
 
-Le dernier cas est le plus fréquent, et il n'a pas de bonne réponse : sur un seul pod, soit on accepte la coupure le temps du reschedule, soit on bloque toute maintenance. Un PDB n'invente pas de la redondance qui n'existe pas. La vraie correction, c'est de passer à 2 replicas.
+Le dernier cas est le plus fréquent et il n'a pas de bonne réponse : sur un seul pod, soit on accepte la coupure le temps du reschedule, soit on bloque toute maintenance. Un PDB n'invente pas de la redondance qui n'existe pas. La vraie correction, c'est de passer à 2 replicas.
 
 La colonne à regarder est `ALLOWED DISRUPTIONS` :
 
@@ -98,7 +98,7 @@ spec:
 
 ## Répartir les pods pour que le budget ait de la marge
 
-Un PDB à `maxUnavailable: 1` ne sert à rien si les 3 replicas sont sur le même node : le drain de ce node demande 3 évictions d'un coup, le budget en autorise 1, et on repart pour un tour. Le budget dit combien de pods peuvent partir, le spread dit s'ils partiront ensemble.
+Un PDB à `maxUnavailable: 1` ne sert à rien si les 3 replicas sont sur le même node : le drain de ce node demande 3 évictions d'un coup, le budget en autorise 1 et on repart pour un tour. Le budget dit combien de pods peuvent partir, le spread dit s'ils partiront ensemble.
 
 ```yaml
 spec:
@@ -126,7 +126,7 @@ spec:
 L'inverse, `DoNotSchedule` sur la zone, est le piège : le jour où une zone est en panne de capacité, les pods restent `Pending` au lieu d'aller ailleurs. Sur du stateless, la disponibilité passe avant la beauté de la répartition.
 
 !!! note "Le cluster a déjà des contraintes par défaut"
-    Sans rien déclarer, le scheduler applique un `maxSkew: 3` sur `kubernetes.io/hostname` et un `maxSkew: 5` sur `topology.kubernetes.io/zone`, les deux en `ScheduleAnyway`. Ça explique pourquoi les pods sont vaguement répartis sans qu'on ait rien demandé, et pourquoi ce vague ne suffit pas.
+    Sans rien déclarer, le scheduler applique un `maxSkew: 3` sur `kubernetes.io/hostname` et un `maxSkew: 5` sur `topology.kubernetes.io/zone`, les deux en `ScheduleAnyway`. Ça explique pourquoi les pods sont vaguement répartis sans qu'on ait rien demandé et pourquoi ce vague ne suffit pas.
 
 ## Le skew faussé pendant un rollout
 
@@ -138,7 +138,7 @@ Le résultat est une répartition correcte pendant le rollout et bancale après.
 
 ## Les domaines qui n'existent pas encore
 
-Le skew est calculé sur les domaines **qui existent**, pas sur ceux qu'on voudrait avoir. Un `maxSkew: 1` sur la zone avec des nodes dans une seule zone est satisfait trivialement : il n'y a qu'un domaine, donc aucun écart possible, et les pods s'empilent au même endroit en toute légalité.
+Le skew est calculé sur les domaines **qui existent**, pas sur ceux qu'on voudrait avoir. Un `maxSkew: 1` sur la zone avec des nodes dans une seule zone est satisfait trivialement : il n'y a qu'un domaine, donc aucun écart possible et les pods s'empilent au même endroit en toute légalité.
 
 `minDomains` corrige ça en exigeant un nombre minimum de domaines :
 
@@ -153,7 +153,7 @@ topologySpreadConstraints:
         app: api
 ```
 
-En dessous de 3 zones occupées, la contrainte n'est pas satisfaite, les pods passent `Pending`, et le cluster autoscaler voit qu'il lui manque de la capacité ailleurs. C'est le seul moyen d'obtenir une vraie répartition multi-zone sur un cluster qui démarre.
+En dessous de 3 zones occupées, la contrainte n'est pas satisfaite, les pods passent `Pending` et le cluster autoscaler voit qu'il lui manque de la capacité ailleurs. C'est le seul moyen d'obtenir une vraie répartition multi-zone sur un cluster qui démarre.
 
 `minDomains` ne fonctionne qu'avec `whenUnsatisfiable: DoNotSchedule`, ce qui est logique : en `ScheduleAnyway` la contrainte est un souhait, donc un minimum n'a pas de sens.
 
@@ -182,7 +182,7 @@ kubectl drain gke-prod-pool-1-abc123 \
   --dry-run=server
 ```
 
-Puis on regarde qui refuse. Les évictions rejetées sortent en `429 Too Many Requests` du côté du client, et en événement du côté du pod :
+Puis on regarde qui refuse. Les évictions rejetées sortent en `429 Too Many Requests` du côté du client et en événement du côté du pod :
 
 ```bash
 # Quel budget est à zéro
@@ -197,11 +197,11 @@ kubectl get pods --field-selector spec.nodeName=gke-prod-pool-1-abc123 -A -o wid
 
 La condition `DisruptionAllowed` avec `reason: InsufficientPods` est la réponse : il n'y a pas assez de pods sains pour que le budget autorise une sortie.
 
-Le dernier cas à connaître est le PDB orphelin, dont le `selector` ne matche plus aucun pod parce que les labels du deployment ont changé. `expectedPods: 0` avec un `minAvailable` non nul, et le drain se bloque sur un budget qui protège des pods qui n'existent pas.
+Le dernier cas à connaître est le PDB orphelin, dont le `selector` ne matche plus aucun pod parce que les labels du deployment ont changé. `expectedPods: 0` avec un `minAvailable` non nul et le drain se bloque sur un budget qui protège des pods qui n'existent pas.
 
 ## Côté GKE : surge, blue-green et la limite d'une heure
 
-GKE respecte les PDB pendant le drain d'un node, mais pas indéfiniment : passé environ 1h sur un node, l'upgrade continue sans attendre. C'est un garde-fou pour éviter qu'un PDB mal écrit gèle un cluster entier, et c'est aussi pourquoi un PDB cassé se traduit par un upgrade très lent plutôt que par un upgrade en échec. Un node pool de 20 nodes bloqué sur chaque node, ça fait 20h de fenêtre de maintenance.
+GKE respecte les PDB pendant le drain d'un node, mais pas indéfiniment : passé environ 1h sur un node, l'upgrade continue sans attendre. C'est un garde-fou pour éviter qu'un PDB mal écrit gèle un cluster entier et c'est aussi pourquoi un PDB cassé se traduit par un upgrade très lent plutôt que par un upgrade en échec. Un node pool de 20 nodes bloqué sur chaque node, ça fait 20h de fenêtre de maintenance.
 
 Les deux stratégies d'upgrade se règlent par node pool :
 

@@ -43,7 +43,7 @@ Voici en détail à quoi servent-ils :
 * `tmux-exec` permet d'exécuter en simultané des commandes sur des containers
 * `tree` permet de voir sous formes arbres les différents liens entres les ressources
 * `view-secret` permet de voir les secrets
-* `view-utilization` est plus ou moins redondant avec `resource-capacity`, et les 2 sont remplacés par `node-resource`
+* `view-utilization` est plus ou moins redondant avec `resource-capacity` et les 2 sont remplacés par `node-resource`
 
 `node-resource` est celui qui sert le plus au quotidien, voici les 2 commandes qu'on tape :
 

@@ -7,13 +7,13 @@ tags:
 
 # Makefile : cibles, dépendances de fichiers et auto-documentation
 
-On met un `Makefile` dans à peu près tous les repos, et 9 fois sur 10 c'est un lanceur de commandes déguisé : une liste de cibles qui appellent chacune un `docker build` ou un `kubectl apply`. Ça marche très bien, mais on paye la syntaxe de `make` sans utiliser ce qui la justifie.
+On met un `Makefile` dans à peu près tous les repos et 9 fois sur 10 c'est un lanceur de commandes déguisé : une liste de cibles qui appellent chacune un `docker build` ou un `kubectl apply`. Ça marche très bien, mais on paye la syntaxe de `make` sans utiliser ce qui la justifie.
 
 ## À quoi ça sert, vraiment
 
-`make` n'est pas un task runner, c'est un moteur de dépendances qui compare des dates de modification. On lui déclare qu'un fichier `B` dépend d'un fichier `A`, et il ne reconstruit `B` que si `A` est plus récent. Tout le reste en découle.
+`make` n'est pas un task runner, c'est un moteur de dépendances qui compare des dates de modification. On lui déclare qu'un fichier `B` dépend d'un fichier `A` et il ne reconstruit `B` que si `A` est plus récent. Tout le reste en découle.
 
-L'usage en task runner est un détournement, et un détournement légitime : la syntaxe est partout, `make deploy` se devine sans lire la doc, et il n'y a rien à installer. Mais dès qu'une étape est lente et idempotente, par exemple un `terraform init` ou une installation de dépendances, le moteur de dépendances devient l'argument principal.
+L'usage en task runner est un détournement et un détournement légitime : la syntaxe est partout, `make deploy` se devine sans lire la doc et il n'y a rien à installer. Mais dès qu'une étape est lente et idempotente, par exemple un `terraform init` ou une installation de dépendances, le moteur de dépendances devient l'argument principal.
 
 ## La syntaxe qui pique
 
@@ -38,7 +38,7 @@ test:
 !!! warning "Les blocs de cet article utilisent des espaces pour la lisibilité"
     Dans un vrai `Makefile`, chaque ligne de recette doit commencer par une tabulation. Un copier-coller depuis une page web récupère souvent des espaces, d'où le `missing separator` immédiat.
 
-## Les 4 affectations, et laquelle utiliser
+## Les 4 affectations et laquelle utiliser
 
 C'est la source de bug la plus discrète du format, parce que les 4 se ressemblent et ne s'évaluent pas au même moment.
 
@@ -60,7 +60,7 @@ TAG      ?= $(GIT_SHA)
 IMAGE := $(REGISTRY)/myapp:$(TAG)
 ```
 
-La règle pratique : `:=` par défaut, `?=` pour tout ce qu'on veut pouvoir surcharger, et `=` seulement quand la valeur doit être recalculée à chaque appel. Écrire `GIT_SHA = $(shell git rev-parse --short HEAD)` avec un simple `=` relance un `git rev-parse` à chaque fois que la variable apparaît, ce qui se voit sur un Makefile bavard.
+La règle pratique : `:=` par défaut, `?=` pour tout ce qu'on veut pouvoir surcharger et `=` seulement quand la valeur doit être recalculée à chaque appel. Écrire `GIT_SHA = $(shell git rev-parse --short HEAD)` avec un simple `=` relance un `git rev-parse` à chaque fois que la variable apparaît, ce qui se voit sur un Makefile bavard.
 
 Une variable posée en ligne de commande gagne sur celle du fichier, sauf si on utilise `override` :
 
@@ -70,7 +70,7 @@ make deploy TAG=v1.2.3 REGISTRY=docker.io/org
 
 ## Rendre les recettes strictes
 
-Par défaut, `make` appelle `/bin/sh` sans aucun garde-fou : un pipe qui échoue au milieu passe pour un succès, et une variable non définie devient une chaîne vide. Sur un Makefile qui déploie, c'est le genre de silence qu'on ne veut pas.
+Par défaut, `make` appelle `/bin/sh` sans aucun garde-fou : un pipe qui échoue au milieu passe pour un succès et une variable non définie devient une chaîne vide. Sur un Makefile qui déploie, c'est le genre de silence qu'on ne veut pas.
 
 ```Makefile
 SHELL := /usr/bin/env bash
@@ -81,7 +81,7 @@ SHELL := /usr/bin/env bash
 
 Ce que chaque ligne apporte :
 
-- `SHELL` et `.SHELLFLAGS` donnent à chaque recette le même contrat qu'un script défensif : sortie sur erreur, sur variable non définie, et propagation de l'échec dans un pipe
+- `SHELL` et `.SHELLFLAGS` donnent à chaque recette le même contrat qu'un script défensif : sortie sur erreur, sur variable non définie et propagation de l'échec dans un pipe
 - `.ONESHELL` exécute toute la recette dans un seul shell, donc un `cd` tient sur les lignes suivantes et on arrête d'écrire des `&& \` en fin de ligne
 - `.DELETE_ON_ERROR` supprime le fichier produit quand la recette échoue, sinon `make` le considère à jour au prochain appel et saute l'étape
 
@@ -89,7 +89,7 @@ Ces 4 lignes en tête de fichier changent plus la fiabilité d'un Makefile que n
 
 ## Ne refaire que ce qui a changé
 
-C'est là que `make` gagne contre un script shell. On déclare une cible qui est un vrai fichier, et l'étape est sautée tant que ses sources n'ont pas bougé.
+C'est là que `make` gagne contre un script shell. On déclare une cible qui est un vrai fichier et l'étape est sautée tant que ses sources n'ont pas bougé.
 
 ```Makefile
 # Le binaire dépend des sources : pas de rebuild si rien n'a changé

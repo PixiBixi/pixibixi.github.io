@@ -1258,7 +1258,7 @@ Quand au template default.tpl, voici celui que j'utilise :
 Prometheus sait garder ce qu'on lui demande, via
 `--storage.tsdb.retention.time` ou `--storage.tsdb.retention.size`. Ce
 qu'il ne sait pas faire, c'est répliquer ce disque, downsampler les
-vieilles données, et répondre à une requête qui couvre plusieurs
+vieilles données et répondre à une requête qui couvre plusieurs
 Prometheus à la fois. 2 options ici : VictoriaMetrics ou Thanos.
 
 Les deux parlent PromQL, donc pas de nouveau langage à apprendre, et
@@ -1266,7 +1266,7 @@ aucun des deux n'est monolithique : chaque fonction est un binaire
 distinct, ce qui permet de scale les composants indépendamment sur
 Kubernetes.
 
-Thanos est celui que j'utilise en production, et le sujet est assez
+Thanos est celui que j'utilise en production et le sujet est assez
 large pour avoir son propre article : [Thanos at scale](thanos.md)
 détaille le mode Receive, les paliers de downsampling et ce que tout ça
 coûte réellement.
