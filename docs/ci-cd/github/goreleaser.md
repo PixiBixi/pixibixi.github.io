@@ -288,6 +288,29 @@ jobs:
 
 Les actions sont épinglées par SHA et le checkout ne garde pas le token, pour les raisons détaillées dans [l'article durcissement](hardening.md) : un workflow de release détient `contents: write`, c'est le dernier endroit où laisser traîner un tag mutable.
 
+Le step `Install cosign` est à garder **même dans un pipeline qui ne signe rien**. `goreleaser-action` télécharge le binaire GoReleaser depuis les releases GitHub, vérifie son checksum, puis contrôle la signature cosign du `checksums.txt` d'où vient ce checksum, et sans cosign dans le `PATH` elle abandonne ce second contrôle sur une simple ligne de log :
+
+```text
+Checksum verified for goreleaser_Linux_x86_64.tar.gz
+cosign not found in PATH, skipping signature verification
+```
+
+Le run reste vert, donc ça passe inaperçu pendant des mois. Le checksum seul ne prouve que la cohérence entre 2 fichiers servis par la même release : c'est la signature keyless qui rattache ce `checksums.txt` au pipeline de release de GoReleaser. Poser l'étape avant `Run GoReleaser` referme le trou pour le prix d'une action de plus :
+
+```yaml title=".github/workflows/release.yml"
+      # goreleaser-action verifies the cosign signature of the goreleaser
+      # binary it downloads; without cosign on PATH it silently skips that check.
+      - name: Install cosign
+        if: github.ref_type == 'tag' || steps.tag.outputs.new_tag != ''
+        uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
+
+      - name: Run GoReleaser
+        if: github.ref_type == 'tag' || steps.tag.outputs.new_tag != ''
+        uses: goreleaser/goreleaser-action@f06c13b6b1a9625abc9e6e439d9c05a8f2190e94 # v7.2.3
+```
+
+La condition `if:` est celle du pipeline piloté par svu décrit dans [l'article CI](go-ci.md#le-workflow-taguer-puis-publier-en-un-seul-job) : cosign porte la même que GoReleaser, sinon on l'installe sur chaque push qui ne release rien. Sur un workflow déclenché uniquement par un tag, elle saute.
+
 !!! note "fetch-depth: 0"
     Sans `fetch-depth: 0`, GitHub Actions fait un clone superficiel. GoReleaser ne peut pas générer le changelog car il n'a pas accès aux commits précédents.
 
