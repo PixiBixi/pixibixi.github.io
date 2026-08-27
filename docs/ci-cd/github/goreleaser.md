@@ -58,7 +58,7 @@ builds:
     flags:
       - -trimpath
     ldflags:
-      - -s -w
+      - -s   # implique -w, voir plus bas
       - -X main.version={{.Version}}
       - -X main.commit={{.Commit}}
       - -X main.date={{.Date}}
@@ -87,12 +87,47 @@ Trois flags suffisent pour gagner ~33% :
 
 | Flag | Effet |
 |------|-------|
-| `-s` | Supprime la table des symboles |
-| `-w` | Supprime les infos de debug DWARF |
+| `-s` | Supprime la table des symboles, et le DWARF avec |
 | `-trimpath` | Supprime les chemins locaux embarqués dans le binaire |
 | `CGO_ENABLED=0` | Désactive CGO → binaire statique pur |
 
 Résultat mesuré sur [gopen](https://github.com/PixiBixi/gopen) : **3,0 Mo → 2,0 Mo (-33%)**.
+
+### `-s -w` : le `-w` ne sert à rien
+
+On voit `-s -w` partout, dans la doc GoReleaser comme dans la moitié des projets Go. Le
+`-w` est redondant : le linker le dérive de `-s` sauf s'il est passé explicitement.
+
+```go title="$GOROOT/src/cmd/link/internal/ld/main.go:274"
+*FlagW = *FlagS // -s implies -w if not explicitly set
+```
+
+Mesuré sur le contrôleur d'ingress HAProxy, `linux/amd64`, `-trimpath` sur les 4 builds :
+
+| ldflags | Taille | `.symtab` | Sections `.debug*` |
+|---|---|---|---|
+| aucun | 103 276 329 o | oui | 8 |
+| `-s` | 72 913 056 o | non | 0 |
+| `-w` | 83 023 367 o | oui | 0 |
+| `-s -w` | 72 913 056 o | non | 0 |
+
+`-s` seul et `-s -w` sortent la même taille à l'octet près, avec les mêmes sections.
+L'inverse n'est pas vrai : `-w` seul ne retire que le DWARF et garde la table des symboles,
+soit 10 Mo de moins que `-s`. Écrire `-s` seul dit exactement ce qu'on demande.
+
+### Ce que le strip ne coûte pas
+
+L'objection habituelle, c'est la perte des stack traces. Elle ne tient pas : une trace Go
+se lit dans le `pclntab`, que le linker conserve quels que soient les flags, et ni `-s` ni
+`-w` n'y touchent. Le même panic sur 2 binaires, avec et sans `-s`, sort deux traces
+identiques, noms de fonctions et numéros de ligne compris. `net/http/pprof` est intact pour
+la même raison, la symbolisation se fait dans le runtime.
+
+Ce qu'on perd réellement : le debug source-level avec delve sur un process vivant,
+`go tool nm` et l'analyse de core dump sous gdb.
+
+!!! warning "Ce n'est pas du durcissement"
+    `-s` ne complique pas sérieusement le reverse engineering d'un binaire Go, le `pclntab` reste lisible et porte les noms de fonctions. C'est un gain de taille, pas une mesure de sécurité, et le vendre autrement fait prendre de mauvaises décisions.
 
 ## Compression UPX (Linux uniquement)
 
