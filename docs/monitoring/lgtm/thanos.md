@@ -110,11 +110,11 @@ Le flag ne fixe qu'un défaut et les clients peuvent le surcharger par requête 
 
 ## Annoncer le label sur lequel on filtre
 
-Le querier global n'écarte un stack que si les matchers de la requête contredisent un label
-que ce stack **annonce**. Pas un label présent dans ses séries, un label présent dans son
+Le querier global n'écarte une stack que si les matchers de la requête contredisent un label
+que cette stack **annonce**. Pas un label présent dans ses séries, un label présent dans son
 info endpoint : la nuance décide de tout et on a mis longtemps à la voir.
 
-Nos queriers de tenant annonçaient leurs labels de receive, qui identifient bien le stack
+Nos queriers de tenant annonçaient leurs labels de receive, qui identifient bien la stack
 mais que personne n'écrit jamais dans une requête. Les dashboards, eux, filtrent sur le nom
 du cluster. Aucun matcher ne pouvait donc contredire quoi que ce soit, aucune branche
 n'était élaguable et chaque requête partait sur la vingtaine de stacks.
@@ -128,7 +128,7 @@ exactement le même nombre d'appels que le plus gros de la flotte.
 Reste à choisir quel label annoncer. Le choix se contraint tout seul, parce que 2 conditions
 pèsent en même temps : le label doit être celui que les requêtes portent réellement, sinon
 aucun matcher ne le contredira jamais et l'annonce ne sert à rien, et il ne doit avoir qu'une
-seule valeur par stack, sinon le stack se retirera des requêtes qui cherchent ses autres
+seule valeur par stack, sinon la stack se retirera des requêtes qui cherchent ses autres
 valeurs. Les 2 ensemble ne laissent en général qu'un candidat.
 
 Chez nous c'est le label de cluster que les Prometheus posent en external label et sur
@@ -150,7 +150,7 @@ Rassurant avant de déployer : `ProxyStore.LabelSet()` passe par `ExtendSortedLa
 le flag **étend** les label sets remontés des stores en aval au lieu de les remplacer. Tout
 ce qui filtrait déjà sur les autres labels continue de marcher.
 
-!!! warning "Un stack qui ingère 2 clusters ne peut pas être annoté"
+!!! warning "Une stack qui ingère 2 clusters ne peut pas être annotée"
     La seconde condition n'est pas théorique : 4 de nos stacks reçoivent 2 clusters chacun,
     parce que des clusters sans bucket dédié poussent dans le receiver régional.
     `--selector-label` ne portant qu'une valeur par clé et `ProxyStore.Series()` s'auto-filtrant
@@ -161,7 +161,7 @@ ce qui filtrait déjà sur les autres labels continue de marcher.
 Le gain réel a été de 28 % d'appels en moins sur les stacks annotés, pas les 96 % qu'on
 visait et la raison mérite d'être écrite parce qu'elle vaut pour toute flotte multi-tenant.
 
-Un stack qu'on n'a pas pu annoter reste interrogé par 100 % des requêtes, donc même une
+Une stack qu'on n'a pas pu annoter reste interrogée par 100 % des requêtes, donc même une
 requête parfaitement scopée sur un cluster touche encore tous ceux-là. Et surtout la
 plupart des requêtes ne portent aucun filtre de cluster : en passant en revue les 1300
 dashboards de notre Grafana, sur les 417 qui interrogent le store global, 71 ont une
@@ -176,7 +176,7 @@ qui savent où ils regardent, irréductible pour tout le reste.
 Dernier point, celui qui surprend le plus : la charge de fan-out d'un tenant ne dit rien de
 sa taille, elle suit le workload de requêtes. Sur 24h les stacks montent et descendent
 ensemble, de 17,7 à 45,1 appels par seconde selon l'heure, tous à quelques pourcents les uns
-des autres. Dimensionner un stack sur sa volumétrie ignore donc la moitié de ce qui le
+des autres. Dimensionner une stack sur sa volumétrie ignore donc la moitié de ce qui le
 sollicite.
 
 ## Le chemin d'une métrique
