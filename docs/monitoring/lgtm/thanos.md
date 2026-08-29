@@ -146,9 +146,9 @@ extraFlags:
 Il se vérifie dans l'info endpoint et pas dans la conf, le label doit apparaître dans les
 `external_labels` que le querier global expose sur `thanos_store_nodes_grpc_connections`.
 
-Rassurant avant de déployer : `ProxyStore.LabelSet()` passe par `ExtendSortedLabels`, donc
-le flag **étend** les label sets remontés des stores en aval au lieu de les remplacer. Tout
-ce qui filtrait déjà sur les autres labels continue de marcher.
+`ProxyStore.LabelSet()` passe par `ExtendSortedLabels`, donc le flag **étend** les label
+sets remontés des stores en aval au lieu de les remplacer : tout ce qui filtrait déjà sur
+les autres labels continue de marcher.
 
 !!! warning "Une stack qui ingère 2 clusters ne peut pas être annotée"
     La seconde condition n'est pas théorique : 4 de nos stacks reçoivent 2 clusters chacun,
@@ -159,7 +159,7 @@ ce qui filtrait déjà sur les autres labels continue de marcher.
     par stack et jamais en défaut de template.
 
 Le gain réel a été de 28 % d'appels en moins sur les stacks annotées, pas les 96 % qu'on
-visait et la raison mérite d'être écrite parce qu'elle vaut pour toute flotte multi-tenant.
+visait. L'écart vaut pour toute flotte multi-tenant.
 
 Une stack qu'on n'a pas pu annoter reste interrogée par 100 % des requêtes, donc même une
 requête parfaitement scopée sur un cluster touche encore tous ceux-là. Et surtout la
@@ -173,10 +173,10 @@ savoir, sur quel cluster tourne son pod : sa requête filtre sur un job ou un na
 aucun label ne permet de l'élaguer. Le fan-out est réductible pour les dashboards d'infra
 qui savent où ils regardent, irréductible pour tout le reste.
 
-Dernier point, celui qui surprend le plus : la charge de fan-out d'un tenant ne dit rien de
+La charge de fan-out d'un tenant ne dit rien de
 sa taille, elle suit le workload de requêtes. Sur 24h les stacks montent et descendent
 ensemble, de 17,7 à 45,1 appels par seconde selon l'heure, tous à quelques pourcents les uns
-des autres. Dimensionner une stack sur sa volumétrie ignore donc la moitié de ce qui le
+des autres. Dimensionner une stack sur sa volumétrie ignore donc la moitié de ce qui la
 sollicite.
 
 ## Le chemin d'une métrique
@@ -736,10 +736,9 @@ chargement de 28 secondes le conteneur consommait 0,04 cœur et les disques tour
 moins de la moitié de leur temps d'occupation. C'est un gros fichier qu'on relit, rien de
 plus.
 
-La conclusion est déplaisante parce qu'aucun flag ne la règle. Monter le délai d'inactivité
-déplace le problème sans le supprimer, puisqu'un pod qui redémarre repart avec zéro header
-chargé et charger tout au démarrage revient à provisionner la RAM pour l'intégralité du
-corpus d'index-header. Le seul levier qui agit sur la cause, c'est la cardinalité du tenant.
+Aucun flag ne règle ça. Monter le délai d'inactivité déplace le problème sans le supprimer,
+puisqu'un pod qui redémarre repart avec zéro header chargé et charger tout au démarrage
+revient à provisionner la RAM pour l'intégralité du corpus d'index-header.
 
 Le flag ne supprime donc pas le coût, il le déplace du démarrage vers la première requête.
 Tant que les évictions spot sont fréquentes et le disque lent, c'est le bon arbitrage :
