@@ -19,7 +19,7 @@ Workload Identity règle ça : on lie un service account K8s (KSA) à un service
 
 ## Avec Terraform
 
-Deux points à activer : le cluster (`workload_pool`) et chaque node pool (`GKE_METADATA`).
+2 points à activer : le cluster (`workload_pool`) et chaque node pool (`GKE_METADATA`).
 
 !!! warning "Node pool obligatoire"
     Sans `workload_metadata_config { mode = "GKE_METADATA" }` sur le node pool, Workload

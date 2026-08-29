@@ -16,9 +16,9 @@ En pratique GCP les reprend rarement et conviennent à une majorité de workload
 !!! note "Spot VM vs Preemptible"
     `--preemptible` est déprécié, durée max 24h. En Terraform c'est `spot = true`.
 
-## Deux pools : system + spot
+## 2 pools : system + spot
 
-On ne met jamais uniquement des Spot Nodes. Le pattern standard c'est deux pools :
+On ne met jamais uniquement des Spot Nodes. Le pattern standard c'est 2 pools :
 
 * Pool `system` - On-Demand, pour kube-system, ingress, monitoring, ArgoCD
 * Pool `spot` - Spot VM, pour les workloads applicatifs, batch, CI runners
