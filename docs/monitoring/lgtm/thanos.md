@@ -289,7 +289,7 @@ Et c'est là que le downsampling devient intéressant : la longue traîne est qu
     versions downsamplées, donc lui seul peut décider quoi supprimer. Une politique de cycle
     de vie côté object storage supprime ou archive à l'aveugle.
 
-Le retour d'expérience qui circule sur le sujet est instructif. Une équipe a basculé 6 mois de blocks vers une classe d'archivage pour économiser une cinquantaine de dollars mensuels de stockage. Le compactor a voulu compacter des blocks devenus illisibles sans restauration préalable, a échoué et a retenté toutes les 5 minutes en boucle. Les requêtes objet sont passées de 1,1 million à 40 millions par jour, soit 13 dollars à 480 dollars sur la seule ligne API et l'économie de stockage a été payée 10 fois.
+[Le retour d'expérience d'Anuj Ramola](https://medium.com/@anujramola/thinking-your-storage-class-is-helping-you-save-cost-for-thanos-s3-buckets-think-again-9ae18ccc382a) est instructif. Son équipe a basculé 6 mois de blocks vers Glacier Deep Archive pour économiser une cinquantaine de dollars mensuels de stockage. Le compactor a voulu compacter des blocks devenus illisibles sans restauration préalable, a échoué et a retenté toutes les 5 minutes en boucle. Les requêtes objet sont passées de 1,1 million à 40 millions par jour, soit 13 dollars à 480 dollars sur la seule ligne API et l'économie de stockage a été payée 10 fois.
 
 Dans le même ordre d'idées, les paliers du compactor doivent rester alignés sur ce que les store gateways servent réellement, sinon on paye pour des blocks que personne n'interroge, ou on cherche de la donnée que la rétention a déjà supprimée.
 
