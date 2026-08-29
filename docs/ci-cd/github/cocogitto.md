@@ -327,17 +327,17 @@ dit ce qu'elle est, du contenu qui bouge sans surface nouvelle.
 
 ## Quand choisir quoi
 
-**Cocogitto** si :
+### Cocogitto
 
 - Projet solo ou petite équipe, merge direct sur main
-- Tu veux valider les commits localement avant push
-- Tu veux des releases immédiates sans étape manuelle
+- On veut valider les commits localement avant de pousser
+- On veut des releases immédiates sans étape manuelle
 
-**release-please** si :
+### release-please
 
 - Équipe avec review obligatoire avant release
-- Tu veux un gate humain explicite sur chaque release
-- Tu travailles déjà avec les PR GitHub comme unité de travail
+- On veut un gate humain explicite sur chaque release
+- On travaille déjà avec les PR GitHub comme unité de travail
 
 ## Voir aussi
 
