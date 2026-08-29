@@ -33,7 +33,7 @@ Un PDB n'est donc pas une garantie de disponibilité, c'est une garantie sur les
 
 ## minAvailable ou maxUnavailable
 
-Un PDB porte l'un des deux, jamais les deux. Les deux acceptent un entier ou un pourcentage.
+Un PDB porte l'un des 2, jamais les 2. Les 2 acceptent un entier ou un pourcentage.
 
 ```yaml
 apiVersion: policy/v1
@@ -126,7 +126,7 @@ spec:
 L'inverse, `DoNotSchedule` sur la zone, est le piège : le jour où une zone est en panne de capacité, les pods restent `Pending` au lieu d'aller ailleurs. Sur du stateless, la disponibilité passe avant la beauté de la répartition.
 
 !!! note "Le cluster a déjà des contraintes par défaut"
-    Sans rien déclarer, le scheduler applique un `maxSkew: 3` sur `kubernetes.io/hostname` et un `maxSkew: 5` sur `topology.kubernetes.io/zone`, les deux en `ScheduleAnyway`. Ça explique pourquoi les pods sont vaguement répartis sans qu'on ait rien demandé et pourquoi ce vague ne suffit pas.
+    Sans rien déclarer, le scheduler applique un `maxSkew: 3` sur `kubernetes.io/hostname` et un `maxSkew: 5` sur `topology.kubernetes.io/zone`, les 2 en `ScheduleAnyway`. Ça explique pourquoi les pods sont vaguement répartis sans qu'on ait rien demandé et pourquoi ce vague ne suffit pas.
 
 ## Le skew faussé pendant un rollout
 
@@ -157,12 +157,12 @@ En dessous de 3 zones occupées, la contrainte n'est pas satisfaite, les pods pa
 
 `minDomains` ne fonctionne qu'avec `whenUnsatisfiable: DoNotSchedule`, ce qui est logique : en `ScheduleAnyway` la contrainte est un souhait, donc un minimum n'a pas de sens.
 
-Les deux autres champs qui traînent dans la spec et qui servent en vrai :
+Les 2 autres champs qui traînent dans la spec et qui servent en vrai :
 
 - `nodeAffinityPolicy` : est-ce que les nodes exclus par le `nodeAffinity` du pod comptent comme des domaines. En `Honor`, ils ne comptent pas, ce qui est presque toujours ce qu'on veut.
 - `nodeTaintsPolicy` : pareil pour les taints. En `Honor`, un node pool tainté que le pod ne tolère pas n'est plus compté comme un domaine disponible, donc le skew reflète la réalité.
 
-Les défauts sont `Ignore` pour les deux, ce qui fait compter des domaines où le pod ne pourra jamais atterrir.
+Les défauts sont `Ignore` pour les 2, ce qui fait compter des domaines où le pod ne pourra jamais atterrir.
 
 ## Pourquoi pas podAntiAffinity
 
@@ -203,7 +203,7 @@ Le dernier cas à connaître est le PDB orphelin, dont le `selector` ne matche p
 
 GKE respecte les PDB pendant le drain d'un node, mais pas indéfiniment : passé environ 1h sur un node, l'upgrade continue sans attendre. C'est un garde-fou pour éviter qu'un PDB mal écrit gèle un cluster entier et c'est aussi pourquoi un PDB cassé se traduit par un upgrade très lent plutôt que par un upgrade en échec. Un node pool de 20 nodes bloqué sur chaque node, ça fait 20h de fenêtre de maintenance.
 
-Les deux stratégies d'upgrade se règlent par node pool :
+Les 2 stratégies d'upgrade se règlent par node pool :
 
 ```bash
 # Surge : N nodes en plus pendant l'upgrade, M indisponibles au maximum
