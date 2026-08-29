@@ -7,7 +7,7 @@ tags:
 
 # HAProxy performance tuning : nbthread, maxconn, TLS, Kubernetes
 
-HAProxy est déjà très performant out of the box. Mais sur des infras à forte charge (100k+ connexions simultanées), quelques réglages font la différence entre "ça tient" et "ça explose".
+HAProxy est déjà très performant out of the box. Mais sur des infras à forte charge (100k+ connexions simultanées), quelques réglages font la différence entre « ça tient » et « ça explose ».
 
 !!! note
     Toutes les valeurs présentées ici sont des suggestions à adapter selon le profil de trafic. Un HAProxy qui sert du streaming vidéo n'a pas les mêmes besoins qu'un HAProxy devant une API REST. Toujours load-tester avant d'appliquer en production.
@@ -61,12 +61,12 @@ global
 
 Sur des machines multi-socket ou multi-CCX (AMD EPYC, Intel Xeon Scalable), la latence de synchronisation entre threads dépend de leur distance :
 
-- Deux threads sur le même cœur (hyperthreading) : le plus rapide
-- Deux threads sur le même CCX (même L3 cache) : rapide
-- Deux threads sur des CCX différents : plus lent
-- Deux threads sur des sockets CPU différents : le pire, à éviter
+- 2 threads sur le même cœur (hyperthreading) : le plus rapide
+- 2 threads sur le même CCX (même L3 cache) : rapide
+- 2 threads sur des CCX différents : plus lent
+- 2 threads sur des sockets CPU différents : le pire, à éviter
 
-HAProxy 2.4–3.2 se limite par défaut au premier NUMA node pour éviter les communications cross-socket. En 3.3+, il utilise tous les nodes mais groupe intelligemment les threads par L3 cache.
+HAProxy 2.4 à 3.2 se limite par défaut au premier NUMA node pour éviter les communications cross-socket. En 3.3+, il utilise tous les nodes mais groupe intelligemment les threads par L3 cache.
 
 ### Thread groups
 
@@ -74,7 +74,7 @@ Un thread group est un ensemble de threads qui partagent le même espace de trav
 
 HAProxy supporte max 64 threads par groupe et 16 groupes, soit 1024 threads au total. Sur une machine avec plus de 64 cœurs, il faut obligatoirement plusieurs thread groups.
 
-En 3.2+, `cpu-policy` gère ça automatiquement. Sur les versions 2.7–3.1, on définit manuellement :
+En 3.2+, `cpu-policy` gère ça automatiquement. Sur les versions 2.7 à 3.1, on définit manuellement :
 
 ```haproxy
 global
@@ -243,7 +243,7 @@ defaults
 | `client` | Temps max d'inactivité côté client |
 | `server` | Temps max d'inactivité côté serveur |
 | `http-request` | Temps max pour recevoir la requête HTTP complète (anti-slowloris) |
-| `http-keep-alive` | Temps max d'attente entre deux requêtes sur une connexion keep-alive |
+| `http-keep-alive` | Temps max d'attente entre 2 requêtes sur une connexion keep-alive |
 | `queue` | Temps max en file d'attente avant d'abandonner |
 | `client-fin` | Temps max après un FIN client (half-closed) - ferme les connexions fantômes rapidement |
 
@@ -331,7 +331,7 @@ Sur un HAProxy qui gère 100k nouvelles connexions TLS par seconde : en RSA 4096
 !!! tip
     Passer de RSA 2048 à ECDSA P-256 est le gain de performance TLS le plus simple et le plus impactant. Tous les clients modernes supportent ECDSA - il n'y a plus de raison de rester en RSA sauf contrainte legacy.
 
-Si des clients anciens ne supportent pas ECDSA, HAProxy peut servir les deux certificats sur le même bind (dual-cert). Il choisit automatiquement le bon en fonction de ce que le client supporte :
+Si des clients anciens ne supportent pas ECDSA, HAProxy peut servir les 2 certificats sur le même bind (dual-cert). Il choisit automatiquement le bon en fonction de ce que le client supporte :
 
 ```haproxy
 bind *:443 ssl crt /etc/haproxy/certs/site.ecdsa.pem crt /etc/haproxy/certs/site.rsa.pem
@@ -751,9 +751,9 @@ Pas de support zstd à ce jour, même en HAProxy 3.x. Si on a besoin de zstd, le
 
 `tune.comp.maxlevel` contrôle l'agressivité de la compression gzip. Valeur de 1 (rapide, faible ratio) à 9 (lent, meilleur ratio). Le défaut est 1.
 
-- **1** : quasi gratuit en CPU, ratio de compression modeste (~60%)
-- **4-5** : bon compromis ratio/CPU pour la plupart des workloads
-- **9** : gain marginal en ratio par rapport à 6, mais consommation CPU qui explose
+- `1` : quasi gratuit en CPU, ratio de compression modeste (~60%)
+- `4-5` : bon compromis ratio/CPU pour la plupart des workloads
+- `9` : gain marginal en ratio par rapport à 6, mais consommation CPU qui explose
 
 Sur un HAProxy à forte charge, rester entre 1 et 4. Le gain de bande passante entre le niveau 4 et le niveau 9 ne justifie rarement le coût CPU.
 
