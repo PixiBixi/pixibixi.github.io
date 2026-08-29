@@ -114,7 +114,7 @@ generators:
 
 ### Matrix
 
-Combine deux générateurs - 3 clusters × 4 apps = 12 Applications générées.
+Combine 2 générateurs - 3 clusters × 4 apps = 12 Applications générées.
 
 ```yaml
 generators:

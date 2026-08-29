@@ -8,7 +8,7 @@ tags:
 # ArgoCD : Sync Options
 
 Les sync options, c'est ce qu'on découvre après s'être pris un comportement bizarre en prod.
-Elles se posent à deux endroits : dans `syncPolicy.syncOptions` de l'Application, ou en annotation sur une ressource spécifique.
+Elles se posent à 2 endroits : dans `syncPolicy.syncOptions` de l'Application, ou en annotation sur une ressource spécifique.
 
 ## Où les mettre
 
@@ -72,7 +72,7 @@ syncOptions:
   - ServerSideApply=true
 ```
 
-SSA résout les conflits de field managers - chaque outil "possède" ses champs, ArgoCD ne touche que les siens.
+SSA résout les conflits de field managers - chaque outil « possède » ses champs, ArgoCD ne touche que les siens.
 
 Pour désactiver SSA sur une ressource spécifique quand c'est activé au niveau de l'Application :
 
@@ -105,7 +105,7 @@ metadata:
 !!! warning
     À éviter en global sur l'Application - un `Replace` sur un Service supprime et recrée l'objet, ce qui change le ClusterIP et casse les connexions en cours.
 
-Si `Replace=true` et `ServerSideApply=true` sont tous les deux définis, `Replace` a la priorité.
+Si `Replace=true` et `ServerSideApply=true` sont tous les 2 définis, `Replace` a la priorité.
 
 ---
 
@@ -274,7 +274,7 @@ syncOptions:
 ## FailOnSharedResource
 
 Fait échouer le sync si une ressource est déjà gérée par une autre Application ArgoCD.
-Évite les conflits silencieux entre deux Apps qui appliquent le même objet.
+Évite les conflits silencieux entre 2 Apps qui appliquent le même objet.
 
 ```yaml
 syncOptions:
