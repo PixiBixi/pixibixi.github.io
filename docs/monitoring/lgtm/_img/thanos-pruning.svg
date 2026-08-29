@@ -1,0 +1,61 @@
+<svg width="640" height="300" viewBox="0 0 640 300" xmlns="http://www.w3.org/2000/svg" font-family="'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#8b949e"/>
+    </marker>
+  </defs>
+
+  <!-- requête -->
+  <g>
+    <rect x="8" y="118" width="152" height="64" rx="4" fill="#161b22" stroke="#30363d"/>
+    <rect x="8" y="118" width="4" height="64" fill="#58a6ff"/>
+    <text x="24" y="140" fill="#e6edf3" font-size="12">Requête</text>
+    <text x="24" y="158" fill="#8b949e" font-size="10">matcher sur</text>
+    <text x="24" y="172" fill="#8b949e" font-size="10">k8s_cluster_name="A"</text>
+  </g>
+
+  <!-- querier global -->
+  <path d="M 160 150 L 190 150" stroke="#8b949e" stroke-width="1" fill="none" marker-end="url(#arr)"/>
+  <g>
+    <rect x="196" y="118" width="118" height="64" rx="4" fill="#161b22" stroke="#30363d"/>
+    <rect x="196" y="118" width="4" height="64" fill="#8b949e"/>
+    <text x="210" y="140" fill="#e6edf3" font-size="12">Querier global</text>
+    <text x="210" y="158" fill="#8b949e" font-size="10">compare le matcher</text>
+    <text x="210" y="172" fill="#8b949e" font-size="10">au label annoncé</text>
+  </g>
+
+  <!-- branche 1 : compatible -->
+  <path d="M 314 144 C 342 144, 346 46, 372 46" stroke="#8b949e" stroke-width="1" fill="none" marker-end="url(#arr)"/>
+  <g>
+    <rect x="378" y="14" width="254" height="64" rx="4" fill="#161b22" stroke="#30363d"/>
+    <rect x="378" y="14" width="4" height="64" fill="#3fb950"/>
+    <text x="394" y="36" fill="#e6edf3" font-size="12">Stack A</text>
+    <text x="394" y="54" fill="#8b949e" font-size="10">annonce {…, k8s_cluster_name="A"}</text>
+    <text x="394" y="70" fill="#3fb950" font-size="10">compatible, interrogée</text>
+  </g>
+
+  <!-- branche 2 : contredite, élaguée -->
+  <path d="M 314 150 L 372 150" stroke="#8b949e" stroke-width="1" stroke-dasharray="3 3" fill="none" marker-end="url(#arr)"/>
+  <g>
+    <rect x="378" y="118" width="254" height="64" rx="4" fill="#161b22" stroke="#30363d"/>
+    <rect x="378" y="118" width="4" height="64" fill="#8b949e"/>
+    <text x="394" y="140" fill="#e6edf3" font-size="12">Stack B</text>
+    <text x="394" y="158" fill="#8b949e" font-size="10">annonce {…, k8s_cluster_name="B"}</text>
+    <text x="394" y="174" fill="#8b949e" font-size="10">contredite, écartée</text>
+  </g>
+
+  <!-- branche 3 : rien à contredire -->
+  <path d="M 314 156 C 342 156, 346 254, 372 254" stroke="#8b949e" stroke-width="1" fill="none" marker-end="url(#arr)"/>
+  <g>
+    <rect x="378" y="222" width="254" height="64" rx="4" fill="#161b22" stroke="#30363d"/>
+    <rect x="378" y="222" width="4" height="64" fill="#f78166"/>
+    <text x="394" y="244" fill="#e6edf3" font-size="12">Stack sans selector-label</text>
+    <text x="394" y="262" fill="#8b949e" font-size="10">annonce {receive_prometheus=…}</text>
+    <text x="394" y="278" fill="#f78166" font-size="10">rien à contredire, interrogée</text>
+  </g>
+
+  <!-- légende -->
+  <text x="8" y="212" fill="#6e7781" font-size="11" font-weight="600">Une branche n'est écartée</text>
+  <text x="8" y="228" fill="#6e7781" font-size="11" font-weight="600">que sur un label</text>
+  <text x="8" y="244" fill="#6e7781" font-size="11" font-weight="600">qu'elle annonce.</text>
+</svg>

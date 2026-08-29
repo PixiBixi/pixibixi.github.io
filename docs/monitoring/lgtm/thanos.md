@@ -119,6 +119,8 @@ mais que personne n'écrit jamais dans une requête. Les dashboards, eux, filtre
 du cluster. Aucun matcher ne pouvait donc contredire quoi que ce soit, aucune branche
 n'était élaguable et chaque requête partait sur la vingtaine de stacks.
 
+![Le querier global confronte le matcher de la requête au label set annoncé par chaque branche : compatible, contredite ou sans label à contredire](./_img/thanos-pruning.svg)
+
 Ça se lit sans rien instrumenter : tous les stacks servaient le même débit d'appels `Series`
 à 0,4 % près. Un tenant qui pèse quelques dizaines de milliers de séries encaissait
 exactement le même nombre d'appels que le plus gros de la flotte.
