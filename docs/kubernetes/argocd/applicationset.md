@@ -5,13 +5,15 @@ tags:
   - GitOps
 ---
 
-# ArgoCD ApplicationSet
+# ArgoCD ApplicationSet : générateurs, template et politique de suppression
 
 Déployer la même appli sur N clusters en maintenant N manifests `Application` quasiment identiques est totalement inmaintenable at scale.
 
 L'ApplicationSet règle ça : un seul manifest pour les générer tous.
 
-## Structure de base
+## Le manifest minimal
+
+Un générateur produit les valeurs, le template les consomme et ArgoCD crée une `Application` par valeur :
 
 ```yaml
 apiVersion: argoproj.io/v1alpha1
@@ -102,7 +104,7 @@ Avec un `config.json` du genre :
 ### Cluster
 
 Une Application pour chaque cluster enregistré dans ArgoCD. Le cluster local est inclus,
-ajoute un `selector` si tu ne veux pas le cibler.
+on pose un `selector` pour ne pas le cibler.
 
 ```yaml
 generators:
@@ -174,6 +176,8 @@ gitops-repo/
     └── all-apps.yaml
 ```
 
+Un `matrix` croise le générateur `git` sur `apps/*/*` avec la liste des clusters :
+
 ```yaml
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
@@ -219,6 +223,8 @@ spec:
 ```
 
 ## Commandes utiles
+
+Voir ce qu'un ApplicationSet a réellement généré et le forcer à relire le repo :
 
 ```bash
 # Lister les ApplicationSets
