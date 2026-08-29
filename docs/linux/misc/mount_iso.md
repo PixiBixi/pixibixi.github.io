@@ -70,7 +70,7 @@ Dismount-DiskImage -ImagePath "C:\images\image.iso"
 
 `-PassThru` renvoie l'objet, seul moyen de récupérer la lettre attribuée, qui n'est pas prévisible. Sans lui, la commande monte l'image sans rien afficher.
 
-L'erreur `Le fichier image spécifié n'est pas reconnu comme un fichier image de disque valide` a presque toujours la même cause : le fichier est incomplet, ou porte l'extension `.iso` sans en être une. Un contrôle d'empreinte tranche :
+L'erreur `Le fichier image spécifié n'est pas reconnu comme un fichier image de disque valide` a presque toujours la même cause : le fichier est incomplet ou porte l'extension `.iso` sans en être une. Un contrôle d'empreinte tranche :
 
 ```powershell
 Get-FileHash C:\images\image.iso -Algorithm SHA256
