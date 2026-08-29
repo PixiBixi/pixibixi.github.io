@@ -8,7 +8,7 @@ tags:
 # ArgoCD : Sync Options
 
 Les sync options, c'est ce qu'on découvre après s'être pris un comportement bizarre en prod.
-Elles se posent à 2 endroits : dans `syncPolicy.syncOptions` de l'Application, ou en annotation sur une ressource spécifique.
+Elles se posent à 2 endroits : dans `syncPolicy.syncOptions` de l'Application ou en annotation sur une ressource spécifique.
 
 ## Où les mettre
 
@@ -93,7 +93,7 @@ metadata:
 ## Replace
 
 Remplace la ressource entière au lieu de la patcher (`kubectl replace`). Utile pour les ressources
-qui refusent les patches, ou quand un champ immuable a changé.
+qui refusent les patches ou quand un champ immuable a changé.
 
 ```yaml
 # En annotation sur la ressource, pas au niveau Application
