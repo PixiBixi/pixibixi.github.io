@@ -10,7 +10,7 @@ tags:
 
 Par défaut Kubernetes n'empêche rien : un pod sans limits, un container `privileged`,
 un Service NodePort exposé sur tous les nœuds... Avant v1.30 on réglait ça avec [Kyverno](https://kyverno.io/),
-OPA Gatekeeper, ou un webhook maison - tous avec leur lot d'infra à opérer.
+OPA Gatekeeper ou un webhook maison - tous avec leur lot d'infra à opérer.
 
 Depuis v1.30 c'est natif avec **ValidatingAdmissionPolicy** et du CEL.
 

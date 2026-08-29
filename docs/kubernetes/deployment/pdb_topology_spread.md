@@ -20,7 +20,7 @@ Ce qui passe par l'API Eviction, donc ce qu'un PDB freine :
 - `kubectl drain`
 - l'upgrade d'un node pool, GKE comme RKE
 - le scale-down du cluster autoscaler
-- un descheduler, ou n'importe quel opérateur qui rééquilibre
+- un descheduler ou n'importe quel opérateur qui rééquilibre
 
 Ce qui ne passe pas par l'API Eviction, donc ce qu'un PDB ne protège absolument pas :
 
