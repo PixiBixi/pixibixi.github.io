@@ -77,7 +77,7 @@ prod        etcd   3               N/A               0                     42d
 
 ## Le deployment cassé qui bloque tout
 
-Voici le scénario qui coûte une heure. Un deployment à 3 replicas avec `maxUnavailable: 1`, dont 2 pods sont en `CrashLoopBackOff`. Le budget est déjà épuisé par les pods cassés, donc l'API Eviction refuse de sortir le troisième, y compris s'il est lui aussi en vrac. Le drain tourne en boucle sur des pods qui ne servent plus rien.
+Le scénario qui coûte une heure : un deployment à 3 replicas avec `maxUnavailable: 1`, dont 2 pods sont en `CrashLoopBackOff`. Le budget est déjà épuisé par les pods cassés, donc l'API Eviction refuse de sortir le troisième, y compris s'il est lui aussi en vrac. Le drain tourne en boucle sur des pods qui ne servent plus rien.
 
 C'est le comportement par défaut, `unhealthyPodEvictionPolicy: IfHealthyBudget`, qui n'autorise l'éviction d'un pod not-ready que si le budget est respecté. Depuis que le champ existe, on peut dire à Kubernetes que les pods déjà cassés sont évinçables sans compter :
 

@@ -50,7 +50,7 @@ Dès que les pods n'ont pas besoin de se connaître au démarrage :
 
 ## Impact sur les rolling updates
 
-Avec `OrderedReady`, même avec `maxUnavailable: 2`, Kubernetes recréé les pods un par un.
+Avec `OrderedReady`, même avec `maxUnavailable: 2`, Kubernetes recrée les pods un par un.
 Avec `Parallel`, `maxUnavailable` est pleinement respecté - on peut vraiment updater N pods à la fois.
 
 ```yaml

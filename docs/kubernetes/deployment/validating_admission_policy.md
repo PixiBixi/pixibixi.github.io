@@ -15,7 +15,7 @@ OPA Gatekeeper ou un webhook maison - tous avec leur lot d'infra à opérer.
 Depuis v1.30 c'est natif avec **ValidatingAdmissionPolicy** et du CEL.
 
 !!! warning "Les exemples de cet article sont des points de départ"
-    Toutes les règles présentées ici sont à adapter à ton workload. Bloquer les NodePorts peut casser un ingress controller déployé en `hostPort`. Forcer les limits sur tous les pods peut bloquer des DaemonSets système. Passe systématiquement par la phase `Audit` pour mesurer l'impact avant d'activer `Deny`.
+    Toutes les règles présentées ici sont à adapter au workload. Bloquer les NodePorts peut casser un ingress controller déployé en `hostPort`. Forcer les limits sur tous les pods peut bloquer des DaemonSets système. Passer systématiquement par la phase `Audit` pour mesurer l'impact avant d'activer `Deny`.
 
 2 ressources à connaître :
 
@@ -23,6 +23,8 @@ Depuis v1.30 c'est natif avec **ValidatingAdmissionPolicy** et du CEL.
 - `ValidatingAdmissionPolicyBinding` - le binding (où l'appliquer, comment réagir)
 
 ## Structure de base
+
+La policy porte l'expression CEL, le binding dit où elle s'applique et comment elle réagit :
 
 ```yaml
 apiVersion: admissionregistration.k8s.io/v1
@@ -107,7 +109,7 @@ spec:
 ### Bloquer les Services NodePort
 
 Un NodePort ouvre un port sur chaque nœud du cluster - c'est une faille potentielle.
-Dans 99.9% des cas on veut un LoadBalancer devant.
+Dans 99,9% des cas on veut un LoadBalancer devant.
 
 ```yaml
 apiVersion: admissionregistration.k8s.io/v1
@@ -327,7 +329,9 @@ spec:
 
 Ne jamais passer directement en `Deny` en production. Les 3 étapes :
 
-**1. Audit** - log les violations sans bloquer
+### 1. Audit
+
+Log les violations sans bloquer.
 
 ```yaml
 validationActions: [Audit]
@@ -335,7 +339,9 @@ validationActions: [Audit]
 
 Les violations apparaissent dans les audit logs du kube-apiserver sous l'annotation `validation.policy.admission.k8s.io/validation_failure`.
 
-**2. Warn** - retourne un warning HTTP au client, visible dans `kubectl`
+### 2. Warn
+
+Retourne un warning HTTP au client, visible dans `kubectl`.
 
 ```yaml
 validationActions: [Warn, Audit]
@@ -346,7 +352,9 @@ Warning: require-resource-limits: Tous les containers doivent avoir des limits C
 deployment.apps/my-app created
 ```
 
-**3. Deny** - bloque effectivement la requête
+### 3. Deny
+
+Bloque effectivement la requête.
 
 ```yaml
 validationActions: [Deny]
