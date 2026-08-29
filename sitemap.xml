@@ -42,7 +42,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/automation/terraform/terragrunt/</loc>
-    <lastmod>2026-08-23</lastmod>
+    <lastmod>2026-08-29</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/automation/terraform/tools/</loc>
@@ -54,23 +54,23 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/ci-cd/github/cocogitto/</loc>
-    <lastmod>2026-08-23</lastmod>
+    <lastmod>2026-08-29</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/ci-cd/github/go-ci/</loc>
-    <lastmod>2026-08-23</lastmod>
+    <lastmod>2026-08-29</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/ci-cd/github/goreleaser/</loc>
-    <lastmod>2026-08-27</lastmod>
+    <lastmod>2026-08-29</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/ci-cd/github/hardening/</loc>
-    <lastmod>2026-08-23</lastmod>
+    <lastmod>2026-08-29</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/ci-cd/github/renovate-config/</loc>
-    <lastmod>2026-08-23</lastmod>
+    <lastmod>2026-08-29</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/ci-cd/gitlab/cli/</loc>
@@ -118,7 +118,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/cloud/gcloud/gke_node_capacity/</loc>
-    <lastmod>2026-08-23</lastmod>
+    <lastmod>2026-08-29</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/cloud/gcloud/gke_upgrades/</loc>
@@ -126,11 +126,11 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/cloud/gcloud/spot_nodes/</loc>
-    <lastmod>2026-08-22</lastmod>
+    <lastmod>2026-08-29</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/cloud/gcloud/workload_identity/</loc>
-    <lastmod>2026-08-23</lastmod>
+    <lastmod>2026-08-29</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/containers/</loc>
@@ -162,7 +162,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/databases/mongodb/dump-import-indexes/</loc>
-    <lastmod>2026-08-22</lastmod>
+    <lastmod>2026-08-29</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/databases/mysql/advanced_commands/</loc>
@@ -282,7 +282,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/kubernetes/argocd/applicationset/</loc>
-    <lastmod>2026-08-22</lastmod>
+    <lastmod>2026-08-29</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/kubernetes/argocd/argocd_sa/</loc>
@@ -290,11 +290,11 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/kubernetes/argocd/sync_options/</loc>
-    <lastmod>2026-08-22</lastmod>
+    <lastmod>2026-08-29</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/kubernetes/argocd/sync_waves/</loc>
-    <lastmod>2026-08-23</lastmod>
+    <lastmod>2026-08-29</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/kubernetes/cli/advanced_commands/</loc>
@@ -326,15 +326,15 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/kubernetes/deployment/pdb_topology_spread/</loc>
-    <lastmod>2026-08-23</lastmod>
+    <lastmod>2026-08-29</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/kubernetes/deployment/statefulset_pod_management_policy/</loc>
-    <lastmod>2026-08-23</lastmod>
+    <lastmod>2026-08-29</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/kubernetes/deployment/validating_admission_policy/</loc>
-    <lastmod>2026-08-22</lastmod>
+    <lastmod>2026-08-29</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/kubernetes/operator/strimzi/rollout_strimzi/</loc>
@@ -494,7 +494,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/linux/misc/mount_iso/</loc>
-    <lastmod>2026-08-23</lastmod>
+    <lastmod>2026-08-29</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/linux/misc/rc_package/</loc>
@@ -666,7 +666,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/monitoring/lgtm/alloy/</loc>
-    <lastmod>2026-08-22</lastmod>
+    <lastmod>2026-08-29</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/monitoring/lgtm/custom_metrics_nodeexporter/</loc>
@@ -942,7 +942,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/web/haproxy/operations/</loc>
-    <lastmod>2026-08-23</lastmod>
+    <lastmod>2026-08-29</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/web/haproxy/overview/</loc>
@@ -950,7 +950,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/web/haproxy/performance_tuning/</loc>
-    <lastmod>2026-08-23</lastmod>
+    <lastmod>2026-08-29</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/web/mail/exim_manage_dkim/</loc>
