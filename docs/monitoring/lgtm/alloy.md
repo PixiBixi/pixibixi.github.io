@@ -6,13 +6,13 @@ tags:
   - OpenTelemetry
 ---
 
-# Grafana Alloy - remplacer Promtail (et tout le reste)
+# Grafana Alloy : migration Promtail, pipelines et alerting Mimir
 
 Promtail est en fin de vie. Grafana Agent aussi. Alloy est le successeur officiel depuis avril 2024 - un collecteur universel qui gère logs, métriques et traces dans un seul binaire avec un langage de config déclaratif. Alloy complète la [stack LGTM](simple_monitoring_stack.md) en unifiant la collecte des données.
 
-La syntaxe change complètement, mais la migration est assistée.
+Aucune ligne de config Promtail ne se recopie telle quelle, mais un convertisseur fait le gros du travail.
 
-## Concepts clés
+## Brancher les composants entre eux
 
 Alloy fonctionne par **composants** connectés entre eux. Chaque composant a un type et un nom, accepte des arguments, expose des exports.
 
@@ -86,7 +86,7 @@ alloy convert \
 
 Le résultat est fonctionnel mais souvent verbeux - ça vaut le coup de simplifier à la main ensuite. La commande supporte aussi `--source-format=static` (Grafana Agent static mode).
 
-## Pipelines
+## Pipelines logs, métriques et traces
 
 ### Logs → Loki
 
@@ -262,6 +262,8 @@ prometheus.operator.servicemonitors "apps" {
 
 ### Traces → Tempo
 
+Côté traces, Alloy est un collecteur OpenTelemetry : un receiver OTLP en entrée, un exporter OTLP vers Tempo en sortie.
+
 ```alloy
 otelcol.receiver.otlp "default" {
   grpc { endpoint = "0.0.0.0:4317" }
@@ -339,7 +341,6 @@ mimir.alerts.kubernetes "default" {
 !!! warning "RBAC requis"
     Les 2 composants accèdent à l'API Kubernetes - créer un `ClusterRole` avec accès en lecture sur les CRDs Prometheus Operator.
 
-<!-- markdownlint-disable MD046 -->
 ```yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -350,7 +351,6 @@ rules:
     resources: ["prometheusrules", "alertmanagerconfigs"]
     verbs: ["get", "list", "watch"]
 ```
-<!-- markdownlint-enable MD046 -->
 
 ## Multiline parsing
 
@@ -582,7 +582,7 @@ docker logs alloy 2>&1 | grep -i error
 curl -s http://loki:3100/loki/api/v1/labels | jq '.data'
 ```
 
-## Helm values K8s (DaemonSet)
+## Les values Helm du DaemonSet
 
 Configuration minimale pour déployer Alloy en DaemonSet sur K8s - collecte des logs de tous les pods :
 
@@ -641,6 +641,8 @@ serviceAccount:
 Les variables d'environnement sont injectables directement dans la config via `env("VAR")`.
 
 ## Troubleshooting
+
+L'UI de debug répond aussi en API, ce qui évite d'ouvrir un navigateur sur un nœud :
 
 ```bash
 # Logs du service
