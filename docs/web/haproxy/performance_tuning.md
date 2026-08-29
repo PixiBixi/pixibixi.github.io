@@ -7,7 +7,7 @@ tags:
 
 # HAProxy performance tuning : nbthread, maxconn, TLS, Kubernetes
 
-HAProxy est déjà très performant out of the box. Mais sur des infras à forte charge (100k+ connexions simultanées), quelques réglages font la différence entre « ça tient » et « ça explose ».
+Les défauts de HAProxy suffisent pour la plupart des infras. Passé 100k connexions simultanées, quelques réglages font la différence entre « ça tient » et « ça explose ».
 
 !!! note
     Toutes les valeurs présentées ici sont des suggestions à adapter selon le profil de trafic. Un HAProxy qui sert du streaming vidéo n'a pas les mêmes besoins qu'un HAProxy devant une API REST. Toujours load-tester avant d'appliquer en production.
@@ -292,6 +292,8 @@ global
 
 ### DH params
 
+La taille des paramètres Diffie-Hellman se pose globalement, elle s'applique à tous les binds :
+
 ```haproxy
 global
     tune.ssl.default-dh-param 2048
@@ -309,7 +311,7 @@ Le handshake TLS est l'opération la plus coûteuse en CPU. Le type de certifica
 | RSA 2048 | ~1 261 sign/s | ~4 629 sign/s |
 | RSA 4096 | ~191 sign/s | ~761 sign/s |
 
-Le x86 est 1.4x à 4x plus rapide par cœur selon l'algo, mais le ratio entre ECDSA et RSA reste le même partout : ECDSA P-256 est ~15x plus rapide que RSA 2048 et RSA 4096 est ~6x plus lent que RSA 2048.
+Le x86 est 1,4x à 4x plus rapide par cœur selon l'algo, mais le ratio entre ECDSA et RSA reste le même partout : ECDSA P-256 est ~15x plus rapide que RSA 2048 et RSA 4096 est ~6x plus lent que RSA 2048.
 
 En intégrant le prix (GCP spot, standard-16, avril 2026 : C4a ~179$/mois, C4d ~216$/mois), le x86 reste aussi plus rentable en crypto pur :
 
@@ -371,11 +373,9 @@ backend app_servers
 !!! danger "Replay attacks"
     Le 0-RTT est vulnérable aux replay attacks - un attaquant peut rejouer les early data. N'activer `allow-0rtt` que sur des requêtes **idempotentes** (GET, HEAD). Pour les requêtes non-idempotentes, utiliser `wait-for-handshake`.
 
-<!-- markdownlint-disable MD046 -->
 ```haproxy
 http-request wait-for-handshake if !{ method GET HEAD OPTIONS }
 ```
-<!-- markdownlint-enable MD046 -->
 
 #### AES-GCM vs ChaCha20-Poly1305
 
@@ -383,9 +383,9 @@ Benchmarks blocs de 16 KB (`openssl speed -evp`) :
 
 | Cipher | C4a (ARM Axion) | C4d (x86 Emerald Rapids) |
 | ------ | --------------- | ------------------------ |
-| AES-128-GCM | 7.24 GB/s | 20.99 GB/s |
-| AES-256-GCM | 6.14 GB/s | 18.39 GB/s |
-| ChaCha20-Poly1305 | 1.35 GB/s | 5.03 GB/s |
+| AES-128-GCM | 7,24 GB/s | 20,99 GB/s |
+| AES-256-GCM | 6,14 GB/s | 18,39 GB/s |
+| ChaCha20-Poly1305 | 1,35 GB/s | 5,03 GB/s |
 
 AES-GCM est accéléré matériellement sur tous les CPUs serveur modernes - x86 (AES-NI) comme ARM (extensions crypto ARMv8, présentes sur Graviton, Axion, Ampere Altra). ChaCha20 n'a pas d'accélération matérielle et n'est plus rapide que sur du vieux ARM sans extensions crypto (Raspberry Pi, vieux SoC mobile).
 
@@ -524,8 +524,8 @@ spec:
 
 ### DaemonSet vs Deployment
 
-- **DaemonSet** avec `hostNetwork` : un pod HAProxy par node, trafic routé directement sur l'IP du node. Adapté quand on veut saturer les nodes dédiés (compute-class).
-- **Deployment** avec `hostNetwork` : même avantage réseau, mais avec un replicaCount flexible et un anti-affinity pour répartir sur les nodes.
+- `DaemonSet` avec `hostNetwork` : un pod HAProxy par node, trafic routé directement sur l'IP du node. Adapté quand on veut saturer les nodes dédiés (compute-class).
+- `Deployment` avec `hostNetwork` : même avantage réseau, mais avec un replicaCount flexible et un anti-affinity pour répartir sur les nodes.
 
 ### Sysctls via initContainers
 
@@ -577,7 +577,7 @@ backend app_servers
 
 `pool-max-conn` limite le nombre de connexions idle gardées par serveur (évite d'accumuler des milliers de FD). `pool-purge-delay` recycle les connexions idle régulièrement.
 
-## Optimisations avancées
+## Les tune.* de bas niveau
 
 ### Zero-copy (splice)
 
@@ -617,6 +617,8 @@ global
 | `off` | Le thread qui accepte garde la connexion (peut créer du déséquilibre) |
 
 ### tune.sched.low-latency
+
+Un seul flag, mais il change l'arbitrage entre latence et débit :
 
 ```haproxy
 global
@@ -755,12 +757,14 @@ Pas de support zstd à ce jour, même en HAProxy 3.x. Si on a besoin de zstd, le
 - `4-5` : bon compromis ratio/CPU pour la plupart des workloads
 - `9` : gain marginal en ratio par rapport à 6, mais consommation CPU qui explose
 
-Sur un HAProxy à forte charge, rester entre 1 et 4. Le gain de bande passante entre le niveau 4 et le niveau 9 ne justifie rarement le coût CPU.
+Sur un HAProxy à forte charge, rester entre 1 et 4. Le gain de bande passante entre le niveau 4 et le niveau 9 justifie rarement le coût CPU.
 
 !!! warning
     La compression consomme du CPU. Si les backends gèrent déjà la compression (Nginx, CDN), ne pas l'activer côté HAProxy - ça revient à compresser deux fois pour rien. HAProxy détecte automatiquement un `Content-Encoding` existant et ne recompresse pas.
 
 ## Exemple complet
+
+Une config qui reprend les réglages ci-dessus sur un frontend TLS devant des backends HTTP :
 
 ```haproxy
 global
@@ -801,7 +805,7 @@ backend app_servers
 
 ## Monitoring Prometheus
 
-Le tuning sans monitoring, c'est du pilotage à l'aveugle. Un set complet de recording rules et alertes Prometheus pour HAProxy est disponible sur [rules.jdelgado.fr](https://rules.jdelgado.fr/#alerts/haproxy.rules.yml) (40 alertes, 20 recording rules).
+Sans monitoring, on règle à l'aveugle. Un set complet de recording rules et alertes Prometheus pour HAProxy est disponible sur [rules.jdelgado.fr](https://rules.jdelgado.fr/#alerts/haproxy.rules.yml) (40 alertes, 20 recording rules).
 
 Les alertes les plus pertinentes pour le tuning :
 
@@ -820,14 +824,7 @@ Les alertes les plus pertinentes pour le tuning :
 
 Les recording rules pré-calculent les ratios d'erreurs (4xx/5xx par backend), le trafic, les sessions et les retries pour que les alertes soient rapides sans surcharger Prometheus.
 
-## Voir aussi
-
-- [HAProxy : Comportement d'une limite mémoire](memory_limit.md)
-- [Reverse proxy: HAProxy](overview.md)
-- [HAProxy : exploitation au quotidien](operations.md)
-- [GOMEMLIMIT/GOMAXPROCS automatiques en Kubernetes](../../kubernetes/deployment/gomaxprocs_gomemlimit_kubernetes.md)
-
-## Diagnostic
+## Diagnostiquer un HAProxy qui sature
 
 ### Runtime
 
@@ -860,3 +857,10 @@ sudo perf top
 | `native_queued_spin_lock_slowpath` | Contention sur les listener sockets | Ajouter `shards by-group` |
 | `ksoftirqd` | IRQ NIC saturent des cœurs | Réserver des cœurs pour les IRQ, exclure du pool HAProxy |
 | Fonctions SSL (`_bignum`, `_mont`) | Handshakes TLS intensifs | Séparer les threads SSL sur un NUMA node dédié |
+
+## Voir aussi
+
+- [HAProxy : Comportement d'une limite mémoire](memory_limit.md)
+- [Reverse proxy: HAProxy](overview.md)
+- [HAProxy : exploitation au quotidien](operations.md)
+- [GOMEMLIMIT/GOMAXPROCS automatiques en Kubernetes](../../kubernetes/deployment/gomaxprocs_gomemlimit_kubernetes.md)
