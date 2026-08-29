@@ -18,7 +18,7 @@ tags:
     qu'on a faits avec nos contraintes, pas une configuration de référence.
 
 Un Prometheus garde ses métriques aussi longtemps qu'on le lui demande. On pose
-`--storage.tsdb.retention.time`, ou `--storage.tsdb.retention.size` si on préfère plafonner
+`--storage.tsdb.retention.time` ou `--storage.tsdb.retention.size` si on préfère plafonner
 en volume et c'est réglé. La rétention n'a jamais été le problème.
 
 Le problème est ailleurs. La TSDB vit sur un seul disque sans réplication et elle grossit
@@ -52,7 +52,7 @@ remote_write:
 
 C'est le levier de coût le plus direct de toute la stack, parce qu'il agit avant l'ingestion : on ne paye ni le stockage, ni la compaction, ni la cardinalité de ce qu'on a laissé sur place. La rétention locale de Prometheus reste complète pour du debug à chaud, seule la longue traîne est filtrée.
 
-Le vrai critère de choix est ailleurs : une stack isolée par tenant, ou un cluster mutualisé ?
+Le vrai critère de choix est ailleurs : une stack isolée par tenant ou un cluster mutualisé ?
 
 - Mimir et VictoriaMetrics poussent vers un backend unique et multi-tenant, avec des limites par tenant
 - Thanos Receive permet le multi-tenant, mais rien n'oblige à l'utiliser ainsi
@@ -90,7 +90,7 @@ queryFrontend:
     - --query-frontend.log-queries-longer-than=10s
 ```
 
-Ce qui compte n'est pas dans les flags, c'est que la liste des stores à interroger est dérivée du même sélecteur de labels que le générateur des stacks, pas écrite en dur. Une liste statique dérive toujours. On finit avec une entrée qui pointe vers un Thanos mort, ou un tenant que personne n'interroge.
+Ce qui compte n'est pas dans les flags, c'est que la liste des stores à interroger est dérivée du même sélecteur de labels que le générateur des stacks, pas écrite en dur. Une liste statique dérive toujours. On finit avec une entrée qui pointe vers un Thanos mort ou un tenant que personne n'interroge.
 
 `--query-frontend.log-queries-longer-than=10s` est à activer dès le premier jour. C'est ce qui permet de savoir quel dashboard fait souffrir la stack, plutôt que de le deviner.
 
@@ -291,7 +291,7 @@ Et c'est là que le downsampling devient intéressant : la longue traîne est qu
 
 [Le retour d'expérience d'Anuj Ramola](https://medium.com/@anujramola/thinking-your-storage-class-is-helping-you-save-cost-for-thanos-s3-buckets-think-again-9ae18ccc382a) est instructif. Son équipe a basculé 6 mois de blocks vers Glacier Deep Archive pour économiser une cinquantaine de dollars mensuels de stockage. Le compactor a voulu compacter des blocks devenus illisibles sans restauration préalable, a échoué et a retenté toutes les 5 minutes en boucle. Les requêtes objet sont passées de 1,1 million à 40 millions par jour, soit 13 dollars à 480 dollars sur la seule ligne API et l'économie de stockage a été payée 10 fois.
 
-Dans le même ordre d'idées, les paliers du compactor doivent rester alignés sur ce que les store gateways servent réellement, sinon on paye pour des blocks que personne n'interroge, ou on cherche de la donnée que la rétention a déjà supprimée.
+Dans le même ordre d'idées, les paliers du compactor doivent rester alignés sur ce que les store gateways servent réellement, sinon on paye pour des blocks que personne n'interroge ou on cherche de la donnée que la rétention a déjà supprimée.
 
 Côté flags de compaction :
 
@@ -446,7 +446,7 @@ C'est l'inverse du réflexe habituel, qui est de tailler au plus juste. Ici la c
 
 !!! note "C'est un contournement, pas une optimisation"
     Tout ce calcul existe parce qu'on a choisi des instances économiques qui sont IO bound.
-    Avec des gabarits plus généreux en débit disque, ou du local SSD, le problème ne se
+    Avec des gabarits plus généreux en débit disque ou du local SSD, le problème ne se
     poserait pas et la store gateway n'aurait pas besoin de PVC du tout. On a déplacé le
     coût du compute vers le stockage, ce qui reste gagnant sur la facture, mais il faut
     savoir que la solution propre est ailleurs.
