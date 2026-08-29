@@ -337,7 +337,7 @@ mimir.alerts.kubernetes "default" {
 ```
 
 !!! warning "RBAC requis"
-    Les deux composants accèdent à l'API Kubernetes - créer un `ClusterRole` avec accès en lecture sur les CRDs Prometheus Operator.
+    Les 2 composants accèdent à l'API Kubernetes - créer un `ClusterRole` avec accès en lecture sur les CRDs Prometheus Operator.
 
 <!-- markdownlint-disable MD046 -->
 ```yaml
@@ -417,7 +417,7 @@ Traceback (most recent call last):
 ValueError: invalid data
 ```
 
-2 approches : matcher `^Traceback` comme firstline (on groupe à partir de l'exception), ou matcher les lignes qui ne commencent **pas** par un espace (plus générique).
+2 approches : matcher `^Traceback` comme firstline (on groupe à partir de l'exception) ou matcher les lignes qui ne commencent **pas** par un espace (plus générique).
 
 ```alloy
 loki.process "python_logs" {
@@ -441,7 +441,7 @@ main.(*Server).handleRequest(...)
 panic: runtime error: index out of range [3] with length 3
 ```
 
-Les panics Go commencent par `goroutine` ou `panic:` - on matche les deux.
+Les panics Go commencent par `goroutine` ou `panic:` - on matche les 2.
 
 ```alloy
 loki.process "go_logs" {

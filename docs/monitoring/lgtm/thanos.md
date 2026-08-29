@@ -348,7 +348,7 @@ Le `concurrencyPolicy: Forbid` n'est pas cosmétique. **2 compactors simultanés
 
 Le volume éphémère est ce qui matérialise l'économie. Le disque est créé avec le Pod et réclamé à la fin du job. Plus de PVC en `Bound` entre 2 runs.
 
-!!! warning "L'effet de bord : votre alerting ment"
+!!! warning "L'effet de bord : l'alerting ment"
     La règle standard `ThanosCompactIsDown` repose sur un `absent()` ou un `up == 0`. Entre 2 runs, il n'y a plus ni Pod, ni Service, ni cible de scrape. La règle passe donc en alerte **en permanence**, 23 heures sur 24.
 
 Il faut la neutraliser et la remplacer par des règles qui interrogent l'état du CronJob via `kube-state-metrics` :
