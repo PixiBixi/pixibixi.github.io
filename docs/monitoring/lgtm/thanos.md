@@ -507,7 +507,7 @@ lit dans le code du `CachingBucket` de sa version.
 
 La taille à viser est le **working set sur la fenêtre du TTL**, pas la taille actuelle du cache, qui ne dit que le plafond qu'on lui a donné. Le proxy se calcule sur le volume d'admission : `increase(items_added_total[TTL])` multiplié par la taille moyenne d'une entrée. Deux pièges.
 
-Le premier est de lire ça sur un instantané. Un `increase` pris à un moment donné est un point au hasard et il sous-estime lourdement les stacks en dents de scie : sur l'un des nôtres, 0,24 Gio en snapshot contre 9 Gio au P95 du glissant sur 24 h. Facteur 37. Il faut le **P95 de la fenêtre TTL glissante sur 24 h au minimum**, donc une subquery avec un pas explicite - une subquery sans pas est un moyen fiable de faire tomber le querier.
+Le premier est de lire ça sur un instantané. Un `increase` pris à un moment donné est un point au hasard et il sous-estime lourdement les stacks en dents de scie : sur l'un des nôtres, 0,24 Gio en snapshot contre 9 Gio au P95 du glissant sur 24h. Facteur 37. Il faut le **P95 de la fenêtre TTL glissante sur 24h au minimum**, donc une subquery avec un pas explicite - une subquery sans pas est un moyen fiable de faire tomber le querier.
 
 Le second est le facteur de déduplication. Il est tentant de diviser par le nombre de pods, mais des store gateways shardées cachent des blocks **disjoints** : seuls les replicas d'un même shard cachent la même chose. Avec 3 shards et 2 replicas, on divise par 2, pas par 6. Se tromper là sous-dimensionne d'un facteur 3.
 
@@ -702,9 +702,9 @@ Toutes les optimisations de coût ne passent pas. Celle-là s'est payée en late
     les plus rapides : il ne peut **structurellement pas** les voir. On lisait 0,15 s au p99 là
     où le p999 donnait 4 s et le p9999 5,3 s, soit un facteur 30 caché juste sous le seuil.
 
-Ça marche dans les deux sens. Sur un gate de concurrence, le p99 et le p999 donnaient tous les deux 10 à 17 ms, ce qui n'apprend rien : c'est le p9999 à 95 ms qui a permis d'écarter la mise en file avec certitude, pics de saturation compris.
+Ça marche dans les 2 sens. Sur un gate de concurrence, le p99 et le p999 donnaient tous les 2 10 à 17 ms, ce qui n'apprend rien : c'est le p9999 à 95 ms qui a permis d'écarter la mise en file avec certitude, pics de saturation compris.
 
-Dès qu'une pathologie touche nettement moins de 1 % des requêtes, mesurer au p999 ou au p9999, ou ne pas mesurer du tout. On a tiré deux conclusions fausses avant de s'en apercevoir.
+Dès qu'une pathologie touche nettement moins de 1 % des requêtes, mesurer au p999 ou au p9999, ou ne pas mesurer du tout. On a tiré 2 conclusions fausses avant de s'en apercevoir.
 
 ## Lecture paresseuse : le prix du rechargement
 
@@ -731,7 +731,7 @@ tenants porte 2,1 Go par header contre 0,12 Go pour le plus léger, un facteur 1
 classement des durées de chargement suit exactement : 20 secondes de moyenne et 114 s au p99
 d'un côté, moins de 0,5 s de l'autre.
 
-Ce n'est ni du CPU ni du disque saturé, on a vérifié les deux avant de conclure : pendant un
+Ce n'est ni du CPU ni du disque saturé, on a vérifié les 2 avant de conclure : pendant un
 chargement de 28 secondes le conteneur consommait 0,04 cœur et les disques tournaient à
 moins de la moitié de leur temps d'occupation. C'est un gros fichier qu'on relit, rien de
 plus.
