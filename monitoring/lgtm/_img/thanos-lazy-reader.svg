@@ -1,0 +1,52 @@
+<svg width="640" height="200" viewBox="0 0 640 200" xmlns="http://www.w3.org/2000/svg" font-family="'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#8b949e"/>
+    </marker>
+  </defs>
+
+  <!-- 1 : résident -->
+  <g>
+    <rect x="7" y="34" width="140" height="76" rx="4" fill="#161b22" stroke="#30363d"/>
+    <rect x="7" y="34" width="4" height="76" fill="#3fb950"/>
+    <text x="23" y="56" fill="#e6edf3" font-size="12">Header résident</text>
+    <text x="23" y="76" fill="#8b949e" font-size="10">mmap en mémoire</text>
+    <text x="23" y="92" fill="#3fb950" font-size="10">requêtes rapides</text>
+  </g>
+
+  <!-- 2 : déchargé -->
+  <path d="M 147 72 L 163 72" stroke="#8b949e" stroke-width="1" fill="none" marker-end="url(#arr)"/>
+  <g>
+    <rect x="169" y="34" width="140" height="76" rx="4" fill="#161b22" stroke="#30363d"/>
+    <rect x="169" y="34" width="4" height="76" fill="#8b949e"/>
+    <text x="185" y="56" fill="#e6edf3" font-size="12">5 min sans requête</text>
+    <text x="185" y="76" fill="#8b949e" font-size="10">timeout d'inactivité</text>
+    <text x="185" y="92" fill="#8b949e" font-size="10">header déchargé</text>
+  </g>
+
+  <!-- 3 : requête suivante -->
+  <path d="M 309 72 L 325 72" stroke="#8b949e" stroke-width="1" fill="none" marker-end="url(#arr)"/>
+  <g>
+    <rect x="331" y="34" width="140" height="76" rx="4" fill="#161b22" stroke="#30363d"/>
+    <rect x="331" y="34" width="4" height="76" fill="#58a6ff"/>
+    <text x="347" y="56" fill="#e6edf3" font-size="12">Requête suivante</text>
+    <text x="347" y="76" fill="#8b949e" font-size="10">touche un bloc froid</text>
+    <text x="347" y="92" fill="#8b949e" font-size="10">attend avant de lire</text>
+  </g>
+
+  <!-- 4 : rechargement -->
+  <path d="M 471 72 L 487 72" stroke="#8b949e" stroke-width="1" fill="none" marker-end="url(#arr)"/>
+  <g>
+    <rect x="493" y="34" width="140" height="76" rx="4" fill="#161b22" stroke="#30363d"/>
+    <rect x="493" y="34" width="4" height="76" fill="#f78166"/>
+    <text x="509" y="56" fill="#e6edf3" font-size="12">Rechargement</text>
+    <text x="509" y="76" fill="#8b949e" font-size="10">relit tout le fichier</text>
+    <text x="509" y="92" fill="#f78166" font-size="10">20 s, 114 s au p99</text>
+  </g>
+
+  <!-- boucle de retour -->
+  <path d="M 563 110 L 563 144 Q 563 150 557 150 L 83 150 Q 77 150 77 144 L 77 116"
+        stroke="#8b949e" stroke-width="1" stroke-dasharray="3 3" fill="none" marker-end="url(#arr)"/>
+
+  <text x="320" y="182" fill="#6e7781" font-size="11" font-weight="600" text-anchor="middle">Le cycle recommence à chaque accalmie et le coût retombe sur la requête suivante.</text>
+</svg>
