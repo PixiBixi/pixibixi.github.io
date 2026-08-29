@@ -18,14 +18,14 @@ Source : [GKE - Plan node sizes / Resource reservations](https://docs.cloud.goog
 
 ## Ce qui est réservé
 
-**CPU** (progressif, toujours en millicores) :
+### CPU (progressif, toujours en millicores)
 
 - 6% du 1er core
 - 1% du 2e core
 - 0,5% des cores 3 et 4
 - 0,25% au-delà de 4 cores
 
-**RAM** (progressif également) :
+### RAM (progressif également)
 
 - 25% des premiers 4 GiB
 - 20% des 4 GiB suivants (jusqu'à 8 GiB)
