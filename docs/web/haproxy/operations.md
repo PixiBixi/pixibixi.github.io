@@ -70,7 +70,7 @@ echo "show stat" | socat stdio /run/haproxy/admin.sock \
 
 ## Autres commandes du socket
 
-Celles qui sortent quand ça part en vrille :
+Celles qui servent en incident, plus une pour ajuster un poids à chaud :
 
 ```bash
 # Sessions en cours, avec leur âge - pour trouver ce qui traîne
