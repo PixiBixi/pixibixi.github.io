@@ -83,7 +83,7 @@ release:
 
 ## Réduire la taille des binaires
 
-Trois flags suffisent pour gagner ~33% :
+3 flags suffisent pour gagner ~33% :
 
 | Flag | Effet |
 |------|-------|
@@ -119,7 +119,7 @@ soit 10 Mo de moins que `-s`. Écrire `-s` seul dit exactement ce qu'on demande.
 
 L'objection habituelle, c'est la perte des stack traces. Elle ne tient pas : une trace Go
 se lit dans le `pclntab`, que le linker conserve quels que soient les flags, et ni `-s` ni
-`-w` n'y touchent. Le même panic sur 2 binaires, avec et sans `-s`, sort deux traces
+`-w` n'y touchent. Le même panic sur 2 binaires, avec et sans `-s`, sort 2 traces
 identiques, noms de fonctions et numéros de ligne compris. `net/http/pprof` est intact pour
 la même raison, la symbolisation se fait dans le runtime.
 
@@ -183,7 +183,7 @@ docker_signs:
 
 ### GitHub Actions - permissions requises
 
-Deux ajouts par rapport au workflow de base :
+2 ajouts par rapport au workflow de base :
 
 ```yaml
 permissions:
@@ -261,7 +261,7 @@ Ko génère automatiquement un manifest multi-arch et publie des SBOMs par image
     La première image publiée est privée par défaut sur GHCR, même pour un repo public. À rendre public manuellement : **GitHub → Packages → mon-image → Package settings → Change visibility**.
 
 !!! warning "Go 1.27 impose un `main:` explicite"
-    GoReleaser défaute `kos[].main` sur le `main:` du build correspondant, qui vaut `""` tant qu'on ne l'a pas écrit, et ko passe cette chaîne vide à `go list`. Go 1.26 la résolvait silencieusement en répertoire courant, Go 1.27 la rejette avec `go: invalid package: ""`. Le symptôme est trompeur : les binaires, les archives, les checksums et la formule Homebrew se construisent normalement, puis le run meurt à la toute fin sur `ko: does not contain a valid local import path ()`, sans release GitHub ni image. Poser `main: .` dans `kos:` et dans `builds:` referme le trou des deux côtés.
+    GoReleaser défaute `kos[].main` sur le `main:` du build correspondant, qui vaut `""` tant qu'on ne l'a pas écrit, et ko passe cette chaîne vide à `go list`. Go 1.26 la résolvait silencieusement en répertoire courant, Go 1.27 la rejette avec `go: invalid package: ""`. Le symptôme est trompeur : les binaires, les archives, les checksums et la formule Homebrew se construisent normalement, puis le run meurt à la toute fin sur `ko: does not contain a valid local import path ()`, sans release GitHub ni image. Poser `main: .` dans `kos:` et dans `builds:` referme le trou des 2 côtés.
 
 ## Helm chart vers OCI
 
@@ -323,7 +323,7 @@ jobs:
 
 Les actions sont épinglées par SHA et le checkout ne garde pas le token, pour les raisons détaillées dans [l'article durcissement](hardening.md) : un workflow de release détient `contents: write`, c'est le dernier endroit où laisser traîner un tag mutable.
 
-Le step `Install cosign` est à garder **même dans un pipeline qui ne signe rien**. `goreleaser-action` télécharge le binaire GoReleaser depuis les releases GitHub, vérifie son checksum, puis contrôle la signature cosign du `checksums.txt` d'où vient ce checksum, et sans cosign dans le `PATH` elle abandonne ce second contrôle sur une simple ligne de log :
+Le step `Install cosign` est à garder **même dans un pipeline qui ne signe rien**. `goreleaser-action` télécharge le binaire GoReleaser depuis les releases GitHub, vérifie son checksum, puis contrôle la signature cosign du `checksums.txt` d'où vient ce checksum et sans cosign dans le `PATH` elle abandonne ce second contrôle sur une simple ligne de log :
 
 ```text
 Checksum verified for goreleaser_Linux_x86_64.tar.gz
@@ -365,7 +365,7 @@ git push origin v1.2.3
 
 ## Changelog
 
-GoReleaser génère le changelog entre deux tags. On peut filtrer et regrouper :
+GoReleaser génère le changelog entre 2 tags. On peut filtrer et regrouper :
 
 ```yaml
 changelog:

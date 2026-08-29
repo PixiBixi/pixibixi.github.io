@@ -10,7 +10,7 @@ tags:
 
 # Durcir une CI GitHub Actions : pins, permissions, injections
 
-Une CI lit le repo, détient des secrets, publie des artefacts et exécute du code que d'autres ont écrit. C'est la définition d'une cible. Tout ce qui suit tourne sur 2 repos publics, [gopen](https://github.com/PixiBixi/gopen) en Go et [uno-multiplayer](https://github.com/PixiBixi/uno-multiplayer) en Node et ne dépend d'aucun des deux langages.
+Une CI lit le repo, détient des secrets, publie des artefacts et exécute du code que d'autres ont écrit. C'est la définition d'une cible. Tout ce qui suit tourne sur 2 repos publics, [gopen](https://github.com/PixiBixi/gopen) en Go et [uno-multiplayer](https://github.com/PixiBixi/uno-multiplayer) en Node et ne dépend d'aucun des 2 langages.
 
 ## Épingler les actions par SHA, pas par tag
 
@@ -182,9 +182,9 @@ Reste un trou que la CI verte ne bouche pas : automerger une version publiée il
 
 5 jours couvre à peu près la fenêtre pendant laquelle une release compromise se fait repérer. Le prix apparent, c'est un retard de 5 jours sur les patchs de sécurité, sauf que Renovate neutralise le cooldown dans sa config `vulnerabilityAlerts` (`minimumReleaseAge: null` par défaut) : les updates qui répondent à une CVE connue passent toujours tout de suite.
 
-`digest` est le type qu'on oublie et c'est le plus intéressant des quatre. Un update `digest` seul veut dire que la version n'a pas bougé mais que le SHA derrière le tag, si, donc que quelqu'un a redéplacé `v7` sur un autre commit. C'est précisément le scénario contre lequel on épingle et c'est aussi le type le plus automergé. Il a plus besoin du cooldown que les autres.
+`digest` est le type qu'on oublie et c'est le plus intéressant des 4. Un update `digest` seul veut dire que la version n'a pas bougé mais que le SHA derrière le tag, si, donc que quelqu'un a redéplacé `v7` sur un autre commit. C'est précisément le scénario contre lequel on épingle et c'est aussi le type le plus automergé. Il a plus besoin du cooldown que les autres.
 
-Les deux règles ne se recouvrent pas : celle-ci ne pose que `minimumReleaseAge`, l'automerge reste défini par la règle précédente. Renovate applique les settings de chaque règle indépendamment, sans héritage de l'une vers l'autre, donc un `major` récupère le cooldown et rien d'autre - il attend toujours une revue.
+Les 2 règles ne se recouvrent pas : celle-ci ne pose que `minimumReleaseAge`, l'automerge reste défini par la règle précédente. Renovate applique les settings de chaque règle indépendamment, sans héritage de l'une vers l'autre, donc un `major` récupère le cooldown et rien d'autre - il attend toujours une revue.
 
 Sur Dependabot, le même réglage se pose par écosystème et il existe déjà par défaut à 3 jours :
 

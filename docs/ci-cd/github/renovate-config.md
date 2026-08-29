@@ -27,7 +27,7 @@ Sortie sur une config saine :
  INFO: Config validated successfully against 1 file(s)
 ```
 
-Deux détails de l'invocation valent le détour.
+2 détails de l'invocation valent le détour.
 
 **Épingler la version.** `--package renovate` sans tag, qui est la forme de la [doc officielle](https://docs.renovatebot.com/config-validation/), laisse npx servir ce qu'il a en cache. Le mien datait de plusieurs majeures et refusait une config que la 44 accepte, ce qui suffit à conclure l'inverse de la réalité sur le point qu'on cherchait à vérifier.
 
@@ -42,7 +42,7 @@ Sans argument du tout, il détecte les emplacements par défaut et prend le mode
 
 `--strict` fait en plus échouer la validation quand une migration de config est nécessaire, ce que Renovate propose sinon via une case à cocher dans le dependency dashboard.
 
-## Le hook pre-commit, qui épingle la version pour vous
+## Épingler la version avec le hook pre-commit
 
 Renovate publie [ses hooks](https://github.com/renovatebot/pre-commit-hooks) et leur `rev` **est** la version de Renovate. Le problème de cache npx disparaît, puisque le hook installe `renovate@<rev>` en dépendance :
 

@@ -21,7 +21,7 @@ Une CI Go, ce n'est pas juste `go test`. Test multi-plateforme, lint, scan de vu
 
 ## Vue d'ensemble
 
-Six workflows, un rôle par fichier. Le release (GoReleaser) est traité à part, voir [l'article dédié](goreleaser.md).
+6 workflows, un rôle par fichier. Le release (GoReleaser) est traité à part, voir [l'article dédié](goreleaser.md).
 
 | Workflow | Rôle | Déclencheur |
 |----------|------|-------------|
@@ -34,7 +34,7 @@ Six workflows, un rôle par fichier. Le release (GoReleaser) est traité à part
 
 ## Test et build multi-plateforme
 
-Deux jobs dans `ci.yml`. Le premier teste, le second vérifie que le binaire compile sur les trois OS.
+2 jobs dans `ci.yml`. Le premier teste, le second vérifie que le binaire compile sur les 3 OS.
 
 ```yaml title=".github/workflows/ci.yml"
 jobs:
@@ -66,7 +66,7 @@ jobs:
       - run: go build -v -o gopen${{ matrix.os == 'windows-2025' && '.exe' || '' }} .
 ```
 
-Trois choix qui comptent :
+3 choix qui comptent :
 
 - `go-version-file: go.mod` : la version de Go vient du `go.mod`, pas d'une valeur hardcodée qui dérive. Une seule source de vérité.
 - `go test -race` : le détecteur de data races coûte un peu de temps CPU mais attrape des bugs de concurrence qu'aucun test classique ne voit.
@@ -138,9 +138,9 @@ linters:
           sizeThreshold: 256
 ```
 
-Le seuil est le réglage à ne pas laisser par défaut. À 80, le linter réclame aussi des pointeurs sur les structs de configuration qui traversent toutes les signatures : sur `klens`, un `Flags` de 104 octets et un `App` de 96. Or elles sont copiées une fois par exécution. Les passer en pointeur touchait vingt-cinq signatures pour zéro gain, en ouvrant au passage la porte à une mutation accidentelle de flags partagés.
+Le seuil est le réglage à ne pas laisser par défaut. À 80, le linter réclame aussi des pointeurs sur les structs de configuration qui traversent toutes les signatures : sur `klens`, un `Flags` de 104 octets et un `App` de 96. Or elles sont copiées une fois par exécution. Les passer en pointeur touchait 25 signatures pour zéro gain, en ouvrant au passage la porte à une mutation accidentelle de flags partagés.
 
-Reste le plus intéressant : corriger les trente sites trouvés sur [klens](https://github.com/PixiBixi/kubectl-klens) n'a **rien accéléré**. Mesuré sur un cluster de production de 6400 pods, cinq exécutions, médianes :
+Reste le plus intéressant : corriger les 30 sites trouvés sur [klens](https://github.com/PixiBixi/kubectl-klens) n'a **rien accéléré**. Mesuré sur un cluster de production de 6400 pods, 5 exécutions, médianes :
 
 | Commande | Temps | RSS max |
 |---|---|---|
@@ -158,7 +158,7 @@ Ce que le check apporte quand même : il empêche de réintroduire le motif là 
 
 Celui-là vaut pour tous les linters, pas seulement gocritic. Par défaut, golangci-lint **cache une partie de ce qu'il trouve** : 50 findings par linter et surtout 3 occurrences par message identique.
 
-Trente sites copiant chacun `1192 bytes` produisent trente messages au texte identique, dont trois s'affichent. On corrige les trois, on relance, trois nouveaux apparaissent. Sur `klens`, le premier passage annonçait 25 problèmes : des fichiers entiers n'étaient jamais sortis et la correction paraissait finie alors qu'il en restait.
+30 sites copiant chacun `1192 bytes` produisent 30 messages au texte identique, dont 3 s'affichent. On corrige les 3, on relance, 3 nouveaux apparaissent. Sur `klens`, le premier passage annonçait 25 problèmes : des fichiers entiers n'étaient jamais sortis et la correction paraissait finie alors qu'il en restait.
 
 ```yaml title=".golangci.yml"
 issues:
@@ -331,7 +331,7 @@ jobs:
     D'où le choix d'un CLI maintenu qui ne fait que le calcul, plus un appel API. Leçon générale : sur un chemin de release qui détient `contents: write`, la maintenance de la dépendance compte autant que ses fonctionnalités.
 <!-- markdownlint-enable MD046 -->
 
-Pourquoi tout dans un seul job, plutôt qu'un workflow qui tague et un autre qui publie sur le tag ? Parce qu'un tag poussé avec le `GITHUB_TOKEN` par défaut **ne re-déclenche pas** de workflow - garde-fou anti-boucle de GitHub. Séparer les deux imposerait un PAT dédié juste pour ré-armer le second workflow. En enchaînant calcul-du-tag et publication dans le même run, on s'en passe. La double condition (`ref_type == 'tag'` ou nouveau tag calculé) préserve l'échappatoire manuelle : un `v*` poussé à la main court-circuite le calcul et publie directement.
+Pourquoi tout dans un seul job, plutôt qu'un workflow qui tague et un autre qui publie sur le tag ? Parce qu'un tag poussé avec le `GITHUB_TOKEN` par défaut **ne re-déclenche pas** de workflow - garde-fou anti-boucle de GitHub. Séparer les 2 imposerait un PAT dédié juste pour ré-armer le second workflow. En enchaînant calcul-du-tag et publication dans le même run, on s'en passe. La double condition (`ref_type == 'tag'` ou nouveau tag calculé) préserve l'échappatoire manuelle : un `v*` poussé à la main court-circuite le calcul et publie directement.
 
 Résultat : Renovate merge un `minor` de dépendance, la CI passe, une version mineure sort et est publiée - sans qu'une main touche à un tag.
 

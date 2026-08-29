@@ -14,7 +14,7 @@ Cocogitto valide les conventional commits, bumpe le semver automatiquement et g�
 
 ## Cocogitto vs release-please
 
-Les deux outils s'appuient sur les [Conventional Commits](https://www.conventionalcommits.org/) et automatisent le versioning. Ils ont des philosophies opposées.
+Les 2 outils s'appuient sur les [Conventional Commits](https://www.conventionalcommits.org/) et automatisent le versioning. Ils ont des philosophies opposées.
 
 | | cocogitto | release-please |
 |---|---|---|
@@ -26,7 +26,7 @@ Les deux outils s'appuient sur les [Conventional Commits](https://www.convention
 | **Config** | `cog.toml` | `release-please-config.json` |
 | **Mainteneur** | Communauté | Google |
 
-En pratique, les deux flows divergent dès le premier push :
+En pratique, les 2 flows divergent dès le premier push :
 
 ![Comparaison cocogitto vs release-please](./cocogitto-comparison.svg)
 
@@ -68,7 +68,7 @@ authors = []
 ```
 
 !!! note "tag_prefix"
-    Sans `tag_prefix = "v"`, cocogitto cherche des tags `1.2.3` (sans `v`). Si vos tags existants sont `v1.2.3` (format release-please, goreleaser…), ce champ est obligatoire.
+    Sans `tag_prefix = "v"`, cocogitto cherche des tags `1.2.3` (sans `v`). Si les tags existants sont `v1.2.3` (format release-please, goreleaser…), ce champ est obligatoire.
 
 ## CHANGELOG.md
 
