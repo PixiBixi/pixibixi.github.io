@@ -704,6 +704,59 @@ Toutes les optimisations de coût ne passent pas. Celle-là s'est payée en late
 
 Dès qu'une pathologie touche nettement moins de 1 % des requêtes, mesurer au p999 ou au p9999, ou ne pas mesurer du tout. On a tiré deux conclusions fausses avant de s'en apercevoir.
 
+## Lecture paresseuse : le prix du rechargement
+
+On a gardé `--store.enable-index-header-lazy-reader` sans jamais mesurer ce qu'il coûte, et
+il coûte.
+
+Le flag décharge un index-header après un délai d'inactivité qui vaut 5 minutes par défaut.
+Sur une plateforme où les dashboards ne sont ouverts que par intermittence, les headers ne
+sont donc presque jamais résidents : sur le shard qui porte les blocks les plus vieux, la
+résidence tourne entre 0 et 9 % sur toute la flotte et le shard chaud décharge entre 18 et
+32 fois par heure et par pod. Le premier utilisateur qui ouvre un dashboard paie un
+rechargement complet avant qu'une seule série ne soit lue, ce qui est exactement le
+symptôme « la première requête est interminable » qu'on nous remontait sans savoir quoi en
+faire.
+
+Le coût de ce rechargement n'a rien à voir avec le flag, il est fixé par la taille du
+fichier d'index-header, elle-même fixée par la cardinalité du tenant. Le plus lourd de nos
+tenants porte 2,1 Go par header contre 0,12 Go pour le plus léger, un facteur 17, et le
+classement des durées de chargement suit exactement : 20 secondes de moyenne et 114 s au p99
+d'un côté, moins de 0,5 s de l'autre.
+
+Ce n'est ni du CPU ni du disque saturé, on a vérifié les deux avant de conclure : pendant un
+chargement de 28 secondes le conteneur consommait 0,04 cœur et les disques tournaient à
+moins de la moitié de leur temps d'occupation. C'est un gros fichier qu'on relit, rien de
+plus.
+
+La conclusion est déplaisante parce qu'aucun flag ne la règle. Monter le délai d'inactivité
+déplace le problème sans le supprimer, puisqu'un pod qui redémarre repart avec zéro header
+chargé et charger tout au démarrage revient à provisionner la RAM pour l'intégralité du
+corpus d'index-header. Le seul levier qui agit sur la cause, c'est la cardinalité du tenant.
+
+### Les métriques que personne n'affiche
+
+Aucun dashboard livré ne porte ces compteurs, alors qu'ils sont exposés par défaut. Tant
+qu'on ne les trace pas, le symptôme reste invisible et il faut passer les logs de la store
+gateway en debug pour voir passer les `lazy loaded index-header`.
+
+| métrique | ce qu'elle dit |
+|---|---|
+| `thanos_bucket_store_indexheader_lazy_load_total` | chargements |
+| `thanos_bucket_store_indexheader_lazy_unload_total` | évictions après le délai d'inactivité |
+| `thanos_bucket_store_indexheader_lazy_load_duration_seconds` | le prix d'un chargement |
+| `thanos_bucket_store_indexheader_lazy_load_failed_total` | un header perdu, donc des résultats incomplets en silence |
+
+Le panel qui manquait le plus est la résidence, `(load - unload) / blocks_loaded`, qui dit
+d'un coup d'œil quelle part du corpus est encore chargée. À 0, la prochaine requête paiera
+plein tarif.
+
+!!! warning "Ne pas passer histogram_quantile sur cet histogramme"
+    Ses bornes de buckets sautent 5, 15, 30, 60, 90, 120 puis 300 secondes, donc tout
+    quantile qui tombe au-delà de 5 s est interpolé dans un bucket large de dizaines de
+    secondes et sort une courbe lisse qui est un artefact. On lit la moyenne par
+    `sum / count`, qui est exacte, et on compte les franchissements de bucket pour la queue.
+
 ## Réplication : le choix assumé
 
 Thanos Receive sait faire du hashring et de la réplication. L'infrastructure est déployée, le `receive-controller` tourne, la ConfigMap de hashring existe, le flag est câblé.
