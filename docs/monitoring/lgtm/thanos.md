@@ -390,7 +390,7 @@ Ces 2 règles disent si le job tourne, pas s'il fait son travail. Un compactor p
 
 Le `by (group)` sur `thanos_compact_todo_compactions` est ce qui permet d'isoler le groupe de compaction qui traîne, plutôt que de constater que le total monte.
 
-## Un shard par tranche de temps
+## Un shard par timerange
 
 Une store gateway qui sert tout le bucket doit être dimensionnée pour la requête la plus violente qu'on lui posera jamais, par exemple un dashboard avec un timerange de 6 mois qui va charger énormément de donnée en RAM sur tous les replicas, pendant que le dashboard temps réel attend derrière.
 
@@ -399,7 +399,7 @@ Or les 2 profils d'accès n'ont rien à voir :
 - les données récentes sont interrogées en permanence, sur un petit volume et doivent répondre vite
 - les données anciennes sont interrogées rarement, mais chaque requête scanne énormément et supporte d'être lente
 
-On a donc découpé la store gateway en 3 shards par plage de temps, avec 2 replicas chacun. Le plus récent démarre à 3 heures, parce qu'en dessous c'est Receive qui sert encore la donnée depuis sa TSDB.
+On a donc découpé la store gateway en 3 shards par timerange, avec 2 replicas chacun. Le plus récent démarre à 3 heures, parce qu'en dessous c'est Receive qui sert encore la donnée depuis sa TSDB.
 
 ![Sharding temporel de la store gateway Thanos avec min-time et max-time](./_img/thanos-sharding.svg)
 
