@@ -10,7 +10,7 @@ tags:
 Par défaut ArgoCD applique tout en parallèle. En pratique ça pose problème : un Deployment
 qui démarre avant sa ConfigMap, une migration qui tourne pendant que l'appli reçoit du trafic...
 
-2 solutions s'offrent ici à nous : on attend le retry d'ArgoCD où on gère ça proprement avec les _waves_ et les _hooks_. Pour contrôler d'autres aspects du sync (comme `PruneLast` ou `ServerSideApply`), voir [Sync Options](sync_options.md).
+2 solutions s'offrent ici à nous : on attend le retry d'ArgoCD ou on gère ça proprement avec les _waves_ et les _hooks_. Pour contrôler d'autres aspects du sync (comme `PruneLast` ou `ServerSideApply`), voir [Sync Options](sync_options.md).
 
 ## Sync Waves
 
@@ -186,6 +186,8 @@ Les hooks ignorent les waves. L'ordre c'est toujours : PreSync → waves (de -N 
 Un `PreSync` s'exécute donc toujours avant la wave `-1`.
 
 ## Debug
+
+L'état des hooks et des waves se lit dans l'Application elle-même :
 
 ```bash
 # État des hooks du dernier sync
