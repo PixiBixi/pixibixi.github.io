@@ -29,16 +29,20 @@ Sortie sur une config saine :
 
 2 détails de l'invocation valent le détour.
 
-**Épingler la version.** `--package renovate` sans tag, qui est la forme de la [doc officielle](https://docs.renovatebot.com/config-validation/), laisse npx servir ce qu'il a en cache. Le mien datait de plusieurs majeures et refusait une config que la 44 accepte, ce qui suffit à conclure l'inverse de la réalité sur le point qu'on cherchait à vérifier.
+### Épingler la version
 
-**Savoir dans quel mode il tourne.** Passer un chemin en argument fait valider le fichier comme config **globale**, celle d'une instance self-hosted et pas comme config de repo. `--no-global` force le mode repo et la première ligne de sortie dit toujours lequel a tourné :
+`--package renovate` sans tag, qui est la forme de la [doc officielle](https://docs.renovatebot.com/config-validation/), laisse npx servir ce qu'il a en cache. Le cache local datait de plusieurs majeures et refusait une config que la 44 accepte, ce qui suffit à conclure l'inverse de la réalité sur le point qu'on cherchait à vérifier.
+
+### Savoir dans quel mode il tourne
+
+Passer un chemin en argument fait valider le fichier comme config **globale**, celle d'une instance self-hosted et pas comme config de repo. `--no-global` force le mode repo et la première ligne de sortie dit toujours lequel a tourné :
 
 ```text
  INFO: Validating renovate.json as global config
  INFO: Validating renovate.json as repo config
 ```
 
-Sans argument du tout, il détecte les emplacements par défaut et prend le mode repo. Je n'ai pas trouvé de cas où le mode change le verdict, une clé inconnue est refusée dans les 2, mais autant valider dans le mode qui correspond au fichier.
+Sans argument du tout, il détecte les emplacements par défaut et prend le mode repo. Aucun cas rencontré où le mode change le verdict, une clé inconnue est refusée dans les 2, mais autant valider dans le mode qui correspond au fichier.
 
 `--strict` fait en plus échouer la validation quand une migration de config est nécessaire, ce que Renovate propose sinon via une case à cocher dans le dependency dashboard.
 
