@@ -7,17 +7,17 @@ tags:
   - IAM
 ---
 
-# GKE Workload Identity
+# GKE Workload Identity : lier un KSA à un GSA sans clé JSON
 
-2 solutions sont adéquates pour s'identifier sur les services Google : Les Services Account (SA) et le Workload Identity
+2 façons de s'identifier sur les services Google : les service accounts (SA) avec leur clé JSON ou Workload Identity.
 
-Les SA contiennent des secrets et doivent être rotate en cas de compromission...
+La clé d'un SA est un secret qu'il faut stocker, distribuer à chaque pod qui en a besoin et rotate en cas de compromission...
 
 Workload Identity règle ça : on lie un service account K8s (KSA) à un service account GCP (GSA) et les SDK GCP récupèrent automatiquement un token depuis la metadata API du nœud. Cette approche marche sur tous les types de nodes, y compris les [Spot Nodes](spot_nodes.md).
 
 ![Schéma Workload Identity : Pod → KSA → GSA → services GCP](./_img/workload_identity.svg)
 
-## Avec Terraform
+## Câbler le cluster, le GSA et le KSA
 
 2 points à activer : le cluster (`workload_pool`) et chaque node pool (`GKE_METADATA`).
 
@@ -76,7 +76,9 @@ resource "kubernetes_service_account" "app" {
 }
 ```
 
-## Utiliser dans le pod
+## Utiliser l'identité dans le pod
+
+Le pod ne référence que le KSA, les SDK GCP récupèrent le token tout seuls via ADC :
 
 ```yaml
 spec:
@@ -88,6 +90,8 @@ spec:
 ```
 
 ## Vérifier que ça fonctionne
+
+Un pod jetable monté sur le KSA suffit à valider toute la chaîne :
 
 ```bash
 kubectl run -it --rm workload-identity-test \
@@ -114,6 +118,8 @@ curl -H "Metadata-Flavor: Google" \
 | `403 Permission denied` | IAM binding manquant ou mauvais rôle sur le GSA |
 | Token GSA incorrect | Node pool sans `GKE_METADATA` |
 | `svc.id.goog` absent de la metadata | Workload Identity non activé sur le cluster |
+
+Les 2 commandes qui tranchent entre un problème d'IAM et un problème de metadata :
 
 ```bash
 # Vérifier la liaison IAM

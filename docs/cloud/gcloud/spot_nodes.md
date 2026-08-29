@@ -6,12 +6,12 @@ tags:
   - FinOps
 ---
 
-# GKE Spot Nodes
+# Spot sur GKE : node pools, scheduling et workloads éligibles
 
 Les Spot VMs sont des instances que GCP peut reprendre à tout moment avec 30 secondes de
-préavis. On obtient un gain financier entre 4-5x le prix d'une instance standard
+préavis. En échange elles coûtent 4-5x moins cher qu'une instance standard.
 
-En pratique GCP les reprend rarement et conviennent à une majorité de workload stateless
+En pratique GCP les reprend rarement et elles conviennent à une majorité de workloads stateless.
 
 !!! note "Spot VM vs Preemptible"
     `--preemptible` est déprécié, durée max 24h. En Terraform c'est `spot = true`.
@@ -92,7 +92,9 @@ spec:
           memory: 512Mi
 ```
 
-## Éviter que GCP reprenne tout d'un coup
+## Borner les évictions simultanées avec un PDB
+
+Un PDB ne retient pas GCP quand il reprend un nœud Spot, la reprise ne passe pas par l'API d'éviction. Il couvre tout le reste : drain manuel, autoscaler, upgrade de pool.
 
 ```yaml
 apiVersion: policy/v1
@@ -108,9 +110,9 @@ spec:
 
 ## Ce qui passe sur Spot, ce qui ne passe pas
 
-La vraie question : **ce nœud détient-il un state critique non répliqué instantanément ?**
+**Ce nœud détient-il un state critique non répliqué instantanément ?** Tout part de là.
 
-Le tableau ci-dessous donne des exemples courants mais chaque appli est différente - à évaluer au cas par cas selon son architecture réelle.
+Les cas ci-dessous sont les plus courants, ils ne dispensent pas de regarder ce que l'appli garde vraiment en local.
 
 | Workload | Spot OK ? | Pourquoi |
 |----------|:---------:|---------|
@@ -139,6 +141,8 @@ spot-c2-standard-8
 L'autoscaler utilisera celui qui a de la capacité.
 
 ## Commandes utiles
+
+Repérer les nœuds Spot du cluster et simuler une reprise pour voir comment l'appli encaisse :
 
 ```bash
 # Voir quels nœuds sont Spot
