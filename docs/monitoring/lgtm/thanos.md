@@ -511,7 +511,7 @@ Le premier est de lire ça sur un instantané. Un `increase` pris à un moment d
 
 Le second est le facteur de déduplication. Il est tentant de diviser par le nombre de pods, mais des store gateways shardées cachent des blocks **disjoints** : seuls les replicas d'un même shard cachent la même chose. Avec 3 shards et 2 replicas, on divise par 2, pas par 6. Se tromper là sous-dimensionne d'un facteur 3.
 
-Et le résultat reste une borne haute, parce qu'un cache qui évince réadmet en boucle les mêmes clés et gonfle le compteur d'admissions. Le vrai working set se trouve en montant le plafond par paliers jusqu'à ce que le taux d'éviction s'effondre. Le plateau, c'est la réponse.
+Et le résultat reste une borne haute, parce qu'un cache qui évicte réadmet en boucle les mêmes clés et gonfle le compteur d'admissions. Le vrai working set se trouve en montant le plafond par paliers jusqu'à ce que le taux d'éviction s'effondre. Le plateau, c'est la réponse.
 
 Enfin le `limits.memory` du conteneur se dimensionne sur le **RSS**, avec une marge absolue et pas un ratio. Les métadonnées et la fragmentation de l'allocateur vivent bien en dehors du `maxmemory`, mais elles ne suivent pas la taille du cache : sur une instance dont le keyspace oscille, on mesure 1,4 Gio de rétention d'allocateur pour un keyspace qui plafonne à 236 Mio et qui ne sont jamais rendus à l'OS, quand la même instance à plein remplissage n'a que 50 Mio de surcoût sur 3,2 Gio. Un ratio sous-dimensionne donc les petits plafonds et gonfle les gros, là où `maxmemory` plus une marge fixe de l'ordre de 2 Gio tient dans les 2 cas. Et le backend ne pré-alloue pas sur son plafond, ce qui se vérifie en comparant 2 instances : celle dont le `maxmemory` est 8 fois plus grand peut avoir le RSS le plus petit.
 
@@ -530,7 +530,7 @@ Trois pièges rencontrés avec son opérateur Kubernetes :
 
 - Les métriques Prometheus sortent sur un port `admin` séparé et l'opérateur crée par défaut une NetworkPolicy qui ne l'ouvre qu'à lui-même et aux pods pairs. Prometheus reste muet, silencieusement. Les NetworkPolicies étant purement additives, il suffit d'en **ajouter** une pour le namespace de Prometheus, sans désactiver celle de l'opérateur.
 - Il n'y a pas de `/metrics` HTTP sur le port principal, qui ne parle que RESP. Se tromper de port donne un timeout qu'on met du temps à relier à une NetworkPolicy.
-- `evicted_keys_total` et `expired_keys_total` sont **déclarés sans valeur** tant qu'ils valent zéro. Prometheus n'ingère donc aucune série et un panneau affiche « No data » là où on attend 0, ce qui rend « rien évincé » indiscernable de « métrique cassée ». En attendant, le signal d'éviction utilisable est la mémoire utilisée qui rejoint `maxmemory`.
+- `evicted_keys_total` et `expired_keys_total` sont **déclarés sans valeur** tant qu'ils valent zéro. Prometheus n'ingère donc aucune série et un panneau affiche « No data » là où on attend 0, ce qui rend « rien évicté » indiscernable de « métrique cassée ». En attendant, le signal d'éviction utilisable est la mémoire utilisée qui rejoint `maxmemory`.
 
 La configuration est la même forme pour les 3 caches. Pour la store gateway :
 
