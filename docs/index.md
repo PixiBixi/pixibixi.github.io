@@ -211,6 +211,7 @@ Le plan complet est ci-dessous, sinon la recherche fait le job.
 - [Netdata, Prometheus et Grafana : une stack de monitoring simple et puissante](monitoring/lgtm/simple_monitoring_stack.md)
 - [Grafana Alloy - remplacer Promtail (et tout le reste)](monitoring/lgtm/alloy.md)
 - [Thanos at scale : archi, perf et FinOps](monitoring/lgtm/thanos.md)
+- [Les caches Thanos : mutualisation, dimensionnement et facture](monitoring/lgtm/thanos-cache.md)
 - [Générer des alertes depuis Loki](monitoring/lgtm/loki_alerting.md)
 - [Écrire une métrique custom pour node_exporter](monitoring/lgtm/custom_metrics_nodeexporter.md)
 - [Quelques tips pour la stack LGTM](monitoring/lgtm/tips_lgtm.md)
