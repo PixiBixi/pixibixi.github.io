@@ -245,7 +245,7 @@ terragrunt stack clean
 
 Les units générées atterrissent dans `.terragrunt-stack/`, qui est un artefact : on le gitignore et on ne l'édite jamais à la main. Côté unit, les valeurs se lisent avec `values.cluster_name` au lieu de passer par des `locals` recopiés.
 
-C'est puissant et c'est aussi une couche d'indirection en plus. Sur 3 environnements qui se ressemblent, le gain ne paye pas la complexité. Sur 30 clients au même schéma, il la paye largement.
+Ça règle le problème et ça ajoute une couche d'indirection en plus. Sur 3 environnements qui se ressemblent, le gain ne paye pas la complexité. Sur 30 clients au même schéma, il la paye largement.
 
 ## Les pièges qui coûtent une heure
 
