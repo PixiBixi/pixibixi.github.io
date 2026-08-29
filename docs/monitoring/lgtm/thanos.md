@@ -108,6 +108,75 @@ Et il y a un effet de bord qu'on ne voit pas venir : **une réponse partielle n'
 
 Le flag ne fixe qu'un défaut et les clients peuvent le surcharger par requête avec le paramètre `partial_response`. La voie médiane est donc de laisser le défaut désactivé, ce qui protège les règles d'alerte et le cache et de l'activer uniquement sur la datasource Grafana des humains, où une réponse partielle assortie d'un warning vaut mieux qu'un spinner de 25 secondes.
 
+## Annoncer le label sur lequel on filtre
+
+Le querier global n'écarte un stack que si les matchers de la requête contredisent un label
+que ce stack **annonce**. Pas un label présent dans ses séries, un label présent dans son
+info endpoint : la nuance décide de tout et on a mis longtemps à la voir.
+
+Nos queriers de tenant annonçaient leurs labels de receive, qui identifient bien le stack
+mais que personne n'écrit jamais dans une requête. Les dashboards, eux, filtrent sur le nom
+du cluster. Aucun matcher ne pouvait donc contredire quoi que ce soit, aucune branche
+n'était élaguable et chaque requête partait sur la vingtaine de stacks.
+
+Ça se lit sans rien instrumenter : tous les stacks servaient le même débit d'appels `Series`
+à 0,4 % près. Un tenant qui pèse quelques dizaines de milliers de séries encaissait
+exactement le même nombre d'appels que le plus gros de la flotte.
+
+Reste à choisir quel label annoncer. Le choix se contraint tout seul, parce que 2 conditions
+pèsent en même temps : le label doit être celui que les requêtes portent réellement, sinon
+aucun matcher ne le contredira jamais et l'annonce ne sert à rien, et il ne doit avoir qu'une
+seule valeur par stack, sinon le stack se retirera des requêtes qui cherchent ses autres
+valeurs. Les 2 ensemble ne laissent en général qu'un candidat.
+
+Chez nous c'est le label de cluster que les Prometheus posent en external label et sur
+lequel toutes les variables de dashboard sont câblées, `k8s_cluster_name` de son petit nom.
+Il n'a rien de standard, c'est une convention interne : ce qui compte est qu'il coche les 2
+cases, pas comment il s'appelle.
+
+Le flag se pose ensuite sur le querier de chaque tenant :
+
+```yaml
+extraFlags:
+  - --selector-label=k8s_cluster_name="<le cluster de ce tenant>"
+```
+
+Il se vérifie dans l'info endpoint et pas dans la conf, le label doit apparaître dans les
+`external_labels` que le querier global expose sur `thanos_store_nodes_grpc_connections`.
+
+Rassurant avant de déployer : `ProxyStore.LabelSet()` passe par `ExtendSortedLabels`, donc
+le flag **étend** les label sets remontés des stores en aval au lieu de les remplacer. Tout
+ce qui filtrait déjà sur les autres labels continue de marcher.
+
+!!! warning "Un stack qui ingère 2 clusters ne peut pas être annoté"
+    La seconde condition n'est pas théorique : 4 de nos stacks reçoivent 2 clusters chacun,
+    parce que des clusters sans bucket dédié poussent dans le receiver régional.
+    `--selector-label` ne portant qu'une valeur par clé et `ProxyStore.Series()` s'auto-filtrant
+    dessus, une valeur unique n'y ralentit pas la requête, elle renvoie **vide** pour le second
+    cluster. C'est une perte de données silencieuse en lecture, donc le flag se pose en opt-in
+    par stack et jamais en défaut de template.
+
+Le gain réel a été de 28 % d'appels en moins sur les stacks annotés, pas les 96 % qu'on
+visait et la raison mérite d'être écrite parce qu'elle vaut pour toute flotte multi-tenant.
+
+Un stack qu'on n'a pas pu annoter reste interrogé par 100 % des requêtes, donc même une
+requête parfaitement scopée sur un cluster touche encore tous ceux-là. Et surtout la
+plupart des requêtes ne portent aucun filtre de cluster : en passant en revue les 1300
+dashboards de notre Grafana, sur les 417 qui interrogent le store global, 71 ont une
+variable de cluster et 346 n'en ont aucune. Une variable laissée sur « All » ne compte pas
+davantage, elle se rend en regex qui matche tout.
+
+Ce n'est pas de la négligence. Un développeur qui regarde son API ne sait pas, et n'a pas à
+savoir, sur quel cluster tourne son pod : sa requête filtre sur un job ou un namespace et
+aucun label ne permet de l'élaguer. Le fan-out est réductible pour les dashboards d'infra
+qui savent où ils regardent, irréductible pour tout le reste.
+
+Dernier point, celui qui surprend le plus : la charge de fan-out d'un tenant ne dit rien de
+sa taille, elle suit le workload de requêtes. Sur 24h les stacks montent et descendent
+ensemble, de 17,7 à 45,1 appels par seconde selon l'heure, tous à quelques pourcents les uns
+des autres. Dimensionner un stack sur sa volumétrie ignore donc la moitié de ce qui le
+sollicite.
+
 ## Le chemin d'une métrique
 
 ![Chemin d'une métrique dans Thanos, coloré par mode de facturation](./_img/thanos-flow.svg)
