@@ -129,7 +129,7 @@ Le plan complet est ci-dessous, sinon la recherche fait le job.
 ### ArgoCD
 
 - [Créer son service account ArgoCD](kubernetes/argocd/argocd_sa.md)
-- [ArgoCD ApplicationSet](kubernetes/argocd/applicationset.md)
+- [ArgoCD ApplicationSet : générateurs, template et politique de suppression](kubernetes/argocd/applicationset.md)
 - [ArgoCD : Sync Waves & Hooks](kubernetes/argocd/sync_waves.md)
 - [ArgoCD : Sync Options](kubernetes/argocd/sync_options.md)
 
@@ -180,7 +180,7 @@ Le plan complet est ci-dessous, sinon la recherche fait le job.
 
 ### MongoDB
 
-- [MongoDB - Dump et import d'indexes](databases/mongodb/dump-import-indexes.md)
+- [MongoDB : dumper et réimporter les indexes seuls](databases/mongodb/dump-import-indexes.md)
 
 ## Cloud
 
@@ -188,8 +188,8 @@ Le plan complet est ci-dessous, sinon la recherche fait le job.
 
 - [Suivre l'upgrade de son cluster GKE](cloud/gcloud/gke_upgrades.md)
 - [Commandes utiles pour la CLI Gcloud](cloud/gcloud/gcloud_commands.md)
-- [GKE Spot Nodes](cloud/gcloud/spot_nodes.md)
-- [GKE Workload Identity](cloud/gcloud/workload_identity.md)
+- [Spot sur GKE : node pools, scheduling et workloads éligibles](cloud/gcloud/spot_nodes.md)
+- [GKE Workload Identity : lier un KSA à un GSA sans clé JSON](cloud/gcloud/workload_identity.md)
 - [GKE - Capacité réelle des nodes](cloud/gcloud/gke_node_capacity.md)
 
 ### AWS
@@ -209,7 +209,7 @@ Le plan complet est ci-dessous, sinon la recherche fait le job.
 ### Stack LGTM
 
 - [Netdata, Prometheus et Grafana : une stack de monitoring simple et puissante](monitoring/lgtm/simple_monitoring_stack.md)
-- [Grafana Alloy - remplacer Promtail (et tout le reste)](monitoring/lgtm/alloy.md)
+- [Grafana Alloy : migration Promtail, pipelines et alerting Mimir](monitoring/lgtm/alloy.md)
 - [Thanos at scale : archi, perf et FinOps](monitoring/lgtm/thanos.md)
 - [Les caches Thanos : mutualisation, dimensionnement et facture](monitoring/lgtm/thanos-cache.md)
 - [Générer des alertes depuis Loki](monitoring/lgtm/loki_alerting.md)
