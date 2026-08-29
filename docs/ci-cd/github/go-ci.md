@@ -10,7 +10,7 @@ tags:
 
 # CI GitHub Actions pour un projet Go
 
-Une CI Go, ce n'est pas juste `go test`. Test multi-plateforme, lint, scan de vulnérabilités et une release qui se déclenche toute seule sur le type de commit. Tout ce qui suit tourne sur `push` et `pull_request`, mesuré sur un vrai repo public : [gopen](https://github.com/PixiBixi/gopen).
+Une CI Go demande plus que `go test`. Test multi-plateforme, lint, scan de vulnérabilités et une release qui se déclenche toute seule sur le type de commit. Tout ce qui suit tourne sur `push` et `pull_request`, mesuré sur un vrai repo public : [gopen](https://github.com/PixiBixi/gopen).
 
 !!! tip "Le socle de durcissement est traité à part"
     Épinglage par SHA, `permissions:`, `persist-credentials`, injection de template, zizmor et actionlint ne dépendent pas du langage et vivent dans [Durcir une CI GitHub Actions](hardening.md). Tous les workflows ci-dessous les appliquent.
@@ -182,7 +182,7 @@ Tout ça se règle (`fail_level: error`, `filter_mode: nofilter`, versions épin
 
 ## Vulnérabilités des dépendances
 
-[govulncheck](https://go.dev/blog/govulncheck) est l'outil officiel de la Go Team. Sa force : il ne signale une CVE que si ton code **appelle réellement** la fonction vulnérable, pas juste parce que le module est dans l'arbre de dépendances. Beaucoup moins de faux positifs qu'un scanner générique.
+[govulncheck](https://go.dev/blog/govulncheck) est l'outil officiel de la Go Team. Sa force : il ne signale une CVE que si le code **appelle réellement** la fonction vulnérable, pas juste parce que le module est dans l'arbre de dépendances. Beaucoup moins de faux positifs qu'un scanner générique.
 
 ```yaml title=".github/workflows/govulncheck.yml"
 permissions:
@@ -333,7 +333,7 @@ jobs:
 
 Pourquoi tout dans un seul job, plutôt qu'un workflow qui tague et un autre qui publie sur le tag ? Parce qu'un tag poussé avec le `GITHUB_TOKEN` par défaut **ne re-déclenche pas** de workflow - garde-fou anti-boucle de GitHub. Séparer les 2 imposerait un PAT dédié juste pour ré-armer le second workflow. En enchaînant calcul-du-tag et publication dans le même run, on s'en passe. La double condition (`ref_type == 'tag'` ou nouveau tag calculé) préserve l'échappatoire manuelle : un `v*` poussé à la main court-circuite le calcul et publie directement.
 
-Résultat : Renovate merge un `minor` de dépendance, la CI passe, une version mineure sort et est publiée - sans qu'une main touche à un tag.
+Renovate merge un `minor` de dépendance, la CI passe, une version mineure sort et est publiée - sans qu'une main touche à un tag.
 
 ## Récap
 
