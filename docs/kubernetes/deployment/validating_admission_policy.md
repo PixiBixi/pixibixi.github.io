@@ -374,4 +374,7 @@ En général, `Fail` est le bon choix pour du security enforcement. `Ignore` peu
 
 ## Voir aussi
 
+- [PDB et topology spread](pdb_topology_spread.md) - refuser à l'admission un budget qui n'autorise aucune éviction
+- [Spegel : un OCI registry cache stateless](local_image_cache.md) - le pendant de la policy qui restreint les registries autorisées
+- [GOMEMLIMIT/GOMAXPROCS automatiques](gomaxprocs_gomemlimit_kubernetes.md) - ce que les limits imposées par la policy changent côté runtime Go
 - [HAProxy : Reverse proxy](../../web/haproxy/overview.md) - load balancer L4/L7 en production, alternative aux Services NodePort
