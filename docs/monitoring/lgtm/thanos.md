@@ -52,7 +52,7 @@ remote_write:
 
 C'est le levier de coût le plus direct de toute la stack, parce qu'il agit avant l'ingestion : on ne paye ni le stockage, ni la compaction, ni la cardinalité de ce qu'on a laissé sur place. La rétention locale de Prometheus reste complète pour du debug à chaud, seule la longue traîne est filtrée.
 
-Le vrai critère de choix est ailleurs : un stack isolé par tenant, ou un cluster mutualisé ?
+Le vrai critère de choix est ailleurs : une stack isolée par tenant, ou un cluster mutualisé ?
 
 - Mimir et VictoriaMetrics poussent vers un backend unique et multi-tenant, avec des limites par tenant
 - Thanos Receive permet le multi-tenant, mais rien n'oblige à l'utiliser ainsi
@@ -69,9 +69,9 @@ Ce qu'on y perd : une vingtaine de compactors, de queriers et de store gateways 
 
 ## L'architecture high-level
 
-Un stack complet par tenant et au-dessus un querier global qui fait le fan-out sur tous les queriers régionaux.
+Une stack complète par tenant et au-dessus un querier global qui fait le fan-out sur tous les queriers régionaux.
 
-![Topologie Thanos multi-tenant avec le querier global au-dessus des stacks régionaux](./_img/thanos-topology.svg)
+![Topologie Thanos multi-tenant avec le querier global au-dessus des stacks régionales](./_img/thanos-topology.svg)
 
 Ce querier global pousse la parallélisation bien plus haut que les régionaux, avec son propre cache de résultats. Rien n'oblige à n'en avoir qu'un. On peut poser un second querier global sur un sous-ensemble de tenants, pour donner à une équipe une vue limitée à son périmètre sans lui ouvrir la flotte entière.
 
@@ -94,7 +94,7 @@ Ce qui compte n'est pas dans les flags, c'est que la liste des stores à interro
 
 `--query-frontend.log-queries-longer-than=10s` est à activer dès le premier jour. C'est ce qui permet de savoir quel dashboard fait souffrir la stack, plutôt que de le deviner.
 
-Mais attention à ce qu'on y lira. Le querier global attend **tous** les stacks avant de répondre, donc la latence perçue est celle de la branche la plus lente. Un stack qui répond en 150 ms au p99 mais en 4 s dans sa queue suffit à produire des requêtes utilisateur à 25 s, dès lors que le fan-out en interroge une vingtaine : la probabilité de tomber sur au moins un traînard devient forte.
+Mais attention à ce qu'on y lira. Le querier global attend **toutes** les stacks avant de répondre, donc la latence perçue est celle de la branche la plus lente. Une stack qui répond en 150 ms au p99 mais en 4 s dans sa queue suffit à produire des requêtes utilisateur à 25 s, dès lors que le fan-out en interroge une vingtaine : la probabilité de tomber sur au moins un traînard devient forte.
 
 On a chassé longtemps des requêtes coûteuses avant de comprendre que les plus lentes étaient triviales. Un sélecteur sur 9 séries qui met 26 secondes ne coûte rien à calculer, il attend. Le levier n'est alors ni le cache ni le sizing : c'est de réduire le fan-out, en s'assurant que les external labels annoncés par chaque stack permettent au querier global d'élaguer ceux qui ne peuvent pas matcher, ou d'accepter `--query.partial-response` pour borner la queue.
 
@@ -121,7 +121,7 @@ n'était élaguable et chaque requête partait sur la vingtaine de stacks.
 
 ![Le querier global confronte le matcher de la requête au label set annoncé par chaque branche : compatible, contredite ou sans label à contredire](./_img/thanos-pruning.svg)
 
-Ça se lit sans rien instrumenter : tous les stacks servaient le même débit d'appels `Series`
+Ça se lit sans rien instrumenter : toutes les stacks servaient le même débit d'appels `Series`
 à 0,4 % près. Un tenant qui pèse quelques dizaines de milliers de séries encaissait
 exactement le même nombre d'appels que le plus gros de la flotte.
 
@@ -158,7 +158,7 @@ ce qui filtrait déjà sur les autres labels continue de marcher.
     cluster. C'est une perte de données silencieuse en lecture, donc le flag se pose en opt-in
     par stack et jamais en défaut de template.
 
-Le gain réel a été de 28 % d'appels en moins sur les stacks annotés, pas les 96 % qu'on
+Le gain réel a été de 28 % d'appels en moins sur les stacks annotées, pas les 96 % qu'on
 visait et la raison mérite d'être écrite parce qu'elle vaut pour toute flotte multi-tenant.
 
 Une stack qu'on n'a pas pu annoter reste interrogée par 100 % des requêtes, donc même une
@@ -189,12 +189,12 @@ La couleur porte l'essentiel : tout ce qui est stateless et rejouable tourne sur
 
 Chaque flèche du schéma précédent est du trafic facturé. Receive qui uploade ses blocks, la store gateway qui les retélécharge à chaque miss de cache, les séries qui remontent en gRPC vers le querier, puis le fan-out du querier global sur tous les régionaux. À une vingtaine de tenants le volume est conséquent et personne ne le regarde parce qu'il n'apparaît pas sur la ligne compute.
 
-Sur GCP, un transfert entre 2 zones d'une même région est facturé, alors qu'il est gratuit à l'intérieur d'une zone. On colle donc tous les composants d'un stack dans la même zone, au lieu de laisser le scheduler les répartir pour faire de la haute dispo.
+Sur GCP, un transfert entre 2 zones d'une même région est facturé, alors qu'il est gratuit à l'intérieur d'une zone. On colle donc tous les composants d'une stack dans la même zone, au lieu de laisser le scheduler les répartir pour faire de la haute dispo.
 
 Le bucket suit la même logique mais à la maille région, un bucket GCS étant régional et pas zonal. Depuis une VM de la même région la sortie ne coûte rien, alors qu'un bucket dans une autre région ou en multi-région se paye à chaque lecture et la store gateway lit beaucoup.
 
 !!! warning "Le prix : plus de redondance de zone"
-    Un stack dans une seule zone tombe avec sa zone. C'est le même arbitrage que le RF=1 :
+    Une stack dans une seule zone tombe avec sa zone. C'est le même arbitrage que le RF=1 :
     on accepte de perdre un tenant le temps d'une panne zonale plutôt que de payer du trafic
     inter-zone en permanence. Sur des métriques la perte est bornée et l'historique reste
     dans le bucket, ce qui rend le compromis tenable là où il ne le serait pas sur une base
@@ -459,7 +459,7 @@ Thanos a 3 caches et par défaut ils sont tous les 3 en mémoire du process :
 - le caching bucket (`--store.caching-bucket.config`), qui garde les sous-plages de chunks et les métadonnées de blocks
 - le cache de résultats du query frontend (`--query-range.response-cache-config`), qui garde les réponses de requêtes
 
-En `IN-MEMORY`, chaque replica a le sien, personne ne partage rien et tout est perdu au premier redémarrage. À un stack par cluster ça se chiffre vite, puisque 3 shards et 2 replicas chacun sur une vingtaine de stacks font de l'ordre de la centaine de pods, chacun portant son 1 Gio d'index cache et ses 2 Gio de caching bucket. La store gateway finit autour de 230 Gio de RAM pour moins d'un cœur de CPU, ce qui dit assez qu'on paye du cache et pas du calcul.
+En `IN-MEMORY`, chaque replica a le sien, personne ne partage rien et tout est perdu au premier redémarrage. À une stack par cluster ça se chiffre vite, puisque 3 shards et 2 replicas chacun sur une vingtaine de stacks font de l'ordre de la centaine de pods, chacun portant son 1 Gio d'index cache et ses 2 Gio de caching bucket. La store gateway finit autour de 230 Gio de RAM pour moins d'un cœur de CPU, ce qui dit assez qu'on paye du cache et pas du calcul.
 
 Et c'est là que ça rejoint le choix du spot. Une éviction ne coûte rien en compute, c'est tout l'intérêt, mais avec un cache en mémoire elle coûte le cache. Le pod revient froid et repart pour de longues minutes avant d'être utile. Le cache local est ce qui rend le spot cher.
 
@@ -780,14 +780,14 @@ Le raisonnement se retourne d'ailleurs, parce qu'avec RF=2 et au moins 2 replica
 
 ## Garder une vingtaine de stacks maintenables
 
-Un stack par cluster, ça veut dire dupliquer la configuration autant de fois. La réponse tient en 2 mécanismes.
+Une stack par cluster, ça veut dire dupliquer la configuration autant de fois. La réponse tient en 2 mécanismes.
 
-Un ApplicationSet ArgoCD génère les stacks à partir d'un sélecteur de labels sur le registre de clusters. Ajouter un cluster à la flotte ne demande aucune merge request sur Thanos : on pose le label sur le cluster, le stack apparaît.
+Un ApplicationSet ArgoCD génère les stacks à partir d'un sélecteur de labels sur le registre de clusters. Ajouter un cluster à la flotte ne demande aucune merge request sur Thanos : on pose le label sur le cluster, la stack apparaît.
 
 Les values Helm sont empilées en couches, de la plus générique à la plus spécifique :
 
 ```text
-values/common/            defaults partagés par tous les stacks
+values/common/            defaults partagés par toutes les stacks
 values/thanos-common/     defaults de l'archétype « stack régional »
 values/thanos-<type>/     surcharge par type de bucket
 values/thanos-<tenant>/   surcharge dédiée à un tenant
