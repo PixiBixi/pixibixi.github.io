@@ -638,6 +638,48 @@ write:
 
 Le dépassement se traduit par un HTTP 413 côté client. Prometheus ne sait pas découper une requête trop grosse pour la renvoyer, donc ce qui est refusé est perdu. Une limite trop basse ne ralentit pas un tenant, elle lui fait des trous dans ses métriques.
 
+## GOMAXPROCS : le parallélisme qu'on n'a pas choisi
+
+Le moteur PromQL de Thanos découpe chaque sélecteur de vecteur en plusieurs goroutines de
+décodage, ce qui apparaît dans le plan d'exécution sous la forme `0 mod N`, `1 mod N`. N
+n'est exposé par aucun flag Thanos, il sort du runtime :
+
+```go
+decodingConcurrency := opts.DecodingConcurrency
+if opts.DecodingConcurrency < 1 {
+    decodingConcurrency = max(runtime.GOMAXPROCS(0)/2, 1)
+}
+```
+
+Depuis Go 1.25 le runtime lit la limite CPU du cgroup pour fixer GOMAXPROCS. Le seul
+composant de la stack qui porte une limite CPU est donc le seul dont le parallélisme de
+requête est plafonné et chez nous c'était le querier global, celui qui fusionne toutes les
+branches : il décodait sur 4 shards là où chacune de ses feuilles en utilisait 8. Personne
+n'a pris cette décision, elle est tombée d'un commit qui montait les requests et limits
+mémoire et qui a emmené le CPU avec lui.
+
+L'autre moitié est pire : les composants sans limite CPU prennent le nombre de cœurs du
+nœud. Le parallélisme des requêtes est alors dicté par le gabarit que l'autoscaler a choisi
+ce matin-là, il change sans commit et sans que rien ne le signale.
+
+Avant de corriger quoi que ce soit, la case `Analyze` de l'UI Thanos affiche le temps passé
+dans chaque nœud du plan d'exécution. Sur la requête qui nous intriguait, 1,88 s au total
+dont 1,38 s dans le sélecteur feuille et les 4 shards rendaient la même durée à la
+milliseconde près : ils finissaient ensemble parce qu'ils attendaient tous la même chose,
+les stores. Le décodage n'était pas le goulot, le CPU des pods plafonnait à 0,3 cœur sur une
+limite de 8 et doubler le nombre de shards n'aurait rien acheté.
+
+Poser GOMAXPROCS explicitement reste utile pour que le comportement cesse de dépendre du
+nœud, mais tant que les requêtes attendent le réseau c'est de l'hygiène et pas une
+optimisation. Autant le savoir avant d'ouvrir le ticket.
+
+!!! note "Right-sizer le CPU d'un composant memory-bound ne rend rien"
+    Le querier global demandait 4 cœurs pour un pic mesuré à 0,31, ce qui ressemble à une
+    économie facile. Sur un gabarit highmem à environ 7,8 Gio par vCPU, ses 45 Go de RAM
+    immobilisent déjà l'équivalent de 5,3 vCPU : descendre la request CPU ne libère aucun
+    nœud et ne change même pas la densité de pods. C'est la dimension contraignante qui
+    décide et ici c'est la mémoire.
+
 ## Nos tests et nos échecs
 
 Le PVC de la store gateway réglait le problème de disque saturé, mais pas la lenteur du téléchargement lui-même. L'étape suivante paraissait donc évidente : activer la stratégie de téléchargement paresseux, pour ne charger que ce dont on a besoin. Moins de disque, moins de trafic, un démarrage plus rapide.
