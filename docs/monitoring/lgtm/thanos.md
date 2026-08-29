@@ -708,8 +708,11 @@ Dès qu'une pathologie touche nettement moins de 1 % des requêtes, mesurer au p
 
 ## Lecture paresseuse : le prix du rechargement
 
-On a gardé `--store.enable-index-header-lazy-reader` sans jamais mesurer ce qu'il coûte, et
-il coûte.
+Ce flag n'est pas une optimisation qu'on serait allés chercher, c'est la contrepartie du
+spot. Une store gateway évictée doit récupérer ses index-headers avant de pouvoir répondre,
+et sur des instances économiques qui sont IO bound ça se compte en dizaines de minutes, les
+mêmes que celles de la reprise après éviction plus haut. La lecture paresseuse raccourcit ce
+démarrage, donc on la garde. Ce qu'on n'avait jamais fait, c'est mesurer ce qu'elle déplace.
 
 Le flag décharge un index-header après un délai d'inactivité qui vaut 5 minutes par défaut.
 Sur une plateforme où les dashboards ne sont ouverts que par intermittence, les headers ne
@@ -737,6 +740,14 @@ La conclusion est déplaisante parce qu'aucun flag ne la règle. Monter le déla
 déplace le problème sans le supprimer, puisqu'un pod qui redémarre repart avec zéro header
 chargé et charger tout au démarrage revient à provisionner la RAM pour l'intégralité du
 corpus d'index-header. Le seul levier qui agit sur la cause, c'est la cardinalité du tenant.
+
+Le flag ne supprime donc pas le coût, il le déplace du démarrage vers la première requête.
+Tant que les évictions spot sont fréquentes et le disque lent, c'est le bon arbitrage :
+30 secondes sur un dashboard valent mieux qu'une store gateway absente une demi-heure. Il
+cesse de l'être le jour où la cardinalité rend le rechargement plus cher que le démarrage
+qu'il évite, et sur notre plus gros tenant ce jour est arrivé. C'est un choix contraint par
+le gabarit d'instance, pas un réglage de performance, et le vrai levier est une couche plus
+bas : des disques plus rapides ou moins de séries.
 
 ### Les métriques que personne n'affiche
 
