@@ -720,6 +720,8 @@ rechargement complet avant qu'une seule série ne soit lue, ce qui est exactemen
 symptôme « la première requête est interminable » qu'on nous remontait sans savoir quoi en
 faire.
 
+![Cycle du lazy reader : header résident, déchargé après 5 minutes d'inactivité, rechargé aux frais de la requête suivante](./_img/thanos-lazy-reader.svg)
+
 Le coût de ce rechargement n'a rien à voir avec le flag, il est fixé par la taille du
 fichier d'index-header, elle-même fixée par la cardinalité du tenant. Le plus lourd de nos
 tenants porte 2,1 Go par header contre 0,12 Go pour le plus léger, un facteur 17, et le
