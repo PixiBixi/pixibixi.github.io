@@ -5,15 +5,17 @@ tags:
   - Index
 ---
 
-# MongoDB - Dump et import d'indexes
+# MongoDB : dumper et réimporter les indexes seuls
 
 Pas de commande native `mongodump` pour les indexes seuls. On passe par `mongosh` avec un script JS pour les extraire en JSON, puis on les réinjecte sur la cible.
 
-Cas d'usage typiques : cloner les indexes de prod vers staging, migrer entre clusters, sauvegarder avant une opération destructive.
+On s'en sert pour cloner les indexes de prod vers staging, pour migrer entre clusters ou pour garder une copie avant une opération destructive.
 
 ## Dump des indexes
 
 ### Collection unique
+
+`getIndexes()` rend la définition complète, c'est déjà le format que prend `createIndexes()` en face :
 
 ```js
 // mongosh "mongodb://host:27017/mydb"
@@ -22,6 +24,8 @@ print(JSON.stringify(indexes, null, 2));
 ```
 
 ### Toutes les collections d'une base
+
+On boucle sur `getCollectionNames()` et on indexe le résultat par collection :
 
 ```js
 // mongosh "mongodb://host:27017/mydb"
@@ -94,12 +98,9 @@ mongosh "mongodb://target-host:27017/mydb" --quiet --eval "
 
 Pour MongoDB Atlas ou une instance avec auth, ajouter `--username --password --authenticationDatabase admin` à la commande `mongosh`.
 
-## Voir aussi
-
-* [Postgres : les commandes qui servent](../postgres/commands.md)
-* [MySQL : Commandes avancées](../mysql/advanced_commands.md)
-
 ## Exemple complet
+
+Le dump et le réimport enchaînés, en passant par un fichier et une variable shell :
 
 ```bash
 # 1. Dump depuis la source
@@ -135,3 +136,8 @@ mongosh "mongodb://target-host:27017/mydb" --quiet --eval "
   });
 "
 ```
+
+## Voir aussi
+
+- [Postgres : les commandes qui servent](../postgres/commands.md)
+- [MySQL : Commandes avancées](../mysql/advanced_commands.md)
