@@ -230,6 +230,34 @@ La signature dit **qui** a publié, pas **comment** l'artefact a été construit
 
 Si le pipeline pousse aussi une image (via `kos:` plus bas), son digest se récupère dans `dist/artifacts.json`, que GoReleaser écrit en fin de run avec une entrée par artefact produit.
 
+### Dire ce qu'il y a dans l'artefact (SBOM)
+
+La signature dit qui a publié, la provenance dit comment c'est construit, et
+aucune des 2 ne répond à « est-ce que votre binaire embarque la lib qui vient de
+sortir en CVE ». C'est le SBOM, et GoReleaser le génère avec syft en 2 lignes :
+
+```yaml
+sboms:
+  - artifacts: archive
+```
+
+Un `.sbom.json` sort à côté de chaque archive. Comme ce sont des fichiers de
+`dist/` comme les autres, ils rentrent dans l'attestation de provenance, ce qui
+évite qu'on puisse substituer un SBOM sans que la vérification bronche :
+
+```yaml
+          subject-path: 'dist/*.tar.gz,dist/checksums.txt,dist/*.sbom.json'
+```
+
+Le binaire syft doit être présent dans le job, sinon GoReleaser saute l'étape :
+
+```yaml
+      - uses: anchore/sbom-action/download-syft@f8bdd1d8ac5e901a77a92f111440fdb1b593736b # v0.20.9
+```
+
+ko publie déjà un SBOM par image de son côté, donc `sboms:` couvre le cas des
+archives, pour qui récupère le binaire sans passer par l'image.
+
 ## Images OCI multi-arch (ko)
 
 [ko](https://ko.build) est un builder d'images OCI natif Go : il cross-compile le binaire et l'emballe dans une image distroless **sans Dockerfile, sans Docker daemon, sans buildx**. GoReleaser v2 l'intègre nativement via la clé `kos:`.
@@ -256,6 +284,8 @@ Ko génère automatiquement un manifest multi-arch et publie des SBOMs par image
 
 !!! note "Pas de Dockerfile nécessaire"
     Pour un binaire Go pur (`CGO_ENABLED=0`), ko remplace entièrement le duo `Dockerfile.release` + `docker_manifests`. Pour les builds locaux de développement (avec un vrai Dockerfile multi-stage), on peut garder un `Dockerfile` séparé.
+
+Une raison de plus de ne pas partir sur `dockers:` : GoReleaser 2.17 affiche déjà un avertissement de dépréciation sur `dockers` et `docker_manifests`, au profit d'un `dockers_v2` qui n'existe pas encore dans cette version. Écrire du neuf sur ces clés, c'est signer pour une migration.
 
 !!! warning "Visibilité GHCR"
     La première image publiée est privée par défaut sur GHCR, même pour un repo public. À rendre public manuellement : **GitHub → Packages → mon-image → Package settings → Change visibility**.
