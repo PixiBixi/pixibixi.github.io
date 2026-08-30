@@ -253,11 +253,22 @@ Un `.sbom.json` sort à côté de chaque archive. Comme ce sont des fichiers de
           subject-path: 'dist/*.tar.gz,dist/checksums.txt,dist/*.sbom.json'
 ```
 
-Le binaire syft doit être présent dans le job, sinon GoReleaser saute l'étape :
+GoReleaser shelle vers syft et n'embarque pas le binaire. S'il manque, il ne
+saute pas l'étape : il fait échouer toute la release, et tardivement, une fois
+les binaires compilés et les archives déjà écrites.
+
+```text
+⨯ release failed after 2m31s   error=exec: "syft": executable file not found in $PATH
+```
+
+Le step à ajouter, sous la même condition que les autres steps de release :
 
 ```yaml
-      - uses: anchore/sbom-action/download-syft@f8bdd1d8ac5e901a77a92f111440fdb1b593736b # v0.20.9
+      - uses: anchore/sbom-action/download-syft@8e94d75ddd33f69f691467e42275782e4bfefe84 # v0.20.9
 ```
+
+`goreleaser check` ne l'attrape pas : il valide la config, pas ce que le runner a
+dans son `PATH`. Seule une vraie release le dit.
 
 ko publie déjà un SBOM par image de son côté, donc `sboms:` couvre le cas des
 archives, pour qui récupère le binaire sans passer par l'image.
