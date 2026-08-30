@@ -181,6 +181,10 @@ docker_signs:
 !!! note "Pourquoi signer le checksum plutôt que chaque archive ?"
     `checksums.txt` contient les SHA256 de tous les artefacts. Signer ce fichier couvre tout : on vérifie la signature une fois, puis le SHA256 de chaque archive.
 
+Les 2 blocs ne se recouvrent pas et il faut les 2 dès qu'on publie une image. `signs:` signe un fichier de `dist/`, or l'image n'y passe jamais : ko la pousse directement au registry et son digest n'est nulle part dans `checksums.txt`. Un projet qui ne livre que des binaires se contente de `signs:` ; un projet qui livre une image sans `docker_signs:` la publie sans rien à vérifier au `docker pull`, ko ne signant pas de lui-même.
+
+Signer la référence telle que GoReleaser la fournit, sans y recoller le digest : l'artefact `Docker Manifest` expose bien un `extra.Digest`, mais sans son préfixe `sha256:`, donc un `"${artifact}@${digest}"` produit une référence malformée. `--recursive` couvre les images par architecture derrière le manifest.
+
 ### GitHub Actions - permissions requises
 
 2 ajouts par rapport au workflow de base :
