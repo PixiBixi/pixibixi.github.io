@@ -35,7 +35,7 @@ La section la plus dense du wiki. On y trouve les fondamentaux, les outils CLI, 
 - [Sécurité - Certificats](security/issued_crt.md) - générer et inspecter des certificats
 - [Sécurité - Notifications SSH Slack](security/slack_notifications_ssh.md) - alerter sur les connexions SSH
 - [Sécurité - Notifications SSH Telegram](security/telegram_notifications_ssh.md) - variante Telegram
-- [Sécurité - SFTP](security/sftp.md) - configuration chroot SFTP
+- [Sécurité - SFTP](security/sftp.md) - chroot SFTP et jail SSH complet
 - [Sécurité - PAM passwords](security/password_pam.md) - politique de mots de passe PAM
 - [Sécurité - Whitelister des IP](security/whitelist_ip.md) - allowlist ipset + iptables
 - [Sécurité - Logger les commandes SSH](security/ssh_log_commands.md) - PROMPT_COMMAND et rsyslog pour l'audit

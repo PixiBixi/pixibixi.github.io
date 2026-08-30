@@ -58,7 +58,7 @@ Le plan complet est ci-dessous, sinon la recherche fait le job.
 - [Installer et configurer PortSentry](linux/security/portsentry.md)
 - [Whitelister une série d'IP à l'aide d'IPset et iptables](linux/security/whitelist_ip.md)
 - [Logger les actions SSH utilisateurs simplement](linux/security/ssh_log_commands.md)
-- [Accès sécurisé via sFTP (Chroot SSH)](linux/security/sftp.md)
+- [Chrooter un utilisateur en SFTP ou en SSH](linux/security/sftp.md)
 - [Améliorer la vitesse de connexion à votre serveur SSH](linux/security/ssh_improve_speed.md)
 - [Améliorer la sécurité des mots de passe par défaut](linux/security/password_pam.md)
 - [Configurer des notifications Slack pour SSH](linux/security/slack_notifications_ssh.md)
