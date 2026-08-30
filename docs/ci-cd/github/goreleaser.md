@@ -206,7 +206,7 @@ permissions:
 ```bash
 # 1. Vérifier la signature du checksum
 cosign verify-blob \
-  --certificate-identity 'https://github.com/monorg/mon-repo/.github/workflows/release.yml@refs/tags/vX.Y.Z' \
+  --certificate-identity 'https://github.com/monorg/mon-repo/.github/workflows/release.yml@refs/heads/main' \
   --certificate-oidc-issuer 'https://token.actions.githubusercontent.com' \
   --bundle checksums.txt.sigstore.json \
   checksums.txt
@@ -216,10 +216,21 @@ sha256sum --ignore-missing -c checksums.txt
 
 # 3. Vérifier l'image Docker
 cosign verify \
-  --certificate-identity 'https://github.com/monorg/mon-repo/.github/workflows/release.yml@refs/tags/vX.Y.Z' \
+  --certificate-identity 'https://github.com/monorg/mon-repo/.github/workflows/release.yml@refs/heads/main' \
   --certificate-oidc-issuer 'https://token.actions.githubusercontent.com' \
   ghcr.io/monorg/mon-image:vX.Y.Z
 ```
+
+Le ref de l'identité est celui **du run**, pas celui du tag. Avec le workflow
+plus haut, `svu` pose le tag par API puis GoReleaser publie dans le même job,
+lequel a été déclenché par le push sur la branche : le certificat porte donc
+`@refs/heads/main` et une vérification sur `@refs/tags/vX.Y.Z` échoue avec
+`no matching CertificateIdentity found`, alors que la signature est parfaitement
+valide. Un pipeline déclenché en poussant un tag à la main donne l'inverse. Dans
+le doute, l'erreur de cosign affiche la valeur réellement présente.
+
+Les SBOM générés par `sboms:` sortent au format **SPDX 2.3**, le défaut de syft,
+et pas en CycloneDX.
 
 ### Attester la provenance des artefacts
 
