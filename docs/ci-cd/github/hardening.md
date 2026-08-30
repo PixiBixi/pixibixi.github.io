@@ -39,6 +39,30 @@ Dependabot n'a pas d'équivalent et c'est une différence qui compte : il met à
 
 Le pinning a par contre une limite qu'il vaut mieux connaître : il ne couvre que le premier niveau. Si `actions/checkout` référence lui-même une autre action par tag dans son `action.yml`, la résolution se fait au runtime et le SHA qu'on a écrit n'y change rien, donc quelqu'un qui compromet l'action imbriquée arrive quand même jusqu'au runner. GitHub a annoncé dans sa [roadmap sécurité Actions 2026](https://github.blog/news-insights/product-news/whats-coming-to-our-github-actions-2026-security-roadmap/) un bloc `dependencies:` dans le YAML du workflow, qui lockerait les dépendances directes **et** transitives par SHA avec vérification du hash avant exécution, dans l'esprit d'un `go.mod` + `go.sum`. En attendant, la seule vraie parade est de limiter le nombre d'actions tierces qu'on tire.
 
+### Le commentaire de version doit dire vrai
+
+Le SHA seul est illisible, d'où le `# v7.0.1` à côté. Sauf que rien ne relie les
+2 : un SHA valide accompagné d'un commentaire faux passe tous les contrôles, se
+lit comme relu, et Renovate n'a plus de repère pour proposer le bump. C'est pire
+que pas de commentaire du tout.
+
+`ref-version-mismatch` de zizmor le voit, mais on peut aussi vérifier tout un
+repo d'un coup :
+
+```sh
+grep -rhoE "uses: [^@]+@[0-9a-f]{40} # v?[0-9][^ ]*" .github/workflows/ \
+  | sed 's/uses: //' | sort -u | while read -r ref _ tag; do
+      repo=$(echo "${ref%@*}" | cut -d/ -f1,2); sha="${ref#*@}"
+      real=$(gh api "repos/$repo/git/ref/tags/$tag" --jq '.object.sha' 2>/dev/null)
+      [ "$(gh api "repos/$repo/git/ref/tags/$tag" --jq '.object.type' 2>/dev/null)" = tag ] \
+        && real=$(gh api "repos/$repo/git/tags/$real" --jq '.object.sha')
+      [ "$real" = "$sha" ] || echo "KO $repo $tag attendu=$real"
+    done
+```
+
+Un tag annoté renvoie un objet `tag` et non le commit, d'où le second appel :
+comparer sans ça sort des faux positifs sur les actions qui signent leurs tags.
+
 ## Permissions au moindre privilège
 
 Le `GITHUB_TOKEN` par défaut est trop permissif. On le réduit au strict nécessaire, par workflow et on descend au niveau du job quand un seul job a besoin d'un droit en écriture.
@@ -89,6 +113,22 @@ runs-on: ubuntu-24.04
 ```
 
 On nomme la version que `-latest` désigne aujourd'hui, pas la plus récente qui existe : `ubuntu-26.04` est disponible mais en preview, alors que `ubuntu-latest` reste sur 24.04. Côté macOS c'est l'inverse du réflexe, `macos-latest` pointe déjà sur macOS 26, donc écrire `macos-15` downgraderait le runner sans le dire. Renovate suit ces labels via sa datasource `github-runners`, alimentée par le manager `github-actions` qui lit les workflows, donc le pin ne fige rien : il transforme juste une migration subie en PR qu'on relit. La nuance compte dans une `packageRule` : `github-runners` dans `matchManagers` ne matche rien et Renovate 44 l'accepte sans broncher, voir [valider une config Renovate](renovate-config.md).
+
+## `pull_request_target`, le trigger qu'on prend par habitude
+
+`pull_request_target` s'exécute avec le token du repo de base et ses secrets,
+sur un événement déclenché par du code que l'auteur de la PR contrôle. zizmor le
+classe en erreur sous `dangerous-triggers`, avec une formule qui résume bien :
+« almost always used insecurely ».
+
+Il est souvent copié sans nécessité. Un job qui valide le titre d'une PR, par
+exemple, lit ce titre dans le payload de l'événement : ni checkout du code de la
+PR, ni écriture, ni secret. `pull_request` fait le même travail sans donner le
+moindre privilège à une branche de fork.
+
+La question à se poser avant de le garder : ce job a-t-il besoin d'écrire
+quelque part, ou d'un secret ? Si la réponse est non, `pull_request` suffit. Si
+elle est oui, alors il ne faut surtout pas y ajouter un checkout de la PR.
 
 ## Injection de template : le `${{ }}` passe avant bash
 
@@ -214,6 +254,8 @@ Le cran d'après, c'est de réserver l'automerge à une allow-list d'orgs de con
         fail-on-severity: high
         deny-licenses: GPL-2.0, GPL-3.0, AGPL-3.0
     ```
+
+    Sur un **fork**, le job échoue d'entrée avec `Dependency review is not supported on this repository`. Le dependency graph, dont il dépend, est activé par défaut sur un repo normal mais désactivé sur les forks. Ça se règle dans *Settings > Code security and analysis*, pas dans le workflow, et ça n'est pas exposé en API REST.
 
     `deny-licenses` est le réglage qu'on oublie alors qu'il coûte une ligne. Une dépendance copyleft qui entre dans un projet sous licence permissive est un problème juridique, pas un problème de style, et c'est en PR qu'on veut l'apprendre plutôt qu'au moment de publier.
 
