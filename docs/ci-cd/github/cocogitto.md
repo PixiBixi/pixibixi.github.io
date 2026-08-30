@@ -207,7 +207,7 @@ repos:
           - uses: docker/login-action@v4
             with:
               registry: ghcr.io
-              username: ${{ github.actor }}
+              username: ${{ github.repository_owner }}
               password: ${{ secrets.GITHUB_TOKEN }}
 
           - uses: docker/metadata-action@v6

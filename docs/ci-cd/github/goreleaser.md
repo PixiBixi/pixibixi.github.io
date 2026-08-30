@@ -187,6 +187,24 @@ Signer la référence telle que GoReleaser la fournit, sans y recoller le digest
 
 ### GitHub Actions - permissions requises
 
+`docker_signs` a une exigence de plus, facile à rater quand on publie avec ko :
+ko s'authentifie seul sur ghcr avec le `GITHUB_TOKEN`, mais cosign non. Il pousse
+la couche de signature vers le même registry et lit `~/.docker/config.json` pour
+ça, donc il faut un `docker/login-action` même quand ko rend le reste inutile.
+Sans lui, l'image est publiée puis la signature échoue sur `UNAUTHORIZED`, dans
+le pire ordre possible.
+
+```yaml
+      - uses: docker/login-action@06fb636fac595d6fb4b28a5dfcb21a6f5091859c # v4.5.0
+        with:
+          registry: ghcr.io
+          # repository_owner et pas github.actor : l'actor est qui a déclenché le
+          # run, donc `renovate[bot]` sur un merge d'automerge, alors que le
+          # namespace où on pousse est celui du owner.
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+```
+
 2 ajouts par rapport au workflow de base :
 
 ```yaml
