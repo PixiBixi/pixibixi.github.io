@@ -199,6 +199,93 @@ jobs:
 
 Il couvre aussi les vulnérabilités de la toolchain Go elle-même, pas seulement les libs tierces.
 
+## CodeQL : analyser son propre code
+
+govulncheck regarde les dépendances, CodeQL regarde le code du repo. Les 2 ne se
+recouvrent pas : un `log.Printf` qui recrache une valeur venue d'une requête HTTP
+n'est la CVE de personne, et govulncheck n'a rien à en dire.
+
+```yaml title=".github/workflows/codeql.yml"
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    # Hebdomadaire : une requête publiée après le dernier push tourne quand même
+    - cron: "27 4 * * 1"
+
+permissions: {}
+
+jobs:
+  analyze:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: github/codeql-action/init@4e94bd11f71e507f7f87df81788dff88d1dacbfb # v4.32.4
+        with:
+          languages: go
+          build-mode: autobuild
+      - uses: github/codeql-action/analyze@4e94bd11f71e507f7f87df81788dff88d1dacbfb # v4.32.4
+```
+
+### Le faire tourner en local
+
+Découvrir 12 alertes après le push, c'est 12 allers-retours de CI. La CLI tourne
+en local et la même suite de requêtes que la CI :
+
+```sh
+gh extension install github/gh-codeql
+
+gh codeql database create /tmp/db --language=go --source-root=. --overwrite
+gh codeql database analyze /tmp/db \
+  --format=sarif-latest --output=/tmp/out.sarif \
+  --download codeql/go-queries:codeql-suites/go-security-and-quality.qls
+```
+
+Le bundle fait dans le gigaoctet au premier appel. Le SARIF se lit mal à l'œil,
+`jq` suffit à en tirer l'essentiel :
+
+```sh
+jq -r '.runs[0].results[] | "\(.ruleId) \(.locations[0].physicalLocation.artifactLocation.uri):\(.locations[0].physicalLocation.region.startLine)"' /tmp/out.sarif
+```
+
+### Le sanitizer qui ne compte pas
+
+Le piège coûte plusieurs itérations si on le découvre en CI. `go/log-injection`
+signale une valeur attaquable qui atteint un log, ici un nom d'enregistrement DNS
+venu du corps d'une requête : un saut de ligne dedans forge une seconde entrée de
+log. La correction naturelle ressemble à ça, et ne fait tomber aucune alerte.
+
+```go
+func String(s string) string {
+    if !strings.ContainsAny(s, "\r\n") {
+        return s   // chemin rapide : rien à nettoyer
+    }
+    return strings.ReplaceAll(strings.ReplaceAll(s, "\n", ""), "\r", "")
+}
+```
+
+Le raccourci se lit comme une optimisation gratuite, mais il laisse un chemin où
+la valeur ressort telle quelle. Le dataflow ne sait pas prouver que le garde
+suffit, donc il continue à voir un flux non assaini, et il a raison. Sans le
+`if`, les mêmes alertes tombent à 0 :
+
+```go
+func String(s string) string {
+    return strings.ReplaceAll(strings.ReplaceAll(s, "\n", ""), "\r", "")
+}
+```
+
+2 passes sur un hostname ne coûtent rien à côté de l'écriture du log. La règle
+générale : un sanitizer avec une branche qui renvoie l'entrée intacte n'assainit
+rien du point de vue de l'analyse, et pas grand-chose du nôtre non plus.
+
 ## Feedback direct dans la PR
 
 Faire échouer un job, c'est bien. Dire quoi corriger et où, c'est mieux. [reviewdog](https://github.com/reviewdog/reviewdog) poste les problèmes en suggestions inline sur la PR, applicables en un clic. Rien de spécifique à Go là-dedans, il avale la sortie de n'importe quel linter - l'exemple ici est juste le workflow de formatage.
@@ -343,7 +430,7 @@ Ce qui fait la différence entre une CI Go qui marche et une CI Go qu'on laisse 
 - `go mod verify` avant de compiler
 - golangci-lint épinglé, exclusions justifiées, `max-same-issues: 0` pour ne rien masquer
 - gocritic sur le tag `performance`, avec un `sizeThreshold` qui vise les objets d'API
-- govulncheck pour les CVE réellement atteignables
+- govulncheck pour les CVE réellement atteignables, CodeQL pour le code du repo, lancé en local avant de pousser
 - reviewdog pour un feedback actionnable en PR et aucun outil installé en `@latest`
 - Release calculée par svu depuis les commits conventionnels, dans le même job que GoReleaser
 - Et par-dessus, le [socle de durcissement](hardening.md) commun à tous les workflows
