@@ -61,6 +61,45 @@ décidé d'utiliser les alias du .gitconfig disponible sur
     le repository Git sur la branche et le fichier courants
 * `git-quick-stats` pour extraire les stats simplement d'un repository
 
+## Signer ses commits sans y penser
+
+Configurer `user.signingkey` et `gpg.format` ne signe rien. Ces 2 clés disent
+*avec quoi* signer, pas *qu'il faut* signer : sans `commit.gpgsign`, chaque
+nouveau repo produit des commits non signés et personne ne s'en aperçoit avant
+de regarder.
+
+```sh
+git config --global gpg.format ssh
+git config --global user.signingkey ~/.ssh/signing_key
+git config --global commit.gpgsign true
+git config --global tag.gpgsign true
+```
+
+Une clé SSH fait le travail depuis git 2.34, sans GPG. La même clé publique
+s'ajoute côté GitHub dans *Settings > SSH and GPG keys* en type **Signing key**,
+qui est une entrée distincte de la clé d'authentification même si le fichier est
+le même. GitLab l'accepte aussi.
+
+Le contrôle tient en une commande, `%G?` sortant `G` pour une bonne signature et
+`N` pour rien du tout :
+
+```sh
+git log --format="%h %G? %s" -5
+```
+
+Pour rattraper un historique déjà poussé non signé, on ré-amende chaque commit
+depuis la base plutôt que de repartir de zéro :
+
+```sh
+git rebase --exec "git commit --amend --no-edit -S --quiet" origin/main
+```
+
+!!! warning "Pas de `user.email` globale"
+    Garder l'identité par repo évite de signer un commit public avec l'adresse
+    du boulot, mais le prix est un `Author identity unknown` sur chaque repo
+    neuf. C'est un arbitrage, pas un oubli : le poser en global pour le confort
+    revient à choisir laquelle des 2 adresses fuitera par défaut.
+
 ## Voir aussi
 
 * [Réduire la taille de son repository Git](rework_files.md) - techniques avancées pour nettoyer un dépôt trop volumineux
