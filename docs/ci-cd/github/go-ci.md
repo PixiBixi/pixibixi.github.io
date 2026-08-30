@@ -359,6 +359,19 @@ Le chaînon manquant : relier le contenu d'une PR mergée à un numéro de versi
 
 [`svu`](https://github.com/caarlos0/svu) lit les commits depuis le dernier tag et calcule le prochain `vX.Y.Z` ; un appel API pose le tag, GoReleaser enchaîne dans le même job. Le garde-fou est dans la comparaison : `svu next` renvoie **la version courante** quand rien ne justifie de release, donc `next == current` signifie « ne rien faire » - aucune release parasite sur un simple `docs:` ou `chore:`.
 
+Le revers de cet ordre, c'est qu'un échec de GoReleaser laisse le tag derrière
+lui : il est déjà posé quand la release casse. Le run suivant voit alors ce tag
+comme version courante, `next == current`, et ne republie rien - le correctif
+est mergé et il ne se passe plus rien, sans erreur nulle part. Il faut supprimer
+le tag orphelin avant de relancer :
+
+```sh
+gh api -X DELETE repos/OWNER/REPO/git/refs/tags/vX.Y.Z
+```
+
+Le vérifier vaut le coup dès qu'une release échoue : un tag sans release attachée
+est le symptôme.
+
 ```yaml title=".github/workflows/release.yml"
 on:
   push:
