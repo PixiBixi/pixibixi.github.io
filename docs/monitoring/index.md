@@ -21,6 +21,7 @@ Sans monitoring, on debug à l'aveugle. Cette section couvre la stack LGTM (Loki
 - [LGTM - Grafana Alloy](lgtm/alloy.md) - remplacer Promtail, pipelines logs/métriques/traces
 - [Thanos at scale](lgtm/thanos.md) - Receive par tenant, compactor en CronJob, spot et downsampling
 - [Les caches Thanos](lgtm/thanos-cache.md) - mutualiser index cache, caching bucket et cache de résultats sur un backend partagé
+- [La concurrence de lecture Thanos](lgtm/thanos-query-concurrency.md) - amplification du split et du fan-out, loi de Little et ordonnancement des limites
 - [check_mk - Notifications Slack](check_mk/add_slack_notification.md) - envoyer les alertes check_mk dans Slack
 - [Munin](munin.md) - configuration et plugins Munin
 - [Eztools](eztools.md) - outils de monitoring légers
