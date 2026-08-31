@@ -68,7 +68,7 @@ L'invariant est simple : **le multiplicateur en amont doit rester le plus petit 
 
 Quand le parallélisme atteint le cap de la gate, **une seule requête suffit à saturer la gate de toutes les stacks à la fois**. Ce n'est plus une accumulation statistique de plusieurs lecteurs, c'est une identité de configuration : la requête est dimensionnée pour remplir la gate au bord.
 
-Quand le parallélisme approche `--query.max-concurrent`, le problème change de nature et devient un problème d'isolation. Un parallélisme de 50 contre un `max-concurrent` de 64 signifie qu'une seule ouverture de dashboard prend 78 % du querier global et que tous les autres lecteurs attendent derrière. Personne ne relie ça à un flag de découpage, on le vit comme « le Grafana est lent ».
+Quand le parallélisme approche `--query.max-concurrent`, le problème change de nature et devient un problème d'isolation. Le calcul se fait sur le pool entier de queriers et pas sur un pod : 3 queriers à 64 donnent 192 places, qu'un parallélisme de 50 remplit avec 4 requêtes larges concurrentes. Mesuré au pas de 1 minute sur un burst, les 3 queriers étaient épinglés à 64 en même temps, somme exacte de 192, pendant que le débit entrant restait plat entre 6 et 13 requêtes par seconde et que les sous-requêtes montaient à 171 par seconde. Personne ne relie ça à un flag de découpage, on le vit comme « le Grafana est lent ».
 
 !!! tip "Poser l'invariant dans le manifest, pas dans une tête"
     Les 3 flags vivent dans 3 blocs de config différents, souvent dans 3 fichiers. Rien ne signale qu'ils sont liés, donc un commentaire sur le parallélisme qui nomme le cap de la gate et dit pourquoi il doit rester en dessous est le seul garde-fou qui survit au prochain qui voudra accélérer une requête lente.
@@ -94,6 +94,9 @@ Le contraste est net : sur la même fenêtre et au même pas de 30 minutes, l'ex
 2 précautions sur cette forme. Le pas de la sous-requête doit être écrit, un `[5m:]` sans pas se réévalue au pas par défaut et coûte cher pour rien. Et le ratio se prend contre la métrique `_max` exportée plutôt que contre un nombre en dur, sinon le panel continue de comparer à l'ancienne valeur après un changement de config, sans aucun symptôme visible.
 
 Le même biais frappe ailleurs : un `increase(<compteur>[2h])` lu en instantané n'est qu'un échantillon arbitraire et sous-estime lourdement tout ce qui est en burst. Pour un chiffre de dimensionnement, il faut un percentile de la fenêtre glissante sur plusieurs jours, avec un pas de sous-requête explicite.
+
+!!! warning "Un `max_over_time` sur 24h ramène aussi les pods qui n'existent plus"
+    La même enveloppe qui rend le créneau visible fait remonter toutes les séries de la fenêtre, y compris celles des ReplicaSets remplacés depuis. On croit compter 24 queriers dont 7 saturent, alors qu'il y en a 3 et qu'ils saturent tous les 3. Compter le parc avec `count(group by (pod) (up{...} == 1))` avant de raisonner sur des pods, jamais avec le `max_over_time` qui sert à lire les pics.
 
 ## La gate sature, elle ne bloque pas
 
