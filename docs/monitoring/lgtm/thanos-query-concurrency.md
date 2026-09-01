@@ -20,7 +20,10 @@ Le query frontend découpe chaque `query_range` en tranches de `--query-range.sp
 
 ![Ce qu'une seule requête query_range devient en arrivant sur une store gateway](./_img/thanos-query-amplification.svg)
 
-Le point qui compte est la distinction entre les 2 nombres du bas. Sur la flotte, une requête produit le parallélisme multiplié par le nombre de stacks. Mais sur **un** pod donné, elle produit exactement le parallélisme, puisque chaque sous-requête ne fait qu'un seul Series call par store gateway. C'est ce second nombre qui se compare au cap de la gate. C'est aussi celui qu'on oublie.
+Le point qui compte est la distinction entre les 2 nombres du bas. Sur la flotte, une requête produit le parallélisme multiplié par le nombre de stacks. Sur **un** pod donné elle produit au moins le parallélisme, et c'est ce second nombre qui se compare au cap de la gate. C'est aussi celui qu'on oublie.
+
+!!! warning "Le découpage n'est pas le seul multiplicateur"
+    Une sous-requête ne produit pas un seul Series call par store gateway. Elle en produit un par sélecteur de vecteur, tirés en concurrence et plafonnés par `--query.max-concurrent-select` sur le querier. Le compte réel sur un pod est donc le produit des 2, et une flotte mesurée à un parallélisme de 14 voyait encore 50 appels concurrents par pod parce que ce second cap était à 64.
 
 Le sharding par timerange concentre encore le tir. Comme [chaque shard couvre une plage](thanos.md#un-shard-par-timerange), un dashboard sur 7 jours ne tape pas les shards au hasard : il tombe sur le même shard de toutes les stacks à la fois, donc sur 2 pods par stack et pas un de plus.
 
@@ -50,19 +53,23 @@ Le résultat surprend. Entre le régime normal et le pic, le débit fait x4,5 al
 
 La moyenne ne suffit pas non plus, la queue fait le reste du travail : les appels du dernier millième se comptent en secondes. Il n'en faut pas beaucoup à quelques secondes pour remplir une gate. C'est le même piège que sur la latence utilisateur, où [p99 ne voit structurellement pas une population lente à 0,1 %](thanos.md#mettre-des-limites-en-lecture-et-en-ingestion).
 
-D'où 2 familles de leviers, une par terme. Pour borner λ, c'est le parallélisme en amont. Pour borner T, ce sont les limites par requête sur la store gateway, `--store.limits.request-series` et `--store.limits.request-samples`, qui valent 0 par défaut, c'est-à-dire aucune limite.
+D'où 2 familles de leviers, une par terme. Pour borner λ, ce sont les multiplicateurs en amont. Pour borner T, ce sont les limites par requête sur la store gateway, `--store.limits.request-series` et `--store.limits.request-samples`, qui valent 0 par défaut, c'est-à-dire aucune limite.
+
+!!! warning "Mesurer la taille d'un appel avant de poser une limite par requête"
+    Ces limites ne servent que si un appel individuel est réellement gros, et il faut le vérifier sur `thanos_bucket_store_series_data_touched_bucket` plutôt que de recopier une valeur. Mesuré sur une flotte de production : 98 % des appels touchent moins de 200 séries et le plus gros de la fenêtre en touche 200 000, soit 10 fois moins que la valeur de 2 000 000 qu'on voit passer. Posée là, la limite ne se déclenche jamais. La pression venait du nombre d'appels concurrents, pas de la taille d'un appel.
 
 ## Ordonner les limites de concurrence
 
-3 limites se suivent sur le chemin de lecture et elles ne sont pas interchangeables.
+4 limites se suivent sur le chemin de lecture et elles ne sont pas interchangeables. Les 2 premières sont des multiplicateurs, les 2 dernières des plafonds.
 
 | Flag | Composant | Rôle |
 |---|---|---|
-| `--query-range.max-query-parallelism` | query frontend | multiplicateur, 14 par défaut |
-| `--query.max-concurrent` | querier | requêtes PromQL simultanées, 20 par défaut |
+| `--query-range.max-query-parallelism` | query frontend | sous-requêtes concurrentes par requête, 14 par défaut |
+| `--query.max-concurrent-select` | querier | selects concurrents dans une requête, 4 par défaut |
+| `--query.max-concurrent` | querier | requêtes PromQL simultanées par pod, 20 par défaut |
 | `--store.grpc.series-max-concurrency` | store gateway | Series calls simultanés par pod, 20 par défaut |
 
-L'invariant est simple : **le multiplicateur en amont doit rester le plus petit des 3**. Les valeurs par défaut le respectent déjà, 14 est en dessous de 20 des 2 côtés. C'est en montant le parallélisme qu'on le casse. La tentation est réelle, puisque monter le parallélisme rend effectivement plus rapide une requête large prise isolément.
+L'invariant est simple : **le produit des 2 multiplicateurs doit rester sous le plus petit des 2 plafonds**. Les valeurs par défaut le respectent, 14 fois 4 reste modeste devant 20. C'est en montant l'un des 2 multiplicateurs qu'on le casse, et corriger un seul des 2 ne suffit pas : une flotte ramenée de 256 à 14 sur le découpage a vu son amplification de pointe tomber de 74 à 21 sans que la series gate décolle de son plafond, parce que le cap des selects était resté à 64. C'est en montant le parallélisme qu'on le casse. La tentation est réelle, puisque monter le parallélisme rend effectivement plus rapide une requête large prise isolément.
 
 2 seuils se franchissent alors, dans cet ordre.
 
@@ -71,7 +78,7 @@ Quand le parallélisme atteint le cap de la gate, **une seule requête suffit à
 Quand le parallélisme approche `--query.max-concurrent`, le problème change de nature et devient un problème d'isolation. Le calcul se fait sur le pool entier de queriers et pas sur un pod : 3 queriers à 64 donnent 192 places, qu'un parallélisme de 50 remplit avec 4 requêtes larges concurrentes. Mesuré au pas de 1 minute sur un burst, les 3 queriers étaient épinglés à 64 en même temps, somme exacte de 192, pendant que le débit entrant restait plat entre 6 et 13 requêtes par seconde et que les sous-requêtes montaient à 171 par seconde. Personne ne relie ça à un flag de découpage, on le vit comme « le Grafana est lent ».
 
 !!! tip "Poser l'invariant dans le manifest, pas dans une tête"
-    Les 3 flags vivent dans 3 blocs de config différents, souvent dans 3 fichiers. Rien ne signale qu'ils sont liés, donc un commentaire sur le parallélisme qui nomme le cap de la gate et dit pourquoi il doit rester en dessous est le seul garde-fou qui survit au prochain qui voudra accélérer une requête lente.
+    Les 4 flags vivent dans des blocs de config différents, souvent dans des fichiers différents. Rien ne signale qu'ils sont liés, donc un commentaire sur chaque multiplicateur qui nomme le plafond aval et dit pourquoi il doit rester en dessous est le seul garde-fou qui survit au prochain qui voudra accélérer une requête lente.
 
 ## Lire au bon pas d'échantillonnage
 

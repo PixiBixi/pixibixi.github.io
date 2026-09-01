@@ -28,13 +28,13 @@
   <!-- etage 3 : ce qui arrive sur une gate -->
   <rect x="60" y="186" width="340" height="44" rx="3" fill="#161b22" stroke="#30363d"/>
   <rect x="60" y="186" width="4" height="44" fill="#4e8f57"/>
-  <text x="76" y="206" fill="#e6edf3" font-size="11">N Series calls concurrents sur chaque store gateway</text>
-  <text x="76" y="221" fill="#8b949e" font-size="9">sur le shard qui couvre le timerange demandé</text>
+  <text x="76" y="206" fill="#e6edf3" font-size="11">Au moins N Series calls concurrents par store gateway</text>
+  <text x="76" y="221" fill="#8b949e" font-size="9">un par sélecteur, plafonné par --query.max-concurrent-select</text>
 
-  <text x="414" y="204" fill="#6e7781" font-size="9" font-weight="600">sur un pod : N</text>
+  <text x="414" y="204" fill="#6e7781" font-size="9" font-weight="600">sur un pod : N × selects</text>
   <text x="414" y="216" fill="#6e7781" font-size="9" font-weight="600">sur la flotte : N × le nombre de stacks</text>
 
   <!-- l invariant -->
   <rect x="60" y="248" width="500" height="28" rx="12" fill="#161b22" stroke="#c9714f"/>
-  <text x="80" y="266" fill="#e6edf3" font-size="10">N ≥ le cap de la gate : une seule requête suffit à la saturer</text>
+  <text x="80" y="266" fill="#e6edf3" font-size="10">N × selects ≥ le cap de la gate : une seule requête suffit à la saturer</text>
 </svg>
