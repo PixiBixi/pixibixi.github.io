@@ -1,11 +1,13 @@
 ---
-description: "Durcir une CI GitHub Actions : actions épinglées par SHA, permissions least-privilege, persist-credentials, runners nommés, injection de template, zizmor, actionlint, cooldown Renovate et Dependabot, provenance SLSA."
+description: "Durcir une CI GitHub Actions : actions épinglées par SHA, permissions least-privilege, persist-credentials, runners nommés, injection de template, zizmor, actionlint, harden-runner en audit, OpenSSF Scorecard, cooldown Renovate et Dependabot, provenance SLSA et vérification de la signature publiée."
 tags:
   - GitHub Actions
   - CI/CD
   - Security
   - Supply Chain
   - Renovate
+  - Scorecard
+  - cosign
 ---
 
 # Durcir une CI GitHub Actions : pins, permissions, injections
@@ -255,7 +257,16 @@ Le cran d'après, c'est de réserver l'automerge à une allow-list d'orgs de con
         deny-licenses: GPL-2.0, GPL-3.0, AGPL-3.0
     ```
 
-    Sur un **fork**, le job échoue d'entrée avec `Dependency review is not supported on this repository`. Le dependency graph, dont il dépend, est activé par défaut sur un repo normal mais désactivé sur les forks. Ça se règle dans *Settings > Code security and analysis*, pas dans le workflow, et ça n'est pas exposé en API REST.
+    Le job échoue d'entrée avec `Dependency review is not supported on this repository` quand le dependency graph, dont il dépend, est éteint. C'est le cas par défaut sur un fork, mais pas seulement : le repo `external-dns-akamai-webhook`, qui n'est pas un fork, l'avait éteint et son job de review n'a donc jamais rien fait depuis le jour où il a été ajouté. Ça se règle dans *Settings > Code security and analysis*, pas dans le workflow, et un `PATCH` sur `security_and_analysis` est accepté sans effet, donc l'API ne remplace pas le clic.
+
+    Le test qui tranche en une commande, sans attendre la prochaine PR :
+
+    ```sh
+    gh api "repos/OWNER/REPO/dependency-graph/sbom" --jq '.sbom.name'
+    ```
+
+    Un 404 veut dire que le graphe est éteint et que le job de review ment depuis
+    le début.
 
     `deny-licenses` est le réglage qu'on oublie alors qu'il coûte une ligne. Une dépendance copyleft qui entre dans un projet sous licence permissive est un problème juridique, pas un problème de style, et c'est en PR qu'on veut l'apprendre plutôt qu'au moment de publier.
 
@@ -263,9 +274,56 @@ Le cran d'après, c'est de réserver l'automerge à une allow-list d'orgs de con
 
 - **[CodeQL](https://codeql.github.com/)** analyse le code du repo lui-même, là où govulncheck et dependency-review ne regardent que les dépendances. Sur du Go, la mise en place tient en un workflow et il se fait tourner en local avant d'être poussé, ce qui évite de découvrir ses alertes une par une en CI : voir [CI GitHub Actions pour un projet Go](go-ci.md#codeql-analyser-son-propre-code).
 
-- **[harden-runner](https://github.com/step-security/harden-runner)** filtre le trafic sortant du runner. On le pose d'abord en `audit` pour voir ce que la CI contacte réellement, puis en `block` avec une allow-list. C'est ce mécanisme qui a permis de repérer la compromission de `tj-actions/changed-files` en 2025 : les runners exfiltraient vers un endpoint qui n'avait rien à faire là et l'anomalie est sortie dans les rapports d'egress avant que qui que ce soit lise le diff de l'action.
+- **[harden-runner](https://github.com/step-security/harden-runner)** enregistre le trafic sortant du runner. C'est ce mécanisme qui a permis de repérer la compromission de `tj-actions/changed-files` en 2025 : les runners exfiltraient vers un endpoint qui n'avait rien à faire là et l'anomalie est sortie dans les rapports d'egress avant que qui que ce soit lise le diff de l'action. Il se pose en premier step de chaque job, avant le checkout, sinon il ne voit pas ce que le checkout fait.
+
+    ```yaml
+    - name: Harden the runner
+      uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
+      with:
+        egress-policy: audit
+    ```
+
+    Le conseil habituel est de rester en `audit` quelques runs puis de passer en
+    `block` avec une allow-list. Voir la section suivante avant de le suivre.
+
+### `block` casse sur l'infra de GitHub, pas sur une attaque
+
+Le mode `block` semble être la finalité et il ne l'est pas, en tout cas pas sur le tier communautaire. 3 mesures relevées sur les premiers runs instrumentés le disent mieux qu'un principe.
+
+D'abord, **les hôtes de GitHub eux-mêmes changent d'un run à l'autre**. Le watchdog sort en `hosted-compute-watchdog-prod-iad-02.githubapp.com` sur un job et `prod-eus-02` sur le suivant, la région variant avec le runner attribué. Le stockage des résultats tombe sur `productionresultssa0`, `sa3` ou `sa6.blob.core.windows.net` selon le run. Et `results-receiver.actions.githubusercontent.com` résout vers un CNAME de load balancer opaque du type `glb-db52c2cf8be544.github.com`. Une allow-list statique casse donc au deuxième run, sur un hôte qui appartient à GitHub et sans le moindre rapport avec une compromission.
+
+Ensuite, un job de release a l'egress le plus mouvant de tous : sigstore, syft, les hôtes d'upload d'assets, un registre OCI, un push cross-repo. C'est aussi le seul job dont l'échec est public et arrive **après** que le tag a été créé.
+
+Enfin, `block` en tier communautaire a été contourné 2 fois en 2026, via [DNS over HTTPS](https://github.com/step-security/harden-runner/security/advisories/GHSA-46g3-37rh-v698) puis DNS over TCP, tous 2 corrigés en v2.16.0. C'est un ralentisseur, pas une frontière.
+
+Ce qu'on garde en `audit` reste substantiel : l'inventaire des hôtes contactés par job, et l'alerte le jour où une dépendance se met à parler à un hôte inconnu. Le mode `audit` n'est d'ailleurs pas passif, l'agent charge une blocklist globale de typosquats et de domaines connus (`pypi-get.com`, `js-mirror.com`, `scan.aquasecurtiy.org`) qu'il bloque quel que soit le réglage.
+
+C'est aussi ce que font les projets qui tournent avec : `ossf/scorecard`, `caddy`, `gopass`, `atlantis` et `argo-cd` combinent tous harden-runner et goreleaser, tous en `audit`. Le repo de Scorecard porte même un `# TODO: change to 'egress-policy: block' after couple of runs` qui n'a jamais été fait.
+
+!!! tip "Ce que l'audit révèle et qu'on n'avait pas demandé"
+    Le premier run a montré que `dependency-review-action` appelle `api.securityscorecards.dev` avec la liste des dépendances de la PR, pour en récupérer les scores. Ce n'est ni caché ni malveillant, c'est dans leur doc, mais ça ne se devine pas en lisant les 12 lignes du workflow. Sur un repo privé, c'est la question à trancher avant de l'activer.
 
 GitHub prépare son propre pare-feu d'egress natif, décrit dans la roadmap 2026, qui tournerait hors de la VM du runner et resterait donc actif même si un attaquant y obtient root.
+
+### Scorecard : lire le delta, pas le score
+
+Le score global de Scorecard est le chiffre le moins utile qu'il produit. Sur un projet maintenu par une seule personne, 4 checks sont hors d'atteinte par construction : Code-Review veut des changesets approuvés et GitHub interdit d'approuver sa propre PR, Contributors veut des contributeurs de 2 organisations, il y a Fuzzing et le badge CII. Le plafond réaliste tourne autour de 8 et courir après les 2 points restants produit du travail décoratif.
+
+Ce qui vaut, c'est ce que les autres outils ne regardent pas et ce que le prochain scan trouvera de différent.
+
+| Check | Ce qu'il attrape que rien d'autre ne voit |
+|---|---|
+| Branch-Protection | l'état réel des règles de la branche par défaut |
+| Security-Policy | l'absence de `SECURITY.md`, donc de canal de report privé |
+| Signed-Releases | une release sans signature ni provenance |
+| Pinned-Dependencies | les images de base d'un Dockerfile, pas seulement les actions |
+
+Le reste recoupe zizmor, govulncheck, CodeQL et Renovate. Sur 3 repos passés au crible, Token-Permissions sortait à **0** partout, ce qu'aucun des autres outils n'avait signalé : le check tombe à zéro dès qu'un seul workflow déclare une permission en `write` au niveau du fichier, même si le fichier n'a qu'un job et que le droit est légitime. Descendre le bloc dans le job le remet à 10.
+
+2 pièges d'installation. Le check Branch-Protection lit des réglages que le `GITHUB_TOKEN` ne voit pas, donc sans un PAT classique en `public_repo` passé via `repo_token`, il revient `inconclusive` et c'est justement le seul check qu'on ne peut obtenir autrement. Et `api.securityscorecards.dev` republie le dataset par lots, donc le score y reste celui du scan précédent pendant un moment : le résultat frais est dans les alertes code scanning du repo, pas dans l'API.
+
+!!! warning "La résolution des conversations transforme un linter en gate"
+    Activer `required_conversation_resolution` sur une branche protégée, alors que la CI fait tourner reviewdog en `reporter: github-pr-review`, veut dire que chaque remarque de linter ouvre un fil non résolu qui bloque le merge. Le check reste vert et la PR reste rouge, ce qui se diagnostique mal. C'est le comportement voulu, mais il faut le décider plutôt que le découvrir.
 
 ## Attester comment l'artefact a été construit
 
@@ -306,6 +364,44 @@ gh attestation verify ./mon-binaire_linux_amd64.tar.gz --repo monorg/mon-repo
 gh attestation verify oci://ghcr.io/monorg/mon-image:vX.Y.Z --repo monorg/mon-repo
 ```
 
+## Vérifier que la signature vérifie
+
+Signer, publier un SBOM et attester la provenance, c'est le travail qu'on voit. Le morceau qui saute presque toujours, c'est de contrôler que tout ça se vérifie vraiment. Une chaîne que personne n'exerce casse en silence : un passage de cosign v2 à v3 qui change le format du bundle, une identité de certificat erronée, un syft absent du runner. Chacun produit une release qui a l'air normale sur la page des releases et qui échoue chez le premier utilisateur qui tente la vérification.
+
+La parade est un job qui refait exactement ce que ferait cet utilisateur, après la publication :
+
+```yaml title=".github/workflows/release.yml"
+  verify:
+    needs: release
+    if: needs.release.outputs.tag != ''
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      attestations: read
+    env:
+      TAG: ${{ needs.release.outputs.tag }}
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - run: |
+          gh release download "$TAG" --repo "$GITHUB_REPOSITORY" \
+            --pattern '*.tar.gz' --pattern 'checksums.txt' \
+            --pattern 'checksums.txt.sigstore.json'
+      - run: shasum -a 256 --check --ignore-missing checksums.txt
+      - run: |
+          cosign verify-blob \
+            --certificate-identity-regexp "^https://github.com/${GITHUB_REPOSITORY}/\\.github/workflows/release\\.yml@refs/tags/" \
+            --certificate-oidc-issuer 'https://token.actions.githubusercontent.com' \
+            --bundle checksums.txt.sigstore.json checksums.txt
+      - run: |
+          for f in *.tar.gz; do gh attestation verify "$f" --repo "$GITHUB_REPOSITORY"; done
+```
+
+Le détail qui fait la différence entre une vérification et un décor, c'est `--certificate-identity-regexp`. Sans identité épinglée, cosign accepte une signature produite par n'importe quel workflow de n'importe quel repo, ce qui vide le keyless de son sens : la signature prouve alors seulement que quelqu'un, quelque part, a signé. En l'ancrant sur le workflow de release du repo, elle prouve que c'est bien celui-là.
+
+Signer `checksums.txt` plutôt que chaque archive n'est pas un raccourci : le fichier contient le SHA256 de toutes les archives, donc une signature couvre l'ensemble et la vérification reste une seule commande. C'est ce que fait le repo de goreleaser lui-même, qui rejoue ses 3 contrôles après chaque release.
+
+Le `if:` sur le tag compte aussi. Une release pilotée par les commits ne produit rien quand le push ne contient que des `chore:`, et un job de vérification qui se déclenche quand même échouerait sur une release inexistante.
+
 ## Rendre les releases immuables
 
 Une fois la release publiée, GitHub sait interdire de redéplacer son tag et de remplacer ses assets : c'est le toggle *Immutable releases* dans les settings du repo. Une case à cocher et elle ferme le scénario où un compte compromis republie un binaire sous un tag déjà installé partout.
@@ -323,6 +419,8 @@ Le pendant côté artefacts, c'est la signature : la provenance dit d'où vient 
 - zizmor et actionlint en CI pour que ça reste vrai
 - Automerge derrière un cooldown de 5 jours, `digest` compris
 - Provenance SLSA sur ce qu'on publie, releases immuables une fois publiées
+- Un job qui rejoue checksums, signature et attestation après la publication
+- harden-runner en `audit` sur chaque job, `block` seulement là où l'egress est déterministe
 
 !!! tip "Le pendant applicatif"
     Le durcissement des workflows ne dit rien de ce qui est testé dedans. Pour une CI Go complète (matrice multi-OS, golangci-lint, govulncheck, release pilotée par les commits), voir [CI GitHub Actions pour un projet Go](go-ci.md).
