@@ -1,0 +1,4 @@
+# One owner for every path: GitHub requests a review from @PixiBixi on any pull
+# request he did not open himself. The matching branch protection toggle stays
+# off on purpose, see the pull request that added this file.
+* @PixiBixi
