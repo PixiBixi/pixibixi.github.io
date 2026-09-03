@@ -476,21 +476,91 @@ GoReleaser génère le changelog entre 2 tags. On peut filtrer et regrouper :
 ```yaml
 changelog:
   sort: asc
+  abbrev: -1
   filters:
     exclude:
-      - '^docs:'
-      - '^test:'
-      - '^chore:'
+      - '^docs(\([^)]*\))?:'
+      - '^test(\([^)]*\))?:'
+      - '^chore(\([^)]*\))?:'
+      - '^ci(\([^)]*\))?:'
   groups:
     - title: Features
-      regexp: '^feat:'
+      regexp: '^feat(\([^)]*\))?:'
       order: 0
     - title: Bug Fixes
-      regexp: '^fix:'
+      regexp: '^fix(\([^)]*\))?:'
       order: 1
     - title: Performance
-      regexp: '^perf:'
+      regexp: '^perf(\([^)]*\))?:'
       order: 2
     - title: Others
       order: 999
 ```
+
+### Filtrer des commits qui portent un scope
+
+Le groupe `(\([^)]*\))?` n'est pas de la cosmétique. Les Conventional Commits rendent le
+scope optionnel et la forme qu'on lit partout, `'^docs:'`, ne matche pas `docs(wiki):`.
+Un projet qui scope ses commits, ce qui est le cas dès qu'il a plus d'un package, voit
+donc passer dans ses notes exactement les types qu'il croyait exclure.
+
+L'échec est silencieux. Rien ne remonte, la config est valide, `goreleaser check` sort en
+0 : les notes contiennent simplement des commits que personne n'a demandés. Sur un
+webhook Go où la config traînait depuis l'origine, la release publiée listait
+`test(server)` et `ci(fuzz)` alors que `'^test:'` était dans l'`exclude` depuis le premier
+jour.
+
+Les `groups` ont le même défaut et il se voit encore moins : un `feat(server):` qui ne
+matche pas `'^feat:'` ne disparaît pas, il tombe dans `Others`. On se retrouve avec une
+section Features vide et toutes les nouveautés empilées dans le fourre-tout, ce qu'on
+attribue volontiers à un mauvais typage des commits plutôt qu'à la regex.
+
+Le `ci` dans la liste d'exclusion est un choix, pas un oubli à corriger. Ces notes servent
+à décider d'une montée de version et un changement de workflow ne dit rien au lecteur.
+
+### Retirer le SHA plutôt que le raccourcir
+
+`abbrev` accepte une longueur d'abréviation et la valeur qui vide le champ est `-1` :
+
+```go title="internal/pipe/changelog/changelog.go"
+func abbrevEntry(sha string, abbr int) string {
+    switch abbr = max(abbr, -1); abbr {
+    case 0:
+        return sha
+    case -1:
+        return ""
+    default:
+        if abbr > len(sha) {
+            return sha
+        }
+        return sha[:abbr]
+    }
+}
+```
+
+`0` garde le SHA complet, ce qui est le défaut. Sans `abbrev`, chaque ligne s'ouvre donc
+sur 40 caractères hexadécimaux avant le sujet du commit et le résultat se lit comme une
+sortie de `git log`. C'est disqualifiant pour le critère `release_notes` du badge OpenSSF
+Best Practices, qui exclut explicitement le journal de contrôle de version brut.
+
+### Où atterrit le changelog
+
+Nulle part dans le dépôt. GoReleaser écrit `dist/CHANGELOG.md`, que `--clean` efface au
+run suivant, et la vraie destination est le corps de la release GitHub, assemblé dans le
+pipe release comme header, puis changelog, puis footer. Committer un `CHANGELOG.md` en
+plus crée un doublon qui divergera à la première release où on oublie de le mettre à jour.
+
+Le `release.header` est l'endroit où mettre ce que la liste de commits ne peut pas dire,
+la référence d'image à puller et les liens d'installation :
+
+```yaml
+release:
+  header: |
+    ```
+    ghcr.io/owner/project:{{ .Version }}
+    ```
+```
+
+Un snapshot saute le pipe changelog, donc `goreleaser release --snapshot` ne produit aucun
+`CHANGELOG.md` et ne permet pas de prévisualiser tout ça. Le premier retour réel arrive au
+tag suivant.
