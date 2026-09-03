@@ -1,5 +1,5 @@
 ---
-description: Publier des binaires Go multi-arch, images OCI et charts Helm en une commande avec GoReleaser - build flags, UPX, ko, ghcr.io, signature cosign, provenance SLSA, GitHub Actions.
+description: Publier des binaires Go multi-arch, images OCI et charts Helm en une commande avec GoReleaser - build flags, coût réel de la décompression UPX au lancement, ko, ghcr.io, signature cosign, provenance SLSA, GitHub Actions.
 tags:
   - GitHub Actions
   - Go
@@ -131,7 +131,7 @@ Ce qu'on perd réellement : le debug source-level avec delve sur un process viva
 
 ## Compression UPX (Linux uniquement)
 
-UPX compresse le binaire ; il se décompresse au lancement.
+UPX compresse le binaire et le décompresse au lancement. Cette seconde moitié de la phrase est celle qui décide de tout, et elle est rarement chiffrée.
 
 Gains mesurés sur la layer binaire de [kubearch](https://github.com/PixiBixi/kubearch) (`ghcr.io/pixibixi/kubearch`) :
 
@@ -151,6 +151,38 @@ upx:
 
 !!! warning "UPX et macOS/Windows"
     Sur macOS, UPX casse la notarisation Apple. Sur Windows, les antivirus le signalent. À limiter à `goos: [linux]`.
+
+### Ce que la décompression coûte
+
+UPX ne produit pas un binaire que le noyau mapperait paresseusement depuis le disque. Il décompresse **l'intégralité** du binaire en mémoire à chaque `exec`, avant que la première ligne du programme ne tourne. Mesuré sur linux/arm64 en conteneur, 50 invocations de `--help` par variante, page cache chaud :
+
+| Binaire | Sans UPX | `--best --lzma` | `upx -1` |
+|---|---|---|---|
+| kubectl-klens (42 Mio) | **5,8 ms** | 669 ms (x115) | 220 ms (x38) |
+| gopen (2,2 Mio) | **1,6 ms** | 62,7 ms (x40) | 17,1 ms (x11) |
+
+Le coût suit la taille du binaire, pas celle du programme utile : klens embarque `client-go`, donc 42 Mio à décompresser avant d'afficher une aide. Baisser le niveau de compression ne sauve rien, `upx -1` multiplie encore le démarrage par 38.
+
+### Un gain qui fond dans l'archive
+
+Le pourcentage annoncé par UPX porte sur le binaire nu. Or un utilisateur télécharge un `.tar.gz`, et gzip a déjà fait la moitié du travail :
+
+| Binaire | Sur disque | Dans le `.tar.gz` |
+|---|---|---|
+| kubectl-klens | 41,75 vers 6,48 Mio (-84 %) | 11,00 vers 6,48 Mio (**-41 %**) |
+| gopen | 2,19 vers 0,67 Mio (-70 %) | 0,89 vers 0,66 Mio (**-25 %**) |
+
+Pour une image OCI le pourcentage brut reste vrai, puisque la layer n'est pas regzippée par-dessus. Pour une release téléchargeable, c'est le chiffre de droite qu'il faut regarder.
+
+### Compresser ce qui démarre une fois, jamais ce qui démarre à chaque usage
+
+L'arbitrage se résume à une question : combien de fois le binaire sera-t-il lancé ?
+
+Un serveur paie la décompression **une fois au démarrage du pod** puis sert pendant des semaines. 669 ms au boot d'un conteneur, personne ne les voit, et le gain sur la layer est répliqué sur chaque node qui pull l'image. C'est le cas de kubearch et du webhook [external-dns-akamai-webhook](https://github.com/PixiBixi/external-dns-akamai-webhook), où le binaire linux passe de 35,16 à 7,61 Mio.
+
+Une commande one-shot paie la décompression **à chaque invocation**, pour toujours. Sur une session de debug qui enchaîne une dizaine de sous-commandes klens, c'est 7 secondes ajoutées pour économiser 4,5 Mio une fois, à l'installation. klens et gopen n'ont donc pas d'UPX, et c'est délibéré.
+
+Le `goos: [linux]` de l'exemple ci-dessus n'est pas qu'une protection contre la notarisation Apple : il garantit aussi que les archives darwin, celles qu'un humain lance à la main, restent non compressées.
 
 ## Signature des artefacts (cosign)
 
