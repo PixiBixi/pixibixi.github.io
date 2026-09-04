@@ -69,7 +69,7 @@ on peut cependant faire des diagnostics plus poussés.
 | Colt                       | [Ici](https://portal.colt.net/lg/private/lookingGlassExec.do)          |
 | Core Backbone              | [ici](https://lg.core-backbone.com/)                                   |
 | DataUtama                  | [ici](https://lg.datautama.net.id/cgi-bin)                             |
-| Deutsche Telekom           | [ici](https://f-lga1.f.de.net.dtag.de/index.php)                       |
+| Deutsche Telekom           | [ici](https://lg.telekom.com/)                                         |
 | Feral                      | [ici](https://network.feral.io/looking-glass)                          |
 | HE                         | [ici](https://lg.he.net/)                                              |
 | HKIX                       | [ici](https://www.hkix.net/hkix/hkixlg.htm)                            |
