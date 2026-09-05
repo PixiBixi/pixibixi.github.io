@@ -23,7 +23,7 @@ global
     nbthread 4
 ```
 
-HAProxy détecte automatiquement le nombre de CPUs disponibles - `nbthread auto` existe mais mettre la valeur explicitement reste plus prédictible, surtout en conteneur où les cgroups peuvent fausser la détection.
+Sans directive `nbthread`, HAProxy détecte tout seul le nombre de CPUs auxquels le process est bindé et met un thread par CPU. Il n'y a pas de valeur `auto` à passer, on met un nombre ou on ne met rien. Mettre la valeur explicitement reste plus prédictible, surtout en conteneur où les cgroups peuvent fausser la détection.
 
 ### cpu-map (affinité manuelle)
 
@@ -55,7 +55,7 @@ global
 | `first-usable-node` | Se limite au premier NUMA node (défaut en 3.2) |
 
 !!! tip
-    Sur HAProxy 3.3+, les défauts sont optimaux dans la majorité des cas - ne toucher à rien sauf si les benchmarks montrent un problème. Vérifier la configuration auto avec `haproxy -dc`.
+    Sur HAProxy 3.3+, les défauts sont optimaux dans la majorité des cas - ne toucher à rien sauf si les benchmarks montrent un problème. Vérifier la configuration auto avec `haproxy -c -dc -f /etc/haproxy/haproxy.cfg`. Le `-c` est important : `-dc` seul démarre vraiment le process, ce qui part en conflit de port sur une machine où HAProxy tourne déjà.
 
 ### NUMA et gros serveurs
 
@@ -107,9 +107,9 @@ global
 
 ### Shards (contention socket)
 
-Quand beaucoup de threads se partagent un seul listener socket, la contention noyau sur `SO_REUSEPORT` peut devenir un bottleneck. Symptôme : `perf top` montre `native_queued_spin_lock_slowpath` en haut.
+Quand beaucoup de threads se partagent un seul listener socket, le lock noyau de ce socket devient un bottleneck. Symptôme : `perf top` montre `native_queued_spin_lock_slowpath` en haut. Attention, ce symbole est un spinlock générique, il ne pointe pas forcément le listener - à croiser avec le reste du profil.
 
-`shards` crée plusieurs sockets pour le même bind, répartis entre les thread groups :
+`shards` est la solution : il crée plusieurs sockets pour le même bind via `SO_REUSEPORT`, répartis entre les thread groups. Le trafic se distribue sur plusieurs sockets et la contention tombe.
 
 ```haproxy
 frontend http_front
@@ -203,13 +203,18 @@ Chaque connexion consomme 2 × `bufsize` en RAM - un `bufsize` de 64 KB avec 300
 
 ### tune.maxrewrite
 
-Espace réservé dans le buffer pour les réécritures de headers. Par défaut `bufsize / 2`. Réduire si on ne fait pas de réécriture volumineuse.
+Espace réservé en fin de buffer pour les réécritures de headers. Les premières lectures ne remplissent jamais plus de `bufsize - maxrewrite`, donc ce qu'on réserve ici est autant de place en moins pour la requête elle-même.
+
+Le défaut est `MIN(1024, bufsize / 2)`, soit **1024** dans tous les cas réalistes. On lit souvent « la moitié du bufsize » : c'est une valeur historique, plus d'actualité. Concrètement, il n'y a rien à réduire, on est déjà au plancher.
+
+Le seul cas où on y touche, c'est pour le **monter**, quand on insère beaucoup de headers sur des requêtes déjà volumineuses et que HAProxy refuse d'ajouter :
 
 ```haproxy
 global
-    tune.bufsize 16384
-    tune.maxrewrite 1024
+    tune.maxrewrite 2048
 ```
+
+Et il n'y a pas besoin d'y penser en changeant `bufsize` : HAProxy le rabaisse tout seul à la moitié du `bufsize` s'il dépasse.
 
 ### tune.http.maxhdr
 
@@ -299,7 +304,8 @@ global
     tune.ssl.default-dh-param 2048
 ```
 
-2048 est le minimum raisonnable. 4096 offre plus de sécurité mais coûte en CPU - mesurer avant de passer à 4096 en production.
+!!! note "Réglage largement obsolète"
+    `tune.ssl.default-dh-param` ne concerne que le key exchange **DHE** (Diffie-Hellman en corps fini). En pratique tout le monde est en ECDHE depuis des années, et TLS 1.3 ne négocie plus de DHE de cette façon. Sur une config moderne c'est donc un no-op, pas un réglage de perf. On le laisse ici parce qu'il traîne encore dans beaucoup de configs héritées, mais il n'y a rien à gagner à le toucher.
 
 ### Certificats : ECDSA vs RSA
 
@@ -311,7 +317,7 @@ Le handshake TLS est l'opération la plus coûteuse en CPU. Le type de certifica
 | RSA 2048 | ~1 261 sign/s | ~4 629 sign/s |
 | RSA 4096 | ~191 sign/s | ~761 sign/s |
 
-Le x86 est 1,4x à 4x plus rapide par cœur selon l'algo, mais le ratio entre ECDSA et RSA reste le même partout : ECDSA P-256 est ~15x plus rapide que RSA 2048 et RSA 4096 est ~6x plus lent que RSA 2048.
+Le x86 est 1,4x à 4x plus rapide par cœur selon l'algo. L'écart ECDSA/RSA, lui, dépend fortement de l'archi : ECDSA P-256 est ~15x plus rapide que RSA 2048 sur x86, mais ~40x sur ARM. Autrement dit, plus le CPU est mauvais en RSA, plus le passage à ECDSA rapporte. Le ratio RSA 4096 / RSA 2048 est le seul qui reste stable : ~6x plus lent des deux côtés.
 
 En intégrant le prix (GCP spot, standard-16, avril 2026 : C4a ~179$/mois, C4d ~216$/mois), le x86 reste aussi plus rentable en crypto pur :
 
@@ -427,18 +433,57 @@ global
     maxsslrate 320000
 ```
 
-`maxsslconn` limite le nombre de connexions SSL simultanées. `maxsslrate` limite le nombre de nouveaux handshakes par seconde. Les connexions qui dépassent sont mises en queue ou refusées.
+`maxsslconn` limite le nombre de connexions SSL simultanées. `maxsslrate` limite le nombre de nouveaux handshakes par seconde. Quand la limite tombe, les listeners SSL arrêtent d'accepter : les connexions restent dans la backlog du noyau, elles ne sont pas rejetées activement.
+
+!!! warning "maxsslconn compte les deux côtés"
+    `maxsslconn` s'applique aux connexions entrantes **et** sortantes. Une requête déchiffrée côté client puis rechiffrée vers un backend en TLS (`server ... ssl`) compte pour 2. Avec des backends en HTTPS, un `maxsslconn 320000` ne couvre donc que ~160k clients. Avec des backends en HTTP clair, le compte est direct.
 
 ### OCSP stapling
 
 Activer l'OCSP stapling réduit la latence TLS - le client n'a plus besoin de contacter le CA pour vérifier le certificat.
 
+!!! danger "`ocsp-update on` ne se met pas sur une ligne `bind`"
+    C'est l'erreur classique. La doc HAProxy est explicite : « `ocsp-update on` argument can be included only in a `crt-list`. It cannot be added to a `bind` line. » Mis sur un `bind`, ça fait échouer le parsing de la config. 3 endroits valides : l'option globale, une crt-list, ou un crt-store.
+
+Le plus simple, l'option globale qui s'applique à tous les certificats :
+
 ```haproxy
-bind *:443 ssl crt /etc/haproxy/certs/ ocsp-update on
+global
+    ocsp-update.mode on
+    ocsp-update.mindelay 300
+    ocsp-update.maxdelay 3600
+
+frontend http_front
+    bind *:443 ssl crt /etc/haproxy/certs/
+```
+
+Pour n'activer que sur certains certificats, une crt-list (2.8+) :
+
+```haproxy
+# haproxy.cfg
+frontend http_front
+    bind *:443 ssl crt-list /etc/haproxy/certs.list
+```
+
+```text
+# /etc/haproxy/certs.list
+/etc/haproxy/certs/mysite.pem [ocsp-update on]
+/etc/haproxy/certs/legacy.pem
+```
+
+Ou un crt-store (3.0+), plus lisible quand on gère beaucoup de certificats :
+
+```haproxy
+crt-store web
+    crt-base /etc/haproxy/certs/
+    load crt mysite.pem ocsp-update on
+
+frontend http_front
+    bind *:443 ssl crt "@web/mysite.pem"
 ```
 
 !!! warning "Let's Encrypt"
-    Let's Encrypt a arrêté de fournir des réponses OCSP en juin 2025. Avec des certificats LE, `ocsp-update on` ne sert plus à rien - HAProxy logguera des erreurs de fetch OCSP sans impact fonctionnel, mais c'est du bruit inutile. Les autres CA (DigiCert, Sectigo, etc.) supportent toujours OCSP.
+    Let's Encrypt a démantelé son OCSP en 2025 : depuis le 7 mai 2025 les nouveaux certificats n'embarquent plus d'URL OCSP, et les répondeurs ont été éteints le 6 août 2025. Avec des certificats LE, activer l'ocsp-update ne sert plus à rien - HAProxy logguera des erreurs de fetch sans impact fonctionnel, mais c'est du bruit inutile. Les autres CA (DigiCert, Sectigo, etc.) supportent toujours OCSP.
 
 ## Tuning réseau noyau
 
@@ -455,10 +500,10 @@ sysctl -w net.core.wmem_max=16777216
 sysctl -w net.ipv4.tcp_rmem="4096 87380 16777216"
 sysctl -w net.ipv4.tcp_wmem="4096 65536 16777216"
 
-# Réutilisation des connexions TIME_WAIT
+# Réutilisation des sockets en TIME_WAIT pour les connexions sortantes
 sysctl -w net.ipv4.tcp_tw_reuse=1
 
-# Réduire le temps en TIME_WAIT (défaut 60s)
+# Purger les FIN_WAIT_2 orphelins plus vite (défaut 60s)
 sysctl -w net.ipv4.tcp_fin_timeout=15
 
 # Maximiser la plage de ports éphémères
@@ -468,9 +513,27 @@ sysctl -w net.ipv4.ip_local_port_range="1024 65023"
 sysctl -w fs.nr_open=1048576
 ```
 
-`tcp_fin_timeout=15` réduit le temps pendant lequel une connexion fermée reste en état TIME_WAIT (défaut 60s). Sur un load balancer qui ouvre des milliers de connexions par seconde vers les backends, 60s de TIME_WAIT sature vite la table de connexion.
+!!! warning "`tcp_fin_timeout` ne touche pas au TIME_WAIT"
+    C'est la confusion la plus répandue sur ce sysctl. `tcp_fin_timeout` contrôle **FIN_WAIT_2**, l'état où on a envoyé un FIN et où on attend celui d'en face. La durée du TIME_WAIT, elle, est `TCP_TIMEWAIT_LEN` : 60s câblées en dur dans le kernel, pas exposées en sysctl, pas modifiables sans recompiler.
+
+Le sysctl reste utile, il libère les FIN_WAIT_2 laissés par des peers qui ne referment jamais, mais ce n'est pas lui qui règle un problème de TIME_WAIT. Pour ça c'est `tcp_tw_reuse=1`, qui autorise le kernel à réutiliser un socket en TIME_WAIT pour une nouvelle connexion **sortante**. C'est exactement le cas d'un load balancer qui ouvre des milliers de connexions par seconde vers ses backends.
 
 `ip_local_port_range="1024 65023"` étend la plage de ports éphémères à ~64k ports. Le défaut `32768 60999` ne donne que ~28k ports - insuffisant quand HAProxy ouvre beaucoup de connexions sortantes.
+
+!!! warning "Descendre à 1024 n'est pas gratuit"
+    La plage éphémère est celle où le kernel pioche pour les sockets sortants, et rien ne l'empêche d'attribuer un port qu'un service local voudra bind plus tard. Avec une borne à 1024 on marche potentiellement sur MySQL (3306), Redis (6379), les backends applicatifs (8080), les exporters Prometheus (9100)... À ne faire que sur une machine dédiée au load balancing, où on sait exactement ce qui tourne.
+
+Vérifier ce qui écoute, et surtout ce qui peut démarrer **après** HAProxy - un service qui boote en retard et trouve son port déjà pris par une connexion sortante, ça se debug très mal :
+
+```bash
+ss -lntup | awk '{print $5}' | grep -oE '[0-9]+$' | sort -un
+```
+
+Puis réserver explicitement les ports à protéger. Ils restent bindables mais sortent de l'allocation éphémère, même s'ils tombent dans la plage :
+
+```bash
+sysctl -w net.ipv4.ip_local_reserved_ports="3306,6379,8080,9100"
+```
 
 Pour persister, ajouter dans `/etc/sysctl.d/99-haproxy.conf` et appliquer avec `sysctl --system`.
 
@@ -491,7 +554,14 @@ HAProxy calcule automatiquement son `ulimit-n` à partir du `maxconn` - pas beso
 
 ## Pool de file descriptors
 
-Quand HAProxy approche de sa limite de file descriptors, il commence à fermer les connexions idle pour en libérer. Les ratios `tune.pool-high-fd-ratio` et `tune.pool-low-fd-ratio` contrôlent ce comportement :
+Deux ratios contrôlent la part des file descriptors que HAProxy accepte de laisser dormir dans le pool de connexions idle. Ce ne sont pas un high/low watermark d'hystérésis, ce sont 2 seuils indépendants exprimés en pourcentage du nombre total de FD :
+
+| Directive | Défaut | Ce qui se passe au-delà |
+| --------- | ------ | ----------------------- |
+| `tune.pool-low-fd-ratio` | 20 | HAProxy **arrête de mettre** de nouvelles connexions dans le pool idle |
+| `tune.pool-high-fd-ratio` | 25 | HAProxy **tue** des connexions idle quand il doit en ouvrir une neuve et ne peut pas en réutiliser |
+
+Les défauts sont donc très conservateurs : à peine 1 FD sur 4 peut servir de connexion backend poolée. Sur du trafic avec de longs keep-alive (beaconing, long-polling), ça tue les connexions poolées bien avant qu'il y ait la moindre pression sur les FD, ce qui force des reconnexions TCP inutiles et consomme du CPU.
 
 ```haproxy
 global
@@ -499,9 +569,7 @@ global
     tune.pool-low-fd-ratio 80
 ```
 
-Par défaut, HAProxy commence à recycler les connexions idle quand il atteint ~75% des FD disponibles et s'arrête quand il redescend à ~25%. Sur du trafic avec de longs keep-alive (beaconing, long-polling), ce comportement par défaut tue les connexions backend poolées trop tôt, ce qui force des reconnexions TCP inutiles et consomme du CPU.
-
-Monter les ratios à 90/80 préserve le pool de connexions plus longtemps et ne recycle qu'en cas de vrai manque de FD.
+Monter à 90/80 préserve le pool beaucoup plus longtemps et ne recycle qu'en cas de vrai manque de FD. À ne faire qu'avec un `nofile` correctement dimensionné : on autorise ici le pool à manger 90% des FD disponibles.
 
 ## Déploiement K8S
 
@@ -557,21 +625,25 @@ Par défaut, HAProxy ouvre une nouvelle connexion TCP vers le backend pour chaqu
 
 ```haproxy
 backend app_servers
-    http-reuse always
+    http-reuse aggressive
 ```
 
 | Mode | Comportement |
 | ---- | ------------ |
 | `never` | Pas de réutilisation - une connexion par session |
 | `safe` | Réutilise à partir de la 2e requête d'une session (défaut, le plus sûr) |
-| `aggressive` | Réutilise dès la 1re requête si la connexion a déjà été réutilisée une fois |
-| `always` | Réutilise toujours - le plus performant, mais le backend doit supporter le multiplexing |
+| `aggressive` | Réutilise dès la 1re requête, mais seulement sur une connexion déjà réutilisée une fois - preuve que le serveur gère bien le reuse |
+| `always` | Réutilise dès la 1re requête sur n'importe quelle connexion idle |
+
+Le réflexe est de sauter direct sur `always`, mais la doc HAProxy recommande l'inverse : « In most cases, this will lead to the same performance gains as `aggressive` but with more risks. It should only be used when it improves the situation over `aggressive`. » `always` suppose un chemin réseau qui ne casse jamais une connexion juste après l'avoir relâchée, typiquement une cache farm en LAN. Commencer par `aggressive`, mesurer, et ne passer à `always` que si les chiffres bougent vraiment.
+
+Dans les deux cas, garder `timeout http-keep-alive` bas pour qu'aucune connexion morte ne traîne dans le pool.
 
 Contrôler le pool de connexions idle par serveur :
 
 ```haproxy
 backend app_servers
-    http-reuse always
+    http-reuse aggressive
     server web1 10.0.0.1:8080 pool-max-conn 100 pool-purge-delay 5s check
 ```
 
@@ -675,7 +747,7 @@ defaults
     option redispatch
 
 backend app_servers
-    default-server inter 1s fall 1 rise 10 observe layer7
+    default-server inter 1s fall 1 rise 10 observe layer7 error-limit 3 on-error mark-down
     server web1 10.0.0.1:8080 check
     server web2 10.0.0.2:8080 check
 ```
@@ -685,9 +757,16 @@ backend app_servers
 | `retry-on` | Liste des erreurs qui déclenchent un retry sur un autre serveur |
 | `option redispatch` | Autorise le retry sur un serveur différent (sinon retry sur le même) |
 | `retries 2` | Nombre max de tentatives |
-| `observe layer7` | Retire un serveur du pool dès qu'il retourne des erreurs HTTP |
+| `observe layer7` | Surveille le trafic réel (codes HTTP, headers illisibles, timeouts) en plus des health checks |
+| `error-limit 3` | Nombre d'erreurs consécutives qui déclenche `on-error` (défaut 10) |
+| `on-error mark-down` | Ce qu'on fait au-delà de `error-limit` (défaut `fail-check`, qui simule juste un check raté) |
 | `fall 1` | Un seul échec suffit pour marquer le serveur DOWN |
 | `rise 10` | 10 checks OK consécutifs pour le remonter - évite les allers-retours |
+
+!!! warning "`observe` seul ne fait rien d'immédiat"
+    `observe layer7` posé tout seul ne retire pas un serveur dès la première erreur. Il compte, et c'est `error-limit` (défaut **10 erreurs consécutives**) qui déclenche `on-error` (défaut `fail-check`). Avec les défauts et un `fall 1`, il faut donc 10 erreurs d'affilée avant que le serveur ne descende, pas une. Pour réagir plus tôt, poser `error-limit` et `on-error` explicitement.
+
+Côté layer7, les codes considérés comme valides sont 100 à 499, 501 et 505. Un 500, 502, 503 ou 504 compte donc comme une erreur, un 404 non.
 
 !!! tip
     `timeout connect 20ms` est très agressif - adapté quand HAProxy et les backends sont dans le même datacenter/VPC. Un backend qui met plus de 20ms à accepter la connexion TCP est probablement throttled ou saturé, mieux vaut redispatcher immédiatement.
@@ -723,7 +802,7 @@ frontend high_traffic
     option dontlog-normal
 ```
 
-`dontlog-normal` ne log que les requêtes avec un status >= 400, les timeouts et les connexions avortées.
+`dontlog-normal` ne log plus que ce qui sort de l'ordinaire : les **5xx**, les erreurs, les timeouts, les retries et les redispatch. Attention au piège, ça inclut bien les 5xx mais **pas les 4xx** : un 404 ou un 403 servi proprement est une connexion « normale » et disparaît des logs. Si on a besoin de suivre les 4xx, garder les logs complets et utiliser `option log-separate-errors` pour les router ailleurs.
 
 ## Compression
 
@@ -755,7 +834,7 @@ Pas de support zstd à ce jour, même en HAProxy 3.x. Si on a besoin de zstd, le
 
 - `1` : quasi gratuit en CPU, ratio de compression modeste (~60%)
 - `4-5` : bon compromis ratio/CPU pour la plupart des workloads
-- `9` : gain marginal en ratio par rapport à 6, mais consommation CPU qui explose
+- `9` : gain marginal en ratio par rapport à 4-5, mais consommation CPU qui explose
 
 Sur un HAProxy à forte charge, rester entre 1 et 4. Le gain de bande passante entre le niveau 4 et le niveau 9 justifie rarement le coût CPU.
 
@@ -773,10 +852,9 @@ global
     maxsslconn 300000
     maxsslrate 300000
     spread-checks 5
-    tune.bufsize 65536
     tune.ssl.cachesize 100000
     tune.ssl.lifetime 600
-    tune.ssl.default-dh-param 2048
+    ocsp-update.mode on
     log /dev/log local0 notice
 
 defaults
@@ -793,15 +871,20 @@ defaults
 
 frontend http_front
     bind *:80
-    bind *:443 ssl crt /etc/haproxy/certs/ ocsp-update on
+    bind *:443 ssl crt /etc/haproxy/certs/
     maxconn 150000
     default_backend app_servers
 
 backend app_servers
     balance roundrobin
+    http-reuse aggressive
     server web1 10.0.0.1:8080 maxconn 2000 check inter 3s fall 3 rise 2
     server web2 10.0.0.2:8080 maxconn 2000 check inter 3s fall 3 rise 2
 ```
+
+Noter l'absence de `tune.bufsize` ici : on garde le défaut de 16 KB. Avec `maxconn 300000`, passer à 64 KB voudrait dire ~37 GB de RAM rien qu'en buffers. La doc HAProxy est claire là-dessus : « At least the global maxconn parameter should be decreased by the same factor as this one is increased. » On monte le `bufsize` ou on monte le `maxconn`, rarement les deux.
+
+`tune.ssl.default-dh-param` a aussi disparu, il ne sert plus à rien en ECDHE/TLS 1.3.
 
 ## Monitoring Prometheus
 
@@ -839,10 +922,13 @@ echo "show info" | socat - /var/run/haproxy.sock | grep -iE 'maxconn|maxsock|nbt
 Voir comment HAProxy a réparti ses threads sur les CPUs (3.2+) :
 
 ```bash
-haproxy -dc -f /etc/haproxy/haproxy.cfg
+haproxy -c -dc -f /etc/haproxy/haproxy.cfg
 ```
 
-Affiche les thread groups, le nombre de threads par groupe et les CPU sets associés.
+Affiche les CPUs sélectionnés et évincés, la topologie détectée, les thread groups et les CPU sets associés.
+
+!!! warning
+    Ne pas oublier le `-c`. `-dc` sort son rapport **avant de démarrer**, donc lancé seul il démarre réellement un second HAProxy et se plante sur un conflit de bind. Le `-c` fait un check de config et sort, ce qui donne le même rapport sans rien lancer.
 
 ### Contention CPU
 
@@ -854,7 +940,7 @@ sudo perf top
 
 | Symptôme dans perf top | Cause probable | Action |
 | ---------------------- | -------------- | ------ |
-| `native_queued_spin_lock_slowpath` | Contention sur les listener sockets | Ajouter `shards by-group` |
+| `native_queued_spin_lock_slowpath` | Contention sur un lock noyau, souvent le listener socket sur de gros thread counts (symbole générique, vérifier la stack) | Ajouter `shards by-group` |
 | `ksoftirqd` | IRQ NIC saturent des cœurs | Réserver des cœurs pour les IRQ, exclure du pool HAProxy |
 | Fonctions SSL (`_bignum`, `_mont`) | Handshakes TLS intensifs | Séparer les threads SSL sur un NUMA node dédié |
 
