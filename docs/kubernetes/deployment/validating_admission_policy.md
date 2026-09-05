@@ -304,8 +304,10 @@ spec:
 Dans les audit logs :
 
 ```json
-"annotations": {
-  "require-resource-requests/containers-without-requests": "app, envoy"
+{
+  "annotations": {
+    "require-resource-requests/containers-without-requests": "app, envoy"
+  }
 }
 ```
 
