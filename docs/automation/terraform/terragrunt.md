@@ -128,19 +128,21 @@ Les `mock_outputs` existent parce qu'un `run --all plan` sur un environnement ne
 
 ## Les mocks qui masquent une vraie erreur
 
-Le piège arrive quand une unit est bien appliquée mais qu'un output a été renommé côté module. Terragrunt ne trouve plus `network_name`, retombe sur le mock et le `plan` sort propre avec une valeur bidon. On ne le voit qu'à l'apply, ou pire, jamais, si la ressource accepte la valeur.
+Le scénario qu'on redoute : une unit est bien appliquée, un output a été renommé côté module, Terragrunt ne trouve plus `network_name` et retombe sur le mock. Le `plan` sort propre avec une valeur bidon et on ne le voit qu'à l'apply, ou pire jamais, si la ressource accepte la valeur.
 
-La parade est `mock_outputs_merge_strategy_with_state`, qui fusionne le state réel avec les mocks au lieu de choisir l'un ou l'autre en bloc :
+Le défaut protège déjà de ça. `mock_outputs_merge_strategy_with_state` vaut `no_merge`, et la doc est explicite : *any existing state will be used as is. If the dependency does not have an existing state (it hasn't been applied yet), then the mocks will be used*. Une unit déjà appliquée n'utilise donc aucun mock, et un output disparu fait échouer le run au lieu de passer en douce.
+
+Le vrai piège, c'est d'aller toucher à ce réglage en croyant durcir les choses :
 
 ```hcl
 dependency "vpc" {
-  config_path                           = "../vpc"
-  mock_outputs                          = { network_name = "mock-network" }
-  mock_outputs_merge_strategy_with_state = "shallow"
+  config_path                            = "../vpc"
+  mock_outputs                           = { network_name = "mock-network" }
+  mock_outputs_merge_strategy_with_state = "shallow"   # fabrique le problème
 }
 ```
 
-En `shallow`, un output présent dans le state gagne toujours sur son mock et seuls les outputs réellement absents sont mockés. Un output disparu reste donc absent et fait échouer le plan, ce qui est le comportement qu'on veut.
+En `shallow`, *mocks will only be used where the output does not already exist in the dependency's state*. L'output renommé est donc exactement celui qui se fait remplacer par le mock : c'est ce réglage, et lui seul, qui produit le plan vert avec une valeur bidon. `shallow` a un usage légitime, ajouter un nouvel output mocké sur une unit déjà appliquée sans casser le plan, mais ce n'est pas un garde-fou.
 
 ## Ordonner sans lire d'output
 
