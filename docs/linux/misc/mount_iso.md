@@ -30,13 +30,18 @@ Si `umount` répond `target is busy`, c'est qu'un shell ou un process travaille 
 lsof +D /mnt/iso
 ```
 
-Pour monter sans être root, `udisksctl` passe par le service système et monte automatiquement sous `/media` :
+Pour monter sans être root, `udisksctl` passe par le service système. Ce sont 3 étapes distinctes et c'est là qu'on se plante : `loop-setup` crée seulement le loop device et imprime lequel, il ne monte rien. C'est `mount` qui monte, et pas sous `/media` mais dans `/run/media/$USER/<label>`, chemin qu'il affiche sur sa sortie standard.
 
 ```bash
-udisksctl loop-setup -r -f image.iso
-udisksctl mount -b /dev/loop0
-udisksctl loop-delete -b /dev/loop0
+DEV=$(udisksctl loop-setup -r -f image.iso | grep -o '/dev/loop[0-9]*')
+udisksctl mount -b "$DEV"        # imprime le point de montage réel
+udisksctl unmount -b "$DEV"
+udisksctl loop-delete -b "$DEV"
 ```
+
+Reprendre le device dans une variable n'est pas de la coquetterie : `loop-setup` alloue le premier loop libre, et sur une Ubuntu chaque snap monté en occupe un, donc `/dev/loop0` est déjà pris. Un `mount -b /dev/loop0` en dur monte le squashfs d'un snap ou échoue.
+
+Le `unmount` avant le `loop-delete` compte tout autant : sur un device encore monté, le teardown bascule en détachement différé. La commande sort en succès et l'image reste montée sous `/run/media`.
 
 Et pour rendre le montage permanent, une ligne de `fstab`, avec le `nofail` qui évite qu'un fichier absent bloque le démarrage :
 
