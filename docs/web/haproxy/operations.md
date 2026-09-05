@@ -13,14 +13,23 @@ un node du pool et récupérer la vraie IP du client quand il y a un CDN devant.
 ## Le socket d'admin
 
 Tout ce qui suit passe par le socket d'administration, à déclarer dans la
-[section global](overview.md#global). Sans le niveau `admin`, les commandes de lecture
-fonctionnent mais tout ce qui modifie l'état est refusé.
+[section global](overview.md#global). Il y a 3 niveaux et le défaut est `operator`, pas
+`user` : en `user` on n'a que la lecture non sensible, et `show sess` comme `show errors`
+sont déjà refusés. `operator` autorise la lecture complète et les modifications anodines.
+Toutes les commandes de mutation de cet article, `set server ... state`, `disable health`,
+`set weight`, exigent `admin`.
 
 ```haproxy
 global
-    stats socket /run/haproxy/admin.sock mode 660 level admin expose-fd listeners
+    stats socket /run/haproxy/admin.sock mode 600 level admin
     stats timeout 30s
 ```
+
+`mode 600` et pas `660` : sans `user`/`group`, le socket appartient à `root:root` et le bit
+groupe ne donne accès à personne de plus. Si on veut vraiment déléguer, il faut ajouter
+`user haproxy group haproxy`. Et pas de `expose-fd listeners` ici : la doc précise
+qu'*in master-worker mode, it does not need "expose-fd listeners"*, or tous les units
+systemd distribués lancent HAProxy en master-worker.
 
 ## Lire les stats
 
