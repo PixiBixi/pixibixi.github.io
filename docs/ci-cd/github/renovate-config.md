@@ -35,14 +35,27 @@ Sortie sur une config saine :
 
 ### Savoir dans quel mode il tourne
 
-Passer un chemin en argument fait valider le fichier comme config **globale**, celle d'une instance self-hosted et pas comme config de repo. `--no-global` force le mode repo et la première ligne de sortie dit toujours lequel a tourné :
+Passer un chemin en argument fait valider le fichier comme config **globale**, celle d'une instance self-hosted et pas comme config de repo. `--no-global` force le mode repo, et la ligne de sortie annonce alors le mode :
 
 ```text
  INFO: Validating renovate.json as global config
  INFO: Validating renovate.json as repo config
 ```
 
-Sans argument du tout, il détecte les emplacements par défaut et prend le mode repo. Aucun cas rencontré où le mode change le verdict, une clé inconnue est refusée dans les 2, mais autant valider dans le mode qui correspond au fichier.
+Le suffixe `as <mode> config` n'apparaît que quand on passe un fichier en argument. Sans argument, le validateur découvre les emplacements par défaut, valide en mode repo et se contente de `INFO: Validating renovate.json`, comme dans la sortie plus haut.
+
+Le mode n'est pas cosmétique, contrairement à ce qu'on croit en voyant qu'une clé inconnue est refusée dans les 2. En mode global, les options réservées à la config globale passent en silence ; en mode repo elles sont rejetées. Testé sur `{"autodiscover": true, "binarySource": "install"}` avec la 44 :
+
+```text
+$ renovate-config-validator c.json
+ INFO: Config validated successfully against 1 file(s)
+
+$ renovate-config-validator --no-global c.json
+       "message": "The \"autodiscover\" option is a global option reserved only for Renovate's
+                    global configuration and cannot be configured within a repository's config file"
+```
+
+Valider une config de repo en mode global laisse donc passer exactement ce que le vrai run refusera. C'est la raison d'être de `--no-global`, pas une préférence.
 
 `--strict` fait en plus échouer la validation quand une migration de config est nécessaire, ce que Renovate propose sinon via une case à cocher dans le dependency dashboard.
 
@@ -60,7 +73,15 @@ repos:
 
 Le hook matche `renovate.json`, `.renovaterc`, `renovate.json5` et leurs variantes et demande pre-commit 3.6.0 au minimum. Comme pre-commit passe les fichiers matchés en arguments, il valide en mode global : ajouter `args: [--no-global]` remet le mode repo.
 
-Renovate met à jour ce `rev` tout seul, donc le validateur suit la version qui tourne réellement sur le dépôt.
+Renovate ne met **pas** ce `rev` à jour tout seul : son manager `pre-commit` est livré avec `enabled: false`. Sans opt-in explicite le `rev` reste figé indéfiniment, ce qui vide de son sens l'argument « le validateur suit la version qui tourne ». Il faut l'activer :
+
+```json title="renovate.json"
+{
+  "extends": [":enablePreCommit"]
+}
+```
+
+Ou l'équivalent `{"pre-commit": {"enabled": true}}`. À noter que ce manager n'est pas supporté par les mainteneurs de pre-commit, Renovate le rappelle dans le corps de ses PR.
 
 ## Documenter une config sans la casser
 
@@ -104,7 +125,9 @@ Ce contrôle a disparu, donc sur ce point c'est la doc qui tranche, pas l'outil.
 
 ## Le silence de Renovate sur les forks
 
-`forkProcessing` vaut `disabled` par défaut, donc sur un fork Renovate n'ouvre ni PR d'onboarding, ni dependency dashboard, ni issue de config et c'est le défaut le plus coûteux à diagnostiquer parce qu'il ne produit aucun signal.
+`forkProcessing` vaut `auto` par défaut, et `auto` veut dire « sauter les forks en mode `autodiscover` ». C'est le cas de l'app Mend installée sur « All repositories », et d'une instance self-hosted lancée en autodiscover. Renovate n'ouvre alors sur un fork ni PR d'onboarding, ni dependency dashboard, ni issue de config, et c'est le défaut le plus coûteux à diagnostiquer parce qu'il ne produit aucun signal.
+
+En dehors de l'autodiscover, quand les repos sont listés explicitement, les forks sont traités normalement. Le comportement dépend donc du mode d'exécution, ce qui explique qu'on lise des retours contradictoires dessus.
 
 Sur un repo créé par fork, sans savoir que l'option existe, on regarde une config correcte en se demandant pourquoi rien ne bouge.
 
@@ -121,7 +144,7 @@ Vérifier si un repo est un fork tient en une commande :
 gh api repos/OWNER/REPO --jq '{fork: .fork, parent: .parent.full_name}'
 ```
 
-Un fork hérite aussi des **issues désactivées**. Renovate y met son dependency dashboard, donc tant qu'elles sont fermées il n'a nulle part où lister ce qu'il retient. Ça n'empêche pas les PR, mais on perd la vue d'ensemble et la case « lancer maintenant ».
+Un fork naît aussi avec ses **issues désactivées**, quel que soit l'état du parent : ce n'est pas de l'héritage, c'est GitHub qui les désactive sur tout nouveau fork. Renovate y met son dependency dashboard, donc tant qu'elles sont fermées il n'a nulle part où lister ce qu'il retient. Ça n'empêche pas les PR, mais on perd la vue d'ensemble et la case « lancer maintenant ».
 
 ## Attraper l'erreur avant que Renovate la trouve
 
@@ -132,7 +155,7 @@ name: renovate-config
 
 on:
   pull_request:
-    paths: ['renovate.json']
+    paths: ['renovate.json*', '.renovaterc*', '.github/renovate.json*']
 
 permissions:
   contents: read
