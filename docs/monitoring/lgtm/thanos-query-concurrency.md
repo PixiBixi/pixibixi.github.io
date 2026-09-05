@@ -10,7 +10,7 @@ tags:
 
 # La concurrence de lecture Thanos : amplification, gates et diagnostic
 
-Une gate de store gateway protège un pod à la fois. Le nombre qu'on y met n'a donc de sens qu'en regard de ce qui arrive en face, or ce qui arrive en face n'est pas le nombre de requêtes utilisateur : c'est ce nombre multiplié 2 fois, une fois par le découpage du query frontend et une fois par le fan-out du querier.
+Une gate de store gateway protège un pod à la fois. Le nombre qu'on y met n'a donc de sens qu'en regard de ce qui arrive en face, or ce qui arrive en face n'est pas le nombre de requêtes utilisateur : c'est ce nombre multiplié par le découpage du query frontend, par le nombre de sélecteurs de la requête, puis par le fan-out du querier vers les stacks.
 
 Le symptôme de départ est déroutant : une gate collée à son plafond pendant que le trafic entrant ne bouge pas d'un pouce sur 24h. Cet article va de ce symptôme jusqu'à l'invariant qui empêche qu'il revienne. Le reste de la plateforme est décrit dans [Thanos at scale](thanos.md), qui couvre le sharding temporel et les limites de lecture.
 
@@ -60,16 +60,20 @@ D'où 2 familles de leviers, une par terme. Pour borner λ, ce sont les multipli
 
 ## Ordonner les limites de concurrence
 
-4 limites se suivent sur le chemin de lecture et elles ne sont pas interchangeables. Les 2 premières sont des multiplicateurs, les 2 dernières des plafonds.
+4 limites se suivent sur le chemin de lecture et elles ne sont pas interchangeables. La première multiplie, la deuxième écrête un multiplicateur qui vient de la requête elle-même, les 2 dernières sont des plafonds de concurrence.
 
 | Flag | Composant | Rôle |
 |---|---|---|
 | `--query-range.max-query-parallelism` | query frontend | sous-requêtes concurrentes par requête, 14 par défaut |
-| `--query.max-concurrent-select` | querier | selects concurrents dans une requête, 4 par défaut |
+| `--query.max-concurrent-select` | querier | plafond des selects concurrents dans une requête, 4 par défaut |
 | `--query.max-concurrent` | querier | requêtes PromQL simultanées par pod, 20 par défaut |
 | `--store.grpc.series-max-concurrency` | store gateway | Series calls simultanés par pod, 20 par défaut |
 
-L'invariant est simple : **le produit des 2 multiplicateurs doit rester sous le plus petit des 2 plafonds**. Les valeurs par défaut le respectent, 14 fois 4 reste modeste devant 20. C'est en montant l'un des 2 multiplicateurs qu'on le casse, et corriger un seul des 2 ne suffit pas : une flotte ramenée de 256 à 14 sur le découpage a vu son amplification de pointe tomber de 74 à 21 sans que la series gate décolle de son plafond, parce que le cap des selects était resté à 64. C'est en montant le parallélisme qu'on le casse. La tentation est réelle, puisque monter le parallélisme rend effectivement plus rapide une requête large prise isolément.
+Le sens de `--query.max-concurrent-select` se lit à l'envers de ce qu'on croit : il ne multiplie rien, il borne. Le vrai multiplicateur est le nombre de sélecteurs de vecteur de la requête, et le flag ne fait que l'écrêter, `min(nb de sélecteurs, 4)`. Le compte par pod est donc `max-query-parallelism` fois ce minimum.
+
+L'invariant qu'on voudrait est que ce produit reste sous le plus petit des 2 plafonds. **Les valeurs par défaut ne le respectent pas** : 14 fois 4 fait 56 pour une gate à 20. Rien ne casse tant que le trafic est faible, parce que la gate met en file d'attente au lieu de refuser, mais ça veut dire qu'une requête à 4 sélecteurs suffit à demander presque 3 fois la place disponible. La marge n'existe pas, elle est empruntée au fait que personne ne requête en même temps.
+
+C'est en montant l'un des 2 termes qu'on rend la chose visible, et corriger un seul des 2 ne suffit pas : une flotte ramenée de 256 à 14 sur le découpage a vu son amplification de pointe tomber de 74 à 21 sans que la series gate décolle de son plafond, parce que le cap des selects était resté à 64. La tentation de monter le parallélisme est réelle, puisque ça rend effectivement plus rapide une requête large prise isolément.
 
 2 seuils se franchissent alors, dans cet ordre.
 
