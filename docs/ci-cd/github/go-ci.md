@@ -328,22 +328,24 @@ Une CI fiable débloque un cran d'automatisation de plus : faire du type de comm
 Le chaînon manquant : relier le contenu d'une PR mergée à un numéro de version. Les commits conventionnels le permettent - `feat` → bump mineur, `fix` → bump patch. Renovate sait taguer ses commits par type d'update, ce qui suffit à décider du bump :
 
 ```json title="renovate.json"
-"packageRules": [
-  {
-    "matchManagers": ["gomod"],
-    "matchUpdateTypes": ["minor"],
-    "semanticCommitType": "feat"
-  },
-  {
-    "matchManagers": ["gomod"],
-    "matchUpdateTypes": ["patch", "digest"],
-    "semanticCommitType": "fix"
-  },
-  {
-    "matchManagers": ["github-actions"],
-    "semanticCommitType": "chore"
-  }
-]
+{
+  "packageRules": [
+    {
+      "matchManagers": ["gomod"],
+      "matchUpdateTypes": ["minor"],
+      "semanticCommitType": "feat"
+    },
+    {
+      "matchManagers": ["gomod"],
+      "matchUpdateTypes": ["patch", "digest"],
+      "semanticCommitType": "fix"
+    },
+    {
+      "matchManagers": ["github-actions"],
+      "semanticCommitType": "chore"
+    }
+  ]
+}
 ```
 
 | Update | Manager | Commit émis | Release |
