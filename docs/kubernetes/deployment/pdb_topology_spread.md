@@ -162,7 +162,9 @@ Les 2 autres champs qui traînent dans la spec et qui servent en vrai :
 - `nodeAffinityPolicy` : est-ce que les nodes exclus par le `nodeAffinity` du pod comptent comme des domaines. En `Honor`, ils ne comptent pas, ce qui est presque toujours ce qu'on veut.
 - `nodeTaintsPolicy` : pareil pour les taints. En `Honor`, un node pool tainté que le pod ne tolère pas n'est plus compté comme un domaine disponible, donc le skew reflète la réalité.
 
-Les défauts sont `Ignore` pour les 2, ce qui fait compter des domaines où le pod ne pourra jamais atterrir.
+Les 2 champs n'ont pas le même défaut, et c'est le piège. `nodeAffinityPolicy` non renseigné vaut `Honor` (*if this value is null, the behavior is equivalent to the Honor policy*), donc les nodes exclus par le `nodeAffinity` ou le `nodeSelector` du pod ne sont **déjà pas** comptés sans rien déclarer. `nodeTaintsPolicy`, lui, vaut bien `Ignore` : un node pool tainté que le pod ne tolère pas est compté comme un domaine disponible tant qu'on ne pose pas le champ.
+
+Le seul des 2 qui mérite donc d'être écrit explicitement est `nodeTaintsPolicy: Honor`. Les 2 sont GA et verrouillés depuis la 1.33, le feature gate `NodeInclusionPolicyInPodTopologySpread` n'est plus une question.
 
 ## Pourquoi pas podAntiAffinity
 
