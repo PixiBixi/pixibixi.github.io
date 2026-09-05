@@ -304,7 +304,6 @@ extraFlags:
   - --compact.blocks-fetch-concurrency=1
   - --downsample.concurrency=1
   - --no-debug.halt-on-error
-  - --wait-interval=2m
 ```
 
 Un mot sur `--no-debug.halt-on-error` : le compactor sort en erreur au lieu de continuer en silence. On préfère un job rouge à un bucket qui se dégrade sans que personne ne le voie.
@@ -372,23 +371,37 @@ Il faut la neutraliser et la remplacer par des règles qui interrogent l'état d
 
 La fenêtre de 12 heures tolère un cycle manqué. `ThanosCompactCronJobFailed` reste du best-effort. Le `ttlSecondsAfterFinished` à 600 fait disparaître le Job 10 minutes après son échec, donc la fenêtre de détection est courte.
 
-Ces 2 règles disent si le job tourne, pas s'il fait son travail. Un compactor peut réussir tous ses runs, avoir `thanos_compact_halted` à 0 et laisser le backlog s'accumuler parce que la concurrency ne suit pas le volume produit. Le bucket grossit alors en continu sans que rien ne s'allume. Depuis la v0.24 il expose de quoi le voir venir.
+Ces 2 règles disent si le job tourne, pas s'il fait son travail. Un compactor peut réussir tous ses runs et laisser le backlog s'accumuler parce que la concurrency ne suit pas le volume produit. Le bucket grossit alors en continu sans que rien ne s'allume.
+
+Depuis la v0.24 le compactor expose 4 gauges faites pour ça, `thanos_compact_todo_compactions`, `thanos_compact_todo_compaction_blocks`, `thanos_compact_todo_downsample_blocks` et `thanos_compact_todo_deletion_blocks`. Sauf qu'elles ne servent à rien ici.
+
+!!! danger "Les gauges de backlog n'existent pas en CronJob"
+    Les 3 calculateurs de progression qui les alimentent sont enfermés dans un
+    `if conf.wait` de `cmd/thanos/compact.go`, et l'aide de `--compact.progress-interval`
+    le dit noir sur blanc : *when `--wait` has been enabled*. Un compactor en CronJob
+    tourne sans `--wait`, donc il n'enregistre jamais ces gauges. Une alerte posée dessus
+    ne se déclenche pas, ce qui est pire qu'une alerte absente. Même piège avec
+    `--wait-interval`, qui ne sert à rien sans `--wait` : c'est pour ça qu'il ne figure
+    pas dans les `extraFlags` plus haut.
+
+On ne récupère pas ces gauges sans revenir au Deployment, donc sans rendre le disque à la facturation. Le compromis qu'on a retenu est de lire le backlog du côté des store gateways, qui tournent en continu et resynchronisent les métadonnées de blocks toutes les 15 minutes.
 
 ```yaml
-# Compactions planifiées qui ne sont jamais faites
+# Le nombre de blocks du bucket ne redescend plus sur 24h
 - alert: ThanosCompactBacklog
-  expr: sum(thanos_compact_todo_compactions) > 100
-  for: 6h
-
-# Blocks en attente de downsampling ou de suppression
-- alert: ThanosCompactQueueGrowing
   expr: |
-    sum(thanos_compact_todo_downsample_blocks) > 50
-    or sum(thanos_compact_todo_deletion_blocks) > 100
-  for: 6h
+    min(thanos_blocks_meta_synced{state="loaded", job=~".*thanos-store.*"})
+      - min(thanos_blocks_meta_synced{state="loaded", job=~".*thanos-store.*"} offset 24h)
+      > 0
+  for: 24h
+
+# Des compactions échouent, tous groupes confondus
+- alert: ThanosCompactGroupFailures
+  expr: sum(increase(thanos_compact_group_compactions_failures_total[24h])) > 0
+  for: 5m
 ```
 
-Le `by (group)` sur `thanos_compact_todo_compactions` est ce qui permet d'isoler le groupe de compaction qui traîne, plutôt que de constater que le total monte.
+C'est un proxy, pas le compte exact des compactions en attente : un bucket dont le nombre de blocks ne redescend jamais est un bucket que le compactor ne rattrape pas. `thanos_compact_group_compactions_failures_total` porte un label `resolution` et pas `group`, donc on ne peut pas isoler le groupe qui traîne, seulement la résolution.
 
 ## Un shard par timerange
 
