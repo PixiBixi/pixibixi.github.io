@@ -1113,24 +1113,24 @@ Voici d'autres exemples de règles Prometheus trouvées sur le web :
         expr: avg(rate(netdata_cpu_cpu_percentage_average{dimension="idle"}[1m])) by (job) > 70
         for: 1m
         annotations:
-          description: {{ $labels.job }} on {{ $labels.job }} CPU usage is at {{ humanize $value }}%.
-          summary: CPU alert for container node {{ $labels.job }}
+          description: "{{ $labels.job }} on {{ $labels.job }} CPU usage is at {{ humanize $value }}%."
+          summary: "CPU alert for container node {{ $labels.job }}"
 
       - alert: node_high_memory_usage_70
         expr: 100 / sum(netdata_system_ram_MB_average) by (job)
           * sum(netdata_system_ram_MiB_average{dimension=~"free|cached"}) by (job) < 30
         for: 1m
         annotations:
-          description: {{ $labels.job }} memory usage is {{ humanize $value}}%.
-          summary: Memory alert for container node {{ $labels.job }}
+          description: "{{ $labels.job }} memory usage is {{ humanize $value }}%."
+          summary: "Memory alert for container node {{ $labels.job }}"
 
       - alert: node_low_root_filesystem_space_20
         expr: 100 / sum(netdata_disk_space_GiB_average{family="/"}) by (job)
           * sum(netdata_disk_space_GB_average{family="/",dimension=~"avail|cached"}) by (job) < 20
         for: 1m
         annotations:
-          description: {{ $labels.job }} root filesystem space is {{ humanize $value}}%.
-          summary: Root filesystem alert for container node {{ $labels.job }}
+          description: "{{ $labels.job }} root filesystem space is {{ humanize $value }}%."
+          summary: "Root filesystem alert for container node {{ $labels.job }}"
 
       - alert: node_root_filesystem_fill_rate_6h
         expr: predict_linear(netdata_disk_space_GiB_average{family="/",dimension=~"avail|cached"}[1h], 6 * 3600) < 0
@@ -1138,8 +1138,8 @@ Voici d'autres exemples de règles Prometheus trouvées sur le web :
         labels:
           severity: critical
         annotations:
-          description: Container node {{ $labels.job }} root filesystem is going to fill up in 6h.
-          summary: Disk fill alert for node {{ $labels.job }}
+          description: "Container node {{ $labels.job }} root filesystem is going to fill up in 6h."
+          summary: "Disk fill alert for node {{ $labels.job }}"
     ```
 
 <!-- markdownlint-enable MD046 -->
