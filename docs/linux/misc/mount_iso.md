@@ -18,7 +18,7 @@ sudo mount -o loop,ro image.iso /mnt/iso
 ls /mnt/iso
 ```
 
-`loop` demande au noyau de présenter le fichier comme un périphérique bloc, `ro` évite un avertissement puisqu'une ISO est de toute façon en lecture seule. Le démontage se fait par le point de montage :
+`loop` présente le fichier comme un périphérique bloc, `ro` évite un avertissement puisqu'une ISO est de toute façon en lecture seule. L'option est en fait facultative depuis longtemps, la man page dit que *mount automatically creates a loop device from a regular file if a filesystem type is not specified or the filesystem is known for libblkid*, donc `sudo mount -o ro image.iso /mnt/iso` suffit. On la garde ici parce qu'elle rend explicite ce qui se passe. Le même mécanisme accepte `offset=` et `sizelimit=`, utiles pour attaquer une partition précise d'une ISO hybride. Le démontage se fait par le point de montage :
 
 ```bash
 sudo umount /mnt/iso
@@ -96,11 +96,20 @@ hdiutil detach /Volumes/NOM_DU_VOLUME
 
 ## Vérifier une ISO avant de s'en servir
 
-Un montage qui échoue vient plus souvent d'un téléchargement tronqué que d'un problème d'outil. Le contrôle du format et de la taille prend 2 secondes :
+Un montage qui échoue vient plus souvent d'un téléchargement tronqué que d'un problème d'outil. Les 2 contrôles ne servent pas à la même chose et il faut les 2 :
 
 ```bash
-file image.iso     # doit dire "ISO 9660 CD-ROM filesystem data"
-sha256sum image.iso
+file image.iso                    # le type, pas l'intégrité
+ls -l image.iso                   # à comparer à la taille annoncée par l'éditeur
+sha256sum -c SHA256SUMS           # le seul vrai contrôle d'intégrité
 ```
 
-Et si `file` répond simplement `data`, ce n'est pas une ISO : le fichier a besoin d'être converti avant d'être monté.
+Si `file` répond simplement `data`, ce n'est pas une ISO et il n'y a rien à monter. Mais un `ISO 9660 CD-ROM filesystem data` ne prouve rien sur la complétude du fichier.
+
+!!! warning "`file` ne voit pas une ISO tronquée"
+    Il lit le Primary Volume Descriptor au secteur 16, soit à l'offset 32768. Tout ce qui
+    suit lui est invisible. Un fichier de 40 Ko réduit à ses premiers secteurs est annoncé
+    `ISO 9660 CD-ROM filesystem data` comme une image complète, et une image coupée à 90 %
+    aussi. Seule la comparaison de taille, ou mieux l'empreinte comparée à celle publiée par
+    l'éditeur, tranche. Un `sha256sum` qu'on ne compare à rien ne sert à rien, et sur une
+    image de 5 Go il coûte des dizaines de secondes, pas 2.
