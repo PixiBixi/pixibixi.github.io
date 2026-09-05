@@ -10,7 +10,7 @@ tags:
 
 Passé une dizaine d'environnements, un repo Terraform devient un exercice de copier-coller : le même bloc `backend`, le même `provider google`, les mêmes `required_providers` dupliqués partout et le jour où on change de bucket de state il faut ouvrir 40 fichiers. Terragrunt règle ce problème en générant ces fichiers et il en amène de nouveaux dès qu'on branche les units entre elles.
 
-Les exemples ci-dessous sont sur Terragrunt 1.x, où la CLI a été refondue : `run-all` a disparu au profit de `terragrunt run --all` et `render-json` au profit de `terragrunt render`. Si on tombe sur un tutoriel qui parle encore de `run-all`, il date d'avant.
+Les exemples ci-dessous sont sur Terragrunt 1.x, où la CLI a été refondue : `run-all` cède la place à `terragrunt run --all` et `render-json` à `terragrunt render --json -w`. Les anciennes formes sont **dépréciées, pas supprimées** : elles marchent encore avec un warning, et la politique annoncée est de les garder au moins jusqu'à la 2.0, un strict control permettant d'opter pour le comportement cassant plus tôt. Un tutoriel qui parle de `run-all` date d'avant, mais son code tourne toujours.
 
 ## Une arborescence par blast radius
 
@@ -19,6 +19,7 @@ Le découpage des dossiers, c'est le découpage des states, donc c'est le décou
 ```text
 .
 ├── root.hcl                     # backend, provider, tout ce qui est commun
+├── units/                       # les units réutilisées par les stacks
 ├── modules/                     # les modules Terraform, versionnés
 └── live/
     ├── prod/
@@ -177,15 +178,20 @@ terragrunt run --all --filter-affected -- plan
 terragrunt run --all --filter '[origin/master...HEAD]' -- plan
 
 # Restreindre à un sous-arbre
-terragrunt run --all --filter './live/prod/...' -- plan
+terragrunt run --all --filter './live/prod/**' -- plan
+
+# Les units changées ET tout ce qui en dépend
+terragrunt run --all --filter '...[main...HEAD]' -- plan
 ```
 
-`--filter-affected` remonte aussi les units dépendantes de celles qui ont changé, ce qui est exactement le comportement voulu : toucher au VPC doit replanifier ce qui s'y branche.
+Attention aux 2 syntaxes qui se ressemblent. Le `**` est la récursion de chemin : *globs used in path-based expressions will not recursively match nested directories unless you use the `**` wildcard*. Le `...` est tout autre chose, c'est l'opérateur de traversée de graphe, et sa position décide du sens : **après** une cible il ajoute ses dépendances, **avant** une cible il ajoute ce qui dépend d'elle.
+
+Ça change la lecture de `--filter-affected`, qui n'est qu'un raccourci pour `[<branche par défaut>...HEAD]` et ne matche que les units dont le `terragrunt.hcl` a été modifié, ajouté ou supprimé. Les **dépendantes ne sont pas incluses** : toucher au VPC ne replanifie pas ce qui s'y branche tant qu'on n'a pas préfixé l'expression par `...`.
 
 Les autres flags qui servent réellement en CI :
 
-- `--parallelism 8` plafonne le nombre d'units en vol. Le défaut est généreux et fait rapidement du `429` sur les API GCP
-- `--fail-fast` arrête à la première unit en échec au lieu de dérouler la queue entière
+- `--parallelism 8` plafonne le nombre d'units en vol. Il n'y a **aucun plafond par défaut**, chaque unit dont les dépendances sont satisfaites démarre immédiatement, d'où les `429` sur les API GCP
+- `--fail-fast` arrête à la première unit en échec au lieu de dérouler la queue entière. À réserver au `plan` et au `validate` : sur un `apply` ou un `destroy`, couper la queue en cours de route laisse justement l'état bancal qu'on cherchait à éviter
 - `--non-interactive` et `--no-color`, sinon les logs de pipeline sont illisibles
 - `--provider-cache` monte un registry local et arrête de retélécharger le même provider pour chaque unit
 
