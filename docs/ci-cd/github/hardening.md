@@ -266,21 +266,27 @@ Le cran d'après, c'est de réserver l'automerge à une allow-list d'orgs de con
     - uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v5.0.0
       with:
         fail-on-severity: high
-        deny-licenses: GPL-2.0, GPL-3.0, AGPL-3.0
+        allow-licenses: MIT, Apache-2.0, BSD-2-Clause, BSD-3-Clause, ISC
     ```
 
-    Le job échoue d'entrée avec `Dependency review is not supported on this repository` quand le dependency graph, dont il dépend, est éteint. C'est le cas par défaut sur un fork, mais pas seulement : le repo `external-dns-akamai-webhook`, qui n'est pas un fork, l'avait éteint et son job de review n'a donc jamais rien fait depuis le jour où il a été ajouté. Ça se règle dans *Settings > Code security and analysis*, pas dans le workflow, et un `PATCH` sur `security_and_analysis` est accepté sans effet, donc l'API ne remplace pas le clic.
+    Le job échoue d'entrée avec `Dependency review is not supported on this repository` quand le dependency graph, dont il dépend, est éteint. C'est le cas par défaut sur un fork, mais pas seulement : le repo `external-dns-akamai-webhook`, qui n'est pas un fork, l'avait éteint et son job de review n'a donc jamais rien fait depuis le jour où il a été ajouté. Ça se règle dans *Settings > Code security and analysis*, et un `PATCH` sur `security_and_analysis` ne sert à rien ici, cet objet n'expose pas le dependency graph. Le bon endpoint existe pourtant, il est juste ailleurs : `PUT /repos/OWNER/REPO/vulnerability-alerts` *enables dependency alerts and the dependency graph for a repository*, avec un accès admin.
+
+    ```bash
+    gh api -X PUT "repos/OWNER/REPO/vulnerability-alerts"
+    ```
 
     Le test qui tranche en une commande, sans attendre la prochaine PR :
 
     ```sh
     gh api "repos/OWNER/REPO/dependency-graph/sbom" --jq '.sbom.name'
+    # Attention : cet endpoint ferme le 13 novembre 2026, remplacé par un flux
+    # asynchrone en 2 temps, génération puis récupération du SBOM.
     ```
 
     Un 404 veut dire que le graphe est éteint et que le job de review ment depuis
     le début.
 
-    `deny-licenses` est le réglage qu'on oublie alors qu'il coûte une ligne. Une dépendance copyleft qui entre dans un projet sous licence permissive est un problème juridique, pas un problème de style, et c'est en PR qu'on veut l'apprendre plutôt qu'au moment de publier.
+    La licence est le réglage qu'on oublie alors qu'il coûte une ligne. Prendre `allow-licenses` et pas `deny-licenses` : ce dernier porte un *this option is deprecated for possible removal in the next major release* dans le README de l'action, et les 2 sont de toute façon mutuellement exclusifs. Une allow-list est aussi le bon sens de la logique, elle bloque ce qu'on n'a pas prévu au lieu de la liste qu'on a pensé à écrire. Une dépendance copyleft qui entre dans un projet sous licence permissive est un problème juridique, pas un problème de style, et c'est en PR qu'on veut l'apprendre plutôt qu'au moment de publier.
 
 - **[OpenSSF Scorecard](https://securityscorecards.dev/)** note le repo sur une vingtaine de checks et publie le résultat dans l'onglet Security. Son intérêt est de regarder ce qui n'est pas dans les workflows : protection de branche, présence d'une politique de sécurité, signature des releases, activité de maintenance. Un audit qui tourne tout seul plutôt qu'une relecture annuelle.
 
@@ -372,7 +378,7 @@ Pour une image OCI, la provenance s'attache au digest et pas à un fichier et `p
           push-to-registry: true
 ```
 
-Le piège du `subject-name` : il doit être en minuscules. `metadata-action` minuscule le nom de l'image toute seule pour ses tags, l'attestation non et GHCR refuse les majuscules - donc un repo dont l'owner a une capitale casse ici et nulle part ailleurs.
+Le `subject-name` doit être en minuscules, GHCR refuse les majuscules. Ça se réglait à la main avant, ce n'est plus la peine avec `push-to-registry: true` : `actions/attest` appelle `subjectFromInputs` avec `downcaseName: inputs.pushToRegistry` et minuscule le nom lui-même. En `push-to-registry: false`, le downcase n'est pas appliqué et il faut toujours y penser.
 
 La vérification côté utilisateur tient en une commande, à condition de ne pas s'arrêter à `--repo` :
 
