@@ -357,12 +357,26 @@ Pour une image OCI, la provenance s'attache au digest et pas à un fichier et `p
 
 Le piège du `subject-name` : il doit être en minuscules. `metadata-action` minuscule le nom de l'image toute seule pour ses tags, l'attestation non et GHCR refuse les majuscules - donc un repo dont l'owner a une capitale casse ici et nulle part ailleurs.
 
-La vérification côté utilisateur tient en une commande, sans avoir à connaître l'identité du certificat comme pour `cosign verify` :
+La vérification côté utilisateur tient en une commande, à condition de ne pas s'arrêter à `--repo` :
 
 ```bash
-gh attestation verify ./mon-binaire_linux_amd64.tar.gz --repo monorg/mon-repo
-gh attestation verify oci://ghcr.io/monorg/mon-image:vX.Y.Z --repo monorg/mon-repo
+gh attestation verify ./mon-binaire_linux_amd64.tar.gz \
+  --repo monorg/mon-repo \
+  --signer-workflow monorg/mon-repo/.github/workflows/release.yml
+
+gh attestation verify oci://ghcr.io/monorg/mon-image:vX.Y.Z \
+  --repo monorg/mon-repo \
+  --signer-workflow monorg/mon-repo/.github/workflows/release.yml
 ```
+
+!!! warning "`--repo` seul ne dit pas qui a signé"
+    Il contraint le repo, pas le workflow. N'importe quel workflow du même repo ayant
+    `id-token: write` produit une attestation qui passe la vérification, y compris celui
+    qu'un contributeur vient d'ajouter. Le manuel de `gh` le dit lui-même : *Ideally, the
+    path of the signer workflow is also validated using the `--signer-workflow` or
+    `--cert-identity` flags*. C'est le pendant exact de `--certificate-identity-regexp`
+    côté cosign, et ça s'oublie pour la même raison : sans le flag, la commande sort
+    quand même en vert.
 
 ## Vérifier que la signature vérifie
 
@@ -382,6 +396,7 @@ La parade est un job qui refait exactement ce que ferait cet utilisateur, après
       TAG: ${{ needs.release.outputs.tag }}
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
+      - uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
       - run: |
           gh release download "$TAG" --repo "$GITHUB_REPOSITORY" \
             --pattern '*.tar.gz' --pattern 'checksums.txt' \
@@ -393,10 +408,16 @@ La parade est un job qui refait exactement ce que ferait cet utilisateur, après
             --certificate-oidc-issuer 'https://token.actions.githubusercontent.com' \
             --bundle checksums.txt.sigstore.json checksums.txt
       - run: |
-          for f in *.tar.gz; do gh attestation verify "$f" --repo "$GITHUB_REPOSITORY"; done
+          for f in *.tar.gz; do
+            gh attestation verify "$f" \
+              --repo "$GITHUB_REPOSITORY" \
+              --signer-workflow "$GITHUB_REPOSITORY/.github/workflows/release.yml"
+          done
 ```
 
-Le détail qui fait la différence entre une vérification et un décor, c'est `--certificate-identity-regexp`. Sans identité épinglée, cosign accepte une signature produite par n'importe quel workflow de n'importe quel repo, ce qui vide le keyless de son sens : la signature prouve alors seulement que quelqu'un, quelque part, a signé. En l'ancrant sur le workflow de release du repo, elle prouve que c'est bien celui-là.
+Le détail qui fait la différence entre une vérification et un décor, c'est d'épingler l'identité des 2 côtés, `--certificate-identity-regexp` pour cosign et `--signer-workflow` pour `gh attestation`. Sans ça, on accepte une signature produite par n'importe quel workflow, ce qui vide le keyless de son sens : la signature prouve alors seulement que quelqu'un, quelque part, a signé. Ancrée sur le workflow de release du repo, elle prouve que c'est bien celui-là.
+
+Le `sigstore/cosign-installer` en tête de job n'est pas décoratif non plus : `cosign` n'est pas préinstallé sur les images `ubuntu-24.04`, et un job de vérification qui tombe sur `cosign: command not found` est le premier à se faire désactiver un vendredi soir.
 
 Signer `checksums.txt` plutôt que chaque archive n'est pas un raccourci : le fichier contient le SHA256 de toutes les archives, donc une signature couvre l'ensemble et la vérification reste une seule commande. C'est ce que fait le repo de goreleaser lui-même, qui rejoue ses 3 contrôles après chaque release.
 
