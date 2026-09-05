@@ -29,8 +29,8 @@ Le sharding par timerange concentre encore le tir. Comme [chaque shard couvre un
 
 Mesuré sur une vingtaine de stacks, l'amplification tourne autour de 2,5 Series calls par requête HTTP entrante en régime normal et monte à 84 en pic. Le dénominateur compte aussi les requêtes instantanées, qui ne se découpent jamais et que le query frontend [ne cache pas](thanos-cache.md), donc le chiffre de base est dilué par elles et le vrai facteur sur les seules `query_range` est plus élevé.
 
-!!! warning "`--labels.max-query-parallelism` fait la même chose, sur un chemin plus fréquent"
-    Il porte sur les endpoints de labels, ceux qui résolvent les variables de template. Ils sont sollicités à chaque chargement de dashboard, avant même le premier panel, donc un parallélisme élevé y coûte plus souvent que sur les `query_range`.
+!!! warning "`--labels.max-query-parallelism` amplifie pareil, mais ailleurs"
+    Il porte sur les endpoints de labels, ceux qui résolvent les variables de template. Ils sont sollicités à chaque chargement de dashboard, avant même le premier panel, donc un parallélisme élevé y coûte plus souvent que sur les `query_range`. La différence à connaître est qu'en aval ce chemin **ne traverse pas la series gate** : dans la store gateway, `queryGate.Start()` n'est appelé que par `Series()`, jamais par `LabelNames()` ni `LabelValues()`. Un parallélisme de labels élevé ne remplit donc pas la gate dont parle cet article, il consomme de la mémoire et du CPU par une autre porte.
 
 ## Décomposer une saturation en débit et en durée
 
@@ -56,7 +56,7 @@ La moyenne ne suffit pas non plus, la queue fait le reste du travail : les appel
 D'où 2 familles de leviers, une par terme. Pour borner λ, ce sont les multiplicateurs en amont. Pour borner T, ce sont les limites par requête sur la store gateway, `--store.limits.request-series` et `--store.limits.request-samples`, qui valent 0 par défaut, c'est-à-dire aucune limite.
 
 !!! warning "Mesurer la taille d'un appel avant de poser une limite par requête"
-    Ces limites ne servent que si un appel individuel est réellement gros, et il faut le vérifier sur `thanos_bucket_store_series_data_touched_bucket` plutôt que de recopier une valeur. Mesuré sur une flotte de production : 98 % des appels touchent moins de 200 séries et le plus gros de la fenêtre en touche 200 000, soit 10 fois moins que la valeur de 2 000 000 qu'on voit passer. Posée là, la limite ne se déclenche jamais. La pression venait du nombre d'appels concurrents, pas de la taille d'un appel.
+    Ces limites ne servent que si un appel individuel est réellement gros, et il faut le vérifier sur `thanos_bucket_store_series_data_touched_bucket{data_type="series"}` plutôt que de recopier une valeur. Le filtre `data_type` n'est pas optionnel : la métrique porte aussi `postings` et `chunks`, d'un ordre de grandeur au-dessus, et sans lui le chiffre ne veut rien dire. Mesuré sur une flotte de production : 98 % des appels touchent 200 séries ou moins, le premier bord de bucket étant justement à 200 et le plus gros de la fenêtre en touche 200 000, soit 10 fois moins que la valeur de 2 000 000 qu'on voit passer. Posée là, la limite ne se déclenche jamais. La pression venait du nombre d'appels concurrents, pas de la taille d'un appel.
 
 ## Ordonner les limites de concurrence
 
@@ -96,13 +96,15 @@ max_over_time(
       max by (pod) (thanos_query_concurrent_gate_queries_in_flight)
     / on (pod)
       max by (pod) (thanos_query_concurrent_gate_queries_max)
-  )[5m:1m]
+  )[$__interval:1m]
 )
 ```
 
-Le contraste est net : sur la même fenêtre et au même pas de 30 minutes, l'expression brute retourne 0 quand l'enveloppée retourne 1, c'est-à-dire gate pleine. Le coût est que chaque pic est dessiné 5 minutes de large, ce qui est un bon échange pour un panel dont le seul rôle est de répondre « est-ce qu'on a touché le plafond ».
+La range de la sous-requête doit couvrir le pas d'affichage, d'où le `$__interval` de Grafana plutôt qu'une valeur en dur. Un `[5m:1m]` sur un panel évalué toutes les 30 minutes ne regarde que les 5 minutes précédant chaque point : 25 minutes sur 30 restent aveugles et le pic n'est capté que s'il tombe dans le bon sixième. C'est le piège qui fait croire que le correctif marche alors qu'il déplace juste le trou.
 
-2 précautions sur cette forme. Le pas de la sous-requête doit être écrit, un `[5m:]` sans pas se réévalue au pas par défaut et coûte cher pour rien. Et le ratio se prend contre la métrique `_max` exportée plutôt que contre un nombre en dur, sinon le panel continue de comparer à l'ancienne valeur après un changement de config, sans aucun symptôme visible.
+Le contraste est net : sur la même fenêtre et au même pas de 30 minutes, l'expression brute retourne 0 quand l'enveloppée retourne 1, c'est-à-dire gate pleine. Le coût est que chaque pic est étalé sur la largeur d'un pas d'affichage, ce qui est un bon échange pour un panel dont le seul rôle est de répondre « est-ce qu'on a touché le plafond ».
+
+2 précautions sur cette forme. Le pas de la sous-requête se pose explicitement : un `[5m:]` reprend l'`evaluation_interval` du serveur, 1 minute par défaut, donc le résultat change d'un Prometheus à l'autre sans prévenir. Et le ratio se prend contre la métrique `_max` exportée plutôt que contre un nombre en dur, sinon le panel continue de comparer à l'ancienne valeur après un changement de config, sans aucun symptôme visible.
 
 Le même biais frappe ailleurs : un `increase(<compteur>[2h])` lu en instantané n'est qu'un échantillon arbitraire et sous-estime lourdement tout ce qui est en burst. Pour un chiffre de dimensionnement, il faut un percentile de la fenêtre glissante sur plusieurs jours, avec un pas de sous-requête explicite.
 
@@ -113,7 +115,18 @@ Le même biais frappe ailleurs : un `increase(<compteur>[2h])` lu en instantané
 
 Reste à savoir quoi faire d'une gate qu'on voit pleine. La réponse n'est presque jamais de la monter.
 
-La gate fait attendre, elle ne refuse pas. Sur 7 jours de la flotte, `thanos_bucket_store_queries_dropped_total` est resté à 0 : aucune requête perdue, seulement du temps d'attente qui apparaît dans l'histogramme de la gate. La saturation n'était donc pas la contrainte active, la mémoire l'était.
+La gate fait attendre, elle ne refuse pas, et ça se prouve avec l'histogramme d'attente `thanos_bucket_store_series_gate_queries_duration_seconds`, dont l'aide dit exactement *how many seconds it took for queries to wait at the gate*. Sur 7 jours de la flotte, le temps s'accumulait là sans qu'aucune requête ne soit perdue. La saturation n'était donc pas la contrainte active, la mémoire l'était.
+
+!!! warning "`queries_dropped_total` ne voit pas la gate"
+    C'est le compteur qu'on dégaine par réflexe et il ne prouve rien ici.
+    `thanos_bucket_store_queries_dropped_total` n'est incrémenté que par les limiters, son
+    label `reason` valant `series`, `chunks` ou `bytes`. Il est câblé sur
+    `--store.limits.request-series`, `--store.limits.request-samples` et
+    `--store.grpc.downloaded-bytes-limit`, qui valent tous 0 par défaut : le compteur est
+    donc structurellement à 0 tant qu'on n'a pas posé ces limites. Le lire comme une preuve
+    que la gate n'a rien refusé est un raisonnement circulaire.
+
+Une réserve sur le « elle ne refuse pas » : `promgate.Start(ctx)` rend `ctx.Err()` si le contexte expire pendant l'attente. Une gate saturée assez longtemps fait donc échouer la requête par `--query.timeout` ou `--store.response-timeout`. La saturation ne se manifeste pas en drops, elle se manifeste en timeouts.
 
 La distribution finit de trancher. Au pas de 1 minute sur 7 jours, en prenant le maximum sur toute la flotte, donc le pod le plus chargé où qu'il soit, 98 % des minutes passent sous 14 Series calls concurrents. Le p99 est collé au cap, soit une centaine de minutes par semaine. Un cap relevé n'apporte donc rien 98 % du temps et retire la borne exactement pendant les 2 % qui font mal.
 
