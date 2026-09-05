@@ -37,8 +37,11 @@ cluster_bo              custbo1             0     11    605      1294617     552
 
 ## Mettre un node en maintenance
 
-`drain` sort le serveur progressivement : il ne prend plus de nouvelle connexion mais
-laisse les connexions en cours se terminer. `maint` coupe tout d'un coup.
+Les 2 états ne font pas ce que leur nom laisse croire, et c'est l'erreur qui coûte le plus
+cher sur ce socket. `drain` retire le serveur du load balancing mais, dit la doc,
+*still allows it to accept new persistent connections* : tout ce qui porte un cookie de
+persistance, une entrée de stick-table ou un `use-server` continue d'arriver. `maint` coupe
+le trafic entrant et les health checks, mais ne ferme pas les sessions déjà établies.
 
 ```bash
 echo "set server backend_name/svc_name state drain" | socat stdio /run/haproxy/admin.sock
@@ -55,17 +58,33 @@ echo "enable health backend_name/svc_name"  | socat stdio /run/haproxy/admin.soc
 
 Ces commandes se tapent aussi directement dans HAtop.
 
-!!! warning "Le drain n'est pas instantané"
-    `drain` attend la fin des connexions en cours. Sur du WebSocket ou du long-polling
-    elles peuvent durer des heures, donc ne jamais enchaîner un `drain` et un arrêt du
-    service sans vérifier.
+!!! warning "Aucune des 2 commandes n'attend quoi que ce soit"
+    `set server ... state drain` est instantané, c'est la vidange des sessions qui ne l'est
+    pas. Sur du WebSocket ou du long-polling elles durent des heures. Donc ne jamais
+    enchaîner un `drain` et un arrêt du service en se fiant au nom de la commande.
 
-Avant de couper le serveur, on contrôle que le compteur de sessions courantes est bien
-retombé à 0 :
+Pour couper vraiment, on passe en `maint`, on ferme ce qui reste, puis on attend que le
+serveur soit réellement libérable. HAProxy fournit la barrière, ça évite de deviner :
+
+```bash
+socat -t60 /run/haproxy/admin.sock - <<< "
+  set server backend_name/svc_name state maint
+  shutdown sessions server backend_name/svc_name
+  wait 30s srv-removable backend_name/svc_name
+"
+```
+
+`wait srv-removable` ne rend la main que quand le serveur est en maintenance et n'a plus
+aucune connexion, les connexions idle réutilisables comprises. Le `-t60` de socat n'est pas
+cosmétique : sans lui, socat ferme le socket avant la fin du `wait`. L'unité par défaut du
+délai est la milliseconde, d'où le `30s` explicite.
+
+À défaut, on peut regarder le compteur de sessions courantes, en sachant qu'il ne dit rien
+des connexions idle :
 
 ```bash
 echo "show stat" | socat stdio /run/haproxy/admin.sock \
-  | awk -F, '$1=="backend_name" && $2=="svc_name" {print "connexions restantes:", $5}'
+  | awk -F, '$1=="backend_name" && $2=="svc_name" {print "sessions restantes:", $5}'
 ```
 
 ## Autres commandes du socket
@@ -139,17 +158,26 @@ set -euo pipefail
 LST=/etc/haproxy/acl/cloudflare_ips.lst
 TMP=$(mktemp)
 
-curl -fsS https://www.cloudflare.com/ips-v4 >  "$TMP"
-curl -fsS https://www.cloudflare.com/ips-v6 >> "$TMP"
+# Les 2 fichiers Cloudflare n'ont pas de saut de ligne final : sans les echo, le dernier
+# préfixe v4 et le premier v6 se retrouvent collés sur la même ligne et disparaissent tous
+# les deux de l'ACL, ce qui fait refuser le pattern au reload.
+{ curl -fsS https://www.cloudflare.com/ips-v4; echo
+  curl -fsS https://www.cloudflare.com/ips-v6; echo
+} > "$TMP"
 
 # On ne remplace que si le fichier est non vide et a changé
 if [[ -s "$TMP" ]] && ! cmp -s "$TMP" "$LST"; then
-    mv "$TMP" "$LST"
+    install -m 0644 "$TMP" "$LST"
+    haproxy -c -f /etc/haproxy/haproxy.cfg
     systemctl reload haproxy
-else
-    rm -f "$TMP"
 fi
+rm -f "$TMP"
 ```
+
+`install` plutôt que `mv` : `mktemp` crée son fichier en `0600` et `mv` conserve ce mode,
+donc un `mv` depuis `/tmp` laisse une ACL illisible par le process et traverse en prime une
+frontière de système de fichiers. Le `haproxy -c` avant le reload attrape ce qui aurait
+échappé au reste.
 
 Le même principe marche pour les autres CDN, seul le header change : `True-Client-IP` chez
 Akamai, `Fastly-Client-IP` chez Fastly.
