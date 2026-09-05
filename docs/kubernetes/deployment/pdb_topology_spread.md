@@ -121,7 +121,7 @@ spec:
               app: api
 ```
 
-2 contraintes, 2 rôles différents. Celle sur `hostname` en `DoNotSchedule` garantit qu'un node ne porte pas 2 pods du même deployment, donc qu'un drain ne demande jamais plus d'une éviction. Celle sur `zone` en `ScheduleAnyway` répartit sur les zones quand c'est possible, sans jamais bloquer un scheduling si une zone est saturée.
+2 contraintes, 2 rôles différents. Celle sur `hostname` en `DoNotSchedule` évite qu'un node porte 2 pods du même deployment **tant que le nombre de replicas ne dépasse pas le nombre de nodes éligibles**. Ce n'est pas une garantie : `maxSkew` borne l'écart entre un domaine et le minimum global, pas le nombre absolu de pods par domaine. Avec 5 replicas et 3 nodes, la répartition 2/2/1 a un minimum global de 1 et un skew de 1, donc elle satisfait `maxSkew: 1` et le drain demandera bien 2 évictions. Si on veut la garantie stricte d'un pod par domaine, c'est `podAntiAffinity` en `required` qu'il faut, avec le coût de scheduling décrit plus bas. Celle sur `zone` en `ScheduleAnyway` répartit sur les zones quand c'est possible, sans jamais bloquer un scheduling si une zone est saturée.
 
 L'inverse, `DoNotSchedule` sur la zone, est le piège : le jour où une zone est en panne de capacité, les pods restent `Pending` au lieu d'aller ailleurs. Sur du stateless, la disponibilité passe avant la beauté de la répartition.
 
@@ -130,11 +130,11 @@ L'inverse, `DoNotSchedule` sur la zone, est le piège : le jour où une zone est
 
 ## Le skew faussé pendant un rollout
 
-Le `matchLabelKeys: ["pod-template-hash"]` du bloc précédent n'est pas cosmétique. Sans lui, le `labelSelector` matche les pods de l'ancienne et de la nouvelle ReplicaSet en même temps : pendant un rollout, le scheduler compte des pods en `Terminating` dans son calcul de skew et place les nouveaux pods pour compenser un déséquilibre qui va disparaître dans 30 secondes.
+Le `matchLabelKeys: ["pod-template-hash"]` du bloc précédent n'est pas cosmétique. Sans lui, le `labelSelector` matche les pods de l'ancienne et de la nouvelle ReplicaSet en même temps. Le mécanisme n'est pas celui qu'on imagine : le scheduler ignore explicitement les pods en cours de suppression, `countPodsMatchSelector` fait un `continue` dès que `DeletionTimestamp != nil`. Ce qu'il compte, ce sont les pods de l'ancienne ReplicaSet **encore Running**. Il place les nouveaux pour compenser une distribution qui va disparaître, et le déséquilibre apparaît quand l'ancienne ReplicaSet tombe à zéro.
 
 Le résultat est une répartition correcte pendant le rollout et bancale après. Sur un deployment qui rollout souvent, la dérive s'accumule.
 
-`pod-template-hash` est le label que le controller pose tout seul sur chaque ReplicaSet, donc il n'y a rien à ajouter dans le template : ajouter la clé dans `matchLabelKeys` suffit à scoper le calcul à la révision courante.
+`matchLabelKeys` résout ses clés contre les labels du **pod entrant**, et le Deployment controller pose `pod-template-hash` sur la ReplicaSet comme sur les pods qu'elle crée, donc il n'y a rien à ajouter dans le template : ajouter la clé dans `matchLabelKeys` suffit à scoper le calcul à la révision courante.
 
 ## Les domaines qui n'existent pas encore
 
@@ -199,7 +199,13 @@ kubectl get pods --field-selector spec.nodeName=gke-prod-pool-1-abc123 -A -o wid
 
 La condition `DisruptionAllowed` avec `reason: InsufficientPods` est la réponse : il n'y a pas assez de pods sains pour que le budget autorise une sortie.
 
-Le dernier cas à connaître est le PDB orphelin, dont le `selector` ne matche plus aucun pod parce que les labels du deployment ont changé. `expectedPods: 0` avec un `minAvailable` non nul et le drain se bloque sur un budget qui protège des pods qui n'existent pas.
+Le dernier cas à connaître est le PDB orphelin, dont le `selector` ne matche plus aucun pod parce que les labels du deployment ont changé. Il affiche `expectedPods: 0`, `ALLOWED DISRUPTIONS: 0` et la condition `InsufficientPods`, ce qui donne l'impression qu'il bloque tout. Il ne bloque rien : l'API Eviction ne consulte que les PDB dont le `selector` matche le pod à évincer, `getPodDisruptionBudgets` fait un `continue` sur les autres. Le vrai symptôme est l'inverse du symptôme apparent, le workload visé n'est plus protégé du tout.
+
+!!! danger "Le PDB qui bloque vraiment tout, c'est `selector: {}`"
+    À ne pas confondre avec l'orphelin. En `policy/v1`, un sélecteur vide matche **tous** les
+    pods du namespace, comportement inversé par rapport à `policy/v1beta1` où il n'en matchait
+    aucun. Un `selector: {}` hérité d'un vieux manifest gèle donc le drain de tout le
+    namespace, et lui affiche un `expectedPods` élevé, pas 0.
 
 ## Côté GKE : surge, blue-green et la limite d'une heure
 
