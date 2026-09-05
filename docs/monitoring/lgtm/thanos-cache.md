@@ -10,9 +10,10 @@ tags:
 
 # Les caches Thanos : mutualisation, dimensionnement et facture
 
-Thanos a 3 caches et par défaut ils sont tous les 3 en mémoire du process. Sur une
-vingtaine de stacks ça fait une centaine de pods qui portent chacun le sien, personne ne
-partage rien et tout est perdu au premier redémarrage. Cet article part de ce constat et
+Thanos a 3 caches, dont un seul est actif par défaut, en mémoire du process. Les 2 autres
+ne se réveillent que si on les configure, et on les configure presque toujours en mémoire
+eux aussi. Sur une vingtaine de stacks ça fait une centaine de pods qui portent chacun le
+sien, personne ne partage rien et tout est perdu au premier redémarrage. Cet article part de ce constat et
 va jusqu'au backend partagé : pourquoi mutualiser, ce qui ne se mutualise pas, comment
 dimensionner sans recopier une taille qui ne veut rien dire et ce que ça donne sur la
 facture.
@@ -20,23 +21,27 @@ facture.
 Le reste de la plateforme est décrit dans [Thanos at scale](thanos.md), dont cet article
 était une section avant de devenir trop gros pour y rester.
 
-Thanos a 3 caches et par défaut ils sont tous les 3 en mémoire du process :
+Thanos a 3 caches et ils n'ont pas le même statut au démarrage :
 
-- l'index cache de la store gateway (`--index-cache.config`), qui garde les postings et les séries
-- le caching bucket (`--store.caching-bucket.config`), qui garde les sous-plages de chunks et les métadonnées de blocks
-- le cache de résultats du query frontend (`--query-range.response-cache-config`), qui garde les réponses de requêtes
+- l'index cache de la store gateway (`--index-cache.config`), qui garde les postings, les séries et les expanded postings. **C'est le seul actif par défaut**, en `IN-MEMORY`, dimensionné par `--index-cache-size` à 250 Mo
+- le caching bucket (`--store.caching-bucket.config`), qui garde les sous-plages de chunks et les métadonnées de blocks. Instancié seulement si la config est fournie
+- le cache de résultats du query frontend (`--query-range.response-cache-config`), qui garde les réponses de requêtes. La doc est explicite : *if both `max_size` and `max_size_items` are not set, then the cache would not be created*
 
-En `IN-MEMORY`, chaque replica a le sien, personne ne partage rien et tout est perdu au premier redémarrage. À une stack par cluster ça se chiffre vite, puisque 3 shards et 2 replicas chacun sur une vingtaine de stacks font de l'ordre de la centaine de pods, chacun portant son 1 Gio d'index cache et ses 2 Gio de caching bucket. La store gateway finit autour de 230 Gio de RAM pour moins d'un cœur de CPU, ce qui dit assez qu'on paye du cache et pas du calcul.
+Une fois les 3 configurés en `IN-MEMORY`, chaque replica a le sien, personne ne partage rien et tout est perdu au premier redémarrage. À une stack par cluster ça se chiffre vite, puisque 3 shards et 2 replicas chacun sur une vingtaine de stacks font de l'ordre de la centaine de pods, chacun portant son 1 Gio d'index cache et ses 2 Gio de caching bucket. La store gateway finit autour de 230 Gio de RAM pour moins d'un cœur de CPU, ce qui dit assez qu'on paye du cache et pas du calcul.
 
 Et c'est là que ça rejoint le choix du spot. Une éviction ne coûte rien en compute, c'est tout l'intérêt, mais avec un cache en mémoire elle coûte le cache. Le pod revient froid et repart pour de longues minutes avant d'être utile. Le cache local est ce qui rend le spot cher.
 
 Un backend partagé règle les 2 problèmes d'un coup. Un seul cache chaud pour tous les replicas, qui survit aux évictions, et une seule enveloppe mémoire au lieu de 100.
 
-!!! warning "Le cache IN-MEMORY n'expire jamais"
-    `validity` n'est pas une éviction, c'est un contrôle de péremption **à la lecture**. Rien
-    ne supprime les entrées : le cache grossit depuis le démarrage du pod jusqu'à buter sur
-    son plafond, en accumulant des entrées trop vieilles pour être servies. On mesure 0
-    éviction pendant que le nombre d'entrées triple.
+!!! warning "Les 3 caches IN-MEMORY n'expirent pas de la même façon"
+    Attention à ne pas généraliser, les 3 implémentations diffèrent. `validity` n'existe que
+    dans le cache de résultats du query frontend, et ce n'est pas une éviction mais un
+    contrôle de péremption **à la lecture** : rien ne supprime les entrées, le cache grossit
+    depuis le démarrage du pod jusqu'à buter sur son plafond, en accumulant des entrées trop
+    vieilles pour être servies. On mesure 0 éviction pendant que le nombre d'entrées triple.
+    L'index cache in-memory, lui, n'a aucune notion de TTL et évince en LRU dès le plafond
+    atteint, ce que compte `thanos_store_index_cache_items_evicted_total`. Le caching bucket
+    in-memory prend bien un TTL par entrée et la supprime à la lecture.
 
 Ce qui fait qu'une taille de cache IN-MEMORY ne mesure pas un working set, elle mesure **depuis combien de temps le pod tourne**. En basculant sur un backend Redis avec un vrai TTL, on a vu le cache tomber à un dixième du nombre d'entrées et le hit ratio **monter** de 76 à 91 %. Les 90 % d'entrées en trop étaient du poids mort : périmées, incapables de servir un hit et occupant la RAM quand même.
 
@@ -50,9 +55,13 @@ résultat de l'itération des blocks**, avec son TTL propre `blocks_iter_ttl`, �
 `metafile_exists_ttl`, `metafile_doesnt_exist_ttl` et `metafile_content_ttl`.
 
 Les clés de chunks portent l'ULID du block, unique globalement, donc 2 tenants ne peuvent
-pas s'y marcher dessus. La clé du listing est le chemin du répertoire, identique pour tout
-le monde puisque c'est la racine du bucket, alors que chaque tenant a son propre bucket
-objet. Un tenant lit donc la liste de blocks d'un autre, part chercher ces ULID chez lui, ne
+pas s'y marcher dessus. La clé du listing, elle, était le seul chemin du répertoire,
+identique pour tout le monde puisque c'est la racine du bucket, alors que chaque tenant a
+son propre bucket objet. **Corrigé en v0.35.0** : `BucketCacheKey.String()` ajoute
+désormais un `ObjectStorageConfigHash` aux verbes d'itération, donc 2 configs de bucket
+différentes ne partagent plus la clé. Le piège ci-dessous ne concerne que les versions
+antérieures, et le champ `prefix` de la config Redis ou Memcached cloisonne les keyspaces
+quelle que soit la version. Un tenant lit donc la liste de blocks d'un autre, part chercher ces ULID chez lui, ne
 les trouve pas et classe l'intégralité en `partial` :
 
 ```text
@@ -116,12 +125,24 @@ enabled_items: []
 ttl: 24h
 ```
 
-Et pour le query frontend, le même fichier se branche sur les 2 endpoints :
+Le query frontend, lui, ne peut **pas** relire ce fichier : son parseur fait un
+`yaml.UnmarshalStrict` sur un `{type, config}` qui ne connaît ni `enabled_items` ni `ttl`,
+donc le composant refuse de démarrer. Son TTL s'appelle `expiration` et vit à l'intérieur
+du bloc `config:`, en `yaml:",inline"` avec le client Redis. Il lui faut donc un second
+fichier, celui-là partageable entre ses 2 endpoints :
+
+```yaml title="/etc/thanos/redis-frontend.yml"
+type: REDIS
+config:
+  addr: "redis-sentinel.<namespace>.svc.cluster.local:26379"
+  master_name: "thanos-cache"
+  expiration: 24h
+```
 
 ```yaml
 args:
-  - --query-range.response-cache-config-file=/etc/thanos/redis.yml
-  - --labels.response-cache-config-file=/etc/thanos/redis.yml
+  - --query-range.response-cache-config-file=/etc/thanos/redis-frontend.yml
+  - --labels.response-cache-config-file=/etc/thanos/redis-frontend.yml
 ```
 
 !!! warning "Le piège du failover Sentinel"
@@ -155,12 +176,15 @@ Le `--query-range.split-interval` joue dans le même sens, puisque découper une
     Un dashboard qui coche une de ces cases ne bénéficiera jamais du cache, quelle que soit
     la taille qu'on lui donne.
 
-!!! danger "Les requêtes instantanées ne sont pas cachables du tout"
-    Le query frontend n'a de tripperware que pour 2 familles : `--query-range.response-cache-*`
-    pour `/api/v1/query_range` et `--labels.response-cache-*` pour les endpoints de labels.
-    Il n'existe **aucune** famille `query-instant` et aucun flag de cache pour `/api/v1/query`.
-    Les requêtes instantanées ne sont ni découpées ni cachées : elles traversent directement
-    vers le querier.
+!!! danger "Les requêtes instantanées ne sont pas cachables"
+    Il n'existe **aucun** flag de cache pour `/api/v1/query` : les 2 seules familles sont
+    `--query-range.response-cache-*` pour `/api/v1/query_range` et `--labels.response-cache-*`
+    pour les endpoints de labels. Une instantanée n'est donc ni découpée dans le temps ni
+    mise en cache. Elle ne traverse pas le query frontend sans rien subir pour autant :
+    `roundtrip.go` définit bien un `newInstantQueryTripperware`, qui fait du sharding
+    vertical (`--query-frontend.vertical-shards`) et du retry. La doc upstream, qui dit
+    encore *currently only range queries are actually processed through Query Frontend*,
+    est en retard sur le code depuis la v0.35.0.
 
 Ce n'est pas un détail. Sur notre flotte, les instantanées représentent **plus de 70 % du trafic** qui atteint le query frontend, l'essentiel venant des évaluations de règles d'alerte. Autrement dit, régler le `split-interval` ou le TTL du cache n'agit que sur moins d'un tiers des requêtes. Avant de tuner le cache, mesurer la part qu'il peut réellement servir.
 
