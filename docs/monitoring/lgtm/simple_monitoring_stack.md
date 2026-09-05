@@ -1051,16 +1051,16 @@ règle. De plus, il faudra indiquer à Prometheus de renvoyer ses alertes
 
 ??? abstract "/etc/prometheus/prometheus.yml"
     ```yaml title="prometheus.yml"
-    [...]
+    # ...
     rule_files:
       - "alert.rules.yml"
-    [...]
+    # ...
     alerting:
       alertmanagers:
       - static_configs:
         - targets:
           - 127.0.0.1:9093
-    [...]
+    # ...
     ```
 
 Nous indiquons ici à Prometheus d'utiliser comme règles le contenu du
