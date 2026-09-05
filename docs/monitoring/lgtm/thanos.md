@@ -96,7 +96,7 @@ Ce qui compte n'est pas dans les flags, c'est que la liste des stores à interro
 
 Mais attention à ce qu'on y lira. Le querier global attend **toutes** les stacks avant de répondre, donc la latence perçue est celle de la branche la plus lente. Une stack qui répond en 150 ms au p99 mais en 4 s dans sa queue suffit à produire des requêtes utilisateur à 25 s, dès lors que le fan-out en interroge une vingtaine : la probabilité de tomber sur au moins un traînard devient forte.
 
-On a chassé longtemps des requêtes coûteuses avant de comprendre que les plus lentes étaient triviales. Un sélecteur sur 9 séries qui met 26 secondes ne coûte rien à calculer, il attend. Le levier n'est alors ni le cache ni le sizing : c'est de réduire le fan-out, en s'assurant que les external labels annoncés par chaque stack permettent au querier global d'élaguer ceux qui ne peuvent pas matcher, ou d'accepter `--query.partial-response` pour borner la queue.
+On a chassé longtemps des requêtes coûteuses avant de comprendre que les plus lentes étaient triviales. Un sélecteur sur 9 séries qui met 26 secondes ne coûte rien à calculer, il attend. Le levier n'est alors ni le cache ni le sizing : c'est de réduire le fan-out, en s'assurant que les external labels annoncés par chaque stack permettent au querier global d'élaguer ceux qui ne peuvent pas matcher, ou de borner la queue avec le couple `--store.response-timeout` et `--query.partial-response`.
 
 !!! warning "Partial response et alerting ne font pas bon ménage"
     Si les principaux appelants sont des règles d'alerte - et c'est souvent le cas, elles
@@ -200,9 +200,9 @@ Le bucket suit la même logique mais à la maille région, un bucket GCS étant 
     dans le bucket, ce qui rend le compromis tenable là où il ne le serait pas sur une base
     transactionnelle.
 
-C'est aussi ce qui rend le cache partagé et `--grpc-compression=snappy` rentables au-delà de la latence : ils réduisent des octets qui sont facturés.
+C'est aussi ce qui rend le cache partagé et `--grpc-compression=snappy` rentables au-delà de la latence : ils réduisent des octets qui sont facturés. Attention à ce flag, il porte un *Deprecated after v0.43.0* dans son aide, la compression se configurant désormais par endpoint dans la service discovery fichier.
 
-La version de Thanos compte autant que la config. Le batching gRPC arrivé en 0.41 réutilise les labels qui se répètent d'une série à l'autre, ce qui fait tomber le trafic réseau de plus de 70 % et divise les allocations mémoire par 64 sur des fetchs de plusieurs millions de séries. Aucun tuning de config ne donne ça.
+La version de Thanos compte autant que la config. Le batching gRPC arrivé en 0.41 groupe jusqu'à 64 séries par message `SeriesResponse` au lieu d'une, ce qui amortit l'overhead par message. Les auteurs annoncent des économies réseau importantes et des queriers qui consomment un peu moins de CPU. Le 64 est la taille de lot par défaut (`DefaultResponseBatchSize`), pas un facteur de gain, et le flag `query.series-response-batch-size` qui permettait de la régler a disparu quand le batching est passé actif par défaut. Aucun tuning de config ne donne ça.
 
 ## Spot pour tout ce qui se rejoue
 
@@ -234,6 +234,14 @@ Le prix à payer se voit à la reprise. Une store gateway peut mettre jusqu'à *
   for: 30m      # et pas 5m : la reprise après éviction spot est lente
 ```
 
+!!! warning "`partial-response` seul ne coupe aucune branche lente"
+    `--store.response-timeout` vaut **`0ms` par défaut, ce qui désactive le timeout**. Tant
+    qu'on n'y touche pas, une store gateway lente mais vivante est attendue jusqu'à
+    `--query.timeout`, et la réponse partielle ne sauve que le cas d'un store réellement
+    injoignable. La doc est explicite : *if you prefer availability over accuracy you can set
+    tighter timeout to underlying StoreAPI than overall query timeout*. C'est le couple des
+    2 flags qui borne la latence, pas `partial-response` tout seul.
+
 Reste une question qu'on oublie de se poser : pendant ces 30 minutes, que voit l'utilisateur ? Ça dépend de `--query.partial-response`, activé par défaut. La query renvoie ce qu'elle a pu récupérer, assorti d'un warning, plutôt qu'une erreur. Un dashboard affiche donc un graphe avec un trou dedans et le trou ne se voit pas forcément.
 
 C'est le bon comportement pour du dashboard temps réel, beaucoup moins pour une règle d'alerting ou un rapport de capacité. Le paramètre se surcharge par requête et une réponse partielle n'est jamais mise en cache.
@@ -248,7 +256,7 @@ On ne plafonne pas cette RAM, on agit sur ce qui la fait grossir.
 
 Le levier le moins cher reste de réduire le nombre de séries. Le `write_relabel_configs` vu plus haut agit avant l'ingestion donc il ne coûte rien et le `head_series_limit` par tenant plafonne ensuite ce qu'un cluster peut pousser.
 
-Vient ensuite le sharding du hashring. Avec l'algorithme Ketama les séries se répartissent sur plusieurs pods de Receive au lieu de se concentrer sur un seul, la RAM par pod baisse d'autant et des gabarits plus petits sont plus faciles à placer.
+Vient ensuite le sharding du hashring. `hashmod` répartit déjà les séries sur tous les receivers, ce que Ketama apporte c'est la stabilité quand le pool bouge : la doc le présente comme *a consistent hashing scheme which enables stable scaling of Receivers without the drawbacks of the hashmod algorithm*. Avec `hashmod`, ajouter un pod redistribue une grande partie des séries et provoque un pic mémoire sur tout le monde. C'est le nombre de pods qui fait baisser la RAM par pod, Ketama est ce qui permet de changer ce nombre sans douleur.
 
 Le plus structurant est de séparer le routing de l'ingestion. Quand `--receive.local-endpoint` n'est pas défini, un Receive tourne en mode routeur pur et transmet les écritures sans rien stocker localement. On peut alors poser beaucoup de routeurs légers devant peu d'ingesters et ne payer de la RAM que sur ces derniers.
 
@@ -340,7 +348,7 @@ failedJobsHistoryLimit: 1
 ttlSecondsAfterFinished: 600
 persistence:
   ephemeral: true
-  storageClass: hyperdisk-standard
+  storageClass: hyperdisk-balanced
 ```
 
 Le `concurrencyPolicy: Forbid` n'est pas cosmétique. **2 compactors simultanés sur le même bucket corrompent les blocks.** C'est une garantie que le Deployment assurait tout seul et qu'il faut réclamer explicitement en CronJob.
@@ -453,9 +461,9 @@ La store gateway tournait au départ sur `emptyDir`, donc sur le disque de boot 
 
 D'où un PVC dédié pour la store gateway, dimensionné pour le débit et non pour la place.
 
-Sur les disques provisionnés de GCP, Hyperdisk en l'occurrence, le débit et les IOPS ne sont pas offerts avec la capacité : ils sont provisionnés et **plafonnés à 500 IOPS par Gio**. Le plancher utilisable tourne autour de 3000 IOPS, ce qui impose au minimum 6 Gio rien que pour y avoir droit. On monte donc le volume d'index-header à 20 Gio alors qu'il ne contient pas 20 Gio de données : on achète des IOPS, la capacité vient avec.
+Sur Hyperdisk Balanced, la performance est découplée de la capacité, et c'est le piège quand on arrive du Persistent Disk. Les IOPS et le débit se provisionnent explicitement, les 3000 premières IOPS et 140 Mio/s sont offerts, **le reste est facturé**. La capacité ne fait que relever le plafond de ce qu'on a le droit de provisionner, `MIN(500 x Gio, 160000)`, ce qui impose au minimum 6 Gio pour avoir droit aux 3000 IOPS de base.
 
-C'est l'inverse du réflexe habituel, qui est de tailler au plus juste. Ici la capacité est bon marché comparée au débit provisionné, donc sur-dimensionner le disque est le moyen le moins cher d'avoir des performances.
+Grossir le disque sans toucher au reste ne donne donc presque rien : sans `provisioned-iops-on-create`, le défaut suit `6x + 3000`, et passer de 6 à 20 Gio fait passer de 3036 à 3120 IOPS, soit 3 % de mieux. Le volume d'index-header est à 20 Gio pour débloquer le plafond, mais ce sont les IOPS provisionnées dans la StorageClass qui coûtent et qui font le travail.
 
 !!! note "C'est un contournement, pas une optimisation"
     Tout ce calcul existe parce qu'on a choisi des instances économiques qui sont IO bound.
@@ -486,7 +494,7 @@ extraFlags:
   - --store.grpc.series-max-concurrency=20
 ```
 
-Les 2 premiers remplacent `--store.grpc.touched-series-limit` et `--store.grpc.series-sample-limit`, qui sont dépréciés. Tous valent 0 par défaut, c'est-à-dire aucune limite.
+Les 2 premiers remplacent `--store.grpc.touched-series-limit` et `--store.grpc.series-sample-limit`, qui sont dépréciés. Les 3 limites valent 0 par défaut, c'est-à-dire aucune limite. `--store.grpc.series-max-concurrency` est l'exception : il vaut déjà 20, donc la ligne ci-dessus ne change rien et sert surtout à rendre la valeur visible dans le manifest.
 
 Côté ingestion c'est plus intéressant financièrement, parce que Receive est on-demand donc le plus cher au vCPU et que rien ne le protège d'un tenant qui explose en cardinalité.
 
@@ -511,7 +519,7 @@ write:
     et se contente de logger. La donnée étant par nature en retard, on dépasse toujours un
     peu la limite et la fonctionnalité est marquée expérimentale.
 
-Le dépassement se traduit par un HTTP 413 côté client. Prometheus ne sait pas découper une requête trop grosse pour la renvoyer, donc ce qui est refusé est perdu. Une limite trop basse ne ralentit pas un tenant, elle lui fait des trous dans ses métriques.
+Les 2 familles de limites ne rendent pas le même code et la nuance décide de qui perd de la donnée. Les limites de requête (`series_limit`, `samples_limit`, `size_bytes_limit`) rendent un **413**, que Prometheus ne rejoue pas : ce qui est refusé est perdu, et une limite trop basse fait des trous dans les métriques du tenant. Le `head_series_limit`, lui, rend un **429** (`tenant is above active series limit`), que Prometheus rejoue selon son `retry_on_http_429`. Poser une limite de séries actives ralentit donc un tenant, poser une limite de requête l'ampute.
 
 ## GOMAXPROCS : le parallélisme qu'on n'a pas choisi
 
