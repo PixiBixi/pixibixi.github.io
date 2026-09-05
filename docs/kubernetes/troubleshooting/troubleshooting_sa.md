@@ -17,8 +17,11 @@ C'est simple, en lancant un pod qui utilise ce ServiceAccount et qui exécute un
 
 Exemple simple, j'ai un ServiceAccount qui a pour but de donner l'accès à un bucket S3. Voici à quoi ressemble mon ServiceAccount :
 
+```bash
+k get serviceaccounts loki -o yaml
+```
+
 ```yaml
-➜  ~  k get serviceaccounts loki -o yaml
 apiVersion: v1
 automountServiceAccountToken: true
 kind: ServiceAccount
