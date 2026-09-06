@@ -11,6 +11,14 @@ repos:
 
 - repo: local
   hooks:
+  - id: check-code-blocks
+    name: Validate fenced code blocks
+    entry: python .pre-commit-hooks/check_code_blocks.py
+    language: python
+    additional_dependencies: [pyyaml]
+    files: ^docs/.*\.md$
+    pass_filenames: true
+
   - id: convert-images-to-webp
     name: Convert images to WebP
     entry: .pre-commit-hooks/convert_to_webp.sh

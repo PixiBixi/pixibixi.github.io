@@ -8,7 +8,9 @@ Personal knowledge base built with [MkDocs Material](https://squidfunk.github.io
 ## Setup
 
 Needs [uv](https://docs.astral.sh/uv/), plus `pre-commit` and `cwebp` on the `PATH`
-(`brew install pre-commit webp`) - neither is pulled in by `uv sync`.
+(`brew install pre-commit webp`) - neither is pulled in by `uv sync`. `promtool`
+(`brew install prometheus`) is optional: without it the code block hook still checks YAML
+and JSON, it just skips the Prometheus rule files.
 
 ```sh
 uv sync
@@ -46,6 +48,12 @@ uv run mkdocs build --strict     # warnings are fatal, same as CI
 
 The WebP hook converts any staged JPG/PNG under `docs/`, then exits 1 on purpose - re-run
 `git commit` to pick up the converted files.
+
+The `check-code-blocks` hook parses every `yaml` and `json` fence in the articles you
+changed, and runs `promtool check rules` on the ones that are full Prometheus rule files.
+It reports `file:line` for anything a reader could not copy-paste. To keep a deliberately
+broken counter-example, put `<!-- check-code-blocks: skip -->` on the line before the
+fence.
 
 ## Deploy
 

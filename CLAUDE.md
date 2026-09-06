@@ -42,10 +42,11 @@ uv run mkdocs build --strict
   A bare `markdownlint-enable` without rule names re-enables ALL rules,
   overriding `.markdownlint.json` globals (including MD013).
 
-Three pre-commit hooks run (`.pre-commit-config.yaml`):
+Four pre-commit hooks run (`.pre-commit-config.yaml`):
 
 - `uv-lock` - keeps `uv.lock` in sync with `pyproject.toml`
 - `markdownlint-cli2` - on changed `.md` files, config `.markdownlint.json`
+- `check-code-blocks` - `.pre-commit-hooks/check_code_blocks.py`, on changed `.md` under `docs/`. Parses every `yaml` and `json` fence, and runs `promtool check rules` on blocks that are full Prometheus rule files. Catches snippets a reader would copy-paste and that cannot work. For a deliberately broken counter-example, put `<!-- check-code-blocks: skip -->` on the line before the fence.
 - `convert-images-to-webp` - `.pre-commit-hooks/convert_to_webp.sh`, on staged JPEG/PNG under `docs/`. It converts, stages the `.webp`, deletes the original, then **exits 1 on purpose** - the first `git commit` always "fails", just re-run it. Needs `cwebp` (`brew install webp`).
 
 Rules are in `.markdownlint.json`:
