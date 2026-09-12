@@ -9,7 +9,7 @@ tags:
 
 # CI/CD
 
-Une CI lente ou mal configurée, ça coûte du temps et de l'argent. Une CI mal durcie, ça coûte bien plus. 8 articles : durcissement supply-chain des workflows GitHub Actions, releases automatisées et côté GitLab l'optimisation des pipelines, le scan d'images et la CLI `glab`.
+Une CI lente ou mal configurée, ça coûte du temps et de l'argent. Une CI mal durcie, ça coûte bien plus. 9 articles : durcissement supply-chain des workflows GitHub Actions, releases automatisées et côté GitLab l'optimisation des pipelines, le scan d'images et la CLI `glab`.
 
 ## Contenus
 
@@ -20,6 +20,7 @@ Une CI lente ou mal configurée, ça coûte du temps et de l'argent. Une CI mal 
 - [GoReleaser](github/goreleaser.md) - binaires multi-arch, images Docker, Helm OCI, UPX, signature cosign et provenance SLSA
 - [Cocogitto](github/cocogitto.md) - versioning sémantique automatique, CHANGELOG, GitHub Releases - comparaison avec release-please
 - [Valider une config Renovate](github/renovate-config.md) - `renovate-config-validator`, clés inconnues, `github-runners` qui n'est pas un manager et `forkProcessing` sur un fork
+- [Renovate et les modules Go](github/renovate-gomod.md) - majeures qui ne migrent rien, `gomodUpdateImportPaths`, `constraintsFiltering` et la directive `go`
 
 ### GitLab
 

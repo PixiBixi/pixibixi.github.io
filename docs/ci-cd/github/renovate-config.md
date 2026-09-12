@@ -171,4 +171,4 @@ jobs:
 ```
 
 !!! tip "Aller plus loin"
-    Le durcissement de la CI et les presets Renovate qui vont avec, `helpers:pinGitHubActionDigests`, `minimumReleaseAge` et l'automerge, sont détaillés dans [Durcir une CI GitHub Actions](hardening.md).
+    Le durcissement de la CI et les presets Renovate qui vont avec, `helpers:pinGitHubActionDigests`, `minimumReleaseAge` et l'automerge, sont détaillés dans [Durcir une CI GitHub Actions](hardening.md). Les pièges propres au manager `gomod`, qu'aucun validateur ne voit puisque la config est valide, sont dans [Renovate et les modules Go](renovate-gomod.md).

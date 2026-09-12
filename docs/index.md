@@ -251,6 +251,7 @@ Le plan complet est ci-dessous, sinon la recherche fait le job.
 - [GoReleaser : binaires multi-arch, images OCI et charts Helm](ci-cd/github/goreleaser.md)
 - [Cocogitto, le couteau suisse du versioning multi-langages](ci-cd/github/cocogitto.md)
 - [Valider une config Renovate et son silence sur les forks](ci-cd/github/renovate-config.md)
+- [Renovate et les modules Go : majeures, contraintes et directive go](ci-cd/github/renovate-gomod.md)
 
 ### GitLab
 
