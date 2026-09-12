@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://wiki.jdelgado.fr/</loc>
-    <lastmod>2026-08-31</lastmod>
+    <lastmod>2026-09-12</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/about/</loc>
@@ -50,7 +50,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/ci-cd/</loc>
-    <lastmod>2026-08-23</lastmod>
+    <lastmod>2026-09-12</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/ci-cd/github/cocogitto/</loc>
@@ -70,7 +70,11 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/ci-cd/github/renovate-config/</loc>
-    <lastmod>2026-09-05</lastmod>
+    <lastmod>2026-09-12</lastmod>
+  </url>
+  <url>
+    <loc>https://wiki.jdelgado.fr/ci-cd/github/renovate-gomod/</loc>
+    <lastmod>2026-09-12</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/ci-cd/gitlab/cli/</loc>
