@@ -11,7 +11,7 @@ permissions: {}
 
 jobs:
   lint:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     permissions:
       contents: read
     steps:
@@ -35,7 +35,7 @@ jobs:
           config: .markdownlint.json
 
   build:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     needs: [lint]
     permissions:
       contents: read
@@ -57,7 +57,7 @@ jobs:
 
   deploy:
     if: github.event_name != 'pull_request'
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     needs: [build]
     permissions:
       contents: write
