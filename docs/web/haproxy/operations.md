@@ -107,8 +107,9 @@ echo "show sess" | socat stdio /run/haproxy/admin.sock
 # Dernières erreurs vues par HAProxy (requêtes malformées, réponses backend invalides)
 echo "show errors" | socat stdio /run/haproxy/admin.sock
 
-# Contenu d'une stick-table : utile pour du rate limiting ou de la persistance
+# Liste des stick-tables (nom, type, taille, entrées utilisées)
 echo "show table" | socat stdio /run/haproxy/admin.sock
+# Contenu d'une stick-table : utile pour du rate limiting ou de la persistance
 echo "show table st_src_global" | socat stdio /run/haproxy/admin.sock
 
 # Ajuster le poids d'un serveur à chaud, pour un canary par exemple
@@ -131,7 +132,7 @@ frontend proxy
     ...
 ```
 
-L'option renseigne `X-Forwarded-For` avec l'adresse du client.
+L'option ajoute une occurrence de `X-Forwarded-For` avec l'adresse du client, à la fin de celles déjà présentes : côté backend, on lit la dernière, jamais la première.
 
 !!! warning "X-Forwarded-For est un header empilable"
     S'il y a déjà un proxy devant, le header contient une liste (`client, proxy1, proxy2`)
@@ -154,8 +155,11 @@ frontend https
 
     acl from_cf src -f /etc/haproxy/acl/cloudflare_ips.lst
     http-request set-src req.hdr(CF-Connecting-IP) if from_cf
+    http-request del-header X-Forwarded-For if !from_cf
     option forwardfor
 ```
+
+`allow-0rtt` accepte les early data TLS 1.3, qu'un attaquant peut rejouer : à réserver aux frontends dont toutes les requêtes sont idempotentes.
 
 Cloudflare publie ses préfixes, qui changent de temps en temps. Un cron hebdomadaire évite
 de bloquer du trafic légitime le jour où ils en ajoutent un.
