@@ -42,7 +42,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/automation/terraform/terragrunt/</loc>
-    <lastmod>2026-09-05</lastmod>
+    <lastmod>2026-09-23</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/automation/terraform/tools/</loc>
@@ -66,15 +66,15 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/ci-cd/github/hardening/</loc>
-    <lastmod>2026-09-05</lastmod>
+    <lastmod>2026-09-23</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/ci-cd/github/renovate-config/</loc>
-    <lastmod>2026-09-12</lastmod>
+    <lastmod>2026-09-23</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/ci-cd/github/renovate-gomod/</loc>
-    <lastmod>2026-09-12</lastmod>
+    <lastmod>2026-09-23</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/ci-cd/gitlab/cli/</loc>
@@ -330,7 +330,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/kubernetes/deployment/pdb_topology_spread/</loc>
-    <lastmod>2026-09-05</lastmod>
+    <lastmod>2026-09-23</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/kubernetes/deployment/statefulset_pod_management_policy/</loc>
@@ -498,7 +498,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/linux/misc/mount_iso/</loc>
-    <lastmod>2026-09-05</lastmod>
+    <lastmod>2026-09-23</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/linux/misc/rc_package/</loc>
@@ -690,15 +690,15 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/monitoring/lgtm/thanos-cache/</loc>
-    <lastmod>2026-09-05</lastmod>
+    <lastmod>2026-09-23</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/monitoring/lgtm/thanos-query-concurrency/</loc>
-    <lastmod>2026-09-05</lastmod>
+    <lastmod>2026-09-23</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/monitoring/lgtm/thanos/</loc>
-    <lastmod>2026-09-05</lastmod>
+    <lastmod>2026-09-23</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/monitoring/lgtm/tips_lgtm/</loc>
@@ -954,7 +954,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/web/haproxy/operations/</loc>
-    <lastmod>2026-09-05</lastmod>
+    <lastmod>2026-09-23</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/web/haproxy/overview/</loc>
