@@ -28,6 +28,7 @@ Ce qui ne passe pas par l'API Eviction, donc ce qu'un PDB ne protège absolument
 - un OOMKill, un `livenessProbe` qui échoue
 - la reprise d'une [Spot VM](../../cloud/gcloud/spot_nodes.md) par le cloud provider
 - un `kubectl delete pod`, qui n'est pas une éviction
+- un rolling update, où la ReplicaSet supprime ses anciens pods par un delete direct
 
 Un PDB n'est donc pas une garantie de disponibilité, c'est une garantie sur les opérations de maintenance. Compter sur un PDB pour survivre à une panne de zone, c'est se tromper d'outil.
 
@@ -126,7 +127,7 @@ spec:
 L'inverse, `DoNotSchedule` sur la zone, est le piège : le jour où une zone est en panne de capacité, les pods restent `Pending` au lieu d'aller ailleurs. Sur du stateless, la disponibilité passe avant la beauté de la répartition.
 
 !!! note "Le cluster a déjà des contraintes par défaut"
-    Sans rien déclarer, le scheduler applique un `maxSkew: 3` sur `kubernetes.io/hostname` et un `maxSkew: 5` sur `topology.kubernetes.io/zone`, les 2 en `ScheduleAnyway`. Ça explique pourquoi les pods sont vaguement répartis sans qu'on ait rien demandé et pourquoi ce vague ne suffit pas.
+    Sans rien déclarer, le scheduler applique un `maxSkew: 3` sur `kubernetes.io/hostname` et un `maxSkew: 5` sur `topology.kubernetes.io/zone`, les 2 en `ScheduleAnyway`, à condition que le pod soit sélectionné par un Service, un ReplicaSet, un StatefulSet ou un ReplicationController. Ça explique pourquoi les pods sont vaguement répartis sans qu'on ait rien demandé et pourquoi ce vague ne suffit pas.
 
 ## Le skew faussé pendant un rollout
 
@@ -153,7 +154,7 @@ topologySpreadConstraints:
         app: api
 ```
 
-En dessous de 3 zones occupées, la contrainte n'est pas satisfaite, les pods passent `Pending` et le cluster autoscaler voit qu'il lui manque de la capacité ailleurs. C'est le seul moyen d'obtenir une vraie répartition multi-zone sur un cluster qui démarre.
+En dessous de 3 domaines éligibles, c'est-à-dire des zones qui ont au moins un node compatible, occupé ou non par nos pods, la contrainte n'est pas satisfaite et les pods passent `Pending`. Sur un cluster qui démarre, le scheduler ne connaît que les zones où un node existe déjà : un node pool à zéro n'est pas compté, et il faut un autoscaler qui tient compte du topology spread pour aller y créer le node manquant.
 
 `minDomains` ne fonctionne qu'avec `whenUnsatisfiable: DoNotSchedule`, ce qui est logique : en `ScheduleAnyway` la contrainte est un souhait, donc un minimum n'a pas de sens.
 
@@ -184,7 +185,7 @@ kubectl drain gke-prod-pool-1-abc123 \
   --dry-run=server
 ```
 
-Puis on regarde qui refuse. Les évictions rejetées sortent en `429 Too Many Requests` du côté du client et en événement du côté du pod :
+Puis on regarde qui refuse. Les évictions rejetées sortent en `429 Too Many Requests` du côté du client, sans aucun event côté pod : la raison se lit dans le PDB lui-même.
 
 ```bash
 # Quel budget est à zéro
