@@ -25,7 +25,7 @@ La décision qui simplifie tout le reste est de conserver l'UID de chaque objet 
 }
 ```
 
-Relancer l'`apply` est idempotent, un dashboard déjà présent est écrasé au lieu d'être dupliqué. Les permaliens `/d/<uid>/...` continuent de marcher. C'est ce qui rend trivial un problème qui ne l'est pas : les annotations des alert rules contiennent des liens en dur vers l'ancienne instance. Comme les UID ne bougent pas, seul l'hôte est faux et une substitution suffit. Sur environ 250 rules, 78 annotations pointaient vers l'ancien Grafana.
+Relancer l'`apply` est idempotent, un dashboard déjà présent est écrasé au lieu d'être dupliqué. Les permaliens `/d/<uid>/...` continuent de marcher. Ça règle aussi les liens morts : les annotations des alert rules contiennent des liens en dur vers l'ancienne instance. Comme les UID ne bougent pas, seul l'hôte est faux et une substitution suffit. Sur environ 250 rules, 78 annotations pointaient vers l'ancien Grafana.
 
 Les champs `id` et `version` sont locaux à l'instance, ils partent. Tout le reste se garde.
 
@@ -34,10 +34,10 @@ Les champs `id` et `version` sont locaux à l'instance, ils partent. Tout le res
 Un dashboard ne référence pas ses datasources d'une seule façon. L'historique d'une instance de plusieurs années les mélange toutes. Sur un même dashboard on croise :
 
 - l'objet moderne `{"type": "prometheus", "uid": "..."}`
-- la **chaîne nue**, héritée d'avant Grafana 8, qui contient le **nom** de la datasource et pas son UID
+- la **chaîne nue**, héritée d'avant Grafana 8.3, qui contient le **nom** de la datasource et pas son UID
 - `null`, qui suit la datasource par défaut de l'instance, donc celle de la **cible** après migration
 - une référence de variable, `$ds`, `${ds}` ou `${ds:raw}`, à laisser intacte
-- les datasources intégrées (`grafana`, `-- Mixed --`, `-- Dashboard --`, `__expr__` et `-100` pour les expressions anciennes), qui existent sous le même UID partout
+- les datasources intégrées (`grafana` ou son ancien nom `-- Grafana --`, `-- Mixed --`, `-- Dashboard --`, `__expr__` et `-100` pour les expressions anciennes), qui existent sous le même UID partout
 
 Le parcours doit donc être récursif et se faire par **clé** plutôt que par chemin : les panels d'une row repliée sont dans `panels[].panels[]`, les targets portent leur propre `datasource`, les annotations aussi. Un chemin en dur en oublie toujours un.
 
@@ -62,11 +62,11 @@ Le troisième cas relève d'une décision. Une datasource qu'on ne reprend pas s
 
 ## Cloud Monitoring : le projet est dans la requête
 
-Un panel Cloud Monitoring peut renvoyer `403 Permission denied` alors que la datasource a bien migré, avec le bon UID. La raison est qu'une query Cloud Monitoring porte son propre `projectName`, qui l'emporte sur le `default_project` configuré sur la datasource.
+Un panel Cloud Monitoring peut renvoyer `403 Permission denied` alors que la datasource a bien migré, avec le bon UID. La raison est qu'une query Cloud Monitoring porte son propre `projectName`, qui l'emporte sur le `defaultProject` configuré dans le `jsonData` de la datasource.
 
-Le service account GCP derrière la datasource Cloud doit donc avoir `roles/monitoring.viewer` sur **chaque projet qu'une requête nomme**, pas seulement sur ceux que la datasource déclare. Scanner les dashboards pour lister les `projectName` réellement utilisés donne la bonne liste d'un coup, au lieu de découvrir les 403 un dashboard après l'autre. Sur la migration décrite ici, 23 projets distincts étaient interrogés pour 4 déclarés en `default_project`.
+Le service account GCP derrière la datasource Cloud doit donc avoir `roles/monitoring.viewer` sur **chaque projet qu'une requête nomme**, pas seulement sur ceux que la datasource déclare. Scanner les dashboards pour lister les `projectName` réellement utilisés donne la bonne liste d'un coup, au lieu de découvrir les 403 un dashboard après l'autre. Sur la migration décrite ici, 23 projets distincts étaient interrogés pour 4 déclarés en `defaultProject`.
 
-Ajouter ces projets en `default_project` ne corrige rien, c'est la valeur pré-remplie dans l'éditeur et elle n'accorde aucun droit. Attention aussi aux projets templatés : `mon-projet-${env:text}` se résout sur le **libellé** de la variable, donc chaque valeur possible de `env` est un projet à binder, à condition qu'il existe. Une valeur qui ne correspond à aucun projet fait échouer l'apply IAM, on la vérifie avant avec `gcloud projects describe`.
+Changer le `defaultProject` ne corrige rien, c'est la valeur pré-remplie dans l'éditeur et elle n'accorde aucun droit. Attention aussi aux projets templatés : `mon-projet-${env:text}` se résout sur le **libellé** de la variable, donc chaque valeur possible de `env` est un projet à binder, à condition qu'il existe. Une valeur qui ne correspond à aucun projet fait échouer l'apply IAM, on la vérifie avant avec `gcloud projects describe`.
 
 ## Ce qui ne passera jamais
 
@@ -107,7 +107,7 @@ Une alert rule porte l'UID de sa datasource dans `data[].datasourceUid` **et** d
 
 Tout objet créé par l'API de provisioning est marqué comme provisionné, donc en lecture seule dans l'UI pour tout le monde. L'en-tête `X-Disable-Provenance: true` sur la création l'évite.
 
-Les rules qui portent déjà une `provenance` sur la source viennent d'un pipeline externe. Les copier crée une deuxième source de vérité, on les saute et on redéploie le pipeline vers la cible. Elles résistent d'ailleurs à la suppression : un `DELETE` sur une rule provisionnée échoue même avec `X-Disable-Provenance`.
+Les rules qui portent déjà une `provenance` sur la source viennent d'un pipeline externe. Les copier crée une deuxième source de vérité, on les saute et on redéploie le pipeline vers la cible. Celles provisionnées par fichier résistent d'ailleurs à la suppression : un `DELETE` échoue même avec `X-Disable-Provenance`. Une provenance `api`, Terraform comprise, se supprime avec l'en-tête.
 
 ### Contact points : les secrets ne sortent pas
 
@@ -124,15 +124,17 @@ Cette sortie contient des secrets en clair, on la fait transiter en mémoire ver
 
 ### L'arbre de notification remplace tout
 
-`PUT /api/v1/provisioning/policies` remplace l'arbre complet en un appel. Sur une stack neuve il n'y a rien à écraser, donc ce n'est pas une raison de le faire à la main, mais 2 garde-fous s'imposent : snapshoter l'arbre de la cible avant d'écrire puis refuser de pousser si un seul receiver référencé, à n'importe quelle profondeur, manque sur la cible. Les templates et mute timings passent avant, l'arbre les référence par nom.
+`PUT /api/v1/provisioning/policies` remplace l'arbre complet en un appel. Sur une stack neuve il n'y a rien à écraser, on peut le pousser par l'API avec 2 garde-fous : snapshoter l'arbre de la cible avant d'écrire puis refuser de pousser si un seul receiver référencé, à n'importe quelle profondeur, manque sur la cible. Les templates et mute timings passent avant, l'arbre les référence par nom.
 
 Une rule qui porte `notification_settings.receiver` court-circuite l'arbre et va directement à ce contact point. Il faut donc que les contact points existent avant les rules. Il faut aussi savoir qu'une partie des alertes ne passe pas par les routes qu'on relit.
 
 ## Détecter les rules qui ne peuvent pas sonner
 
-Le problème le plus sérieux trouvé pendant la migration existait déjà sur la source. Un groupe entier de rules n'avait rien déclenché en 14 jours alors que l'une d'elles était au-dessus de son seuil 85 % du temps depuis 6 jours. Toutes étaient en `state: inactive` et `health: ok`, donc vertes dans l'UI.
+Le problème le plus sérieux trouvé pendant la migration existait déjà sur la source. Un groupe entier de rules n'avait rien déclenché en 14 jours alors que l'une d'elles était au-dessus de son seuil 85 % du temps depuis 6 jours. Toutes étaient en `health: ok`, donc vertes dans l'UI. Leur `state: inactive` ne rassure en rien : l'API ruler renvoie `inactive` pour Normal, NoData et Error.
 
 Le point commun est dans le modèle de la query. Les rules qui sonnaient avaient `instant: true`. Celles qui ne sonnaient jamais avaient `range: true, instant: false` et une `condition` qui pointait directement sur la query, sans étage `reduce` ni `threshold`, la comparaison étant écrite dans la PromQL elle-même.
+
+Par défaut, Grafana refuse d'évaluer une condition qui porte encore une série temporelle (`looks like time series data, only reduced data can be alerted on`) et la rule passe en `health: error`. Si elle reste verte, c'est qu'un `exec_err_state` ou un `no_data_state` réglé sur `OK` avale l'erreur : on relit les 2 champs en même temps que le modèle de query.
 
 ```json
 {
@@ -147,7 +149,7 @@ Le point commun est dans le modèle de la query. Les rules qui sonnaient avaient
 }
 ```
 
-Sur environ 250 rules, 45 n'avaient aucun étage d'expression et 18 avaient en plus `range: true`. Parmi elles, des alertes disque plein à 90 % et l'expiration des certificats kubelet. Elles s'affichaient vertes, ce qui est pire que pas d'alerte du tout puisque personne ne pense à les vérifier.
+Sur environ 250 rules, 45 n'avaient aucun étage d'expression et 18 avaient en plus `range: true`. Parmi elles, des alertes disque plein à 90 % et l'expiration des certificats kubelet. Elles s'affichaient vertes, donc personne ne pensait à les vérifier.
 
 Les 27 autres sans étage d'expression fonctionnent parce que leur query ne renvoie qu'un point. Rien dans leur définition ne les protège : le jour où quelqu'un bascule leur query en `range`, elles rejoignent les premières.
 
