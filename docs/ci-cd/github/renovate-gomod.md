@@ -27,10 +27,11 @@ require (
 )
 ```
 
-Les 2 majeures cohabitent, aucun fichier `.go` n'a bougé et le binaire livré est toujours construit sur la v13. `go mod why` est le contrôle qui le dit en une ligne :
+Les 2 majeures cohabitent, aucun fichier `.go` n'a bougé et le binaire livré est toujours construit sur la v13. `go mod why` le confirme, et sort en code non nul :
 
 ```console
 $ go mod why -m github.com/akamai/AkamaiOPEN-edgegrid-golang/v14
+# github.com/akamai/AkamaiOPEN-edgegrid-golang/v14
 (main module does not need module github.com/akamai/AkamaiOPEN-edgegrid-golang/v14)
 ```
 
@@ -73,7 +74,7 @@ mod upgrade --mod-name=github.com/akamai/AkamaiOPEN-edgegrid-golang/v13 -t=14
 
 Les chemins d'import sont réécrits, `go mod tidy` n'est plus sauté, et le `go.mod` qui sort ne contient plus qu'une majeure. La CI compile enfin ce qui serait livré. Garder `gomodTidy` explicite à côté reste utile, il couvre les mineures et les patchs, que cette bascule ne concerne pas.
 
-Deux limites à connaître. Le `@latest` de l'installation n'est pas épinglé par défaut, on le fige avec une contrainte `gomodMod` si on ne veut pas d'un outil tiers flottant dans le pipeline. Et la réécriture est sautée sur le passage de v0 à v1, qui ne change pas le chemin d'import.
+2 limites à connaître. Le `@latest` de l'installation n'est pas épinglé par défaut, on le fige avec une contrainte `gomodMod` si on ne veut pas d'un outil tiers flottant dans le pipeline. Et la réécriture est sautée sur le passage de v0 à v1, qui ne change pas le chemin d'import, sauf pour les modules `gopkg.in/`.
 
 Ça ne fait pas de miracle pour autant, l'outil réécrit des chemins, pas de la logique :
 
@@ -143,7 +144,7 @@ Le depType `golang`, c'est la directive `go`, et Renovate ne propose **pas** de 
 
 > In `go.mod`, the `toolchain` directive essentially means "Use this exact version of go". Unlike the `go` directive, it's valid to keep bumping this, and you should see updates to it proposed by default.
 
-Il faut donc les 2 depTypes, plus le `rangeStrategy` qui débloque la directive `go` :
+C'est le `rangeStrategy` qui débloque la directive `go`. On liste les 2 depTypes pour grouper la directive et la toolchain dans la même PR :
 
 ```json title="renovate.json, la règle qui matche"
 {
@@ -156,9 +157,9 @@ Il faut donc les 2 depTypes, plus le `rangeStrategy` qui débloque la directive 
 }
 ```
 
-Renovate déconseille explicitement de bumper la directive `go` automatiquement, au motif qu'elle définit le plancher de compatibilité du module. Sur une application, où personne n'importe le module, le coût est nul et c'est une ligne de moins à maintenir à la main. Sur une bibliothèque, c'est un vrai arbitrage : chaque bump écarte les consommateurs restés sur une Go plus ancienne, et là le conseil de la doc s'applique.
+Renovate déconseille explicitement de bumper la directive `go` automatiquement, au motif qu'elle définit le plancher de compatibilité du module. Sur une application, où personne n'importe le module, le coût est nul et c'est une ligne de moins à maintenir à la main. Sur une bibliothèque, c'est un vrai arbitrage : chaque bump écarte les consommateurs restés sur une Go plus ancienne, on garde alors le défaut.
 
-Le contrôle qui tranche, c'est l'historique de la directive. Si elle n'a jamais bougé depuis le commit initial, ce n'est pas de la stabilité, c'est une règle qui ne matche rien :
+Le contrôle qui tranche, c'est l'historique de la directive. Une directive qui n'a jamais bougé depuis le commit initial trahit une règle qui ne matche rien :
 
 ```bash
 git log --oneline -L3,3:go.mod
