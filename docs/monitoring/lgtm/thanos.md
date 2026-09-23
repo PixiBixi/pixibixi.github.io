@@ -230,7 +230,8 @@ Le prix à payer se voit à la reprise. Une store gateway peut mettre jusqu'à *
 
 ```yaml
 - alert: ThanosStoreIsDown
-  expr: up{job=~".*thanos-store.*"} == 0
+  # up == 0 ne sonne pas : un pod évicté qui reste Pending sort des targets
+  expr: kube_statefulset_replicas{statefulset=~".*thanos-store.*"} - kube_statefulset_status_replicas_ready{statefulset=~".*thanos-store.*"} > 0
   for: 30m      # et pas 5m : la reprise après éviction spot est lente
 ```
 
@@ -290,7 +291,7 @@ compactor:
 
 430 jours plutôt que 365, parce que comparer un pic saisonnier à celui de l'année d'avant demande un peu de marge et 2 mois de plus ne coûtent presque rien à cette résolution.
 
-Et c'est là que le downsampling devient intéressant : la longue traîne est quasi gratuite. Passer de 15 secondes à 1 heure, c'est 240 fois moins de points. Les 430 jours en résolution horaire pèsent une fraction des 45 jours en résolution native. Garder un an ne coûte pas 12 fois 2 mois.
+Et c'est là que le downsampling devient intéressant : la longue traîne est quasi gratuite. Passer de 15 secondes à 1 heure, c'est 240 fois moins de points, mais chaque point downsamplé garde 5 agrégats (count, sum, min, max, counter), donc un facteur réel autour de 48 avant compression. Les 430 jours en résolution horaire pèsent une fraction des 45 jours en résolution native. Garder un an ne coûte pas 12 fois 2 mois.
 
 !!! warning "Ne jamais gérer les blocks avec une lifecycle policy du bucket"
     Le compactor est le seul composant qui connaît les dépendances entre un block raw et ses
@@ -373,7 +374,7 @@ Il faut la neutraliser et la remplacer par des règles qui interrogent l'état d
 
 # Un job en échec
 - alert: ThanosCompactCronJobFailed
-  expr: kube_job_failed{job_name=~".*thanos-compact.*"} > 0
+  expr: kube_job_failed{job_name=~".*thanos-compact.*", condition="true"} > 0
   for: 5m
 ```
 
@@ -501,6 +502,9 @@ Côté ingestion c'est plus intéressant financièrement, parce que Receive est 
 ```yaml
 # --receive.limits-config-file
 write:
+  global:
+    # sans meta-monitoring, head_series_limit reste inerte
+    meta_monitoring_url: "http://prometheus.monitoring:9090"
   default:
     request:
       size_bytes_limit: 0
@@ -592,8 +596,8 @@ Dès qu'une pathologie touche nettement moins de 1 % des requêtes, mesurer au p
 Ce flag n'est pas une optimisation qu'on serait allés chercher, c'est la contrepartie du
 spot. Une store gateway évictée doit récupérer ses index-headers avant de pouvoir répondre,
 et sur des instances économiques qui sont IO bound ça se compte en dizaines de minutes, les
-mêmes que celles de la reprise après éviction plus haut. La lecture paresseuse raccourcit ce
-démarrage, donc on la garde. Ce qu'on n'avait jamais fait, c'est mesurer ce qu'elle déplace.
+mêmes que celles de la reprise après éviction plus haut. La lecture paresseuse évite de charger
+tous les index-headers en mémoire au démarrage, donc on la garde. Le téléchargement, lui, reste eager. Ce qu'on n'avait jamais fait, c'est mesurer ce qu'elle déplace.
 
 Le flag décharge un index-header après un délai d'inactivité qui vaut 5 minutes par défaut.
 Sur une plateforme où les dashboards ne sont ouverts que par intermittence, les headers ne
