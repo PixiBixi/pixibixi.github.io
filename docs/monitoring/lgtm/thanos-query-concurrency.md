@@ -16,7 +16,7 @@ Le symptôme de départ est déroutant : une gate collée à son plafond pendant
 
 ## Une requête utilisateur n'est pas une requête
 
-Le query frontend découpe chaque `query_range` en tranches de `--query-range.split-interval` et en tire jusqu'à `--query-range.max-query-parallelism` **en concurrence**. Chaque sous-requête atteint un querier, qui la diffuse à tous les store endpoints qu'il connaît, donc à toutes les stacks de la flotte.
+Le query frontend découpe chaque `query_range` en tranches de `--query-range.split-interval` et en tire jusqu'à `--query-range.max-query-parallelism` **en concurrence**. Chaque sous-requête atteint un querier, qui la diffuse aux store endpoints dont la time range et les external labels matchent, donc en pratique à toutes les stacks de la flotte.
 
 ![Ce qu'une seule requête query_range devient en arrivant sur une store gateway](./_img/thanos-query-amplification.svg)
 
@@ -42,11 +42,11 @@ Les 2 termes se lisent séparément. Le débit d'arrivée par pod se prend sur l
 sum by (namespace, pod) (rate(thanos_bucket_store_series_gate_queries_total[5m]))
 ```
 
-La durée moyenne d'un Series call se prend sur l'histogramme gRPC du serveur.
+La durée moyenne d'un Series call se prend sur l'histogramme gRPC du serveur. Elle inclut l'attente à la gate, puisque `queryGate.Start()` est le premier appel de `Series()` : sous saturation, T gonfle aussi parce que les appels font la queue.
 
 ```promql
-  sum(rate(grpc_server_handling_seconds_sum{grpc_method="Series"}[5m]))
-/ sum(rate(grpc_server_handling_seconds_count{grpc_method="Series"}[5m]))
+  sum by (namespace, pod) (rate(grpc_server_handling_seconds_sum{grpc_method="Series"}[5m]))
+/ sum by (namespace, pod) (rate(grpc_server_handling_seconds_count{grpc_method="Series"}[5m]))
 ```
 
 Le résultat surprend. Entre le régime normal et le pic, le débit fait x4,5 alors que la durée fait x190, de 0,7 ms à 132 ms de moyenne. C'est la durée qui domine largement, ce qui veut dire qu'un graphe de QPS seul, celui qu'on regarde en premier, ne dit à peu près rien de la saturation.
