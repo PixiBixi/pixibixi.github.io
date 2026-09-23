@@ -99,7 +99,7 @@ inputs = {
 ```
 
 !!! warning "Le double slash dans la source n'est pas décoratif"
-    `//gke-cluster` marque la racine du module dans le repo. Sans lui, Terragrunt copie tout le repo et les chemins relatifs internes au module cassent, avec un message qui ne pointe jamais vers la vraie cause.
+    `//gke-cluster` marque la racine du module dans le repo. Sans lui, `gke-cluster` se retrouve collé à l'URL du repo et le `git clone` échoue sur un repo qui n'existe pas, avec une erreur Git qui ne mentionne jamais le `//` oublié.
 
 Le `ref=v1.4.0` est ce qui rend un apply reproductible. Une source sur `main` veut dire qu'un `apply` de rattrapage sur une unit qu'on n'a pas touchée depuis 3 mois va embarquer 3 mois de changements de module. C'est le genre de surprise qu'on découvre à 2h du matin.
 
@@ -191,7 +191,7 @@ Attention aux 2 syntaxes qui se ressemblent. Le `**` est la récursion de chemin
 Les autres flags qui servent réellement en CI :
 
 - `--parallelism 8` plafonne le nombre d'units en vol. Il n'y a **aucun plafond par défaut**, chaque unit dont les dépendances sont satisfaites démarre immédiatement, d'où les `429` sur les API GCP
-- `--fail-fast` arrête à la première unit en échec au lieu de dérouler la queue entière. À réserver au `plan` et au `validate` : sur un `apply` ou un `destroy`, couper la queue en cours de route laisse justement l'état bancal qu'on cherchait à éviter
+- `--fail-fast` arrête à la première unit en échec au lieu de dérouler la queue entière : toutes les units pas encore démarrées sont sautées, y compris celles qui ne dépendent pas de l'échec. Sur un `apply` ou un `destroy`, on garde une stack à moitié appliquée, à relancer une fois la cause réglée
 - `--non-interactive` et `--no-color`, sinon les logs de pipeline sont illisibles
 - `--provider-cache` monte un registry local et arrête de retélécharger le même provider pour chaque unit
 
@@ -259,7 +259,7 @@ Les units générées atterrissent dans `.terragrunt-stack/`, qui est un artefac
 
 - **Le `root.hcl` ne s'appelait pas comme ça avant.** L'ancienne convention mettait la conf racine dans un `terragrunt.hcl` à la racine et `find_in_parent_folders()` sans argument le trouvait. C'est déprécié : on nomme le fichier `root.hcl` et on passe le nom explicitement. Sinon Terragrunt peut remonter jusqu'à un `terragrunt.hcl` qui n'était pas prévu pour ça.
 - **Le `.terragrunt-cache` grossit sans fin.** Chaque unit garde sa copie du module et de ses providers. Sur un monorepo, ça se compte en dizaines de Go. `--provider-cache` règle la partie providers et un `find . -type d -name ".terragrunt-cache" -prune -exec rm -rf {} +` règle le reste quand la CI commence à se plaindre du disque.
-- **Un state par unit veut dire un lock par unit.** C'est l'avantage recherché, mais 2 pipelines qui tournent sur la même branche vont se bloquer proprement sur une unit et pas sur les autres, donc un `run --all` peut échouer à moitié. C'est là que `--fail-fast` évite un état bancal.
+- **Un state par unit veut dire un lock par unit.** C'est l'avantage recherché, mais 2 pipelines qui tournent sur la même branche vont se bloquer proprement sur une unit et pas sur les autres, donc un `run --all` peut échouer à moitié. C'est là que `--fail-fast` limite la casse, en ne lançant pas les units restantes.
 - **`inputs` n'est pas `variables`.** Terragrunt passe les `inputs` en variables d'environnement `TF_VAR_*`. Une variable non déclarée dans le module est ignorée en silence, sans erreur : une faute de frappe dans un nom d'input ne se voit que par la valeur par défaut qui s'applique.
 
 ## Voir aussi
