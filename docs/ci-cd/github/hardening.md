@@ -234,7 +234,7 @@ Reste un trou que la CI verte ne bouche pas : automerger une version publiée il
 }
 ```
 
-5 jours couvre à peu près la fenêtre pendant laquelle une release compromise se fait repérer. Le prix apparent, c'est un retard de 5 jours sur les patchs de sécurité, sauf que Renovate neutralise le cooldown dans sa config `vulnerabilityAlerts` (`minimumReleaseAge: null` par défaut) : les updates qui répondent à une CVE connue passent toujours tout de suite.
+5 jours couvre à peu près la fenêtre pendant laquelle une release compromise se fait repérer. Le prix apparent, c'est un retard de 5 jours sur les patchs de sécurité, sauf que Renovate neutralise le cooldown dans sa config `vulnerabilityAlerts` (`minimumReleaseAge: null` par défaut) : les updates qui répondent à une CVE connue passent tout de suite, à condition que les alertes Dependabot soient actives sur le repo : c'est la seule source de CVE que Renovate interroge sur GitHub.
 
 `digest` est le type qu'on oublie et c'est le plus intéressant des 4. Un update `digest` seul veut dire que la version n'a pas bougé mais que le SHA derrière le tag, si, donc que quelqu'un a redéplacé `v7` sur un autre commit. C'est précisément le scénario contre lequel on épingle et c'est aussi le type le plus automergé. Il a plus besoin du cooldown que les autres.
 
@@ -312,7 +312,7 @@ D'abord, **les hôtes de GitHub eux-mêmes changent d'un run à l'autre**. Le wa
 
 Ensuite, un job de release a l'egress le plus mouvant de tous : sigstore, syft, les hôtes d'upload d'assets, un registre OCI, un push cross-repo. C'est aussi le seul job dont l'échec est public et arrive **après** que le tag a été créé.
 
-Enfin, `block` en tier communautaire a été contourné 2 fois en 2026, via [DNS over HTTPS](https://github.com/step-security/harden-runner/security/advisories/GHSA-46g3-37rh-v698) puis DNS over TCP, tous 2 corrigés en v2.16.0. C'est un ralentisseur, pas une frontière.
+Enfin, `block` en tier communautaire a été contourné 2 fois en 2026, via [DNS over HTTPS](https://github.com/step-security/harden-runner/security/advisories/GHSA-46g3-37rh-v698) et [DNS over TCP](https://github.com/step-security/harden-runner/security/advisories/GHSA-g699-3x6g-wm3g), 2 avis publiés le même jour et corrigés ensemble en v2.16.0. C'est un ralentisseur, pas une frontière.
 
 Ce qu'on garde en `audit` reste substantiel : l'inventaire des hôtes contactés par job, et l'alerte le jour où une dépendance se met à parler à un hôte inconnu. Le mode `audit` n'est d'ailleurs pas passif, l'agent charge une blocklist globale de typosquats et de domaines connus (`pypi-get.com`, `js-mirror.com`, `scan.aquasecurtiy.org`) qu'il bloque quel que soit le réglage.
 
@@ -448,7 +448,7 @@ Le `if:` sur le tag compte aussi. Une release pilotée par les commits ne produi
 
 ## Rendre les releases immuables
 
-Une fois la release publiée, GitHub sait interdire de redéplacer son tag et de remplacer ses assets : c'est le toggle *Immutable releases* dans les settings du repo. Une case à cocher et elle ferme le scénario où un compte compromis republie un binaire sous un tag déjà installé partout.
+Une fois la release publiée, GitHub sait interdire de redéplacer son tag et de remplacer ses assets : c'est le toggle *Immutable releases* dans les settings du repo. Une case à cocher qui ferme le scénario où un compte compromis republie un binaire sous un tag déjà installé partout, mais seulement pour les releases publiées après l'activation : les anciennes restent modifiables.
 
 Le pendant côté artefacts, c'est la signature : la provenance dit d'où vient le binaire, cosign dit qui l'a publié. Sa configuration dans un pipeline GoReleaser est dans [l'article dédié](goreleaser.md).
 
