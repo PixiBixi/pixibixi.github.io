@@ -24,13 +24,13 @@ ls /mnt/iso
 sudo umount /mnt/iso
 ```
 
-Si `umount` répond `target is busy`, c'est qu'un shell ou un process travaille encore dedans. `lsof` désigne le coupable plutôt que de forcer :
+Si `umount` répond `target is busy`, c'est qu'un shell ou un process travaille encore dedans. `lsof` désigne le coupable plutôt que de forcer, en `sudo` sinon les process des autres utilisateurs restent invisibles :
 
 ```bash
-lsof +D /mnt/iso
+sudo lsof +D /mnt/iso
 ```
 
-Pour monter sans être root, `udisksctl` passe par le service système. Ce sont 3 étapes distinctes et c'est là qu'on se plante : `loop-setup` crée seulement le loop device et imprime lequel, il ne monte rien. C'est `mount` qui monte, et pas sous `/media` mais dans `/run/media/$USER/<label>`, chemin qu'il affiche sur sa sortie standard.
+Pour monter sans être root, `udisksctl` passe par le service système. Ça ne vaut qu'en session locale : en SSH, polkit demande une authentification admin. Ce sont 3 étapes distinctes et c'est là qu'on se plante : `loop-setup` crée seulement le loop device et imprime lequel, il ne monte rien. C'est `mount` qui monte, et pas sous `/media` mais dans `/run/media/$USER/<label>`, chemin qu'il affiche sur sa sortie standard.
 
 ```bash
 DEV=$(udisksctl loop-setup -r -f image.iso | grep -o '/dev/loop[0-9]*')
@@ -46,12 +46,12 @@ Le `unmount` avant le `loop-delete` compte tout autant : sur un device encore mo
 Et pour rendre le montage permanent, une ligne de `fstab`, avec le `nofail` qui évite qu'un fichier absent bloque le démarrage :
 
 ```text title="/etc/fstab"
-/srv/images/image.iso  /mnt/iso  iso9660  loop,ro,nofail  0  0
+/srv/images/image.iso  /mnt/iso  udf,iso9660  loop,ro,nofail  0  0
 ```
 
 ### Juste extraire un fichier
 
-Quand il s'agit de récupérer 2 fichiers, le montage est superflu. `7z` lit les ISO directement, sans droits particuliers :
+Quand il s'agit de récupérer 2 fichiers, le montage est superflu. `7z` lit les ISO directement, sans droits particuliers, à part sur les ISO Windows en UDF où il a des bugs connus :
 
 ```bash
 7z l image.iso              # lister
@@ -75,11 +75,13 @@ Dismount-DiskImage -ImagePath "C:\images\image.iso"
 
 `-PassThru` renvoie l'objet, seul moyen de récupérer la lettre attribuée, qui n'est pas prévisible. Sans lui, la commande monte l'image sans rien afficher.
 
-L'erreur `Le fichier image spécifié n'est pas reconnu comme un fichier image de disque valide` a presque toujours la même cause : le fichier est incomplet ou porte l'extension `.iso` sans en être une. Un contrôle d'empreinte tranche :
+L'erreur `Le fichier image spécifié n'est pas reconnu comme un fichier image de disque valide` a le plus souvent 2 causes : le fichier est incomplet, ou il porte l'extension `.iso` sans en être une. Une empreinte comparée au hash publié par l'éditeur tranche :
 
 ```powershell
 Get-FileHash C:\images\image.iso -Algorithm SHA256
 ```
+
+Un `You don't have permission to mount the file` sur une ISO complète vient d'un fichier marqué sparse, ce que `fsutil sparse queryflag` confirme : une copie vers un nouveau fichier le règle.
 
 Si le fichier vient d'un `.bin` renommé à la main, voir [convertir un .bin en .iso](convert_bin_to_iso.md).
 
@@ -92,7 +94,7 @@ hdiutil attach image.iso
 hdiutil detach /Volumes/NOM_DU_VOLUME
 ```
 
-`hdiutil attach -nobrowse` monte sans faire apparaître l'icône sur le bureau, ce qui est préférable dans un script.
+`hdiutil attach -nobrowse` monte sans faire apparaître le volume nulle part dans le Finder (bureau, barre latérale, boîtes de dialogue), ce qui est préférable dans un script.
 
 ## Vérifier une ISO avant de s'en servir
 
