@@ -144,7 +144,7 @@ Vérifier si un repo est un fork tient en une commande :
 gh api repos/OWNER/REPO --jq '{fork: .fork, parent: .parent.full_name}'
 ```
 
-Un fork naît aussi avec ses **issues désactivées**, quel que soit l'état du parent : ce n'est pas de l'héritage, c'est GitHub qui les désactive sur tout nouveau fork. Renovate y met son dependency dashboard, donc tant qu'elles sont fermées il n'a nulle part où lister ce qu'il retient. Ça n'empêche pas les PR, mais on perd la vue d'ensemble et la case « lancer maintenant ».
+Un fork naît aussi avec ses **issues désactivées**, quel que soit l'état du parent : GitHub les désactive sur tout nouveau fork, rien ne vient du parent. Renovate y met son dependency dashboard, donc tant qu'elles sont fermées il n'a nulle part où lister ce qu'il retient. Ça n'empêche pas les PR, mais on perd la vue d'ensemble et la case « lancer maintenant ».
 
 ## Attraper l'erreur avant que Renovate la trouve
 
