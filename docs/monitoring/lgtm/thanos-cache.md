@@ -60,8 +60,8 @@ identique pour tout le monde puisque c'est la racine du bucket, alors que chaque
 son propre bucket objet. **Corrigé en v0.35.0** : `BucketCacheKey.String()` ajoute
 désormais un `ObjectStorageConfigHash` aux verbes d'itération, donc 2 configs de bucket
 différentes ne partagent plus la clé. Le piège ci-dessous ne concerne que les versions
-antérieures, et le champ `prefix` de la config Redis ou Memcached cloisonne les keyspaces
-quelle que soit la version. Un tenant lit donc la liste de blocks d'un autre, part chercher ces ULID chez lui, ne
+antérieures, et le champ `prefix` de la config Redis cloisonne les keyspaces
+quelle que soit la version (Memcached n'a pas d'équivalent). Un tenant lit donc la liste de blocks d'un autre, part chercher ces ULID chez lui, ne
 les trouve pas et classe l'intégralité en `partial` :
 
 ```text
@@ -81,7 +81,7 @@ lit dans le code du `CachingBucket` de sa version.
 
 ## Dimensionner le cache partagé
 
-La taille à viser est le **working set sur la fenêtre du TTL**, pas la taille actuelle du cache, qui ne dit que le plafond qu'on lui a donné. Le proxy se calcule sur le volume d'admission : `increase(items_added_total[TTL])` multiplié par la taille moyenne d'une entrée. Deux pièges.
+La taille à viser est le **working set sur la fenêtre du TTL**, pas la taille actuelle du cache, qui ne dit que le plafond qu'on lui a donné. Le proxy se calcule sur le volume d'admission : `increase(thanos_redis_operation_duration_seconds_count{operation="set"}[TTL])` (`thanos_memcached_operations_total{operation="set"}` sur Memcached) multiplié par la taille moyenne d'une entrée. Deux pièges.
 
 Le premier est de lire ça sur un instantané. Un `increase` pris à un moment donné est un point au hasard et il sous-estime lourdement les stacks en dents de scie : sur l'un des nôtres, 0,24 Gio en snapshot contre 9 Gio au P95 du glissant sur 24h. Facteur 37. Il faut le **P95 de la fenêtre TTL glissante sur 24h au minimum**, donc une subquery avec un pas explicite - une subquery sans pas est un moyen fiable de faire tomber le querier.
 
@@ -106,7 +106,7 @@ Dragonfly est une troisième voie qui mérite d'être connue. Il parle le protoc
 
 - Les métriques Prometheus sortent sur un port `admin` séparé et l'opérateur crée par défaut une NetworkPolicy qui ne l'ouvre qu'à lui-même et aux pods pairs. Prometheus reste muet, silencieusement. Les NetworkPolicies étant purement additives, il suffit d'en **ajouter** une pour le namespace de Prometheus, sans désactiver celle de l'opérateur.
 - Il n'y a pas de `/metrics` HTTP sur le port principal, qui ne parle que RESP. Se tromper de port donne un timeout qu'on met du temps à relier à une NetworkPolicy.
-- `evicted_keys_total` et `expired_keys_total` sont **déclarés sans valeur** tant qu'ils valent zéro. Prometheus n'ingère donc aucune série et un panneau affiche « No data » là où on attend 0, ce qui rend « rien évicté » indiscernable de « métrique cassée ». En attendant, le signal d'éviction utilisable est la mémoire utilisée qui rejoint `maxmemory`.
+- `dragonfly_evicted_keys_total` et `dragonfly_expired_keys_total` sont **déclarés sans valeur** tant qu'ils valent zéro. Prometheus n'ingère donc aucune série et un panneau affiche « No data » là où on attend 0, ce qui rend « rien évicté » indiscernable de « métrique cassée ». En attendant, le signal d'éviction utilisable est la mémoire utilisée qui rejoint `maxmemory`.
 
 La configuration est la même forme pour les 3 caches. Pour la store gateway :
 
