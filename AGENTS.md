@@ -1,6 +1,6 @@
-# CLAUDE.md
+# AGENTS.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Guidance for coding agents working in this repository.
 
 ## Project
 
@@ -152,8 +152,7 @@ Example admonition:
 
 ## Content Language
 
-All article content is written in **French**. This overrides the global
-English rule. Code, commands, and commit messages stay in English.
+All article content is written in **French**. Code, commands, and commit messages stay in English.
 
 ## Before committing
 
