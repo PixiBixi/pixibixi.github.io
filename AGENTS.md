@@ -82,14 +82,14 @@ All content lives under `docs/`. Organized by technology domain:
 
 | Directory | Topics |
 |-----------|--------|
-| `linux/` | fundamentals, security, hosting (nginx, haproxy, lemp), CLI, shell, storage, systemd |
+| `linux/` | fundamentals, security, CLI, shell, storage, systemd, networking, BSD/CentOS notes |
 | `automation/` | Ansible, Terraform, Makefile |
-| `databases/` | MySQL, Postgres, Redis, Elasticsearch, Memcached |
+| `databases/` | MySQL, Postgres, Redis, Elasticsearch, MongoDB, Memcached |
 | `monitoring/` | LGTM stack, check_mk, Munin |
 | `kubernetes/` | CLI, deployments, ArgoCD, operators, RKE, Rancher, troubleshooting |
 | `cloud/` | AWS, Azure, GCloud |
 | `containers/` | Docker, Kafka |
-| `ci-cd/` | GitLab |
+| `ci-cd/` | GitHub Actions, GitLab |
 | `networking/` | Cisco, MikroTik, pfSense |
 | `os/` | macOS, Windows, misc desktop |
 | `selfhost/` | Self-hosted apps (Nextcloud, Koel, etc.) |
@@ -107,7 +107,12 @@ Two hand-maintained TOCs must both be updated when adding a file - neither is ge
 
 Non-Markdown files under `docs/` are copied verbatim into the build:
 
-- `docs/robots.txt` - points at the sitemap, blocks GPTBot/ClaudeBot/CCBot/Bytespider
+- `docs/robots.txt` - points at the sitemap; splits AI bots by intent, not a blanket
+  block: search/citation bots (GPTBot, ChatGPT-User, PerplexityBot, ClaudeBot) are
+  allowed, training bots (CCBot, Bytespider, Google-Extended, anthropic-ai, Diffbot,
+  cohere-ai, Applebot-Extended) are disallowed. Ends with a `Content-Signal`
+  directive (`ai-train=no, search=yes, ai-input=no`), which most crawlers don't
+  parse yet
 - `docs/llms.txt` - hand-maintained section map for LLM consumption; update it when a whole section appears or disappears
 - `docs/javascripts/copy-llm.js` - "Copy for LLM" button, converts the rendered article back to Markdown client-side
 - `docs/stylesheets/jdelgado.css`, `docs/img/`, `docs/CNAME`
