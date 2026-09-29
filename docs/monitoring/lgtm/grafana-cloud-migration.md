@@ -78,6 +78,27 @@ Certains panels resteront cassés sur Cloud quoi qu'on fasse. Autant le savoir a
 
 Lire `grafana.ini` de l'instance source avant de commencer évite des surprises, en particulier les sections `plugins` et `security`.
 
+## Recaler les panels des rows repliées
+
+Grafana Cloud relit les dashboards poussés en JSON v1 au schéma v2 (`dashboard.grafana.app/v2`), où chaque row porte sa propre grille et où le `y` d'un panel est relatif à sa row. La conversion obtient ce `y` en retranchant la position de la row à celui stocké dans `panels[].panels[]`. En v1, rien n'oblige le `y` des panels d'une row repliée à suivre la position de la row, le frontend les recale au dépliage et le dashboard s'affiche correctement sur la source. Après conversion ils sortent avec un `y` négatif, jusqu'à -152 ici, et Grafana les réempile en pleine largeur ou dans le désordre.
+
+Rien ne le signale, ni à l'import ni à l'affichage. Sur un peu plus de 1300 dashboards, 91 étaient touchés, dont 2 importés hors migration par le même chemin. La liste complète renvoie déjà le spec v2, le repérage tient en une commande :
+
+```bash
+gcx dashboards list --limit 0 -o json \
+  | jq -r '.items[] | select([.. | objects | select(.kind == "GridLayoutItem") | .spec.y | select(. < 0)] | length > 0) | .metadata.name'
+```
+
+La correction décale tous les panels d'une même grille du même nombre de lignes, pour que le plus haut reparte de 0. Leurs positions relatives ne bougent pas, on retrouve donc la disposition de la source.
+
+```bash
+jq 'walk(if type == "object" and .kind == "GridLayout" and ((.spec.items // []) | length > 0)
+  then (([.spec.items[].spec.y] | min) as $m | if $m < 0 then .spec.items |= map(.spec.y -= $m) else . end)
+  else . end)' dashboard.json > fixed.json
+```
+
+Avant de pousser, 3 contrôles sur le résultat : plus aucun `y` négatif, aucun chevauchement de panels qui n'existait pas avant et aucun champ modifié hors des `y`. Le `metadata.resourceVersion` du manifeste fait échouer l'update si quelqu'un a édité le dashboard entre-temps, au lieu d'écraser sa modification.
+
 ## Pousser l'alerting sans réveiller personne
 
 Un dashboard est inerte, une alert rule réveille une astreinte. La première règle est donc de pousser **toutes** les rules avec `isPaused: true`, quel que soit leur état sur la source. Le passage en production devient une décision explicite par équipe, unpause côté Cloud et désactivation côté source dans la même minute. Tout décalage entre les 2 donne soit un trou de couverture, soit un double page.
