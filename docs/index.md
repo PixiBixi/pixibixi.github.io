@@ -1,7 +1,9 @@
 ---
+title: "Wiki SRE : Kubernetes, Linux, Terraform, Cloud"
 description: Wiki SRE/Platform Engineer - Linux, Kubernetes, Cloud, CI/CD, Monitoring. 226 articles pratiques en français.
 ---
 
+<!-- markdownlint-disable-next-line MD025 -->
 # Wiki SRE - Kubernetes, HAProxy, Linux, Terraform
 
 226 articles, du mémo de 10 lignes au tutoriel complet : commandes
