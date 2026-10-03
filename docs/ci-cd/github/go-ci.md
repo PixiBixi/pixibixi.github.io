@@ -325,19 +325,14 @@ Une CI fiable débloque un cran d'automatisation de plus : faire du type de comm
 
 ### Faire du commit le déclencheur de version
 
-Le chaînon manquant : relier le contenu d'une PR mergée à un numéro de version. Les commits conventionnels le permettent - `feat` → bump mineur, `fix` → bump patch. Renovate sait taguer ses commits par type d'update, ce qui suffit à décider du bump :
+Le chaînon manquant : relier le contenu d'une PR mergée à un numéro de version. Les commits conventionnels le permettent - `feat` → bump mineur, `fix` → bump patch. Renovate sait taguer ses commits par manager, ce qui suffit à décider du bump :
 
 ```json title="renovate.json"
 {
   "packageRules": [
     {
       "matchManagers": ["gomod"],
-      "matchUpdateTypes": ["minor"],
-      "semanticCommitType": "feat"
-    },
-    {
-      "matchManagers": ["gomod"],
-      "matchUpdateTypes": ["patch", "digest"],
+      "matchUpdateTypes": ["minor", "patch", "digest"],
       "semanticCommitType": "fix"
     },
     {
@@ -350,9 +345,10 @@ Le chaînon manquant : relier le contenu d'une PR mergée à un numéro de versi
 
 | Update | Manager | Commit émis | Release |
 |--------|---------|-------------|---------|
-| `minor` | gomod | `feat(deps):` | version mineure |
-| `patch` / `digest` | gomod | `fix(deps):` | version patch |
+| `minor` / `patch` / `digest` | gomod | `fix(deps):` | version patch |
 | tout | github-actions | `chore(deps):` | aucune |
+
+Un bump de dépendance n'est pas une feature du binaire : en `feat(deps)`, chaque minor upstream mergé par Renovate produirait une version mineure et remplirait la section Features du CHANGELOG de « update dependency X ». En `fix(deps)` il sort quand même dans une release, en patch. L'exception, c'est une librairie importée par d'autres repos : remonter le minimum d'une dépendance dans leur `go.mod` justifie un minor, et `minor` → `feat` s'y défend.
 
 !!! note "Pourquoi les actions ne déclenchent pas de release"
     Un bump d'action CI ne change pas le binaire livré - il n'a aucune raison de produire une nouvelle version. On le garde en `chore` : mergé automatiquement, mais invisible pour le versioning. Chaque bump de module Go, lui, est compilé dans l'artefact et justifie une release.
