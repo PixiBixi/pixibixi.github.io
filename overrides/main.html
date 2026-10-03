@@ -59,9 +59,9 @@
   }
   </script>
 
+  {#- Crumbs come from nav sections that own an index.md: URL-path crumbs pointed
+      at subfolders with no page (404) and used slug names ("Ci Cd"). -#}
   {%- if not page.is_homepage and page.title %}
-  {%- set parts = page.url.strip('/').split('/') %}
-  {%- if parts[0] %}
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -73,29 +73,27 @@
         "name": "Accueil",
         "item": "{{ config.site_url }}"
       }
-      {%- set ns = namespace(path='', pos=2) %}
-      {%- for part in parts %}
-      {%- if not loop.last %}
-      {%- set ns.path = ns.path ~ part ~ '/' %},
+      {%- set ns = namespace(pos=2) %}
+      {%- for section in page.ancestors | reverse %}
+      {%- set idx = section.children | selectattr('is_index') | first %}
+      {%- if idx and idx.url != page.url %},
       {
         "@type": "ListItem",
         "position": {{ ns.pos }},
-        "name": {{ part | replace('_', ' ') | replace('-', ' ') | title | tojson }},
-        "item": "{{ config.site_url }}{{ ns.path }}"
+        "name": {{ idx.title | striptags | tojson }},
+        "item": "{{ idx.canonical_url }}"
       }
       {%- set ns.pos = ns.pos + 1 %}
-      {%- else %},
+      {%- endif %}
+      {%- endfor %},
       {
         "@type": "ListItem",
         "position": {{ ns.pos }},
-        "name": {{ page.title | tojson }},
+        "name": {{ page.title | striptags | tojson }},
         "item": "{{ page.canonical_url }}"
       }
-      {%- endif %}
-      {%- endfor %}
     ]
   }
   </script>
-  {%- endif %}
   {%- endif %}
 {% endblock %}
