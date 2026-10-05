@@ -17,7 +17,7 @@ Config lives in `mkdocs.yml` (no `nav:` - sidebar is auto-generated). Active plu
 
 Theme overrides live in `overrides/` (`custom_dir`):
 
-- `main.html` (`extrahead` block) - Google Search Console meta tag, `og:locale`, and the Schema.org JSON-LD graph: `WebSite` + `Person` (anchored on `about/#author`) + `TechArticle` per page + a `BreadcrumbList` derived from the URL path. A page's front matter `description` lands in the `TechArticle`, so a missing description degrades structured data silently.
+- `main.html` (`extrahead` block) - Google Search Console meta tag, `og:locale`, and the Schema.org JSON-LD graph: `WebSite` + `Person` (anchored on `about/#author`) + `TechArticle` per page (`ProfilePage` on `about.md`, `image` = the social card) + a `BreadcrumbList` built from the nav sections that own an `index.md` (subfolders without one have no page, linking them gave 404 crumbs). A page's front matter `description` lands in the `TechArticle`, so a missing description degrades structured data silently.
 - `sitemap.xml` - custom template emitting `<lastmod>` from the git revision date.
 
 `remote_branch: docs` in `mkdocs.yml` is why `gh-deploy` pushes to a `docs` branch rather than `gh-pages`.
@@ -108,11 +108,13 @@ Two hand-maintained TOCs must both be updated when adding a file - neither is ge
 Non-Markdown files under `docs/` are copied verbatim into the build:
 
 - `docs/robots.txt` - points at the sitemap; splits AI bots by intent, not a blanket
-  block: search/citation bots (GPTBot, ChatGPT-User, PerplexityBot, ClaudeBot) are
-  allowed, training bots (CCBot, Bytespider, Google-Extended, anthropic-ai, Diffbot,
-  cohere-ai, Applebot-Extended) are disallowed. Ends with a `Content-Signal`
-  directive (`ai-train=no, search=yes, ai-input=no`), which most crawlers don't
-  parse yet
+  block: search and user-triggered fetchers (OAI-SearchBot, ChatGPT-User,
+  Claude-SearchBot, Claude-User, PerplexityBot, Perplexity-User) are allowed,
+  training crawlers (GPTBot, ClaudeBot, anthropic-ai, CCBot, Bytespider,
+  Google-Extended, Applebot-Extended, Diffbot, cohere-ai) are disallowed. GPTBot and
+  ClaudeBot are training crawlers, not search bots. `Content-Signal`
+  (`ai-train=no, search=yes, ai-input=yes`) sits inside the `*` and search groups:
+  a line after the last group binds to that group only
 - `docs/llms.txt` - hand-maintained section map for LLM consumption; update it when a whole section appears or disappears
 - `docs/javascripts/copy-llm.js` - "Copy for LLM" button, converts the rendered article back to Markdown client-side
 - `docs/stylesheets/jdelgado.css`, `docs/img/`, `docs/CNAME`
