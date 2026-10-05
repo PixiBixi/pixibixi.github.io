@@ -29,6 +29,16 @@ Relancer l'`apply` est idempotent, un dashboard déjà présent est écrasé au 
 
 Les champs `id` et `version` sont locaux à l'instance, ils partent. Tout le reste se garde.
 
+### Les liens en dur dans les dashboards
+
+Les dashboards ont le même problème que les annotations, en plus diffus : liens de dashboard, liens de panel, data links par série, panels texte en markdown et descriptions. Il faut donc substituer l'hôte dans **toutes** les chaînes du JSON, pas dans une liste de champs. Oublié au premier passage, l'audit après bascule en a trouvé 383 dans 162 dashboards sur 1316.
+
+L'hôte n'est pas le seul morceau local à l'instance. Un lien qui ouvre un autre dashboard sur une datasource précise la porte en paramètre, `&var-datasource=<uid>`, et cet UID est celui de la source. Après substitution de l'hôte, le lien ouvre le bon dashboard sur une datasource qui n'existe pas côté cible. Il se remappe avec la même table que les panels, en ne cherchant que par UID : par nom, une valeur comme `prod` ou `All` dans un autre `var-` pourrait tomber sur le nom d'une datasource et être réécrite.
+
+Les liens courts `/goto/<id>` ne se rattrapent pas, ce sont des lignes de la base de l'ancienne instance. 38 des 383 en étaient, on les liste pour les refaire à la main.
+
+Pour les dashboards déjà poussés, relancer l'`apply` écraserait les modifications faites sur Cloud depuis. La correction se fait donc sur la copie **cible** : relire le dashboard, ne réécrire que les liens et le sauver en gardant sa `version`, pour qu'une sauvegarde faite entre-temps échoue en `412` au lieu d'être perdue. Un dashboard stocké en schéma v2 est servi converti en v1 par `/api/dashboards` : le sauver par là risque de le repasser en v1, on le corrige à la main.
+
 ## Remapper les références de datasource
 
 Un dashboard ne référence pas ses datasources d'une seule façon. L'historique d'une instance de plusieurs années les mélange toutes. Sur un même dashboard on croise :
