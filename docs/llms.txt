@@ -1,6 +1,6 @@
 # Jérémy Wiki
 
-> Wiki SRE/infra - 240+ articles pratiques sur Kubernetes, HAProxy, Terraform, Linux, monitoring et cloud par Jérémy Delgado, Senior Platform Engineer.
+> Wiki SRE/infra - 250 articles pratiques en français sur Kubernetes, HAProxy, Terraform, Linux, monitoring et cloud par Jérémy Delgado, Senior Platform Engineer.
 
 ## Sections
 
@@ -16,7 +16,19 @@
 - [Networking](https://wiki.jdelgado.fr/networking/): Cisco, MikroTik, pfSense
 - [Hypervisor](https://wiki.jdelgado.fr/hypervisor/): ESXi, Proxmox
 - [Self-hosted](https://wiki.jdelgado.fr/selfhost/): Nextcloud, Koel, Guacamole, ruTorrent
+- [OS](https://wiki.jdelgado.fr/os/): macOS (Homebrew, iTerm), Windows desktop, Windows Server et PowerShell
+- [Hardware](https://wiki.jdelgado.fr/hardware/): firmware Mellanox, SAN NetApp, serveurs HP (iLO, CLI SAS), disques WD
+- [Misc](https://wiki.jdelgado.fr/misc/): performances Linux, optimisation, fibre optique, liens et sources
 - [About the author](https://wiki.jdelgado.fr/about/): Jérémy Delgado, Senior Platform Engineer at Equativ
+
+## Articles de référence
+
+- [La concurrence de lecture Thanos : amplification, gates et diagnostic](https://wiki.jdelgado.fr/monitoring/lgtm/thanos-query-concurrency/)
+- [HAProxy performance tuning : nbthread, maxconn, TLS, Kubernetes](https://wiki.jdelgado.fr/web/haproxy/performance_tuning/)
+- [Durcir une CI GitHub Actions : pins, permissions, injections](https://wiki.jdelgado.fr/ci-cd/github/hardening/)
+- [Spot sur GKE : node pools, scheduling et workloads éligibles](https://wiki.jdelgado.fr/cloud/gcloud/spot_nodes/)
+- [Renovate : valider la config et son silence sur les forks](https://wiki.jdelgado.fr/ci-cd/github/renovate-config/)
+- [Netdata, Prometheus et Grafana : une stack de monitoring simple et puissante](https://wiki.jdelgado.fr/monitoring/lgtm/simple_monitoring_stack/)
 
 ## Index
 
@@ -24,4 +36,4 @@
 
 ## Sitemap
 
-- [Full sitemap](https://wiki.jdelgado.fr/sitemap.xml): 241 pages, XML format
+- [Full sitemap](https://wiki.jdelgado.fr/sitemap.xml): toutes les pages, XML format
