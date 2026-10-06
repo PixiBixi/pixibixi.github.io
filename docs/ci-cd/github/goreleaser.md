@@ -386,6 +386,48 @@ GoReleaser ne gère pas nativement le push Helm, mais on l'ajoute en step post-G
     helm push "mon-chart-${CHART_VERSION}.tgz" oci://ghcr.io/monorg/charts
 ```
 
+## Publier un cask Homebrew sans warning
+
+GoReleaser a déprécié `brews` au profit de `homebrew_casks`, qui pousse un cask dans un tap. Un cask Homebrew est mis en quarantaine à l'installation, contrairement à une formule, donc un binaire non notarisé se fait bloquer par Gatekeeper au premier lancement. Le réflexe est de retirer l'attribut dans `hooks.post.install`, et c'est là que ça coince : GoReleaser rend ce hook en bloc `postflight do`, que Homebrew a déprécié. Chaque `brew install` affiche alors à l'utilisateur :
+
+```text
+Warning: Calling `postflight` is deprecated! Use `postflight_steps` instead.
+Please report this issue to the monorg/homebrew-tap tap (not Homebrew/* repositories), or even better, submit a PR to fix it:
+```
+
+Le remplaçant `postflight_steps` n'accepte plus de Ruby arbitraire, seulement un DSL déclaratif (`run`, `move`, `symlink`, `on_macos`...). Tant que GoReleaser ne sait pas le générer (voir plus bas), on passe par `custom_block`, qui injecte le texte tel quel dans le cask :
+
+```yaml title=".goreleaser.yml"
+homebrew_casks:
+  - name: mon-binaire
+    repository:
+      owner: monorg
+      name: homebrew-tap
+      token: "{{ .Env.HOMEBREW_TAP_TOKEN }}"
+    directory: Casks
+    binaries: [mon-binaire]
+    custom_block: |
+      postflight_steps do
+        on_macos do
+          run "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "{{ "{{staged_path}}" }}/mon-binaire"]
+        end
+      end
+```
+
+L'échappement de `{{staged_path}}` n'est pas décoratif. Homebrew utilise les mêmes délimiteurs que les templates Go pour ses placeholders et GoReleaser repasse le cask entier dans son moteur de templates après l'avoir rendu, `custom_block` compris. Sans échappement, la release meurt sur `function "staged_path" not defined`. Le `on_macos` remplace l'ancien `if OS.mac?` : le cask porte aussi les archives Linux, où `/usr/bin/xattr` n'existe pas.
+
+On valide sans rien publier avec un snapshot, puis on lit le cask généré :
+
+```bash
+HOMEBREW_TAP_TOKEN=x goreleaser release --snapshot --clean --skip=publish,sign
+rg -n -A4 'postflight_steps' dist/homebrew/Casks/mon-binaire.rb
+```
+
+Le bloc atterrit en tête du cask, avant `version`. Homebrew l'installe sans broncher, seul `brew style` signale l'ordre des stanzas, noyé parmi les lignes vides et autres écarts de mise en page que GoReleaser génère de toute façon.
+
+!!! note "Correctif amont en cours"
+    L'issue [goreleaser#6870](https://github.com/goreleaser/goreleaser/issues/6870) est ouverte et la PR [goreleaser#6873](https://github.com/goreleaser/goreleaser/pull/6873) ajoute `hooks.post.install_steps` ainsi qu'un champ `{{ .StagedPath }}` qui évite l'échappement. Une fois mergée, le `custom_block` repasse dans `hooks`.
+
 ## GitHub Actions
 
 ```yaml title=".github/workflows/release.yml"
