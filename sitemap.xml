@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://wiki.jdelgado.fr/</loc>
-    <lastmod>2026-10-03</lastmod>
+    <lastmod>2026-10-11</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/about/</loc>
@@ -654,7 +654,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/monitoring/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-10-11</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/monitoring/eztools/</loc>
@@ -663,6 +663,10 @@
   <url>
     <loc>https://wiki.jdelgado.fr/monitoring/munin/</loc>
     <lastmod>2026-08-23</lastmod>
+  </url>
+  <url>
+    <loc>https://wiki.jdelgado.fr/monitoring/victoriametrics/</loc>
+    <lastmod>2026-10-11</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/monitoring/check_mk/add_slack_notification/</loc>
