@@ -222,6 +222,7 @@ Le plan complet est ci-dessous, sinon la recherche fait le job.
 
 ### Autres outils
 
+- [VictoriaMetrics cluster : gain RAM, facture CPU et pièges de dimensionnement](monitoring/victoriametrics.md)
 - [Munin : l'outil de supervision sans fioritures](monitoring/munin.md)
 - [Les outils eZ Server, des outils simple de supervision](monitoring/eztools.md)
 - [Configurer des notifications Slack pour check_mk](monitoring/check_mk/add_slack_notification.md)
