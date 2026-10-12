@@ -594,11 +594,11 @@ body {
   gap: 2px;
 }
 
-/* Sticky section title: opaque padding so scrolled items never peek out under it */
+/* Sticky section title: tight opaque box so a heading row just below is not clipped by its fade */
 [dir] .md-nav--lifted > .md-nav__list > .md-nav__item--active > .md-nav__link {
   margin-bottom: 0;
-  padding-bottom: 14px;
-  box-shadow: 0 6px 6px 0 var(--jd-bg);
+  padding-bottom: 6px;
+  box-shadow: 0 4px 4px 0 var(--jd-bg);
 }
 
 .md-nav--primary .md-nav__item:not(.md-nav__item--section) > .md-nav > .md-nav__list {
@@ -1947,6 +1947,7 @@ body {
 
   .md-nav--primary .md-nav .md-nav__link {
     min-height: 40px;
+    padding-block: 8px;
   }
 
   .md-nav--primary .md-nav__item .md-nav .md-nav__link--active {
