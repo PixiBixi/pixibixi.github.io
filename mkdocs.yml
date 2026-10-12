@@ -252,6 +252,7 @@ markdown_extensions:
   - pymdownx.details
   - attr_list
   - abbr
+  - def_list
   - toc:
       permalink: true
       permalink_title: Lien vers cette section
