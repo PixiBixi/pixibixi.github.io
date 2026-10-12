@@ -47,6 +47,57 @@
         "isPartOf": { "@id": "{{ config.site_url }}#website" },
         "inLanguage": "fr-FR"
       }
+      {%- elif page.is_homepage and jd_home %},
+      {
+        "@type": "CollectionPage",
+        "@id": "{{ config.site_url }}#home",
+        "url": "{{ config.site_url }}",
+        "name": {{ config.site_name | default('', true) | tojson }},
+        "isPartOf": { "@id": "{{ config.site_url }}#website" },
+        "inLanguage": "fr-FR",
+        "mainEntity": {
+          "@type": "ItemList",
+          "itemListElement": [
+            {%- for s in jd_home.sections if s.url %}
+            { "@type": "ListItem", "position": {{ loop.index }}, "url": "{{ config.site_url }}{{ s.url }}", "name": {{ s.name | tojson }} }{{ "," if not loop.last }}
+            {%- endfor %}
+          ]
+        }
+      }
+      {%- elif page.file and page.file.src_uri == 'tags.md' %},
+      {
+        "@type": "CollectionPage",
+        "@id": "{{ page.canonical_url }}#collection",
+        "url": "{{ page.canonical_url }}",
+        "name": {{ page.title | striptags | tojson }},
+        {% if page.meta.description %}"description": {{ page.meta.description | tojson }},
+        {% endif %}"isPartOf": { "@id": "{{ config.site_url }}#website" },
+        "inLanguage": "fr-FR"
+      }
+      {%- elif page and page.meta.jd_cat %},
+      {#- Generated folder index (hooks/indexes.py): subfolders first, then direct articles. -#}
+      {%- set cat = page.meta.jd_cat %}
+      {%- set ns_items = namespace(list=[]) %}
+      {%- for sub in cat.subfolders %}{% set ns_items.list = ns_items.list + [sub] %}{% endfor %}
+      {%- for a in cat.articles %}{% set ns_items.list = ns_items.list + [a] %}{% endfor %}
+      {
+        "@type": "CollectionPage",
+        "@id": "{{ page.canonical_url }}#collection",
+        "url": "{{ page.canonical_url }}",
+        "name": {{ page.title | striptags | tojson }},
+        {% if page.meta.description %}"description": {{ page.meta.description | tojson }},
+        {% endif %}"isPartOf": { "@id": "{{ config.site_url }}#website" },
+        "inLanguage": "fr-FR",
+        "mainEntity": {
+          "@type": "ItemList",
+          "numberOfItems": {{ ns_items.list | length }},
+          "itemListElement": [
+            {%- for it in ns_items.list %}
+            { "@type": "ListItem", "position": {{ loop.index }}, "url": "{{ config.site_url }}{{ it.url }}", "name": {{ it.title | striptags | tojson }} }{{ "," if not loop.last }}
+            {%- endfor %}
+          ]
+        }
+      }
       {%- elif not page.is_homepage and page.title %},
       {
         "@type": "TechArticle",
@@ -58,8 +109,18 @@
         {% if page.meta.description %}"description": {{ page.meta.description | tojson }},
         {% endif %}"author": { "@id": "{{ config.site_url }}about/#author" },
         "publisher": { "@id": "{{ config.site_url }}about/#author" },
+        {%- if page.meta.series %}
+        "isPartOf": [
+          { "@id": "{{ config.site_url }}#website" },
+          { "@type": "CreativeWorkSeries", "@id": "{{ config.site_url }}#series-{{ page.meta.series | string | slugify(separator='-') }}", "name": {{ page.meta.series | string | tojson }} }
+        ],
+        {%- else %}
         "isPartOf": { "@id": "{{ config.site_url }}#website" },
+        {%- endif %}
         "inLanguage": "fr-FR"
+        {%- if page.meta.tested_with %},
+        "dependencies": {{ (page.meta.tested_with | join(', ') if page.meta.tested_with is not string else page.meta.tested_with) | tojson }}
+        {%- endif %}
         {%- if page.meta.git_creation_date_localized_raw_iso_date %},
         "datePublished": "{{ page.meta.git_creation_date_localized_raw_iso_date }}"
         {%- endif %}
