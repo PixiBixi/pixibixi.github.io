@@ -2064,3 +2064,37 @@ body {
     margin: 0 0 0 -10px;
   }
 }
+
+/* ws9: definition list (Lexique), 2-column grid, stacked on mobile */
+.md-typeset dl {
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr);
+  column-gap: 28px;
+  margin: 0;
+  line-height: 1.6;
+}
+.md-typeset dl dt {
+  margin: 0;
+  padding: 14px 0;
+  border-top: 1px solid var(--md-default-fg-color--lightest);
+  font-weight: 600;
+}
+.md-typeset dl dd,
+[dir] .md-typeset dl dd {
+  margin: 0;
+  padding: 14px 0;
+  border-top: 1px solid var(--md-default-fg-color--lightest);
+  color: var(--md-default-fg-color--light);
+}
+@media (max-width: 44.9375em) {
+  .md-typeset dl {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .md-typeset dl dt {
+    padding-bottom: 2px;
+  }
+  .md-typeset dl dd {
+    padding-top: 0;
+    border-top: 0;
+  }
+}
