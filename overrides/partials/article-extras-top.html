@@ -1,4 +1,10 @@
-{#- tested_with badge row, then series box (WS2b) -#}
+{#- Outdated banner (revision older than 2 years, hooks/article_meta.py), tested_with badge row, then series box -#}
+{% if page.meta.outdated %}
+<div class="jd-outdated" role="note">
+  <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>
+  <p><strong>Article pas mis à jour depuis plus de 2 ans.</strong> Les versions, flags et valeurs par défaut cités ici ont pu changer.</p>
+</div>
+{% endif %}
 {% if page.meta.tested_with %}
 <div class="jd-tested">
   {% include ".icons/material/check.svg" %}

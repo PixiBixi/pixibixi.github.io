@@ -3,6 +3,7 @@
 Everything is computed once in on_files (one read per Markdown file), then
 attached to page.meta in on_page_markdown for the templates.
 """
+import datetime
 import json
 import os
 import posixpath
@@ -176,6 +177,18 @@ def on_page_markdown(markdown, page, config, files):
     if page.meta.get("description"):
         _descriptions[page.url] = str(page.meta["description"])
     return markdown
+
+
+def on_page_context(context, page, config, nav):
+    # The revision date is set by the revision-date plugin, which only has it once markdown is done.
+    raw = page.meta.get("git_revision_date_localized_raw_iso_date")
+    if raw and page.file.name != "index" and page.file.src_uri not in ("about.md", "tags.md"):
+        try:
+            age = datetime.date.today() - datetime.date.fromisoformat(str(raw)[:10])
+        except ValueError:
+            return context
+        page.meta["outdated"] = age.days > 730
+    return context
 
 
 def on_post_build(config):

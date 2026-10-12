@@ -195,3 +195,27 @@
 .md-typeset .jd-backlinks__ctx {
   margin: 6px 0 0;
 }
+
+/* Outdated banner: article not touched in over 2 years */
+.jd-outdated {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin: 28px 0 0;
+  padding: 14px 18px;
+  border: 1px dashed var(--jd-border-strong);
+  border-radius: 10px;
+  background: var(--jd-surface);
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+.jd-outdated svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: var(--jd-warn-ink);
+}
+
+.md-typeset .jd-outdated p {
+  margin: 0;
+}
