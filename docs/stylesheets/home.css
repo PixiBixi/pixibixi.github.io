@@ -2,7 +2,7 @@
 
 .md-content.jd-page {
   width: 100%;
-  max-width: 1056px;
+  max-width: 1120px;
   margin: 0 auto;
 }
 
@@ -22,8 +22,13 @@
   clip: rect(0 0 0 0);
 }
 
-[dir] .jd-page .md-content__inner {
+[dir] .md-main .md-content.jd-page .md-content__inner {
   padding: 64px 0 96px;
+}
+
+/* Wide pages: cancel the 720px prose cap of articles */
+[dir] .jd-page .md-content__inner > * {
+  max-width: none;
 }
 
 .jd-page h1,
@@ -240,10 +245,6 @@
 }
 
 @media screen and (max-width: 59.98em) {
-  [dir] .jd-page .md-content__inner {
-    padding: 40px 0 72px;
-  }
-
   .jd-home h1 {
     font-size: 34px;
   }
