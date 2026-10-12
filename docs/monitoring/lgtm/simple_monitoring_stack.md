@@ -23,33 +23,23 @@ après, Prometheus et Grafana.
 
 ## Lexique
 
-* **Stack** : Une stack d'applications est une suite ou un ensemble
-d'applications qui aident à réaliser une tâche précise.
+Stack
+:   Une stack d'applications est une suite ou un ensemble d'applications qui aident à réaliser une tâche précise.
 
-* **Métrique** : Mesure précise d'un composant (logiciel ou matériel), ex
-: Pourcentage de CPU utilisé à l'instant T...
+Métrique
+:   Mesure précise d'un composant (logiciel ou matériel), ex : Pourcentage de CPU utilisé à l'instant T...
 
-* **Exporter** : Outil qui va récolter les métriques d'un système (CPU
-utilisé, RAM utilisée...), les traiter et les envoyer à un logiciel.
+Exporter
+:   Outil qui va récolter les métriques d'un système (CPU utilisé, RAM utilisée...), les traiter et les envoyer à un logiciel.
 
-* **Recolter** : Logiciel qui va s'occuper de stocker les métriques
-envoyées par l'exporter
+Recolter
+:   Logiciel qui va s'occuper de stocker les métriques envoyées par l'exporter
 
-* **TSDB** : Une Time Series Database (TSDB) est une base de données
-optimisée pour les données horodatées ou les séries chronologiques. Une
-« time serie » est seulement une suite de mesures ou évènements qui sont
-monitorées, downsampled et agrégées dans le temps.
+TSDB
+:   Une Time Series Database (TSDB) est une base de données optimisée pour les données horodatées ou les séries chronologiques. Une « time serie » est seulement une suite de mesures ou évènements qui sont monitorées, downsampled et agrégées dans le temps.
 
-* **Downsampling** : Le downsampling (sous-échantillonnage) est une
-opération mathématique extrêmement simple permettant de créer un
-échantillon. Par exemple, si nous avons 60 échantillons de
-l'utilisation du CPU sur une minute, cela fait 1 par seconde et
-représente un poids non négligeable, nous pouvons donc faire un
-downsampling à 12 mesures par minute, nous aurons tout de même une
-mesure relativement précise avec un poids divisé par 5. Le downsampling
-rend donc la mesure moins précise mais beaucoup plus légère, nous
-utilisons donc le downsampling pour les anciennes données pour
-lesquelles une précision accrue n'est pas nécessaire.
+Downsampling
+:   Le downsampling (sous-échantillonnage) est une opération mathématique extrêmement simple permettant de créer un échantillon. Par exemple, si nous avons 60 échantillons de l'utilisation du CPU sur une minute, cela fait 1 par seconde et représente un poids non négligeable, nous pouvons donc faire un downsampling à 12 mesures par minute, nous aurons tout de même une mesure relativement précise avec un poids divisé par 5. Le downsampling rend donc la mesure moins précise mais beaucoup plus légère, nous utilisons donc le downsampling pour les anciennes données pour lesquelles une précision accrue n'est pas nécessaire.
 
 ## Détail des composants
 
