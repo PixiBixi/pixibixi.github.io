@@ -16,5 +16,5 @@ def on_page_content(html, page, config, files):
 def on_env(env, config, files):
     from markdown.extensions.toc import slugify
 
-    env.filters["slugify"] = lambda value, separator="-": slugify(str(value), separator)
+    env.filters["jd_slug"] = lambda value, separator="-": slugify(str(value), separator)
     return env

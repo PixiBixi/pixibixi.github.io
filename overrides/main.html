@@ -112,7 +112,7 @@
         {%- if page.meta.series %}
         "isPartOf": [
           { "@id": "{{ config.site_url }}#website" },
-          { "@type": "CreativeWorkSeries", "@id": "{{ config.site_url }}#series-{{ page.meta.series | string | slugify(separator='-') }}", "name": {{ page.meta.series | string | tojson }} }
+          { "@type": "CreativeWorkSeries", "@id": "{{ config.site_url }}#series-{{ page.meta.series | string | jd_slug }}", "name": {{ page.meta.series | string | tojson }} }
         ],
         {%- else %}
         "isPartOf": { "@id": "{{ config.site_url }}#website" },
