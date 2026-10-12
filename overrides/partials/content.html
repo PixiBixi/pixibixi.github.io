@@ -35,10 +35,11 @@
   {% set created = page.meta.git_creation_date_localized %}
 {% endif %}
 <div class="jd-meta">
+  <div class="jd-meta__info">
   {% if updated %}<span>Mis à jour le <time>{{ updated }}</time></span>{% endif %}
   {% if created %}<span>Créé le <time>{{ created }}</time></span>{% endif %}
   {% include "partials/tags.html" %}
-  <span class="jd-meta__spacer"></span>
+  </div>
   <span class="jd-meta__actions">
     {% if page.edit_url %}
       <a href="{{ page.edit_url }}" class="jd-btn" rel="edit" title="Modifier sur GitHub" aria-label="Modifier sur GitHub">

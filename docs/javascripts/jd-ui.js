@@ -17,11 +17,29 @@
     });
   }
 
-  if (typeof document$ !== "undefined") {
-    document$.subscribe(captions);
-  } else {
-    document.addEventListener("DOMContentLoaded", captions);
+  // Drawer theme buttons: active = the palette option Material left visible in the header.
+  function themeState() {
+    var seg = document.querySelector(".jd-seg:not([hidden])");
+    var idx = seg ? String(Array.from(document.querySelectorAll(".jd-seg")).indexOf(seg)) : null;
+    document.querySelectorAll(".jd-drawer-theme label").forEach(function (l) {
+      l.classList.toggle("is-active", l.dataset.jdIdx === idx);
+    });
   }
+
+  function init() {
+    captions();
+    themeState();
+  }
+
+  if (typeof document$ !== "undefined") {
+    document$.subscribe(init);
+  } else {
+    document.addEventListener("DOMContentLoaded", init);
+  }
+
+  document.addEventListener("click", function (e) {
+    if (e.target.closest(".jd-drawer-theme")) setTimeout(themeState, 50);
+  });
 
   document.addEventListener("click", function (e) {
     var b = bar();
