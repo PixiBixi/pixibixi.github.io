@@ -54,6 +54,7 @@ hooks:
   - hooks/indexes.py
   - hooks/article_meta.py
   - hooks/page_vars.py
+  - hooks/home.py
 
 plugins:
   - social
@@ -225,6 +226,7 @@ extra_javascript:
   - javascripts/jd-vars.js
   - javascripts/jd-palette.js
   - javascripts/jd-abbr.js
+  - javascripts/pages.js
 
 extra_css:
   - stylesheets/jdelgado.css
@@ -233,6 +235,9 @@ extra_css:
   - stylesheets/jd-vars.css
   - stylesheets/jd-palette.css
   - stylesheets/jd-abbr.css
+  - stylesheets/home.css
+  - stylesheets/notfound.css
+  - stylesheets/tags.css
 
 markdown_extensions:
   - pymdownx.highlight:
