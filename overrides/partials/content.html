@@ -38,6 +38,7 @@
   <div class="jd-meta__info">
   {% if updated %}<span>Mis à jour le <time>{{ updated }}</time></span>{% endif %}
   {% if created %}<span>Créé le <time>{{ created }}</time></span>{% endif %}
+  {% if page.meta.reading_time %}<span>{{ page.meta.reading_time }} min de lecture</span>{% endif %}
   {% include "partials/tags.html" %}
   </div>
   <span class="jd-meta__actions">
@@ -48,7 +49,9 @@
     {% endif %}
   </span>
 </div>
+{% include "partials/article-extras-top.html" %}
 {{ body }}
+{% include "partials/backlinks.html" %}
 {% if "navigation.footer" in features and (page.previous_page or page.next_page) %}
   <nav class="jd-pn" aria-label="Article précédent et suivant">
     {% if page.previous_page %}

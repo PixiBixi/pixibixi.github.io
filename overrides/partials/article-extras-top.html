@@ -1,0 +1,27 @@
+{#- tested_with badge row, then series box (WS2b) -#}
+{% if page.meta.tested_with %}
+<div class="jd-tested">
+  {% include ".icons/material/check.svg" %}
+  <span>Vérifié avec</span>
+  {% for v in page.meta.tested_with %}<span class="jd-tested__chip">{{ v }}</span>{% endfor %}
+  {% if updated %}<span class="jd-tested__date">le <time>{{ updated }}</time></span>{% endif %}
+</div>
+{% endif %}
+{% set sb = page.meta.series_box %}
+{% if sb %}
+<aside class="jd-series" aria-label="Série {{ sb.name }}">
+  <p class="jd-series__head">
+    <span class="jd-series__name">Série {{ sb.name }}</span>
+    <span class="jd-series__pos">{{ sb.position }} / {{ sb.total }}</span>
+  </p>
+  <ol class="jd-series__list">
+    {% for it in sb["items"] %}
+    <li{% if it.current %} class="is-current"{% endif %}>
+      <span class="jd-series__dot">{{ loop.index }}</span>
+      <a href="{{ it.url | url }}"{% if it.current %} aria-current="page"{% endif %}>{{ it.title }}</a>
+    </li>
+    {% endfor %}
+  </ol>
+  {% if sb.next %}<a class="jd-series__next" href="{{ sb.next.url | url }}">Suivant dans la série : {{ sb.next.title }} →</a>{% endif %}
+</aside>
+{% endif %}

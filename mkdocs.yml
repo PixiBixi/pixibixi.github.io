@@ -50,6 +50,9 @@ theme:
         icon: material/weather-night
         name: Thème sombre
 
+hooks:
+  - hooks/article_meta.py
+
 plugins:
   - social
   - meta
@@ -219,6 +222,7 @@ extra_javascript:
 
 extra_css:
   - stylesheets/jdelgado.css
+  - stylesheets/article-meta.css
 
 markdown_extensions:
   - pymdownx.highlight:

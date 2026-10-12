@@ -1,0 +1,14 @@
+{#- "Cité dans" section (WS2b) -#}
+{% set bl = page.meta.backlinks %}
+{% if bl %}
+<section class="jd-backlinks" aria-labelledby="cite-dans">
+  <h2 id="cite-dans" class="jd-backlinks__title">Cité dans · {{ bl | length }} article{{ "s" if bl | length > 1 }}</h2>
+  {% for b in bl %}
+  <div class="jd-backlinks__item">
+    <a class="jd-backlinks__link" href="{{ b.url | url }}">{{ b.title }}</a>
+    {% if b.where %}<span class="jd-backlinks__where"> · <a href="{{ (b.url ~ '#' ~ b.anchor_id) | url }}">{{ b.where }}</a></span>{% endif %}
+    <p class="jd-backlinks__ctx">… {{ b.before }} <mark>{{ b.anchor }}</mark> {{ b.after }} …</p>
+  </div>
+  {% endfor %}
+</section>
+{% endif %}
