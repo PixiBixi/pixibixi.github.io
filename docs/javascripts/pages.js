@@ -52,6 +52,8 @@
   }
 
   // ---- 404 ----
+  var STOP = "not does the and for with you are was has have this that from les des une aux dans sur par pour avec sans est pas que qui son ses ces mon ton html index".split(" ");
+
   function notFound() {
     var root = document.querySelector(".jd-404");
     if (!root || root.dataset.jdBound) return;
@@ -62,7 +64,7 @@
     var words = [];
     segs.join(" ").split(/[^a-zA-Z0-9À-ſ]+/).forEach(function (w) {
       w = fold(w);
-      if (w.length > 1 && words.indexOf(w) < 0) words.push(w);
+      if (w.length > 2 && STOP.indexOf(w) < 0 && words.indexOf(w) < 0) words.push(w);
     });
 
     root.querySelector("[data-jd-path]").textContent = path;
@@ -91,7 +93,11 @@
       ", dans l'index du wiki : voilà ce qui s'en rapproche le plus.";
     wordsEl.hidden = false;
 
+    var descsReq = fetch(root.dataset.descs).then(function (r) { return r.json(); }).catch(function () { return {}; });
     fetch(root.dataset.index).then(function (r) { return r.json(); }).then(function (idx) {
+      return descsReq.then(function (descs) { return [idx, descs]; });
+    }).then(function (res) {
+      var idx = res[0], descs = res[1];
       var scored = [];
       idx.docs.forEach(function (d) {
         if (d.location.indexOf("#") >= 0 || !d.location) return;
@@ -111,7 +117,7 @@
       list.innerHTML = top.map(function (s) {
         var d = s.d;
         var crumbs = d.location.split("/").filter(Boolean).slice(0, -1).map(pretty).join(" / ");
-        var text = (d.text || "").replace(/\s+/g, " ").trim();
+        var text = descs[d.location] || (d.text || "").replace(/\s+/g, " ").trim();
         if (text.length > 200) text = text.slice(0, 200).replace(/\s+\S*$/, "") + "...";
         return "<li><p class=\"jd-404__crumb\">" + mark(crumbs, words) + "</p>" +
           "<a href=\"" + root.dataset.home + esc(d.location) + "\">" + mark(d.title, words) + "</a>" +

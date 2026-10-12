@@ -3,6 +3,8 @@
 Everything is computed once in on_files (one read per Markdown file), then
 attached to page.meta in on_page_markdown for the templates.
 """
+import json
+import os
 import posixpath
 import re
 from urllib.parse import unquote
@@ -19,6 +21,7 @@ H1 = re.compile(r"^#\s+(.+?)\s*$", re.M)
 ATTR = re.compile(r"\s*\{[^}]*\}\s*$")
 
 _data = {"reading": {}, "series": {}, "backlinks": {}}
+_descriptions = {}
 
 
 def _plain(text):
@@ -126,4 +129,13 @@ def on_page_markdown(markdown, page, config, files):
                 "next": ({"title": items[idx + 1][2], "url": items[idx + 1][3]} if idx + 1 < len(items) else None),
             }
     page.meta["backlinks"] = _data["backlinks"].get(uri, [])
+    if page.meta.get("description"):
+        _descriptions[page.url] = str(page.meta["description"])
     return markdown
+
+
+def on_post_build(config):
+    # Read by the 404 suggestions (pages.js): the search index carries no front matter.
+    out = os.path.join(config["site_dir"], "search", "descriptions.json")
+    with open(out, "w", encoding="utf-8") as fh:
+        json.dump(_descriptions, fh, ensure_ascii=False, separators=(",", ":"))
