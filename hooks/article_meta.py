@@ -34,10 +34,35 @@ def _plain(text):
     return re.sub(r"\s+", " ", text).strip()
 
 
-def _words_around(text, marker_start, marker_end):
-    before = text[:marker_start].split()[-CONTEXT_WORDS:]
-    after = text[marker_end:].split()[:CONTEXT_WORDS]
-    return " ".join(before), " ".join(after)
+LISTISH = re.compile(r"^\s*(?:[-*+]\s|\d+[.)]\s|\||>)")
+BOUNDARY = re.compile(r"[.!?](?:\s|$)")
+
+
+def _snippet(plain, s, e):
+    """Sentence around the marked link, trimmed to CONTEXT_WORDS on each side when too long."""
+    start = 0
+    for m in BOUNDARY.finditer(plain, 0, s):
+        start = m.end()
+    m = BOUNDARY.search(plain, e + 1)
+    end = m.start() + 1 if m else len(plain)
+    before, after = plain[start:s].lstrip(), plain[e + 1 : end].rstrip()
+    lead = trail = False
+    words = before.split(" ")
+    if len(words) > CONTEXT_WORDS:
+        before, lead = " ".join(words[-CONTEXT_WORDS:]) + " ", True
+    words = after.split(" ")
+    if len(words) > CONTEXT_WORDS:
+        after, trail = " ".join(words[:CONTEXT_WORDS]).rstrip(" ,;:(-"), True
+    return before, after, lead, trail
+
+
+def _best(cites):
+    """First prose citation with some text around the link, else the first one that has any."""
+    for ok in (lambda c: c["prose"] and (c["before"] or c["after"]), lambda c: c["before"] or c["after"]):
+        hit = next((c for c in cites if ok(c)), None)
+        if hit:
+            return hit
+    return cites[0]
 
 
 def on_files(files, config):
@@ -84,33 +109,47 @@ def on_files(files, config):
             first = para.lstrip().splitlines()[0] if para.strip() else ""
             if first.startswith("## "):
                 section = ATTR.sub("", first[3:]).strip()
-            for m in LINK.finditer(para):
-                target = unquote(m.group(2)).split("#")[0]
-                if not target or re.match(r"^[a-z]+:", target) or not target.endswith(".md"):
-                    continue
-                dest = posixpath.normpath(posixpath.join(posixpath.dirname(uri), target))
-                if dest == uri or dest not in docs:
-                    continue
-                marked = para[: m.start()] + "\x00" + m.group(1) + "\x01" + para[m.end():]
-                # Flatten the other links/formatting but keep the markers
-                plain = _plain(marked.replace("\x00", "\x02").replace("\x01", "\x03"))
-                s, e = plain.find("\x02"), plain.find("\x03")
-                if s < 0 or e < 0:
-                    continue
-                before, after = _words_around(plain, s, e + 1)
-                backlinks.setdefault(dest, {}).setdefault(uri, []).append({
-                    "title": d["title"],
-                    "url": d["url"],
-                    "where": section,
-                    "anchor_id": slugify(section, "-") if section else None,
-                    "before": before,
-                    "anchor": _plain(plain[s + 1 : e]),
-                    "after": after,
-                })
+            # Lists and tables are cited line by line (prose=False), paragraphs as a whole.
+            prose = not LISTISH.match(first)
+            units = [para] if prose else para.splitlines()
+            for unit in units:
+                for m in LINK.finditer(unit):
+                    target = unquote(m.group(2)).split("#")[0]
+                    if not target or re.match(r"^[a-z]+:", target) or not target.endswith(".md"):
+                        continue
+                    dest = posixpath.normpath(posixpath.join(posixpath.dirname(uri), target))
+                    if dest == uri or dest not in docs:
+                        continue
+                    if not prose:
+                        # Keep only the table cell or list item holding the link, without its marker.
+                        pre, post = unit[: m.start()], unit[m.end():]
+                        pre = pre.rsplit("|", 1)[-1]
+                        post = post.split("|", 1)[0]
+                        unit_m = re.sub(r"^\s*(?:[-*+]|\d+[.)]|>)\s+", "", pre) + "\x02" + m.group(1) + "\x03" + post
+                    else:
+                        unit_m = unit[: m.start()] + "\x02" + m.group(1) + "\x03" + unit[m.end():]
+                    # Flatten the other links/formatting but keep the markers
+                    plain = _plain(unit_m)
+                    sm, em = plain.find("\x02"), plain.find("\x03")
+                    if sm < 0 or em < 0:
+                        continue
+                    before, after, lead, trail = _snippet(plain, sm, em)
+                    backlinks.setdefault(dest, {}).setdefault(uri, []).append({
+                        "title": d["title"],
+                        "url": d["url"],
+                        "where": section,
+                        "anchor_id": slugify(section, "-") if section else None,
+                        "before": before,
+                        "anchor": _plain(plain[sm + 1 : em]),
+                        "after": after,
+                        "lead": lead,
+                        "trail": trail,
+                        "prose": prose,
+                    })
     # One entry per source page (first citation), stable order by title
     _data["reading"], _data["series"] = reading, series
     _data["backlinks"] = {
-        dest: sorted((v[0] for v in srcs.values()), key=lambda b: b["title"].lower())
+        dest: sorted((_best(v) for v in srcs.values()), key=lambda b: b["title"].lower())
         for dest, srcs in backlinks.items()
     }
     return files
