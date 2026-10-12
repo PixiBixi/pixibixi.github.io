@@ -523,8 +523,8 @@ body {
   max-width: 880px;
 }
 
-/* Prose stays at 720px; code, tables and figures use the full column (up to 880px) */
-.md-content__inner > :not(.highlight, .tabbed-set, .md-typeset__scrollwrap, figure, p:has(> img), p:has(> a.glightbox), .md-typeset__table) {
+/* Prose, admonitions and images stay at 720px (mock); code and tables break out to the full column */
+.md-content__inner > :not(.highlight, .tabbed-set, .md-typeset__scrollwrap, .md-typeset__table) {
   max-width: 720px;
 }
 
@@ -673,6 +673,12 @@ body {
   color: var(--jd-muted);
 }
 
+[dir] .md-sidebar--secondary .md-nav__item .md-nav__list {
+  padding: 0;
+}
+
+/* Page top: Material marks nothing active yet, so the first entry takes the bar */
+.md-sidebar--secondary .md-nav__list:not(:has(.md-nav__link--active)) > .md-nav__item:first-child > .md-nav__link,
 .md-sidebar--secondary .md-nav__link--active {
   border-left-color: var(--jd-accent);
   color: var(--jd-link);
@@ -977,8 +983,13 @@ body {
   padding: 0 0 0 22px;
 }
 
-.md-typeset li {
+[dir] .md-typeset li {
   margin: 0 0 8px;
+}
+
+[dir] .md-typeset:not(#jd) :is(ul, ol),
+[dir] .md-typeset:not(#jd) :is(ul, ol) > li {
+  margin-left: 0;
 }
 
 .md-typeset .md-path li,
@@ -1166,6 +1177,25 @@ body {
   height: 16px;
   margin: 10px;
   display: block;
+}
+
+/* Labelled button on the block bound to the page variables */
+.jd-vars + .highlight .md-code__button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: auto;
+  padding: 0 10px;
+  font: 13px var(--jd-sans);
+}
+
+.jd-vars + .highlight .md-code__button::after {
+  margin: 0;
+}
+
+.jd-vars + .highlight .md-code__button::before {
+  content: "Copier";
+  order: 2;
 }
 
 .md-code__button:hover,
@@ -1640,8 +1670,20 @@ body {
     color: var(--jd-muted);
   }
 
-  .md-typeset .jd-toc-bar__panel .md-nav ul.md-nav__list ul.md-nav__list {
+  .md-typeset .jd-toc-bar__panel li ul.md-nav__list {
     border: 0;
+  }
+
+  .md-typeset .jd-toc-bar__panel .md-nav__link {
+    line-height: 1.4;
+  }
+
+  /* Active entry (first one before any scroll), same bar as the right TOC */
+  .md-typeset .jd-toc-bar__panel ul.md-nav__list:not(:has(.md-nav__link--active)) > .md-nav__item:first-child > .md-nav__link,
+  .md-typeset .jd-toc-bar__panel .md-nav__link--active {
+    border-left-color: var(--jd-accent);
+    color: var(--jd-link);
+    font-weight: 600;
   }
 }
 
@@ -1714,6 +1756,7 @@ body {
   }
 
   .md-nav--primary > .md-nav__title {
+    flex: none;
     position: sticky;
     top: 0;
     z-index: 2;
@@ -2068,12 +2111,14 @@ body {
 }
 
 @media screen and (max-width: 29.9375em) {
-  .jd-meta__info {
-    flex-basis: 100%;
+  /* Flatten so the icons join the last meta row instead of owning one */
+  .jd-meta__info,
+  .md-typeset .jd-meta nav.md-tags {
+    display: contents;
   }
 
   .jd-meta__actions {
-    margin: 0 0 0 -10px;
+    margin-block: -10px;
   }
 }
 

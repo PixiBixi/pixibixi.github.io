@@ -88,10 +88,14 @@
   color: var(--jd-muted);
 }
 
+.jd-series a {
+  text-decoration: none;
+}
+
 .jd-series__list .is-current .jd-series__dot {
   border-color: var(--jd-accent);
-  background: var(--jd-pill-bg);
-  color: var(--jd-pill-ink);
+  background: var(--jd-accent);
+  color: var(--jd-on-accent);
 }
 
 .jd-series__list .is-current a {

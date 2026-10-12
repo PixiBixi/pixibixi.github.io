@@ -4,17 +4,41 @@
 
   function bar() { return document.querySelector(".jd-toc-bar"); }
 
-  // Caption bar for fences without title=: shows the language name (like the titled ones).
+  // Caption bar: "lang" alone, or "lang · title" when the fence has a title= (as in the mock).
   function captions() {
     document.querySelectorAll(".md-typeset .highlight").forEach(function (box) {
-      if (box.querySelector(".filename") || box.closest(".tabbed-set")) return;
+      if (box.closest(".tabbed-set")) return;
       var lang = Array.from(box.classList).find(function (c) { return c.indexOf("language-") === 0; });
       if (!lang) return;
-      var bar = document.createElement("span");
+      lang = lang.replace("language-", "");
+      var bar = box.querySelector(".filename");
+      if (bar) {
+        if (!bar.dataset.jdLang && lang !== "text") {
+          bar.dataset.jdLang = "1";
+          bar.textContent = lang + " \u00b7 " + bar.textContent;
+        }
+        return;
+      }
+      bar = document.createElement("span");
       bar.className = "filename";
-      bar.textContent = lang.replace("language-", "");
+      bar.textContent = lang;
       box.insertBefore(bar, box.firstChild);
     });
+  }
+
+  // Break the H1 after "/" instead of mid-word (Chrome offers no break opportunity there).
+  function titleBreaks() {
+    var h = document.querySelector(".md-typeset h1");
+    var t = h && h.firstChild;
+    if (!t || t.nodeType !== 3 || h.dataset.jdWbr) return;
+    h.dataset.jdWbr = "1";
+    var parts = t.nodeValue.split("/");
+    var frag = document.createDocumentFragment();
+    parts.forEach(function (x, i) {
+      if (i) { frag.appendChild(document.createTextNode("/")); frag.appendChild(document.createElement("wbr")); }
+      frag.appendChild(document.createTextNode(x));
+    });
+    h.replaceChild(frag, t);
   }
 
   // Drawer theme buttons: active = the palette option Material left visible in the header.
@@ -28,6 +52,7 @@
 
   function init() {
     captions();
+    titleBreaks();
     themeState();
   }
 
