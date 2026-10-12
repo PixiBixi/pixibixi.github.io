@@ -1,0 +1,26 @@
+name: Missing page
+description: A link leads to a 404, or an article should exist
+title: "404 : "
+labels: ["missing-page"]
+body:
+  - type: input
+    id: requested_url
+    attributes:
+      label: Requested URL
+      description: The address that returned a 404.
+      placeholder: /kubernetes/gomaxprocs/
+    validations:
+      required: true
+  - type: input
+    id: referrer
+    attributes:
+      label: Page you came from
+      description: Where you found the link (wiki page, search engine, external site).
+      placeholder: https://wiki.jdelgado.fr/kubernetes/
+  - type: textarea
+    id: looking_for
+    attributes:
+      label: What you were looking for
+      description: The topic or command you expected to find.
+    validations:
+      required: true
