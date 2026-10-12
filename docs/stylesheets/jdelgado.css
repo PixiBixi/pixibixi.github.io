@@ -674,11 +674,12 @@ body {
 }
 
 [dir] .md-sidebar--secondary .md-nav__item .md-nav__list {
-  padding: 0;
+  padding: 4px 0 6px;
 }
 
-/* Page top: Material marks nothing active yet, so the first entry takes the bar */
-.md-sidebar--secondary .md-nav__list:not(:has(.md-nav__link--active)) > .md-nav__item:first-child > .md-nav__link,
+/* Page top: nothing active yet, so the first entry takes the bar.
+   Top-level list only, else every nested list lights its first child. */
+.md-sidebar--secondary .md-nav--secondary > .md-nav__list:not(:has(.md-nav__link--active)) > .md-nav__item:first-child > .md-nav__link,
 .md-sidebar--secondary .md-nav__link--active {
   border-left-color: var(--jd-accent);
   color: var(--jd-link);
@@ -1679,7 +1680,7 @@ body {
   }
 
   /* Active entry (first one before any scroll), same bar as the right TOC */
-  .md-typeset .jd-toc-bar__panel ul.md-nav__list:not(:has(.md-nav__link--active)) > .md-nav__item:first-child > .md-nav__link,
+  .md-typeset .jd-toc-bar__panel > ul.md-nav__list:not(:has(.md-nav__link--active)) > .md-nav__item:first-child > .md-nav__link,
   .md-typeset .jd-toc-bar__panel .md-nav__link--active {
     border-left-color: var(--jd-accent);
     color: var(--jd-link);
