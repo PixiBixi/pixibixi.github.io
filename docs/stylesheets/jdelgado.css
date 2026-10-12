@@ -523,8 +523,9 @@ body {
   max-width: 880px;
 }
 
-/* Prose, admonitions and images stay at 720px (mock); code and tables break out to the full column */
-.md-content__inner > :not(.highlight, .tabbed-set, .md-typeset__scrollwrap, .md-typeset__table) {
+/* Prose, admonitions and images stay at 720px (mock); code, tables and the
+   variables bar break out to the full column */
+.md-content__inner > :not(.highlight, .jd-vars, .tabbed-set, .md-typeset__scrollwrap, .md-typeset__table) {
   max-width: 720px;
 }
 
