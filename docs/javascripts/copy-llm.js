@@ -1,5 +1,5 @@
 /**
- * "Copy for LLM" button — copies article content as clean Markdown
+ * "Copy for LLM" button: copies article content as clean Markdown
  * so LLMs (and humans prompting them) can cite this wiki as a source.
  */
 (function () {
@@ -96,7 +96,7 @@
         return;
       }
 
-      // Admonitions — keep title + content
+      // Admonitions: keep title + content
       if (node.classList.contains("admonition")) {
         var title = node.querySelector(".admonition-title");
         var titleText = title ? title.textContent.trim() : "Note";
@@ -199,7 +199,7 @@
     target.appendChild(btn);
   }
 
-  // MkDocs Material uses instant loading — re-init on navigation
+  // MkDocs Material uses instant loading: re-init on navigation
   if (typeof document$ !== "undefined") {
     document$.subscribe(function () { init(); });
   } else {
