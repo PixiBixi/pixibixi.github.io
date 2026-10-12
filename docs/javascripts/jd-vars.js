@@ -1,4 +1,4 @@
-/* Page variables: front matter `variables:` (exposed as #jd-vars) substituted in code blocks at display time. */
+/* Page variables: front matter `variables:` (exposed as #jd-vars[data-vars]) substituted in code blocks at display time. */
 (function () {
   "use strict";
 
@@ -75,7 +75,7 @@
     var holder = document.getElementById("jd-vars");
     if (!holder) return;
     var decl;
-    try { decl = JSON.parse(holder.textContent); } catch (e) { return; }
+    try { decl = JSON.parse(holder.getAttribute("data-vars")); } catch (e) { return; }
     var vars = {};
     (decl || []).forEach(function (d) {
       if (d && d.name) vars[d.name] = { name: d.name, default: d.default == null ? "" : String(d.default) };
