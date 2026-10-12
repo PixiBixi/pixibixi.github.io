@@ -145,6 +145,7 @@
       ".md-content__button",   // edit button
       ".md-source-file",       // git dates footer
       ".md-tags",              // tags
+      ".jd-meta, .jd-toc-bar, .jd-pn, .md-path",  // theme chrome around the article
       "script",
       "style",
       ".copy-llm-btn",
@@ -164,11 +165,12 @@
     if (document.querySelector(".md-content__inner > .md-content__button") === null &&
         document.querySelector("article h1") === null) return;
 
-    var target = document.querySelector(".md-content__inner");
-    if (!target) return;
+    var target = document.querySelector(".jd-meta__actions") ||
+      document.querySelector(".md-content__inner");
+    if (!target || target.querySelector(".copy-llm-btn")) return;
 
     var btn = document.createElement("button");
-    btn.className = "copy-llm-btn md-content__button md-icon";
+    btn.className = "copy-llm-btn jd-btn md-icon";
     btn.title = "Copier le contenu en Markdown pour utilisation dans un LLM";
     btn.setAttribute("aria-label", "Copier pour LLM");
     // Robot/AI icon (Material Design "smart_toy")
@@ -193,8 +195,8 @@
       });
     });
 
-    // Insert as first child (before edit button)
-    target.insertBefore(btn, target.firstChild);
+    // Append after the edit button
+    target.appendChild(btn);
   }
 
   // MkDocs Material uses instant loading — re-init on navigation
