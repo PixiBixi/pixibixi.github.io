@@ -594,11 +594,23 @@ body {
   gap: 2px;
 }
 
-/* Sticky section title: tight opaque box so a heading row just below is not clipped by its fade */
+/* Sticky section title: opaque box covering the rows scrolled behind it */
 [dir] .md-nav--lifted > .md-nav__list > .md-nav__item--active > .md-nav__link {
   margin-bottom: 0;
-  padding-bottom: 6px;
-  box-shadow: 0 4px 4px 0 var(--jd-bg);
+  padding-bottom: 14px;
+  box-shadow: none;
+}
+
+/* Opaque title plus a fade strip below it: scrolled rows dissolve, never cut mid-glyph */
+[dir] .md-nav--lifted > .md-nav__list > .md-nav__item--active > .md-nav__link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  height: 24px;
+  background: linear-gradient(var(--jd-bg) 35%, transparent);
+  pointer-events: none;
 }
 
 .md-nav--primary .md-nav__item:not(.md-nav__item--section) > .md-nav > .md-nav__list {
@@ -1176,7 +1188,7 @@ body {
 
 .md-code__button::after {
   width: 16px;
-  height: 16px;
+  height: 24px;
   margin: 10px;
   display: block;
 }
