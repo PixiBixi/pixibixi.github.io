@@ -39,6 +39,9 @@ def _words_around(text, marker_start, marker_end):
 def on_files(files, config):
     docs = {}
     for f in files.documentation_pages():
+        # Folder indexes from hooks/indexes.py have no source file and are never backlink sources.
+        if f.abs_src_path is None:
+            continue
         raw = open(f.abs_src_path, encoding="utf-8").read()
         meta = {}
         m = FRONT.match(raw)
