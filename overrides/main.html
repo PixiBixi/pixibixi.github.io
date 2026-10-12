@@ -72,8 +72,8 @@
   }
   </script>
 
-  {#- Crumbs come from nav sections that own an index.md: URL-path crumbs pointed
-      at subfolders with no page (404) and used slug names ("Ci Cd"). -#}
+  {#- Crumbs come from each nav section's index page: hooks/indexes.py generates one
+      for every folder without an index.md, so every ancestor folder is linked. -#}
   {%- if not page.is_homepage and page.title %}
   <script type="application/ld+json">
   {
