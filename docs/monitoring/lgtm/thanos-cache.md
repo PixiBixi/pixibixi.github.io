@@ -6,6 +6,11 @@ tags:
   - Redis
   - Observability
   - FinOps
+series: "Thanos at scale"
+series_order: 2
+tested_with:
+  - "Thanos 0.35+"
+  - "Redis Sentinel 6.2+"
 ---
 
 # Les caches Thanos : mutualisation, dimensionnement et facture

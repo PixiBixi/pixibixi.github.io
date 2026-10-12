@@ -6,6 +6,8 @@ tags:
   - Observability
   - FinOps
   - Kubernetes
+series: "Thanos at scale"
+series_order: 1
 ---
 
 # Thanos at scale : archi, perf et FinOps
