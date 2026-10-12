@@ -1,0 +1,53 @@
+{% extends "main.html" %}
+
+{% block extrahead %}
+  {{ super() }}
+  <meta name="robots" content="noindex">
+{% endblock %}
+
+{#- 404: the requested path, 3 nearest pages from the search index and a "missing page" card, all filled client-side (pages.js) -#}
+{% block site_nav %}{% endblock %}
+{% block container %}
+<div class="md-content jd-page jd-404" data-md-component="content"
+     data-index="{{ 'search/search_index.json' | url }}" data-home="{{ '' | url }}"
+     data-repo="{{ config.repo_url }}" data-branch="master">
+  <article class="md-content__inner md-typeset">
+    <p class="jd-404__eyebrow">Erreur 404</p>
+    <h1>Cette page n'existe plus (ou pas encore)</h1>
+    <p class="jd-404__label">URL demandée</p>
+    <p><code class="jd-404__path" data-jd-path></code></p>
+    <p class="jd-404__words" data-jd-words hidden></p>
+
+    <section class="jd-404__near" aria-labelledby="proches" data-jd-near hidden>
+      <h2 id="proches">Les pages les plus proches</h2>
+      <ol data-jd-near-list></ol>
+    </section>
+
+    <form class="jd-404__search" role="search" data-jd-search-form>
+      <label for="nf-search">Ou lancer la recherche sur tout le wiki</label>
+      <div class="jd-404__field">
+        {% include ".icons/material/magnify.svg" %}
+        <input id="nf-search" type="search" autocomplete="off" data-jd-search-input>
+        <kbd aria-label="Raccourci clavier Commande K">⌘K</kbd>
+      </div>
+    </form>
+
+    <aside class="jd-404__card" aria-labelledby="ecrire">
+      <h2 id="ecrire">Il manque un article ?</h2>
+      <p>Ouvre une issue pré-remplie avec l'URL demandée et la page d'où tu viens : lien cassé ou article à écrire, on tranche ensuite.</p>
+      <div class="jd-404__actions">
+        <a class="jd-404__btn" data-jd-issue href="{{ config.repo_url }}/issues/new?template=missing-page.yml" rel="noopener">
+          {% include ".icons/octicons/issue-opened-16.svg" %}
+          Ouvrir une issue
+        </a>
+        <span>ou <a data-jd-pr href="{{ config.repo_url }}/new/master/docs" rel="noopener">l'écrire directement en PR</a></span>
+      </div>
+    </aside>
+
+    <nav class="jd-404__links" aria-label="Pour continuer">
+      <a href="{{ '' | url }}">Retour à l'accueil</a>
+      <a href="{{ '' | url }}#sections">Toutes les sections</a>
+    </nav>
+  </article>
+</div>
+{% endblock %}
