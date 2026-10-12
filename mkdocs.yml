@@ -227,6 +227,7 @@ extra_javascript:
   - javascripts/jd-palette.js
   - javascripts/jd-abbr.js
   - javascripts/pages.js
+  - javascripts/jd-highlight.js
 
 extra_css:
   - stylesheets/jdelgado.css
@@ -235,6 +236,7 @@ extra_css:
   - stylesheets/jd-vars.css
   - stylesheets/jd-palette.css
   - stylesheets/jd-abbr.css
+  - stylesheets/jd-highlight.css
   - stylesheets/home.css
   - stylesheets/notfound.css
   - stylesheets/tags.css

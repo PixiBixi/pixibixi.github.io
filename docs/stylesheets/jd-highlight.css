@@ -1,0 +1,64 @@
+/* Search highlight bar (jd-highlight.js) */
+.jd-hl {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+  margin-bottom: 24px;
+  padding: 8px 8px 8px 14px;
+  border-radius: 8px;
+  background: var(--jd-surface);
+  font-size: 14px;
+  color: var(--jd-ink-soft);
+}
+
+.jd-hl__label {
+  flex: 1 1 200px;
+}
+
+.md-typeset .jd-hl mark {
+  padding: 0 3px;
+  border-radius: 3px;
+  background: var(--jd-mark);
+  color: var(--jd-ink);
+}
+
+.jd-hl button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 4px 10px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  font: inherit;
+  cursor: pointer;
+}
+
+.jd-hl__next {
+  color: var(--jd-link);
+}
+
+.jd-hl__clear {
+  color: var(--jd-muted);
+}
+
+.jd-hl button:hover {
+  background: var(--jd-border);
+}
+
+.jd-hl button:focus-visible {
+  outline: 2px solid var(--jd-accent);
+  outline-offset: 2px;
+}
+
+.md-typeset mark.jd-hl-current {
+  outline: 2px solid var(--jd-accent);
+  outline-offset: 1px;
+}
+
+@media (max-width: 959px) {
+  .jd-hl button {
+    min-height: 44px;
+  }
+}
