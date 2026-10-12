@@ -20,8 +20,8 @@
         <input type="search" autocomplete="off" placeholder="Filtrer les tags" data-jd-tag-filter>
       </label>
       <div class="jd-tags__sort" role="group" aria-label="Tri">
-        <button type="button" aria-pressed="false" data-jd-tag-sort="popular">Populaires</button>
-        <button type="button" aria-pressed="true" data-jd-tag-sort="az">A-Z</button>
+        <button type="button" aria-pressed="true" data-jd-tag-sort="popular">Populaires</button>
+        <button type="button" aria-pressed="false" data-jd-tag-sort="az">A-Z</button>
       </div>
     </div>
 
@@ -40,7 +40,7 @@
     <section class="jd-tags__block" id="tous">
       <h2 id="tous-les-tags">Tous les tags</h2>
       <p class="jd-tags__note">Les tags utilisés au moins 4 fois.</p>
-      <div data-jd-tag-view="az">
+      <div data-jd-tag-view="az" hidden>
         {% for g in t.groups %}
         <div class="jd-tags__group">
           <span class="jd-tags__letter">{{ g.letter }}</span>
@@ -52,7 +52,7 @@
         </div>
         {% endfor %}
       </div>
-      <div data-jd-tag-view="popular" hidden>
+      <div data-jd-tag-view="popular">
         <div class="jd-tags__group jd-tags__group--flat">
           <div class="jd-tags__list">
             {% for x in t.popular %}
@@ -65,10 +65,10 @@
     </section>
 
     {% if parts | length > 1 %}
-    <section class="jd-tags__block jd-tags__listing">
-      <h2 id="articles-par-tag" class="jd-tags__listing-title">Articles par tag</h2>
+    <details class="jd-tags__listing" id="articles-par-tag">
+      <summary>Articles par tag</summary>
       <div class="jd-tags__listing-body"><h2{{ parts[1] | safe }}</div>
-    </section>
+    </details>
     {% endif %}
   </article>
 </div>

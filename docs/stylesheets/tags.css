@@ -1,6 +1,6 @@
 /* Tags index (overrides/tags.html) */
 
-[dir] .jd-tags .md-content__inner {
+[dir] .md-main .md-content.jd-tags .md-content__inner {
   padding-top: 48px;
 }
 
@@ -227,28 +227,50 @@
   color: var(--jd-muted);
 }
 
-/* Plugin listing: one h2 per tag, kept as anchor targets, quieter than the blocks above */
+/* Plugin listing: collapsed, anchors stay reachable. Hidden while a filter is typed. */
 .jd-tags__listing {
-  margin-top: 72px;
-  padding-top: 8px;
+  margin-top: 56px;
   border-top: 1px solid var(--jd-border);
 }
 
-.jd-tags__listing-body h2 {
-  margin: 36px 0 8px;
+.jd-tags__listing summary {
+  padding: 16px 0;
+  font-family: var(--jd-serif);
   font-size: 20px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.jd-tags__listing-body {
+  columns: 3 280px;
+  column-gap: 40px;
+}
+
+.jd-tags__listing-body h2 {
+  margin: 0 0 4px;
+  font-size: 16px;
+  break-after: avoid;
 }
 
 .jd-tags__listing-body ul {
+  margin: 0 0 16px;
+  padding: 0;
+  list-style: none;
+  font-size: 14px;
+  line-height: 1.45;
+  break-inside: avoid;
+}
+
+.jd-tags__listing-body li {
   margin: 0;
-  font-size: 16px;
+  padding: 1px 0;
+}
+
+.jd-tags:has([data-jd-tag-filter]:not(:placeholder-shown)) .jd-tags__listing {
+  display: none;
 }
 
 @media screen and (max-width: 59.98em) {
-  [dir] .jd-tags .md-content__inner {
-    padding-top: 32px;
-  }
-
   .jd-tags h1 {
     font-size: 36px;
   }
