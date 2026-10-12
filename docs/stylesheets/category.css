@@ -10,12 +10,16 @@
 }
 
 .md-main__inner:has(.jd-cat) .md-content {
-  max-width: 1056px;
+  max-width: 1120px;
   margin: 0 auto;
 }
 
-[dir] .md-content__inner:has(.jd-cat) {
+[dir] .md-main .md-content .md-content__inner:has(.jd-cat) {
   padding: 48px 0 96px;
+}
+
+[dir] .md-content__inner:has(.jd-cat) > * {
+  max-width: none;
 }
 
 .md-typeset .jd-cat {
