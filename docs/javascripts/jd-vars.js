@@ -133,7 +133,10 @@
       input.spellcheck = false;
       input.autocomplete = "off";
       input.autocapitalize = "off";
-      input.addEventListener("input", function () { values[n] = input.value; changed(); });
+      // Fallback for browsers without field-sizing: grow with the value.
+      function fit() { input.size = Math.max(12, input.value.length + 1); }
+      fit();
+      input.addEventListener("input", function () { values[n] = input.value; fit(); changed(); });
       inputs[n] = input;
       label.appendChild(name);
       label.appendChild(input);
@@ -147,7 +150,10 @@
     reset.className = "jd-vars__reset";
     reset.textContent = "Réinitialiser";
     reset.addEventListener("click", function () {
-      names.forEach(function (n) { values[n] = vars[n].default; if (inputs[n]) inputs[n].value = values[n]; });
+      names.forEach(function (n) {
+        values[n] = vars[n].default;
+        if (inputs[n]) { inputs[n].value = values[n]; inputs[n].dispatchEvent(new Event("input")); }
+      });
       changed();
     });
     bar.appendChild(spacer);

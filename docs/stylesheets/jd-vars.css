@@ -51,7 +51,7 @@
 
 .jd-vars__field input {
   width: auto;
-  min-width: 80px;
+  min-width: 12ch;
   max-width: 100%;
   field-sizing: content;
   box-sizing: border-box;
