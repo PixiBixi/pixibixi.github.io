@@ -1,5 +1,5 @@
 ---
-description: GOMAXPROCS et GOMEMLIMIT dans Kubernetes - CFS throttling, resourceFieldRef, uber-go/automaxprocs. Pourquoi Go sature le CPU sans dépasser ses limits et comment le corriger.
+description: "GOMAXPROCS et GOMEMLIMIT dans Kubernetes : CFS throttling, GOMAXPROCS natif depuis Go 1.25, GOMEMLIMIT toujours manuel, automemlimit, resourceFieldRef, automaxprocs."
 tags:
   - Go
   - Resources
@@ -7,17 +7,19 @@ tags:
 
 # Golang : Définir automatiquement son GOMEMLIMIT/GOMAXPROCS
 
-!!! info "Comportement à partir de Go 1.25"
-    Depuis Go 1.25, `GOMAXPROCS` ajuste automatiquement le nombre de threads Go en fonction des limites CPU du conteneur. Plus de détails dans [l'article officiel](https://go.dev/blog/container-aware-gomaxprocs).
+Un pod Go tourne sur un node avec 32 cœurs, mais n'a le droit qu'à `limits.cpu: "2"`. Avant Go 1.25, le runtime fait tourner du code Go sur 32 threads OS en parallèle et le CFS throttle tout le conteneur dès que le quota est consommé. Résultat : latences P99 qui explosent, CPU usage moyen qui a l'air normal. `GOMAXPROCS` et `GOMEMLIMIT` règlent ça.
 
-Un pod Go tourne sur un node avec 32 cœurs, mais n'a le droit qu'à `limits.cpu: "2"`. Par défaut, Go spawne 32 threads OS - le scheduler Linux throttle les excédentaires via CFS. Résultat : latences P99 qui explosent, CPU usage moyen qui a l'air normal. `GOMAXPROCS` et `GOMEMLIMIT` règlent ça.
+- `GOMAXPROCS` - nombre de threads OS qui exécutent du code Go simultanément. Avant Go 1.25 : nombre de cœurs **du node**, pas du conteneur.
+- `GOMEMLIMIT` - limite mémoire soft du runtime Go. À l'approche du seuil, le GC tourne plus souvent pour rester dessous plutôt que de laisser le kernel tuer le pod.
 
-- `GOMAXPROCS` - nombre de threads OS que le runtime Go utilise simultanément. Par défaut : nombre de cœurs **du node**, pas du conteneur.
-- `GOMEMLIMIT` - taille max de la heap Go. Au-delà, le GC s'emballe pour rester sous le seuil plutôt que de laisser le kernel tuer le pod.
+Depuis Go 1.25, le CPU est géré par le runtime, la mémoire non :
+
+- **Go 1.25 et plus** : `GOMAXPROCS` est automatique, il reste à poser `GOMEMLIMIT`
+- **Go 1.24 et moins** : les 2 sont à faire à la main
 
 ## Pourquoi GOMAXPROCS non calé génère des latences bizarres
 
-Le CFS (Completely Fair Scheduler) de Linux alloue des "périodes CPU" aux conteneurs. Si Go tente de faire tourner 32 threads alors que le pod n'a droit qu'à 2 CPUs, les threads excédentaires attendent - throttlés.
+Le CFS (Completely Fair Scheduler) de Linux alloue des "périodes CPU" aux conteneurs. Si Go fait tourner 32 threads alors que le pod n'a droit qu'à 2 CPUs, le quota de la période est mangé en quelques ms et tous les threads du conteneur attendent la période suivante, throttlés.
 
 Le piège : cette attente n'est pas visible dans `container_cpu_usage_seconds_total`. Il faut regarder le ratio de throttling :
 
@@ -28,13 +30,79 @@ rate(container_cpu_cfs_throttled_periods_total{container="mon-app"}[5m])
 
 Dès que ce ratio est non nul, le throttling impacte les latences hautes - un P99 ou P999 commence à dériver même à 0.5% de throttling. On règle ça en calant `GOMAXPROCS` sur les limits CPU du conteneur.
 
-## 2 solutions pour injecter les valeurs
+## GOMAXPROCS natif depuis Go 1.25
+
+Sur Linux, le runtime lit la limite CPU du cgroup (v1 et v2) au démarrage, plus de détails dans [l'article officiel](https://go.dev/blog/container-aware-gomaxprocs). Le calcul :
+
+- `GOMAXPROCS` = le minimum entre le nombre de CPUs visibles et la limite CPU du cgroup
+- une limite fractionnaire est arrondie au-dessus : `limits.cpu: "1.5"` donne `2`
+- plancher à 2 : `limits.cpu: 500m` donne `2`, pas `1`
+- la valeur est réévaluée au plus une fois par seconde, un changement de limits en cours de vie du pod est pris en compte sans restart
+
+Quelques pièges :
+
+- **Seules les limits comptent.** Les `requests.cpu` sont ignorées : un pod sans `limits.cpu` retombe sur le nombre de cœurs du node, comme avant.
+- **Le `go.mod` doit dire `go 1.25` ou plus.** Le comportement est porté par les GODEBUG `containermaxprocs` et `updatemaxprocs`, dont la valeur par défaut suit la directive `go` du module principal. Un binaire compilé en 1.27 avec `go 1.24` dans son `go.mod` garde l'ancien comportement.
+- **Une env var `GOMAXPROCS` ou un appel à `runtime.GOMAXPROCS(n)` désactive tout**, y compris la mise à jour périodique. Un `resourceFieldRef` hérité d'avant 1.25 fait donc perdre l'ajustement live, on le retire.
+
+Pour revenir à l'ancien comportement, sur un pod qui n'a pas de CPU limits par exemple, on passe par `GODEBUG` :
+
+```yaml
+env:
+  - name: GODEBUG
+    value: "containermaxprocs=0,updatemaxprocs=0"
+```
+
+`automaxprocs` n'a plus d'intérêt sur ces versions, on retire l'import.
+
+## GOMEMLIMIT : toujours à la main
+
+Même en Go 1.27, le runtime ne lit pas la limite mémoire du cgroup : `GOMEMLIMIT` reste illimité par défaut. La proposal qui l'ajouterait ([golang/go#75164](https://github.com/golang/go/issues/75164)) est toujours ouverte.
+
+Sans `GOMEMLIMIT`, seul `GOGC` pilote le GC : la heap peut doubler entre 2 cycles et dépasser `limits.memory` avant que le GC passe, d'où l'OOM kill. Avec une valeur trop proche de `limits.memory`, le GC tourne en boucle pour rester sous le seuil et gaspille du CPU.
+
+La règle : **90% de `limits.memory`**. Les 10% restants couvrent ce que le runtime ne contrôle pas : stacks de goroutines, allocations cgo, fichiers mappés en mémoire.
+
+### Solution 1 - KimMachineGun/automemlimit (dans le code)
+
+C'est l'équivalent d'`automaxprocs` pour la mémoire : il lit la limite du cgroup au démarrage et pose `GOMEMLIMIT` à 90% par défaut.
+
+Installation :
+
+```bash
+go get github.com/KimMachineGun/automemlimit@latest
+```
+
+Un import blank dans `main.go` suffit :
+
+```go
+import _ "github.com/KimMachineGun/automemlimit"
+```
+
+Le ratio se change sans recompiler via l'env var `AUTOMEMLIMIT` (`0.8`, ou `off` pour le désactiver). Pour plus de contrôle, `memlimit.Set(memlimit.WithRatio(0.9))` fait la même chose depuis `main()`.
+
+### Solution 2 - valeur fixe (sans toucher au code)
+
+On calcule la marge à la main et on la pose en env var :
+
+```yaml
+env:
+  - name: GOMEMLIMIT
+    value: "120795955"  # 128Mi * 0.9
+```
+
+Go accepte aussi les suffixes (`115MiB`). L'inconvénient : la valeur est à mettre à jour à chaque changement de `limits.memory`.
+
+!!! warning "resourceFieldRef sur limits.memory : zéro marge"
+    Injecter `limits.memory` via `resourceFieldRef` donne `GOMEMLIMIT` = 100% de la limite, en bytes (`134217728` pour `128Mi`). Le runtime vise exactement le seuil de l'OOM killer, sans place pour le off-heap. À éviter, ou à réserver aux apps dont la mémoire hors heap est négligeable.
+
+## Go 1.24 et moins : 2 solutions pour GOMAXPROCS
 
 ### Solution 1 - resourceFieldRef (sans toucher au code)
 
 Kubernetes peut injecter les limites du conteneur comme variables d'environnement au démarrage. Aucune dépendance à ajouter dans le code Go.
 
-Un pod complet avec les deux variables configurées :
+Un pod de démo avec les deux variables injectées :
 
 ```yaml
 kind: Namespace
@@ -71,10 +139,9 @@ spec:
         - while true; do echo -en '\n'; printenv GOMEMLIMIT; printenv GOMAXPROCS; sleep 10; done
 ```
 
-Kubernetes injecte les valeurs de `limits.memory` et `limits.cpu` directement dans les env vars.
+Kubernetes injecte les valeurs de `limits.memory` et `limits.cpu` directement dans les env vars. Pour `GOMEMLIMIT`, c'est la valeur sans marge (voir plus haut), on préfère une valeur fixe à 90% ou `automemlimit`.
 
-!!! warning "Fractions de CPU non supportées"
-    `resourceFieldRef` arrondit les fractions à l'entier inférieur. Avec `limits.cpu: "1.5"`, `GOMAXPROCS` est injecté à `1`. Si les pods ont des limits fractionnaires, préférer `automaxprocs`.
+Les fractions de CPU sont arrondies à l'entier supérieur : `limits.cpu: "1.5"` donne `GOMAXPROCS=2`, `250m` donne `1`. Sans `limits.cpu` sur le conteneur, Kubernetes injecte le CPU allocatable du node, ce qui ramène au problème de départ.
 
 ### Solution 2 - uber-go/automaxprocs (dans le code)
 
@@ -92,25 +159,7 @@ Une seule ligne dans `main.go` suffit :
 import _ "go.uber.org/automaxprocs"
 ```
 
-L'import blank déclenche l'`init()` du package. Automaxprocs gère les fractions de CPU, fonctionne hors K8S (Docker, systemd cgroups) et s'adapte si les limits changent entre deux restarts.
-
-Préférer cette approche si les pods ont des limits fractionnaires ou si l'app tourne sur plusieurs environnements.
-
-## GOMEMLIMIT - la bonne valeur
-
-Sans `GOMEMLIMIT`, Go laisse la heap grossir jusqu'à l'OOM kill. Avec une valeur trop proche de `limits.memory`, le GC tourne en boucle pour rester sous le seuil et gaspille du CPU.
-
-La règle : **90% de `limits.memory`**. Les 10% restants couvrent les allocations off-heap (stacks de goroutines, mémoire runtime hors GC).
-
-Avec `resourceFieldRef`, Kubernetes injecte la valeur brute en bytes - pour `128Mi`, `GOMEMLIMIT` sera `134217728`. Go l'accepte directement.
-
-Pour fixer manuellement la marge à 90% :
-
-```yaml
-env:
-  - name: GOMEMLIMIT
-    value: "120795955"  # 128Mi * 0.9
-```
+L'import blank déclenche l'`init()` du package. Automaxprocs fonctionne hors K8S (Docker, systemd cgroups) et relit les limits à chaque démarrage. Préférer cette approche si l'app tourne sur plusieurs environnements.
 
 ## Vérifier que les variables sont bien prises en compte
 
@@ -120,10 +169,11 @@ Depuis kubectl, pour confirmer les valeurs injectées dans le pod :
 kubectl exec -n demo go-limits -- env | grep -E 'GOMAXPROCS|GOMEMLIMIT'
 ```
 
-Depuis le code Go, pour lire la valeur effective du runtime (sans la modifier) :
+Depuis le code Go, pour lire les valeurs effectives du runtime (sans les modifier), y compris celles calculées par Go 1.25+ ou `automemlimit` qui n'apparaissent pas dans `env` :
 
 ```go
 fmt.Println(runtime.GOMAXPROCS(0))
+fmt.Println(debug.SetMemoryLimit(-1))
 ```
 
 Avec `automaxprocs`, on peut activer le logging pour tracer la valeur choisie au démarrage :
@@ -140,13 +190,13 @@ func main() {
 
 ## Interaction avec VPA et HPA
 
-Avec **VPA** : les limits sont recalculées au restart du pod. `resourceFieldRef` et `automaxprocs` relisent les nouvelles valeurs automatiquement.
+Avec **VPA** : en Go 1.25+, une limite CPU modifiée en place est reprise par le runtime dans la seconde. `GOMEMLIMIT`, `resourceFieldRef` et `automaxprocs` ne relisent les valeurs qu'au restart du pod.
 
 Avec **HPA** sur des métriques CPU custom : un `GOMAXPROCS` trop élevé crée du throttling CFS, ce qui fait monter le CPU apparent sans que l'app soit réellement saturée. L'HPA interprète ça comme une surcharge et scale inutilement. Corriger `GOMAXPROCS` peut suffire à stabiliser le scaling.
 
 ## Ces variables fonctionnent hors Kubernetes
 
-`GOMEMLIMIT` et `GOMAXPROCS` sont des variables d'environnement standard du runtime Go. On peut les injecter via `Dockerfile` (`ENV`), systemd (`Environment=`), ou directement depuis le code (`runtime.GOMAXPROCS(n)`). K8S n'est qu'un vecteur parmi d'autres.
+`GOMEMLIMIT` et `GOMAXPROCS` sont des variables d'environnement standard du runtime Go. On peut les injecter via `Dockerfile` (`ENV`), systemd (`Environment=`), ou directement depuis le code (`runtime.GOMAXPROCS(n)`, `debug.SetMemoryLimit(n)`). K8S n'est qu'un vecteur parmi d'autres.
 
 ## Voir aussi
 
