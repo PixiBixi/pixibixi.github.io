@@ -14,7 +14,6 @@ theme:
     - navigation.instant
     - navigation.tabs
     - navigation.indexes
-    - navigation.sections
     - navigation.prune
     - navigation.footer
     - content.code.copy

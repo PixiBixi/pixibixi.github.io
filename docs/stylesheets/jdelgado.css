@@ -612,6 +612,18 @@ body {
   border-left: 2px solid var(--jd-accent);
 }
 
+/* Desktop tree as in the mock: folders are plain links, the current one bold and expanded */
+@media screen and (min-width: 60em) {
+  .md-nav--primary .md-nav__icon {
+    display: none;
+  }
+
+  .md-nav--primary .md-nav__item--active > .md-nav__container > .md-nav__link {
+    font-weight: 600;
+    color: var(--jd-ink);
+  }
+}
+
 /* The page TOC lives in the right column (or the bar), never inside the nav */
 .md-nav--primary .md-nav--secondary,
 .md-nav--primary label[for="__toc"] {
