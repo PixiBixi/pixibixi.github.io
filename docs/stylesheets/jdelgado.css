@@ -9,7 +9,7 @@
   --jd-sans: "Source Sans 3", system-ui, sans-serif;
   --jd-mono: "JetBrains Mono", ui-monospace, monospace;
   --jd-pad: 32px;
-  --jd-max: 1400px;
+  --jd-max: 1424px;
   --md-text-font: "Source Sans 3", system-ui, sans-serif;
   --md-code-font: "JetBrains Mono", ui-monospace, monospace;
 }
@@ -446,7 +446,7 @@ body {
   padding: 0 var(--jd-pad);
 }
 
-.md-tabs__list {
+[dir] .md-tabs__list {
   display: flex;
   gap: 26px;
   margin: 0;
