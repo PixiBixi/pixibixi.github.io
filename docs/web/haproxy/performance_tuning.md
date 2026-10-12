@@ -951,25 +951,10 @@ sudo perf top
 - [HAProxy : exploitation au quotidien](operations.md)
 - [GOMEMLIMIT/GOMAXPROCS automatiques en Kubernetes](../../kubernetes/deployment/gomaxprocs_gomemlimit_kubernetes.md)
 
-*[TLS]: Transport Layer Security, le chiffrement des connexions HTTPS
-*[SSL]: Ancêtre de TLS, le terme reste courant pour parler de chiffrement des connexions
-*[CPU]: Processeur, le cœur de calcul de la machine
-*[RAM]: Mémoire vive de la machine
-*[RSA]: Algorithme de clé publique historique, des clés plus lourdes à négocier que l'ECDSA
 *[ECDSA]: Signature sur courbes elliptiques, des handshakes TLS bien moins coûteux que RSA
-*[AES]: Algorithme de chiffrement symétrique, accéléré matériellement sur les CPU récents
 *[IRQ]: Interruption matérielle envoyée par une carte réseau ou un disque au CPU
 *[NUMA]: Non-Uniform Memory Access, une machine multi-socket où la latence mémoire dépend du CPU
-*[NIC]: Carte réseau
-*[TCP]: Protocole de transport fiable sous HTTP
-*[HTTP]: Protocole applicatif du web
 *[RTT]: Round-Trip Time, le temps d'un aller-retour réseau
 *[OCSP]: Online Certificate Status Protocol, la vérification de révocation d'un certificat
 *[TTFB]: Time To First Byte, le délai avant de recevoir le premier octet de la réponse
 *[MTU]: Maximum Transmission Unit, la taille maximale d'un paquet sur le lien
-*[P99]: 99e percentile, la latence sous laquelle passent 99 % des requêtes
-*[OOM]: Out Of Memory, le kernel tue un processus faute de mémoire
-*[LB]: Load balancer, le répartiteur de charge
-*[DNS]: Système de résolution des noms de domaine
-*[CDN]: Content Delivery Network, un réseau de cache en bordure
-*[API]: Interface de programmation exposée par un service
