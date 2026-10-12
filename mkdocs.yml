@@ -9,30 +9,28 @@ remote_branch: docs
 
 theme:
   features:
-    - toc.integrate
     - toc.follow
-    - header.autohide
     - navigation.tracking
     - navigation.instant
     - navigation.tabs
     - navigation.indexes
     - navigation.sections
     - navigation.prune
-    - navigation.top
+    - navigation.footer
     - content.code.copy
-    - content.action.edit
     - search.suggest
     - search.highlight
   name: material
   custom_dir: overrides
   language: fr
+  font: false
   favicon: img/favicon.svg
   palette:
     # Palette toggle for automatic mode
     - media: "(prefers-color-scheme)"
       toggle:
-        icon: material/link
-        name: Switch to light mode
+        icon: material/monitor
+        name: Thème système
 
     # Palette toggle for light mode
     - media: "(prefers-color-scheme: light)"
@@ -40,8 +38,8 @@ theme:
       primary: custom
       accent: custom
       toggle:
-        icon: material/toggle-switch
-        name: Switch to dark mode
+        icon: material/white-balance-sunny
+        name: Thème clair
 
     # Palette toggle for dark mode
     - media: "(prefers-color-scheme: dark)"
@@ -49,8 +47,8 @@ theme:
       primary: custom
       accent: custom
       toggle:
-        icon: material/toggle-switch-off
-        name: Switch to system preference
+        icon: material/weather-night
+        name: Thème sombre
 
 plugins:
   - social
@@ -217,6 +215,7 @@ extra:
 
 extra_javascript:
   - javascripts/copy-llm.js
+  - javascripts/jd-ui.js
 
 extra_css:
   - stylesheets/jdelgado.css
@@ -224,9 +223,15 @@ extra_css:
 markdown_extensions:
   - pymdownx.highlight:
       anchor_linenums: true
+      linenums: true
+      linenums_style: pymdownx-inline
+      pygments_lang_class: true
   - pymdownx.superfences
   - admonition
   - pymdownx.details
   - attr_list
+  - toc:
+      permalink: true
+      permalink_title: Lien vers cette section
 
 
