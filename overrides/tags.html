@@ -1,0 +1,75 @@
+{% extends "main.html" %}
+
+{#- Tags index: counts, most used, filterable list. The plugin listing (one h2 per tag) stays below as link targets. -#}
+{% block site_nav %}{% endblock %}
+{% block container %}
+{% set t = jd_tags %}
+{% set parts = ("%s" | format(page.content)).split("<h2", 1) %}
+<div class="md-content jd-page jd-tags" data-md-component="content">
+  <article class="md-content__inner md-typeset">
+    <nav class="jd-tags__crumb" aria-label="Fil d'Ariane">
+      <a href="{{ '' | url }}">Accueil</a><span>/</span><span aria-current="page">Tags</span>
+    </nav>
+    <h1>Tags</h1>
+    <p class="jd-tags__count">{{ t.total }} tags · {{ t.articles }} articles · <a href="#tous">{{ t.shown }} affichés ci-dessous</a></p>
+
+    <div class="jd-tags__bar">
+      <label class="jd-tags__filter">
+        {% include ".icons/material/filter-variant.svg" %}
+        <span class="jd-sr">Filtrer les tags</span>
+        <input type="search" autocomplete="off" placeholder="Filtrer les tags" data-jd-tag-filter>
+      </label>
+      <div class="jd-tags__sort" role="group" aria-label="Tri">
+        <button type="button" aria-pressed="false" data-jd-tag-sort="popular">Populaires</button>
+        <button type="button" aria-pressed="true" data-jd-tag-sort="az">A-Z</button>
+      </div>
+    </div>
+
+    <section class="jd-tags__block" data-jd-tag-featured>
+      <h2 id="plus-utilises">Les plus utilisés</h2>
+      <div class="jd-tags__cards">
+        {% for f in t.featured %}
+        <a href="#tag:{{ f.slug }}" data-name="{{ f.name | lower }}">
+          <span class="jd-tags__ctitle"><strong>{{ f.name }}</strong><span>{{ f.n }}</span></span>
+          <span class="jd-tags__ex">{% for e in f.ex %}<span>{{ e }}</span>{% endfor %}</span>
+        </a>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="jd-tags__block" id="tous">
+      <h2 id="tous-les-tags">Tous les tags</h2>
+      <p class="jd-tags__note">Les tags utilisés au moins 4 fois.</p>
+      <div data-jd-tag-view="az">
+        {% for g in t.groups %}
+        <div class="jd-tags__group">
+          <span class="jd-tags__letter">{{ g.letter }}</span>
+          <div class="jd-tags__list">
+            {% for x in g.tags %}
+            <a href="#tag:{{ x.slug }}" data-name="{{ x.name | lower }}"><span>{{ x.name }}</span><span>{{ x.n }}</span></a>
+            {% endfor %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      <div data-jd-tag-view="popular" hidden>
+        <div class="jd-tags__group jd-tags__group--flat">
+          <div class="jd-tags__list">
+            {% for x in t.popular %}
+            <a href="#tag:{{ x.slug }}" data-name="{{ x.name | lower }}"><span>{{ x.name }}</span><span>{{ x.n }}</span></a>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      <p class="jd-tags__empty" data-jd-tag-empty hidden>Aucun tag ne correspond.</p>
+    </section>
+
+    {% if parts | length > 1 %}
+    <section class="jd-tags__block jd-tags__listing">
+      <h2 id="articles-par-tag" class="jd-tags__listing-title">Articles par tag</h2>
+      <div class="jd-tags__listing-body"><h2{{ parts[1] | safe }}</div>
+    </section>
+    {% endif %}
+  </article>
+</div>
+{% endblock %}
