@@ -40,7 +40,7 @@
     <section class="jd-tags__block" id="tous">
       <h2 id="tous-les-tags">Tous les tags</h2>
       <p class="jd-tags__note">Les tags utilisés au moins 4 fois.</p>
-      <div data-jd-tag-view="az" hidden>
+      <div>
         {% for g in t.groups %}
         <div class="jd-tags__group">
           <span class="jd-tags__letter">{{ g.letter }}</span>
@@ -51,15 +51,6 @@
           </div>
         </div>
         {% endfor %}
-      </div>
-      <div data-jd-tag-view="popular">
-        <div class="jd-tags__group jd-tags__group--flat">
-          <div class="jd-tags__list">
-            {% for x in t.popular %}
-            <a href="#tag:{{ x.slug }}" data-name="{{ x.name | lower }}"><span>{{ x.name }}</span><span>{{ x.n }}</span></a>
-            {% endfor %}
-          </div>
-        </div>
       </div>
       <p class="jd-tags__empty" data-jd-tag-empty hidden>Aucun tag ne correspond.</p>
     </section>

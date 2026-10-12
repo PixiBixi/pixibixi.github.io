@@ -133,7 +133,7 @@
     if (!root || root.dataset.jdBound) return;
     root.dataset.jdBound = "1";
     var filter = root.querySelector("[data-jd-tag-filter]");
-    var views = root.querySelectorAll("[data-jd-tag-view]");
+    var mode = "popular";
     var buttons = root.querySelectorAll("[data-jd-tag-sort]");
     var featured = root.querySelector("[data-jd-tag-featured]");
     var empty = root.querySelector("[data-jd-tag-empty]");
@@ -150,12 +150,13 @@
         g.hidden = !any;
         if (any && !g.closest("[hidden]")) shown++;
       });
-      featured.hidden = !!q && !featured.querySelector("a:not([hidden])");
+      featured.hidden = mode !== "popular" || (!!q && !featured.querySelector("a:not([hidden])"));
       empty.hidden = shown > 0;
     }
 
-    function sort(mode) {
-      views.forEach(function (v) { v.hidden = v.dataset.jdTagView !== mode; });
+    // The A-Z list stays in both modes; "Populaires" only adds the top cards above it.
+    function sort(next) {
+      mode = next;
       buttons.forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.jdTagSort === mode)); });
       apply();
     }

@@ -183,10 +183,6 @@
   border-top: 1px solid var(--jd-border);
 }
 
-.jd-tags__group--flat {
-  grid-template-columns: minmax(0, 1fr);
-}
-
 .jd-tags__letter {
   font-family: var(--jd-serif);
   font-size: 28px;
@@ -283,10 +279,6 @@
   .jd-tags__group {
     grid-template-columns: 36px minmax(0, 1fr);
     gap: 0 12px;
-  }
-
-  .jd-tags__group--flat {
-    grid-template-columns: minmax(0, 1fr);
   }
 
   .jd-tags__list {
