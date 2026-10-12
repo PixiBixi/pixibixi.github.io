@@ -8,6 +8,7 @@ import json
 import os
 import posixpath
 import re
+import subprocess
 from urllib.parse import unquote
 
 import yaml
@@ -24,6 +25,9 @@ ATTR = re.compile(r"\s*\{[^}]*\}\s*$")
 _data = {"reading": {}, "series": {}, "backlinks": {}}
 _descriptions = {}
 _articles = []
+# A commit touching more articles than this is a style or rename sweep, not a content update.
+SWEEP_FILES = 10
+_content: dict = {"dates": None}
 
 
 def _plain(text):
@@ -179,14 +183,37 @@ def on_page_markdown(markdown, page, config, files):
     return markdown
 
 
+def _content_dates(docs_dir):
+    """Last date each article really changed: commits touching many articles at once are style sweeps."""
+    try:
+        out = subprocess.run(
+            ["git", "log", "--format=%x00%ad", "--date=short", "--name-only", "--", "."],
+            cwd=docs_dir, capture_output=True, text=True, check=True,
+        ).stdout
+    except (OSError, subprocess.CalledProcessError):
+        return {}
+    root = subprocess.run(["git", "rev-parse", "--show-prefix"], cwd=docs_dir, capture_output=True, text=True).stdout.strip()
+    dates, created = {}, {}
+    for chunk in out.split("\x00")[1:]:
+        lines = [l for l in chunk.splitlines() if l]
+        day = lines[0]
+        paths = [p[len(root):] if p.startswith(root) else p for p in lines[1:] if p.endswith(".md")]
+        for p in paths:
+            created[p] = day
+            if len(paths) <= SWEEP_FILES:
+                dates.setdefault(p, day)
+    # Only ever touched by sweeps: fall back to the creation date.
+    return {**created, **dates}
+
+
 def on_page_context(context, page, config, nav):
-    # The revision date is set by the revision-date plugin, which only has it once markdown is done.
-    raw = page.meta.get("git_revision_date_localized_raw_iso_date")
-    if raw and page.file.name != "index" and page.file.src_uri not in ("about.md", "tags.md"):
-        try:
-            age = datetime.date.today() - datetime.date.fromisoformat(str(raw)[:10])
-        except ValueError:
-            return context
+    if page.file.name == "index" or page.file.src_uri in ("about.md", "tags.md") or page.file.abs_src_path is None:
+        return context
+    if _content["dates"] is None:
+        _content["dates"] = _content_dates(config["docs_dir"])
+    raw = _content["dates"].get(page.file.src_uri)
+    if raw:
+        age = datetime.date.today() - datetime.date.fromisoformat(raw)
         page.meta["outdated"] = age.days > 730
     return context
 
