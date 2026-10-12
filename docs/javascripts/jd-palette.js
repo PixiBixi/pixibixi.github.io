@@ -68,14 +68,17 @@
   function loadIndex() {
     if (state.index) return Promise.resolve(state.index);
     if (state.loading) return state.loading;
+    // jd-pages.json (hooks/article_meta.py) lists the real articles; without it a prefix heuristic is used.
+    var kinds = fetch(url("search/jd-pages.json")).then(function (r) { return r.json(); })
+      .then(function (j) { return j.articles || null; }).catch(function () { return null; });
     state.loading = fetch(url("search/search_index.json"))
       .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
-      .then(function (data) { state.index = build(data.docs || []); return state.index; })
+      .then(function (data) { return kinds.then(function (a) { state.index = build(data.docs || [], a); return state.index; }); })
       .catch(function () { state.loading = null; state.index = { pages: [], sections: [], tags: [], failed: true }; return state.index; });
     return state.loading;
   }
 
-  function build(docs) {
+  function build(docs, articleLocs) {
     var pages = {}, order = [];
     function page(base) {
       if (!pages[base]) { pages[base] = { loc: base, title: "", text: "", heads: [], tags: [] }; order.push(base); }
@@ -108,21 +111,29 @@
       p.heads.forEach(function (h) { h.nTitle = norm(h.title); h.nText = norm(h.text); });
     });
 
+    // Articles only, like hooks/home.py: no home, about, tags, nor folder indexes (a loc that prefixes another).
+    var locs = list.map(function (p) { return p.loc; });
+    var known = articleLocs && articleLocs.reduce(function (m, l) { m[l] = 1; return m; }, {});
+    var articles = list.filter(function (p) {
+      if (known) return !!known[p.loc];
+      return p.loc && p.loc !== "about/" && !locs.some(function (o) { return o !== p.loc && o.indexOf(p.loc) === 0; });
+    });
     var secs = {}, tags = {};
     list.forEach(function (p) {
       var seg = p.loc.split("/")[0];
-      if (seg && p.loc.indexOf("/") > 0) {
-        secs[seg] = secs[seg] || { seg: seg, count: 0 };
-        if (p.loc !== seg + "/") secs[seg].count++;
-      }
+      if (seg && p.loc.indexOf("/") > 0) secs[seg] = secs[seg] || { seg: seg, count: 0 };
       (p.tags || []).forEach(function (t) { tags[t] = (tags[t] || 0) + 1; });
+    });
+    articles.forEach(function (p) {
+      var seg = p.loc.split("/")[0];
+      if (secs[seg]) secs[seg].count++;
     });
     var sections = Object.keys(secs).map(function (s) {
       var t = titles[s + "/"] || pretty(s);
       return { seg: s, title: t, nTitle: norm(t), nSeg: norm(s), count: secs[s].count };
     }).sort(function (a, b) { return b.count - a.count; });
     var tagList = Object.keys(tags).map(function (t) { return { tag: t, nTag: norm(t), count: tags[t] }; });
-    return { pages: list, sections: sections, tags: tagList, count: list.length };
+    return { pages: list, sections: sections, tags: tagList, count: articles.length };
   }
 
   /* ---------- search ---------- */

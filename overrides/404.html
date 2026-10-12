@@ -10,7 +10,7 @@
 {% block container %}
 {%- set base = "/" ~ (config.site_url or "/").split("/", 3)[3:] | join("") -%}
 <div class="md-content jd-page jd-404" data-md-component="content"
-     data-index="{{ 'search/search_index.json' | url }}" data-home="{{ base }}" data-descs="{{ 'search/descriptions.json' | url }}"
+     data-index="{{ 'search/search_index.json' | url }}" data-home="{{ base }}" data-descs="{{ 'search/jd-pages.json' | url }}"
      data-repo="{{ config.repo_url }}" data-branch="master">
   <article class="md-content__inner md-typeset">
     <p class="jd-404__eyebrow">Erreur 404</p>

@@ -22,6 +22,7 @@ ATTR = re.compile(r"\s*\{[^}]*\}\s*$")
 
 _data = {"reading": {}, "series": {}, "backlinks": {}}
 _descriptions = {}
+_articles = []
 
 
 def _plain(text):
@@ -40,6 +41,8 @@ def _words_around(text, marker_start, marker_end):
 
 
 def on_files(files, config):
+    _descriptions.clear()
+    _articles.clear()
     docs = {}
     for f in files.documentation_pages():
         # Folder indexes from hooks/indexes.py have no source file and are never backlink sources.
@@ -129,13 +132,15 @@ def on_page_markdown(markdown, page, config, files):
                 "next": ({"title": items[idx + 1][2], "url": items[idx + 1][3]} if idx + 1 < len(items) else None),
             }
     page.meta["backlinks"] = _data["backlinks"].get(uri, [])
+    if page.file.name != "index" and uri not in ("about.md", "tags.md"):
+        _articles.append(page.url)
     if page.meta.get("description"):
         _descriptions[page.url] = str(page.meta["description"])
     return markdown
 
 
 def on_post_build(config):
-    # Read by the 404 suggestions (pages.js): the search index carries no front matter.
-    out = os.path.join(config["site_dir"], "search", "descriptions.json")
+    # Read by the 404 suggestions and the palette counts: the search index has no front matter nor page kind.
+    out = os.path.join(config["site_dir"], "search", "jd-pages.json")
     with open(out, "w", encoding="utf-8") as fh:
-        json.dump(_descriptions, fh, ensure_ascii=False, separators=(",", ":"))
+        json.dump({"descriptions": _descriptions, "articles": sorted(set(_articles))}, fh, ensure_ascii=False, separators=(",", ":"))

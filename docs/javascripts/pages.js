@@ -93,7 +93,7 @@
       ", dans l'index du wiki : voilà ce qui s'en rapproche le plus.";
     wordsEl.hidden = false;
 
-    var descsReq = fetch(root.dataset.descs).then(function (r) { return r.json(); }).catch(function () { return {}; });
+    var descsReq = fetch(root.dataset.descs).then(function (r) { return r.json(); }).then(function (j) { return j.descriptions || {}; }).catch(function () { return {}; });
     fetch(root.dataset.index).then(function (r) { return r.json(); }).then(function (idx) {
       return descsReq.then(function (descs) { return [idx, descs]; });
     }).then(function (res) {
