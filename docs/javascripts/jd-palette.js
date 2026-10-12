@@ -4,7 +4,7 @@
 
   var IS_MAC = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
   var MOD = IS_MAC ? "⌘" : "Ctrl+";
-  var MAX_PAGES = 8;
+  var MAX_PAGES = 3;
 
   var state = { index: null, loading: null, open: false, rows: [], sel: 0, lastFocus: null };
   var ui = null;
@@ -358,10 +358,13 @@
       });
     }
 
-    var acts = actions().filter(function (a) {
+    // Actions narrow down when the query matches one, otherwise all stay available.
+    var all = actions();
+    var acts = all.filter(function (a) {
       var hay = norm(a.label + " " + a.words);
-      return !tokens.length || tokens.every(function (t) { return hay.indexOf(t) >= 0; });
+      return tokens.length && tokens.every(function (t) { return hay.indexOf(t) >= 0; });
     });
+    if (!acts.length) acts = all;
     if (acts.length) {
       any = true;
       group("Actions");
