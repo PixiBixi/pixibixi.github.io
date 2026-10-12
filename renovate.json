@@ -5,6 +5,11 @@
     {
       "matchUpdateTypes": ["minor", "patch", "digest"],
       "automerge": true
+    },
+    {
+      "description": "Theme overrides in overrides/partials/ track Material's HTML: review every update visually",
+      "matchPackageNames": ["mkdocs-material"],
+      "automerge": false
     }
   ]
 }
