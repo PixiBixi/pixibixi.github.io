@@ -51,6 +51,7 @@ theme:
         name: Thème sombre
 
 hooks:
+  - hooks/indexes.py
   - hooks/article_meta.py
 
 plugins:
@@ -219,10 +220,12 @@ extra:
 extra_javascript:
   - javascripts/copy-llm.js
   - javascripts/jd-ui.js
+  - javascripts/category.js
 
 extra_css:
   - stylesheets/jdelgado.css
   - stylesheets/article-meta.css
+  - stylesheets/category.css
 
 markdown_extensions:
   - pymdownx.highlight:
