@@ -53,6 +53,7 @@ theme:
 hooks:
   - hooks/indexes.py
   - hooks/article_meta.py
+  - hooks/page_vars.py
 
 plugins:
   - social
@@ -221,11 +222,17 @@ extra_javascript:
   - javascripts/copy-llm.js
   - javascripts/jd-ui.js
   - javascripts/category.js
+  - javascripts/jd-vars.js
+  - javascripts/jd-palette.js
+  - javascripts/jd-abbr.js
 
 extra_css:
   - stylesheets/jdelgado.css
   - stylesheets/article-meta.css
   - stylesheets/category.css
+  - stylesheets/jd-vars.css
+  - stylesheets/jd-palette.css
+  - stylesheets/jd-abbr.css
 
 markdown_extensions:
   - pymdownx.highlight:
@@ -237,6 +244,7 @@ markdown_extensions:
   - admonition
   - pymdownx.details
   - attr_list
+  - abbr
   - toc:
       permalink: true
       permalink_title: Lien vers cette section
