@@ -1,0 +1,55 @@
+{% extends "main.html" %}
+
+{#- Home: hero, latest articles, sections grid. The hand-written link list stays below in a collapsed block. -#}
+{% block site_nav %}{% endblock %}
+{% block container %}
+{% set home = jd_home %}
+{% set body = page.content %}
+{% set rest = ("%s" | format(page.content)).split("<h2", 1) %}
+<div class="md-content jd-page jd-home" data-md-component="content">
+  <article class="md-content__inner md-typeset">
+    <section class="jd-home__hero">
+      <h1>{{ lang.t("jd.home.title") }}</h1>
+      <p class="jd-home__lead">{{ lang.t("jd.home.lead") | replace("{n}", home.total) }}</p>
+      <label class="jd-home__search" for="jd-home-search">
+        {% include ".icons/material/magnify.svg" %}
+        <span class="jd-sr">{{ lang.t("jd.home.search_label") }}</span>
+        <input id="jd-home-search" type="search" autocomplete="off" placeholder="{{ lang.t("jd.home.search_placeholder") }}" data-jd-home-search>
+        <kbd>⌘K</kbd>
+      </label>
+      <p class="jd-home__meta">{{ lang.t("jd.home.sections_count") | replace("{n}", home.sections | length) }} · {{ lang.t("jd.home.online_since") }} · <a href="{{ 'tags/' | url }}">{{ lang.t("jd.home.all_tags") }}</a></p>
+    </section>
+
+    <section class="jd-home__block">
+      <h2 id="derniers-articles">{{ lang.t("jd.home.latest") }}</h2>
+      <ol class="jd-home__recent">
+        {% for r in home.recent %}
+        <li>
+          <div class="jd-home__rmeta"><time datetime="{{ r.date }}">{{ r.date }}</time><span>·</span><span>{{ r.section }}</span><span data-jd-fresh data-jd-created="{{ r.date }}" hidden></span></div>
+          <a href="{{ r.url | url }}">{{ r.title }}</a>
+        </li>
+        {% endfor %}
+      </ol>
+    </section>
+
+    <section class="jd-home__block">
+      <h2 id="sections">{{ lang.t("jd.home.sections") }}</h2>
+      <div class="jd-home__sections">
+        {% for s in home.sections %}
+        <a href="{{ s.url | url }}">
+          <span class="jd-home__sname"><strong>{{ s.name }}</strong><span>{{ s.topics }}</span></span>
+          <span class="jd-home__count">{{ s.count }}</span>
+        </a>
+        {% endfor %}
+      </div>
+    </section>
+
+    {% if rest | length > 1 %}
+    <details class="jd-home__all">
+      <summary>{{ lang.t("jd.home.all_articles") | replace("{n}", home.total) }}</summary>
+      <div class="jd-home__all-body"><h2{{ rest[1] | safe }}</div>
+    </details>
+    {% endif %}
+  </article>
+</div>
+{% endblock %}

@@ -1,0 +1,83 @@
+{% extends "main.html" %}
+
+{#- Tags index: counts, most used, filterable list. One panel per tag below, the #tag:<slug> link targets. -#}
+{% block site_nav %}{% endblock %}
+{% block container %}
+{% set t = jd_tags %}
+<div class="md-content jd-page jd-tags" data-md-component="content">
+  <article class="md-content__inner md-typeset">
+    <nav class="jd-tags__crumb" aria-label="{{ lang.t("jd.common.breadcrumb") }}">
+      <a href="{{ '' | url }}">{{ lang.t("jd.common.home") }}</a><span>/</span><span aria-current="page">{{ lang.t("jd.tags.title") }}</span>
+    </nav>
+    <h1>{{ lang.t("jd.tags.title") }}</h1>
+    <p class="jd-tags__count">{{ lang.t("jd.tags.count") | replace("{n}", t.total) }} · {{ lang.t("jd.count.article_other") | replace("{n}", t.articles) }} · <a href="#tous">{{ lang.t("jd.tags.shown") | replace("{n}", t.shown) }}</a></p>
+
+    <div class="jd-tags__bar">
+      <label class="jd-tags__filter">
+        {% include ".icons/material/filter-variant.svg" %}
+        <span class="jd-sr">{{ lang.t("jd.tags.filter_label") }}</span>
+        <input type="search" autocomplete="off" placeholder="{{ lang.t("jd.tags.filter_placeholder") }}" data-jd-tag-filter>
+      </label>
+      <div class="jd-tags__sort" role="group" aria-label="{{ lang.t("jd.common.sort") }}">
+        <button type="button" aria-pressed="true" data-jd-tag-sort="popular">{{ lang.t("jd.tags.popular") }}</button>
+        <button type="button" aria-pressed="false" data-jd-tag-sort="az">{{ lang.t("jd.sort.az") }}</button>
+      </div>
+    </div>
+
+    <section class="jd-tags__block" data-jd-tag-featured>
+      <h2 id="plus-utilises">{{ lang.t("jd.tags.featured") }}</h2>
+      <div class="jd-tags__cards">
+        {% for f in t.featured %}
+        <a href="#tag:{{ f.slug }}" data-name="{{ f.name | lower }}">
+          {% set jd_tag = f.name %}<span class="jd-tags__ctitle"><strong>{% include "partials/tag-icon.html" %}{{ f.name }}</strong><span>{{ f.n }}</span></span>
+          <span class="jd-tags__ex">{% for e in f.ex %}<span>{{ e }}</span>{% endfor %}</span>
+        </a>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="jd-tags__block" id="tous">
+      <h2 id="tous-les-tags">{{ lang.t("jd.tags.all") }}</h2>
+      <p class="jd-tags__note">{{ lang.t("jd.tags.note") }}</p>
+      <div>
+        {% for g in t.groups %}
+        <div class="jd-tags__group">
+          <span class="jd-tags__letter">{{ g.letter }}</span>
+          <div class="jd-tags__list">
+            {% for x in g.tags %}
+            {% set jd_tag = x.name %}<a href="#tag:{{ x.slug }}" data-name="{{ x.name | lower }}"><span>{% include "partials/tag-icon.html" %}{{ x.name }}</span><span>{{ x.n }}</span></a>
+            {% endfor %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      <p class="jd-tags__empty" data-jd-tag-empty hidden>{{ lang.t("jd.tags.empty") }}</p>
+    </section>
+
+    {#- One panel per tag, shown alone when the URL hash is #tag:<slug> (pages.js). Replaces the plugin listing. -#}
+    <div class="jd-tagpanels">
+      {% for x in t.all %}
+      {% set jd_tag = x.name %}
+      <section class="jd-tagpanel" id="tag:{{ x.slug }}" data-jd-tagpanel hidden>
+        <div class="jd-tagpanel__head">
+          <h2>{% include "partials/tag-icon.html" %}{{ x.name }}</h2>
+          <span>{{ (lang.t("jd.count.article_one") if x.n == 1 else lang.t("jd.count.article_other")) | replace("{n}", x.n) }}</span>
+          <a href="#tous" class="jd-tagpanel__close">{{ lang.t("jd.tags.back") }}</a>
+        </div>
+        <ul>
+          {% for a in x.pages %}
+          <li>
+            <a href="{{ a.url | url }}">
+              {% if a.section %}<span class="jd-tagpanel__sec">{{ a.section }}</span>{% endif %}
+              <strong>{{ a.title }}</strong>
+              {% if a.desc %}<span class="jd-tagpanel__desc">{{ a.desc }}</span>{% endif %}
+            </a>
+          </li>
+          {% endfor %}
+        </ul>
+      </section>
+      {% endfor %}
+    </div>
+  </article>
+</div>
+{% endblock %}

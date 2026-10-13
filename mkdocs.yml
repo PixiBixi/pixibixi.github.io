@@ -9,30 +9,27 @@ remote_branch: docs
 
 theme:
   features:
-    - toc.integrate
     - toc.follow
-    - header.autohide
     - navigation.tracking
     - navigation.instant
     - navigation.tabs
     - navigation.indexes
-    - navigation.sections
     - navigation.prune
-    - navigation.top
+    - navigation.footer
     - content.code.copy
-    - content.action.edit
     - search.suggest
     - search.highlight
   name: material
   custom_dir: overrides
   language: fr
+  font: false
   favicon: img/favicon.svg
   palette:
     # Palette toggle for automatic mode
     - media: "(prefers-color-scheme)"
       toggle:
-        icon: material/link
-        name: Switch to light mode
+        icon: material/monitor
+        name: Thème système
 
     # Palette toggle for light mode
     - media: "(prefers-color-scheme: light)"
@@ -40,8 +37,8 @@ theme:
       primary: custom
       accent: custom
       toggle:
-        icon: material/toggle-switch
-        name: Switch to dark mode
+        icon: material/white-balance-sunny
+        name: Thème clair
 
     # Palette toggle for dark mode
     - media: "(prefers-color-scheme: dark)"
@@ -49,8 +46,15 @@ theme:
       primary: custom
       accent: custom
       toggle:
-        icon: material/toggle-switch-off
-        name: Switch to system preference
+        icon: material/weather-night
+        name: Thème sombre
+
+hooks:
+  - hooks/indexes.py
+  - hooks/article_meta.py
+  - hooks/page_vars.py
+  - hooks/i18n.py
+  - hooks/home.py
 
 plugins:
   - social
@@ -63,6 +67,12 @@ plugins:
   - search:
       lang: fr
   - tags
+  # Articles only: index pages (hand-written and generated), tags and about stay out of the feeds
+  - rss:
+      match_path: '^(?!(.*/)?index\.md$|tags\.md$|about\.md$).+\.md$'
+      json_feed_enabled: false
+      categories:
+        - tags
   - privacy
   - redirects:
       redirect_maps:
@@ -200,6 +210,71 @@ plugins:
       minify_css: true
 
 extra:
+  # Tag -> icon (path under Material's .icons, no .svg), shown on tag pills, cards and chips
+  tag_icons:
+    ArgoCD: simple/argo
+    Automation: material/robot
+    Bash: simple/gnubash
+    CD: material/rocket
+    CI/CD: material/sync
+    Cisco: simple/cisco
+    CLI: material/console
+    Cloud: material/cloud
+    Databases: material/database
+    Deployment: material/rocket-launch
+    Docker: fontawesome/brands/docker
+    FinOps: material/cash
+    Firewall: material/wall-fire
+    Fundamentals: material/school
+    GCP: simple/googlecloud
+    GitHub Actions: simple/githubactions
+    GitOps: material/source-branch
+    GKE: simple/googlecloud
+    Go: simple/go
+    Grafana: simple/grafana
+    HAProxy: material/scale-balance
+    Hardening: material/shield-check
+    Hardware: material/chip
+    IaC: material/file-code
+    ISO: material/disc
+    kubectl: simple/kubernetes
+    Kubernetes: simple/kubernetes
+    LEMP: material/server
+    LGTM: material/chart-areaspline
+    Linux: fontawesome/brands/linux
+    Load Balancing: material/scale-balance
+    Loki: material/text-box-search-outline
+    macOS: fontawesome/brands/apple
+    MariaDB: simple/mariadb
+    Monitoring: material/chart-line
+    MySQL: simple/mysql
+    Networking: material/lan
+    Nginx: simple/nginx
+    Observability: material/eye
+    OpenVPN: simple/openvpn
+    OS: material/monitor-dashboard
+    OSPF: material/router-network
+    Performance: material/speedometer
+    PHP: fontawesome/brands/php
+    PowerShell: material/powershell
+    Prometheus: simple/prometheus
+    Proxmox: simple/proxmox
+    Recovery: material/backup-restore
+    Security: material/shield-lock
+    Selfhost: material/server
+    Shell: material/console
+    SSH: material/key-variant
+    Storage: material/harddisk
+    Terraform: material/terraform
+    Troubleshooting: material/bug
+    Virtualization: material/layers
+    VLAN: material/lan-connect
+    VPN: material/vpn
+    Web: material/web
+    Web Hosting: material/server
+    Windows: fontawesome/brands/windows
+    Windows Server: fontawesome/brands/windows
+    ZSH: simple/zsh
   generator: false
   analytics:
     provider: google
@@ -217,16 +292,45 @@ extra:
 
 extra_javascript:
   - javascripts/copy-llm.js
+  - javascripts/jd-ui.js
+  - javascripts/category.js
+  - javascripts/jd-vars.js
+  - javascripts/jd-palette.js
+  - javascripts/jd-abbr.js
+  - javascripts/pages.js
+  - javascripts/jd-highlight.js
 
 extra_css:
   - stylesheets/jdelgado.css
+  - stylesheets/article-meta.css
+  - stylesheets/category.css
+  - stylesheets/jd-vars.css
+  - stylesheets/jd-palette.css
+  - stylesheets/jd-abbr.css
+  - stylesheets/jd-highlight.css
+  - stylesheets/home.css
+  - stylesheets/notfound.css
+  - stylesheets/tags.css
 
 markdown_extensions:
   - pymdownx.highlight:
       anchor_linenums: true
+      linenums: true
+      linenums_style: pymdownx-inline
+      pygments_lang_class: true
   - pymdownx.superfences
   - admonition
   - pymdownx.details
   - attr_list
+  - abbr
+  # Wiki-wide glossary tooltips: includes/abbreviations.md is appended to every page
+  - pymdownx.snippets:
+      base_path: [includes]
+      auto_append: [abbreviations.md]
+      check_paths: true
+  - def_list
+  - toc:
+      permalink: true
+      permalink_title: Lien vers cette section
 
 

@@ -36,6 +36,28 @@ tags:
 Quote the description if it contains a colon, otherwise the YAML block silently renders as
 plain text. Directory-wide tags come from `.meta.yml` files.
 
+Optional front matter, all rendered by the theme:
+
+| Key | Example | Effect |
+|---|---|---|
+| `series` + `series_order` | `series: "Thanos at scale"`, `series_order: 2` | Series box with numbering and a "next" link, grouped by exact series name |
+| `tested_with` | `["Thanos 0.35+", "Redis Sentinel 6.2+"]` | "Testé avec" badge, `TechArticle.dependencies` in the JSON-LD |
+| `variables` | `[{name: namespace, default: monitoring}]` | Editable bar above the article; `<namespace>` in code blocks is substituted on display and on copy |
+
+Glossary tooltips (hover, tap on mobile) use the `abbr` extension. Definitions live in
+`includes/abbreviations.md`, appended to every page, so a term is defined once for the whole
+wiki. One line per term, sorted:
+
+```markdown
+*[NUMA]: Non-Uniform Memory Access, une machine multi-socket où la latence mémoire dépend du CPU
+```
+
+The theme UI strings live in `overrides/i18n/<language>.yml` (English is the fallback).
+
+Tag icons are mapped in `extra.tag_icons` in `mkdocs.yml` (tag name to a Material `.icons` path, e.g. `Kubernetes: simple/kubernetes`). Unmapped tags show no icon.
+
+RSS feeds (`feed_rss_created.xml`, `feed_rss_updated.xml`) come from `mkdocs-rss-plugin`; index pages, `tags.md` and `about.md` are excluded by `match_path`.
+
 The sidebar is generated from the directory tree, but the landing pages are not - link the
 new file from `docs/index.md` **and** `docs/<section>/index.md`.
 

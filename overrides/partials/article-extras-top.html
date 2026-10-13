@@ -1,0 +1,33 @@
+{#- Outdated banner (revision older than 2 years, hooks/article_meta.py), tested_with badge row, then series box -#}
+{% if page.meta.outdated %}
+<div class="jd-outdated" role="note">
+  <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>
+  <p><strong>{{ lang.t("jd.meta.outdated_title") }}</strong> {{ lang.t("jd.meta.outdated_text") }}</p>
+</div>
+{% endif %}
+{% if page.meta.tested_with %}
+<div class="jd-tested">
+  {% include ".icons/material/check.svg" %}
+  <span>{{ lang.t("jd.meta.tested_with") }}</span>
+  {% for v in page.meta.tested_with %}<span class="jd-tested__chip">{{ v }}</span>{% endfor %}
+  {% if updated %}<span class="jd-tested__date">{{ lang.t("jd.meta.tested_on") }} <time>{{ updated }}</time></span>{% endif %}
+</div>
+{% endif %}
+{% set sb = page.meta.series_box %}
+{% if sb %}
+<aside class="jd-series" aria-label="{{ lang.t('jd.series.label') | replace('{name}', sb.name) }}">
+  <p class="jd-series__head">
+    <span class="jd-series__name">{{ lang.t("jd.series.label") | replace("{name}", sb.name) }}</span>
+    <span class="jd-series__pos">{{ sb.position }} / {{ sb.total }}</span>
+  </p>
+  <ol class="jd-series__list">
+    {% for it in sb["items"] %}
+    <li{% if it.current %} class="is-current"{% endif %}>
+      <span class="jd-series__dot">{{ loop.index }}</span>
+      <a href="{{ it.url | url }}"{% if it.current %} aria-current="page"{% endif %}>{{ it.title }}</a>
+    </li>
+    {% endfor %}
+  </ol>
+  {% if sb.next %}<a class="jd-series__next" href="{{ sb.next.url | url }}">{{ lang.t("jd.series.next") | replace("{title}", sb.next.title) }}</a>{% endif %}
+</aside>
+{% endif %}

@@ -1,9 +1,11 @@
 /**
- * "Copy for LLM" button — copies article content as clean Markdown
+ * "Copy for LLM" button: copies article content as clean Markdown
  * so LLMs (and humans prompting them) can cite this wiki as a source.
  */
 (function () {
   "use strict";
+
+  function tr(k) { return (window.jdI18n || {})[k] || k; }
 
   function htmlToMarkdown(el) {
     var out = "";
@@ -96,7 +98,7 @@
         return;
       }
 
-      // Admonitions — keep title + content
+      // Admonitions: keep title + content
       if (node.classList.contains("admonition")) {
         var title = node.querySelector(".admonition-title");
         var titleText = title ? title.textContent.trim() : "Note";
@@ -145,6 +147,7 @@
       ".md-content__button",   // edit button
       ".md-source-file",       // git dates footer
       ".md-tags",              // tags
+      ".jd-meta, .jd-toc-bar, .jd-pn, .md-path",  // theme chrome around the article
       "script",
       "style",
       ".copy-llm-btn",
@@ -164,13 +167,15 @@
     if (document.querySelector(".md-content__inner > .md-content__button") === null &&
         document.querySelector("article h1") === null) return;
 
-    var target = document.querySelector(".md-content__inner");
-    if (!target) return;
+    var target = document.querySelector(".jd-meta__actions") ||
+      document.querySelector(".md-content__inner");
+    if (!target || target.querySelector(".copy-llm-btn")) return;
 
     var btn = document.createElement("button");
-    btn.className = "copy-llm-btn md-content__button md-icon";
-    btn.title = "Copier le contenu en Markdown pour utilisation dans un LLM";
-    btn.setAttribute("aria-label", "Copier pour LLM");
+    btn.className = "copy-llm-btn jd-btn md-icon";
+    var idle = tr("jd.copy.title");
+    btn.title = idle;
+    btn.setAttribute("aria-label", tr("jd.copy.label"));
     // Robot/AI icon (Material Design "smart_toy")
     btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">' +
       '<path d="M20 9V7c0-1.1-.9-2-2-2h-3c0-1.66-1.34-3-3-3S9 3.34 9 5H6c-1.1 0-2 .9-2 2v2' +
@@ -185,19 +190,19 @@
 
       navigator.clipboard.writeText(text).then(function () {
         btn.classList.add("copy-llm-btn--done");
-        btn.title = "Copied!";
+        btn.title = tr("jd.copy.done");
         setTimeout(function () {
           btn.classList.remove("copy-llm-btn--done");
-          btn.title = "Copy for LLM";
+          btn.title = idle;
         }, 2000);
       });
     });
 
-    // Insert as first child (before edit button)
-    target.insertBefore(btn, target.firstChild);
+    // Append after the edit button
+    target.appendChild(btn);
   }
 
-  // MkDocs Material uses instant loading — re-init on navigation
+  // MkDocs Material uses instant loading: re-init on navigation
   if (typeof document$ !== "undefined") {
     document$.subscribe(function () { init(); });
   } else {

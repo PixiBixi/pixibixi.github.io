@@ -1,0 +1,65 @@
+/* abbr tooltip (see javascripts/jd-abbr.js): inverted surface, arrow follows the abbr. */
+[data-md-color-scheme="default"] {
+  --jd-tip-bg: #1C2024;
+  --jd-tip-ink: #F2F3F0;
+}
+
+[data-md-color-scheme="slate"] {
+  --jd-tip-bg: #E4E7E5;
+  --jd-tip-ink: #1C2023;
+}
+
+.md-typeset abbr[data-jd-tip] {
+  text-decoration: underline dotted var(--jd-accent);
+  text-underline-offset: 3px;
+  background: var(--jd-abbr-hl);
+  border-radius: 3px;
+  padding: 0 2px;
+  cursor: help;
+}
+
+.jd-tip {
+  position: fixed;
+  z-index: 900;
+  display: block;
+  width: max-content;
+  max-width: min(320px, calc(100vw - 32px));
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: var(--jd-tip-bg);
+  color: var(--jd-tip-ink);
+  font-size: 14px;
+  line-height: 1.45;
+  text-align: left;
+  box-shadow: 0 8px 24px var(--jd-shadow);
+  pointer-events: none;
+}
+
+.jd-tip[hidden] {
+  display: none;
+}
+
+.jd-tip::after {
+  content: "";
+  position: absolute;
+  left: var(--jd-tip-x, 50%);
+  bottom: -6px;
+  width: 12px;
+  height: 12px;
+  margin-left: -6px;
+  background: var(--jd-tip-bg);
+  transform: rotate(45deg);
+  z-index: -1;
+}
+
+.jd-tip--below::after {
+  top: -6px;
+  bottom: auto;
+}
+
+@media (hover: none) {
+  .jd-tip::after {
+    display: none;
+  }
+}

@@ -1,0 +1,33 @@
+{#- Primary nav: no source row; drawer gets its own title bar and a theme + GitHub footer -#}
+{% import "partials/nav-item.html" as item with context %}
+{% set class = "md-nav md-nav--primary" %}
+{% if "navigation.tabs" in features %}
+  {% set class = class ~ " md-nav--lifted" %}
+{% endif %}
+<nav class="{{ class }}" aria-label="{{ lang.t('nav') }}" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <span class="jd-drawer-brand">{{ config.site_name }}</span>
+    <span class="jd-drawer-close" aria-hidden="true"></span>
+  </label>
+  <ul class="md-nav__list" data-md-scrollfix>
+    {% for nav_item in nav.items %}
+      {% set path = "__nav_" ~ loop.index %}
+      {{ item.render(nav_item, path, 1) }}
+    {% endfor %}
+  </ul>
+  <div class="jd-drawer-foot">
+    {% if config.theme.palette and not config.theme.palette is mapping %}
+      <div class="jd-drawer-theme" role="group" aria-label="{{ lang.t("jd.theme.group") }}">
+        {% for option in config.theme.palette %}
+          <label for="__palette_{{ loop.index0 }}" data-jd-idx="{{ loop.index0 }}">{{ [lang.t("jd.theme.auto"), lang.t("jd.theme.light"), lang.t("jd.theme.dark")][loop.index0] }}</label>
+        {% endfor %}
+      </div>
+    {% endif %}
+    {% if config.repo_url %}
+      <a class="jd-drawer-gh" href="{{ config.repo_url }}" aria-label="{{ lang.t("jd.header.repo") }}">
+        {% include ".icons/fontawesome/brands/github.svg" %}
+        <span>GitHub</span>
+      </a>
+    {% endif %}
+  </div>
+</nav>

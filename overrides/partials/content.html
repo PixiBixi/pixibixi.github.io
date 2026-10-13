@@ -1,0 +1,72 @@
+{#- Title, then meta row (dates, tags, actions), then body, then prev/next cards -#}
+{#- Below 1220px the right TOC becomes this "Sur cette page" bar -#}
+{% set jd_toc = page.toc %}
+{% set jd_first = jd_toc | first %}
+{% if jd_first and jd_first.level == 1 %}{% set jd_toc = jd_first.children %}{% endif %}
+{% if jd_toc %}
+<details class="jd-toc-bar">
+  <summary>
+    {% include ".icons/material/format-list-bulleted.svg" %}
+    <span>{{ lang.t("jd.toc.title") }}</span>
+    {% include ".icons/material/chevron-down.svg" %}
+  </summary>
+  <nav class="jd-toc-bar__panel" aria-label="{{ lang.t("jd.toc.title") }}">
+    <ul class="md-nav__list">
+      {% for toc_item in jd_toc %}
+        {% include "partials/toc-item.html" %}
+      {% endfor %}
+    </ul>
+  </nav>
+</details>
+{% endif %}
+{% include "partials/path.html" %}
+{% set body = page.content %}
+{% set has_h1 = "\u003ch1" in page.content %}
+{% if has_h1 %}
+  {#- "%s"|format() turns the Markup into a plain str: Markup.split() would escape the separator -#}
+  {% set parts = ("%s" | format(page.content)).split("</h1>", 1) %}
+  {{ parts[0] }}</h1>
+  {% set body = parts[1] %}
+{% else %}
+  <h1>{{ page.title | d(config.site_name, true) }}</h1>
+{% endif %}
+{% if page.meta %}
+  {% set updated = page.meta.git_revision_date_localized or page.meta.revision_date %}
+  {% set created = page.meta.git_creation_date_localized %}
+{% endif %}
+<div class="jd-meta">
+  <div class="jd-meta__info">
+  {% if updated %}<span>{{ lang.t("jd.meta.updated") }} <time>{{ updated }}</time></span>{% endif %}
+  {% if created %}<span>{{ lang.t("jd.meta.created") }} <time>{{ created }}</time></span>{% endif %}
+  {% if page.meta.reading_time %}<span>{{ page.meta.reading_time }} {{ lang.t("jd.meta.reading") }}</span>{% endif %}
+  {% include "partials/tags.html" %}
+  </div>
+  <span class="jd-meta__actions">
+    {% if page.edit_url %}
+      <a href="{{ page.edit_url }}" class="jd-btn" rel="edit" title="{{ lang.t('jd.meta.edit') }}" aria-label="{{ lang.t('jd.meta.edit') }}">
+        {% include ".icons/material/pencil-outline.svg" %}
+      </a>
+    {% endif %}
+  </span>
+</div>
+{% include "partials/article-extras-top.html" %}
+{{ body }}
+{% include "partials/backlinks.html" %}
+{% if "navigation.footer" in features and (page.previous_page or page.next_page) %}
+  <nav class="jd-pn" aria-label="{{ lang.t("jd.pn.label") }}">
+    {% if page.previous_page %}
+      <a href="{{ page.previous_page.url | url }}" class="jd-pn__link jd-pn__link--prev" rel="prev">
+        <span class="jd-pn__dir">{{ lang.t("jd.pn.prev") }}</span>
+        <span class="jd-pn__title">{{ page.previous_page.title }}</span>
+      </a>
+    {% endif %}
+    {% if page.next_page %}
+      <a href="{{ page.next_page.url | url }}" class="jd-pn__link jd-pn__link--next" rel="next">
+        <span class="jd-pn__dir">{{ lang.t("jd.pn.next") }}</span>
+        <span class="jd-pn__title">{{ page.next_page.title }}</span>
+      </a>
+    {% endif %}
+  </nav>
+{% endif %}
+{% include "partials/feedback.html" %}
+{% include "partials/comments.html" %}

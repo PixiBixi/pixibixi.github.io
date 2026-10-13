@@ -1,0 +1,16 @@
+{#- 3-state theme toggle: segmented on desktop (jd-seg), single cycling button on mobile (jd-cycle) -#}
+<form class="md-header__option jd-theme" data-md-component="palette">
+  {% for option in config.theme.palette %}
+    {% set scheme  = option.scheme  | d("default", true) %}
+    {% set primary = option.primary | d("indigo", true) %}
+    {% set accent  = option.accent  | d("indigo", true) %}
+    {% set tname = [lang.t("jd.theme.system_name"), lang.t("jd.theme.light_name"), lang.t("jd.theme.dark_name")][loop.index0] if loop.index0 < 3 else option.toggle.name %}
+    <input class="md-option" data-md-color-media="{{ option.media }}" data-md-color-scheme="{{ scheme | replace(' ', '-') }}" data-md-color-primary="{{ primary | replace(' ', '-') }}" data-md-color-accent="{{ accent | replace(' ', '-') }}" aria-label="{{ tname }}" type="radio" name="__palette" id="__palette_{{ loop.index0 }}">
+    <label class="jd-seg md-icon" title="{{ tname }}" for="__palette_{{ loop.index0 }}">
+      {% include ".icons/" ~ option.toggle.icon ~ ".svg" %}
+    </label>
+    <label class="jd-cycle md-icon" title="{{ tname }}" for="__palette_{{ loop.index % loop.length }}">
+      {% include ".icons/" ~ option.toggle.icon ~ ".svg" %}
+    </label>
+  {% endfor %}
+</form>

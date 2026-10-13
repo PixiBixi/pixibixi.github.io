@@ -1,0 +1,126 @@
+/* Page variables bar + substituted values in code blocks (see javascripts/jd-vars.js). */
+[data-md-color-scheme="default"] {
+  --jd-var-bg: #DCEBEC;
+}
+
+[data-md-color-scheme="slate"] {
+  --jd-var-bg: #2C4649;
+}
+
+.md-typeset .jd-vars {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 12px;
+  margin: 20px 0 0;
+  padding: 12px 16px;
+  border: 1px solid var(--jd-border-strong);
+  border-bottom: 0;
+  border-radius: 10px 10px 0 0;
+  background: var(--jd-surface-raised);
+  font-size: 14px;
+}
+
+.md-typeset .jd-vars + .highlight {
+  margin-top: 0;
+  border-color: var(--jd-border-strong);
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.jd-vars__title {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  color: var(--jd-ink-soft);
+}
+
+.jd-vars__field {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  color: var(--jd-muted);
+}
+
+.jd-vars__field > span {
+  font-family: var(--jd-mono);
+  font-size: 13px;
+}
+
+.jd-vars__field input {
+  width: auto;
+  min-width: 12ch;
+  max-width: 100%;
+  field-sizing: content;
+  box-sizing: border-box;
+  height: 32px;
+  padding: 0 10px;
+  border: 1px solid var(--jd-border);
+  border-radius: 6px;
+  background: transparent;
+  font: 13px var(--jd-mono);
+  color: var(--jd-muted);
+  outline: none;
+}
+
+.jd-vars__field input:focus-visible {
+  border-color: var(--jd-accent);
+  box-shadow: 0 0 0 2px var(--jd-var-bg);
+  color: var(--jd-ink);
+}
+
+.jd-vars__field input.jd-vars__input--set {
+  border-color: var(--jd-accent);
+  background: var(--jd-var-bg);
+  color: var(--jd-ink);
+}
+
+.jd-vars__spacer {
+  flex: 1;
+}
+
+.jd-vars__reset {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  font-size: 13px;
+  color: var(--jd-link);
+  cursor: pointer;
+}
+
+.jd-vars__reset:hover {
+  text-decoration: underline;
+}
+
+.md-typeset .jd-vars__note {
+  margin: 10px 0 0;
+  font-size: 14px;
+  color: var(--jd-muted);
+}
+
+.jd-var {
+  padding: 0 1px;
+  border-bottom: 1.5px dashed var(--jd-line-no);
+}
+
+.jd-var--set {
+  padding: 0 2px;
+  border-radius: 3px;
+  border-bottom-color: var(--jd-accent);
+  background: var(--jd-var-bg);
+  color: var(--jd-ink);
+}
+
+@media (max-width: 600px) {
+  .jd-vars__field {
+    flex: 1 1 100%;
+  }
+
+  .jd-vars__field input {
+    flex: 1;
+    width: auto;
+  }
+}

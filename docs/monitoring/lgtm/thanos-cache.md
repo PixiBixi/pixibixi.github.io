@@ -1,11 +1,21 @@
 ---
 description: "Mutualiser les caches Thanos sur un backend partagé : index cache, caching bucket et cache de résultats, dimensionnement réel contre taille IN-MEMORY, Memcached ou Redis, et ce que ça change sur la facture."
+variables:
+  - name: namespace
+    default: monitoring
+  - name: master_name
+    default: thanos-cache
 tags:
   - Thanos
   - Cache
   - Redis
   - Observability
   - FinOps
+series: "Thanos at scale"
+series_order: 2
+tested_with:
+  - "Thanos 0.35+"
+  - "Redis Sentinel 6.2+"
 ---
 
 # Les caches Thanos : mutualisation, dimensionnement et facture
@@ -115,7 +125,7 @@ La configuration est la même forme pour les 3 caches. Pour la store gateway :
 type: REDIS
 config:
   addr: "redis-sentinel.<namespace>.svc.cluster.local:26379"
-  master_name: "thanos-cache"
+  master_name: "<master_name>"
   dial_timeout: 5s
   read_timeout: 3s
   write_timeout: 3s
@@ -135,7 +145,7 @@ fichier, celui-là partageable entre ses 2 endpoints :
 type: REDIS
 config:
   addr: "redis-sentinel.<namespace>.svc.cluster.local:26379"
-  master_name: "thanos-cache"
+  master_name: "<master_name>"
   expiration: 24h
 ```
 

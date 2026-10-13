@@ -1,0 +1,91 @@
+{% extends "main.html" %}
+
+{#- Generated folder index: data comes from page.meta.jd_cat (hooks/indexes.py) -#}
+{% macro tag_attrs(a) -%}
+  data-jd-title="{{ a.title | e }}" data-jd-date="{{ a.date }}" data-jd-tags="{{ a.tags | join('|') | e }}" data-jd-text="{{ (a.title ~ ' ' ~ a.desc ~ ' ' ~ (a.tags | join(' '))) | lower | e }}"
+{%- endmacro %}
+
+{% block content %}
+{% set cat = page.meta.jd_cat %}
+<div class="jd-cat" data-jd-cat>
+  <nav class="jd-cat__crumbs" aria-label="{{ lang.t("jd.common.breadcrumb") }}">
+    <a href="{{ nav.homepage.url | url }}">{{ lang.t("jd.common.home") }}</a><span class="jd-cat__sep">/</span>
+    {%- for c in cat.crumbs %}<a href="{{ c.url | url }}">{{ c.title }}</a><span class="jd-cat__sep">/</span>{% endfor -%}
+    <span aria-current="page">{{ page.title }}</span>
+  </nav>
+
+  <h1 class="jd-cat__h1">{{ page.title }}</h1>
+  <p class="jd-cat__meta">
+    {{ lang.t("jd.count.article_" ~ ("one" if cat.total == 1 else "other")) | replace("{n}", cat.total) }}
+    {%- set subs = cat.subfolders | selectattr("articles") | list %}
+    {%- if subs and cat.articles %}, {{ lang.t("jd.cat.of_which") }}
+      {%- for s in subs %} {{ s.articles | length }} {{ lang.t("jd.cat.in") }} <a href="#{{ s.id }}">{{ s.title }}</a>{{ "," if not loop.last }}{% endfor %}
+    {%- endif %}
+    {%- if cat.updated %} · {{ lang.t("jd.cat.updated_on") }} <time datetime="{{ cat.updated }}">{{ cat.updated }}</time>{% endif %}
+  </p>
+
+  {% if cat.total > 1 %}
+  <div class="jd-cat__toolbar">
+    <label class="jd-cat__filter">
+      <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 5h18M6 12h12M10 19h4"></path></svg>
+      <span class="jd-cat__sr">{{ lang.t("jd.cat.filter_label") }}</span>
+      <input type="search" placeholder="{{ lang.t('jd.cat.filter_placeholder') | replace('{n}', cat.total) }}" autocomplete="off" data-jd-filter>
+    </label>
+    {% if cat.chips %}
+    <div class="jd-cat__chips" role="group" aria-label="{{ lang.t("jd.cat.tags") }}">
+      <button type="button" class="jd-cat__chip" aria-pressed="true" data-jd-tag="">{{ lang.t("jd.cat.all") }} <span>{{ cat.total }}</span></button>
+      {%- for t in cat.chips %}
+      <button type="button" class="jd-cat__chip" aria-pressed="false" data-jd-tag="{{ t.name | e }}">{% set jd_tag = t.name %}{% include "partials/tag-icon.html" %}{{ t.name }} <span>{{ t.n }}</span></button>
+      {%- endfor %}
+    </div>
+    {% endif %}
+    <div class="jd-cat__sort" role="group" aria-label="{{ lang.t("jd.common.sort") }}">
+      <button type="button" aria-pressed="true" data-jd-sort="az">{{ lang.t("jd.sort.az") }}</button>
+      <button type="button" aria-pressed="false" data-jd-sort="recent">{{ lang.t("jd.cat.recent") }}</button>
+    </div>
+  </div>
+  {% endif %}
+
+  {% if cat.articles %}
+  <ol class="jd-cat__list" data-jd-list>
+    {% for a in cat.articles %}
+    <li class="jd-cat__row" {{ tag_attrs(a) }}>
+      <a class="jd-cat__title" href="{{ a.url | url }}">{{ a.title }}</a>
+      <span class="jd-cat__info">
+        <span><span data-jd-fresh data-jd-created="{{ a.created }}" data-jd-updated="{{ a.date }}" hidden></span> {{ a.min }} {{ lang.t("jd.common.min") }}{% if a.date %} · <time datetime="{{ a.date }}">{{ a.date }}</time>{% endif %}</span>
+        {% if a.tags %}<span class="jd-cat__tags">{% for g in a.tags %}<span>{{ g }}</span>{% endfor %}</span>{% endif %}
+      </span>
+      {% if a.desc %}<p class="jd-cat__desc">{{ a.desc }}</p>{% endif %}
+    </li>
+    {% endfor %}
+  </ol>
+  {% endif %}
+
+  {% for s in cat.subfolders if s.articles %}
+  <section class="jd-cat__sub" id="{{ s.id }}" data-jd-group>
+    <h2 class="jd-cat__h2">
+      <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M3 6.5A1.5 1.5 0 0 1 4.5 5H9l2 2h8.5A1.5 1.5 0 0 1 21 8.5v9a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 17.5z"></path></svg>
+      <a href="{{ s.url | url }}">{{ s.title }}</a> <span>{{ lang.t("jd.count.article_" ~ ("one" if s.articles | length == 1 else "other")) | replace("{n}", s.articles | length) }}</span>
+    </h2>
+    <div class="jd-cat__grid" data-jd-list>
+      {% for a in s.articles %}
+      <div class="jd-cat__card" {{ tag_attrs(a) }}>
+        <a class="jd-cat__title" href="{{ a.url | url }}">{{ a.title }}</a>
+        {% if a.desc %}<p class="jd-cat__desc">{{ a.desc }}</p>{% endif %}
+        <p class="jd-cat__info"><span data-jd-fresh data-jd-created="{{ a.created }}" data-jd-updated="{{ a.date }}" hidden></span> {{ a.min }} {{ lang.t("jd.common.min") }}{% if a.date %} · <time datetime="{{ a.date }}">{{ a.date }}</time>{% endif %}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+  {% endfor %}
+
+  <p class="jd-cat__empty" data-jd-empty hidden>{{ lang.t("jd.cat.empty") }}</p>
+
+  {% if cat.siblings %}
+  <nav class="jd-cat__siblings" aria-label="{{ lang.t('jd.cat.siblings_label') | replace('{parent}', cat.parent_title) }}">
+    <span>{{ lang.t("jd.cat.also_in") | replace("{parent}", cat.parent_title) }}</span>
+    {% for s in cat.siblings %}<a href="{{ s.url | url }}">{{ s.title }}</a>{% endfor %}
+  </nav>
+  {% endif %}
+</div>
+{% endblock %}

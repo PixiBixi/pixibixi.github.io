@@ -6,6 +6,8 @@ tags:
   - Observability
   - PromQL
   - Kubernetes
+series: "Thanos at scale"
+series_order: 3
 ---
 
 # La concurrence de lecture Thanos : amplification, gates et diagnostic
