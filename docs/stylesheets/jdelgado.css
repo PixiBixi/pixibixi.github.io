@@ -701,55 +701,75 @@ body {
   font-weight: 600;
 }
 
-/* Fold button, aligned on the "Sur cette page" title; folded, the column shrinks to the button
-   and the article takes the freed width */
-.md-sidebar--secondary {
-  position: sticky;
+/* Sidebar fold buttons, aligned on the column titles. Folded, the column shrinks to the
+   button and the article takes the freed width. Desktop only: below, both are drawers/bars. */
+.jd-fold {
+  display: none;
 }
 
-.jd-toc-fold {
-  position: absolute;
-  top: 34px;
-  right: 0;
-  z-index: 3;
-  display: grid;
-  place-items: center;
-  width: 28px;
-  height: 28px;
-  padding: 0;
-  border: 1px solid var(--jd-border);
-  border-radius: 6px;
-  background: var(--jd-bg);
-  color: var(--jd-muted);
-  cursor: pointer;
-}
+@media screen and (min-width: 76.25em) {
+  .md-sidebar {
+    position: sticky;
+  }
 
-.jd-toc-fold:hover,
-.jd-toc-fold:focus-visible {
-  color: var(--jd-link);
-  border-color: var(--jd-border-strong);
-}
+  .jd-fold {
+    position: absolute;
+    top: 34px;
+    right: 0;
+    z-index: 3;
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: 1px solid var(--jd-border);
+    border-radius: 6px;
+    background: var(--jd-bg);
+    color: var(--jd-muted);
+    cursor: pointer;
+  }
 
-.jd-toc-fold svg {
-  width: 16px;
-  height: 16px;
-  transition: transform 0.2s;
-}
+  .jd-fold:hover,
+  .jd-fold:focus-visible {
+    color: var(--jd-link);
+    border-color: var(--jd-border-strong);
+  }
 
-.jd-toc-folded .jd-toc-fold svg {
-  transform: rotate(180deg);
-}
+  .jd-fold svg {
+    width: 16px;
+    height: 16px;
+    transition: transform 0.2s;
+  }
 
-.jd-toc-folded .md-sidebar--secondary {
-  width: 28px;
-}
+  /* Chevron points to where the column goes: left nav folds left, TOC folds right */
+  .md-sidebar--primary .jd-fold svg,
+  .jd-toc-folded .md-sidebar--secondary .jd-fold svg {
+    transform: rotate(180deg);
+  }
 
-.jd-toc-folded .md-sidebar--secondary .md-sidebar__scrollwrap {
-  visibility: hidden;
-}
+  .jd-nav-folded .md-sidebar--primary .jd-fold svg {
+    transform: none;
+  }
 
-.jd-toc-folded .md-content {
-  max-width: none;
+  .jd-nav-folded .md-sidebar--primary .jd-fold {
+    right: auto;
+    left: 0;
+  }
+
+  .jd-nav-folded .md-sidebar--primary,
+  .jd-toc-folded .md-sidebar--secondary {
+    width: 28px;
+  }
+
+  .jd-nav-folded .md-sidebar--primary .md-sidebar__scrollwrap,
+  .jd-toc-folded .md-sidebar--secondary .md-sidebar__scrollwrap {
+    display: none;
+  }
+
+  .jd-nav-folded .md-content,
+  .jd-toc-folded .md-content {
+    max-width: none;
+  }
 }
 
 .jd-totop {
