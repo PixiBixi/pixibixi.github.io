@@ -926,6 +926,11 @@ body {
   mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1'/%3E%3Cpath d='M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1'/%3E%3C/svg%3E") center / contain no-repeat;
 }
 
+/* Never revealed on the H1, and its invisible box could wrap to a blank second line */
+.md-typeset h1 > .headerlink {
+  display: none;
+}
+
 .md-typeset :is(h2, h3, h4):hover > .headerlink,
 .md-typeset .headerlink:focus,
 .md-typeset :target > .headerlink {
