@@ -2307,3 +2307,14 @@ body {
   color: var(--jd-bg);
   font-size: 14px;
 }
+
+/* Home and Tags keep site_nav for the mobile drawer: no TOC anywhere, no left nav on desktop. */
+.md-main__inner:has(> .jd-home, > .jd-tags) > .md-sidebar--secondary {
+  display: none;
+}
+
+@media screen and (min-width: 76.25em) {
+  .md-main__inner:has(> .jd-home, > .jd-tags) > .md-sidebar--primary {
+    display: none;
+  }
+}
