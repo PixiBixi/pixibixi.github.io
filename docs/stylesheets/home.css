@@ -26,11 +26,6 @@
   padding: 64px 0 96px;
 }
 
-/* Wide pages: cancel the 720px prose cap of articles */
-[dir] .jd-page .md-content__inner > * {
-  max-width: none;
-}
-
 .jd-page h1,
 .jd-page h2 {
   font-family: var(--jd-serif);
