@@ -249,7 +249,7 @@ extra:
     Monitoring: material/chart-line
     MySQL: simple/mysql
     Networking: material/lan
-    Nginx: simple/nginx
+    nginx: simple/nginx
     Observability: material/eye
     OpenVPN: simple/openvpn
     OS: material/monitor-dashboard
@@ -274,7 +274,7 @@ extra:
     Web Hosting: material/server
     Windows: fontawesome/brands/windows
     Windows Server: fontawesome/brands/windows
-    ZSH: simple/zsh
+    Zsh: simple/zsh
   generator: false
   analytics:
     provider: google
