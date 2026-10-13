@@ -25,7 +25,7 @@
       <ol class="jd-home__recent">
         {% for r in home.recent %}
         <li>
-          <div class="jd-home__rmeta"><time datetime="{{ r.date }}">{{ r.date }}</time><span>·</span><span>{{ r.section }}</span></div>
+          <div class="jd-home__rmeta"><time datetime="{{ r.date }}">{{ r.date }}</time><span>·</span><span>{{ r.section }}</span><span data-jd-fresh data-jd-created="{{ r.date }}" hidden></span></div>
           <a href="{{ r.url | url }}">{{ r.title }}</a>
         </li>
         {% endfor %}

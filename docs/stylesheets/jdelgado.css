@@ -2269,3 +2269,28 @@ body {
   height: 1em;
   fill: currentColor;
 }
+
+/* "New" / "Updated" badges on the home and category lists, shown by jd-ui.js */
+.jd-fresh {
+  display: inline-block;
+  padding: 0 7px;
+  border: 1px solid var(--jd-ok-border);
+  border-radius: 999px;
+  background: var(--jd-ok-bg);
+  color: var(--jd-ok-ink);
+  font-family: var(--jd-sans);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.6;
+  vertical-align: 1px;
+}
+
+.jd-fresh--updated {
+  border-color: var(--jd-note-border);
+  background: var(--jd-note-bg);
+  color: var(--jd-note-ink);
+}
+
+.jd-fresh[hidden] {
+  display: none;
+}

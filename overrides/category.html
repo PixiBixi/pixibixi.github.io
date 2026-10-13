@@ -52,7 +52,7 @@
     <li class="jd-cat__row" {{ tag_attrs(a) }}>
       <a class="jd-cat__title" href="{{ a.url | url }}">{{ a.title }}</a>
       <span class="jd-cat__info">
-        <span>{{ a.min }} {{ lang.t("jd.common.min") }}{% if a.date %} · <time datetime="{{ a.date }}">{{ a.date }}</time>{% endif %}</span>
+        <span><span data-jd-fresh data-jd-created="{{ a.created }}" data-jd-updated="{{ a.date }}" hidden></span> {{ a.min }} {{ lang.t("jd.common.min") }}{% if a.date %} · <time datetime="{{ a.date }}">{{ a.date }}</time>{% endif %}</span>
         {% if a.tags %}<span class="jd-cat__tags">{% for g in a.tags %}<span>{{ g }}</span>{% endfor %}</span>{% endif %}
       </span>
       {% if a.desc %}<p class="jd-cat__desc">{{ a.desc }}</p>{% endif %}
@@ -72,7 +72,7 @@
       <div class="jd-cat__card" {{ tag_attrs(a) }}>
         <a class="jd-cat__title" href="{{ a.url | url }}">{{ a.title }}</a>
         {% if a.desc %}<p class="jd-cat__desc">{{ a.desc }}</p>{% endif %}
-        <p class="jd-cat__info">{{ a.min }} {{ lang.t("jd.common.min") }}{% if a.date %} · <time datetime="{{ a.date }}">{{ a.date }}</time>{% endif %}</p>
+        <p class="jd-cat__info"><span data-jd-fresh data-jd-created="{{ a.created }}" data-jd-updated="{{ a.date }}" hidden></span> {{ a.min }} {{ lang.t("jd.common.min") }}{% if a.date %} · <time datetime="{{ a.date }}">{{ a.date }}</time>{% endif %}</p>
       </div>
       {% endfor %}
     </div>

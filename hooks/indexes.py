@@ -23,6 +23,9 @@ from mkdocs.utils.meta import get_data
 
 log = logging.getLogger("mkdocs.hooks.indexes")
 
+# Same threshold as article_meta.py: above it a commit is a style sweep.
+SWEEP_FILES = 10
+
 # Folders that never become a section, even if they ever hold Markdown.
 SKIP_DIRS = {"javascripts", "stylesheets", "img", "assets", "overrides"}
 
@@ -94,33 +97,49 @@ def _sort_key(text: str) -> str:
     return "".join(c for c in norm if not unicodedata.combining(c))
 
 
-def _git_dates(docs_dir: str) -> dict[str, str]:
-    """Last commit date per docs-relative path, from a single git log."""
+def _git_dates(docs_dir: str) -> dict[str, dict[str, str]]:
+    """Per docs-relative path: creation day (renames followed) and last real content change.
+    A commit touching more than SWEEP_FILES articles is a style sweep, not an update."""
     try:
         top = subprocess.run(
             ["git", "-C", docs_dir, "rev-parse", "--show-toplevel"],
             capture_output=True, text=True, check=True,
         ).stdout.strip()
         out = subprocess.run(
-            ["git", "-C", top, "log", "--format=%x00%cs", "--name-only", "--no-renames", "--", docs_dir],
+            ["git", "-C", top, "log", "--reverse", "-M", "--name-status", "--format=%x00%cs", "--", docs_dir],
             capture_output=True, text=True, check=True,
         ).stdout
     except (OSError, subprocess.CalledProcessError) as exc:
         log.warning("git dates unavailable: %s", exc)
         return {}
     rel_docs = os.path.relpath(os.path.realpath(docs_dir), os.path.realpath(top))
-    dates: dict[str, str] = {}
-    current = ""
-    for line in out.splitlines():
-        if line.startswith("\x00"):
-            current = line[1:]
-        elif line:
-            path = os.path.relpath(line, rel_docs).replace(os.sep, "/")
-            dates.setdefault(path, current)
-    return dates
+
+    def rel(path: str) -> str:
+        return os.path.relpath(path, rel_docs).replace(os.sep, "/")
+
+    created: dict[str, str] = {}
+    updated: dict[str, str] = {}
+    for chunk in out.split("\x00")[1:]:
+        lines = [x for x in chunk.splitlines() if x]
+        day = lines[0]
+        entries = [x.split("\t") for x in lines[1:]]
+        entries = [e for e in entries if len(e) >= 2 and e[-1].endswith(".md")]
+        sweep = len(entries) > SWEEP_FILES
+        for e in entries:
+            path = rel(e[-1])
+            if e[0].startswith("R"):
+                old = rel(e[1])
+                created[path] = created.pop(old, day)
+                if old in updated:
+                    updated[path] = updated.pop(old)
+            elif e[0] == "A":
+                created[path] = day
+            if e[0][0] in "AM" and not sweep:
+                updated[path] = day
+    return {p: {"created": c, "updated": updated.get(p, c)} for p, c in created.items()}
 
 
-def _read_article(file: File, dates: dict[str, str]) -> dict:
+def _read_article(file: File, dates: dict[str, dict[str, str]]) -> dict:
     source = file.content_string
     body, meta = get_data(source)
     title = meta.get("title")
@@ -135,7 +154,8 @@ def _read_article(file: File, dates: dict[str, str]) -> dict:
     if not title:
         title = _folder_title(PurePosixPath(file.src_uri).stem)
     words = len(body.split())
-    date = dates.get(file.src_uri)
+    known = dates.get(file.src_uri, {})
+    date = known.get("updated")
     if not date and file.abs_src_path and os.path.exists(file.abs_src_path):
         date = datetime.date.fromtimestamp(os.path.getmtime(file.abs_src_path)).isoformat()
     tags = meta.get("tags") or []
@@ -146,6 +166,7 @@ def _read_article(file: File, dates: dict[str, str]) -> dict:
         "tags": [str(t) for t in tags] if isinstance(tags, list) else [str(tags)],
         "min": max(1, round(words / WORDS_PER_MINUTE)),
         "date": date or "",
+        "created": known.get("created", date or ""),
     }
 
 

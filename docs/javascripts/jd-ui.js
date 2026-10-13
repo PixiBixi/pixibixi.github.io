@@ -66,6 +66,15 @@
     { side: ".md-sidebar--primary", cls: "jd-nav-folded", key: "jd.fold.nav" },
     { side: ".md-sidebar--secondary", cls: "jd-toc-folded", key: "jd.fold.toc" },
   ];
+  function setFold(f, folded) {
+    document.documentElement.classList.toggle(f.cls, folded);
+    try { localStorage.setItem(f.cls, folded ? "1" : "0"); } catch (e) { /* private mode */ }
+    var btn = document.querySelector(f.side + " > .jd-fold");
+    if (!btn) return;
+    btn.setAttribute("aria-expanded", String(!folded));
+    btn.setAttribute("aria-label", tr(f.key + (folded ? "_show" : "_hide")));
+    btn.title = btn.getAttribute("aria-label") + " (" + tr("jd.fold.focus") + ")";
+  }
   function sideFold(f) {
     var side = document.querySelector(f.side);
     if (!side || side.querySelector(".jd-fold")) return;
@@ -73,19 +82,44 @@
     btn.type = "button";
     btn.className = "jd-fold";
     btn.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-    var sync = function () {
-      var folded = document.documentElement.classList.contains(f.cls);
-      btn.setAttribute("aria-expanded", String(!folded));
-      btn.setAttribute("aria-label", tr(f.key + (folded ? "_show" : "_hide")));
-      btn.title = btn.getAttribute("aria-label");
-    };
     btn.addEventListener("click", function () {
-      var folded = document.documentElement.classList.toggle(f.cls);
-      try { localStorage.setItem(f.cls, folded ? "1" : "0"); } catch (e) { /* private mode */ }
-      sync();
+      setFold(f, !document.documentElement.classList.contains(f.cls));
     });
-    sync();
     side.insertBefore(btn, side.firstChild);
+    setFold(f, document.documentElement.classList.contains(f.cls));
+  }
+
+  // Reading mode on "r" (Material already binds f, s and / to search): folds both sidebars, or unfolds them.
+  document.addEventListener("keydown", function (e) {
+    if (e.key !== "r" || e.metaKey || e.ctrlKey || e.altKey || e.shiftKey) return;
+    var t = e.target;
+    if (t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) return;
+    if (!window.matchMedia("(min-width: 76.25em)").matches || !document.querySelector(".jd-fold")) return;
+    var all = FOLDS.every(function (f) { return document.documentElement.classList.contains(f.cls); });
+    FOLDS.forEach(function (f) { setFold(f, !all); });
+  });
+
+  // Heading anchors: the click still jumps to the section, and also copies its full URL.
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest(".md-typeset .headerlink");
+    if (!a || !navigator.clipboard) return;
+    navigator.clipboard.writeText(a.href).then(function () {
+      if (window.alert$) window.alert$.next(tr("jd.anchor.copied"));
+    }, function () { /* clipboard denied: plain jump */ });
+  });
+
+  // "New" / "Updated" badges, computed on the reader's day so a site not rebuilt for weeks stays right.
+  var FRESH_DAYS = 30;
+  function fresh() {
+    var now = Date.now();
+    var age = function (d) { return d ? (now - Date.parse(d)) / 864e5 : Infinity; };
+    document.querySelectorAll("[data-jd-fresh]").forEach(function (b) {
+      var kind = age(b.dataset.jdCreated) < FRESH_DAYS ? "new" : age(b.dataset.jdUpdated) < FRESH_DAYS ? "updated" : null;
+      b.hidden = !kind;
+      if (!kind) return;
+      b.textContent = tr("jd.fresh." + kind);
+      b.className = "jd-fresh jd-fresh--" + kind;
+    });
   }
   FOLDS.forEach(function (f) {
     try {
@@ -126,6 +160,7 @@
     captions();
     titleBreaks();
     themeState();
+    fresh();
   }
 
   if (typeof document$ !== "undefined") {
