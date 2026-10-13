@@ -46,7 +46,7 @@ Les projets du moment :
 - [freshrss-summary](https://github.com/PixiBixi/freshrss-summary) (Python) : score et trie
   les articles FreshRSS non lus par pertinence (SRE, Kubernetes, ArgoCD, Terraform).
   FastAPI, SQLite et un chart Helm pour le déployer.
-- [dotfiles](https://github.com/PixiBixi/dotfiles) : config Zsh, Neovim, Wezterm, tmux.
+- [dotfiles](https://github.com/PixiBixi/dotfiles) : config Zsh, Neovim, WezTerm, tmux.
 
 Les anciens, toujours en ligne :
 

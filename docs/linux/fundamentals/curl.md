@@ -1,12 +1,12 @@
 ---
-description: Utiliser cURL pour faire des requêtes HTTP avec en-têtes, authentification et métriques de performance
+description: Utiliser curl pour faire des requêtes HTTP avec en-têtes, authentification et métriques de performance
 tags:
   - curl
 ---
 
-# cURL: La commande à tout faire
+# curl: La commande à tout faire
 
-* cURL détaillé
+* curl détaillé
 
 ```bash
 curl -I -v --trace-time https://www.google.com
@@ -14,9 +14,9 @@ curl -I -v --trace-time https://www.google.com
 
 ## BONUS
 
-### cURL détaillé
+### curl détaillé
 
-Nous pouvons personnaliser l'output de cURL pour avoir des détails
+Nous pouvons personnaliser l'output de curl pour avoir des détails
 extrêmements intéressants tels que le temps de résolution DNS, de
 négociation TLS...
 
@@ -48,7 +48,7 @@ curl -w "@curl-format.txt" -o /dev/null -s "https://wiki.jdelgado.fr"
          time_total:  0,281707
 ```
 
-Il est également possible d'avoir le retour de la commande cURL en
+Il est également possible d'avoir le retour de la commande curl en
 JSON, très facile à parser
 
 ```bash
@@ -89,7 +89,7 @@ curl --connect-to example.com::staging.internal: https://example.com
 
 ### Détails CRT
 
-On peut avoir quelques détails sur le CRT en utilisant cURL et un peu de
+On peut avoir quelques détails sur le CRT en utilisant curl et un peu de
 magie :
 
 ```bash

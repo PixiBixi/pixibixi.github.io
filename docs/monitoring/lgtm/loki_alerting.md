@@ -1,5 +1,5 @@
 ---
-description: Configurer des règles d'alerting dans Loki et les remonter dans AlertManager
+description: Configurer des règles d'alerting dans Loki et les remonter dans Alertmanager
 tags:
   - Loki
   - Alerting
@@ -7,7 +7,7 @@ tags:
 
 # Générer des alertes depuis Loki
 
-Avoir des logs c'est bien, les exploiter c'est mieux. Pour cela, nous pouvons générer des alertes et les remonter dans [AlertManager](simple_monitoring_stack.md#alertmanager), tout comme Prometheus.
+Avoir des logs c'est bien, les exploiter c'est mieux. Pour cela, nous pouvons générer des alertes et les remonter dans [Alertmanager](simple_monitoring_stack.md#alertmanager), tout comme Prometheus.
 
 Les différentes configuration sont valables pour le [chart Helm](https://github.com/grafana/loki/tree/main/production/helm/loki) officiel `grafana/loki`
 
@@ -33,12 +33,12 @@ Pour cela, la première étape est de link son Loki (plus particulièrement le r
             url: http://prometheus-server.dyn-tools.svc.cluster.local/api/v1/write
     ```
 
-Dans ce bloc de configuration, nous définissons en réalité plusieurs paramètres non directement liés à AlertManager:
+Dans ce bloc de configuration, nous définissons en réalité plusieurs paramètres non directement liés à Alertmanager:
 
 * `evaluation_interval` à 15s qui nous permet de réévaluer les records toutes les 15 secondes et de les envoyer à notre Prometheus
 * `enable_sharding` car nous disposons de plusieurs instances du ruler
 * `alertmanager_url` qui nous indique où envoyer les alertes
-* `enable_alertmanager_v2` car nous utilisons un AlertManager récent :)
+* `enable_alertmanager_v2` car nous utilisons un Alertmanager récent :)
 * `storage` et subéquent car nous utilisons des règles locales.
   * Dans un monde optimal, nous aurions du utiliser un backed remote type S3
 * `wal.dir` le chart Helm a un bug qui nous force à override la valeur
@@ -74,7 +74,7 @@ Nous avons maintenant besoin de créer les règles Loki et différents élément
 
 Vous pouvez le voir, tel que Prometheus, Loki peut gérer les records et les alertes
 
-Comme d'habitude sur K8S, nous appliquons notre manifest
+Comme d'habitude sur K8s, nous appliquons notre manifest
 
 ```shell
 kubectl apply -f loki-rules.yaml
@@ -107,6 +107,6 @@ Enfin, nous montons les différents volumes
 
 ## Voir aussi
 
-* [Netdata, Prometheus et Grafana : une stack de monitoring simple et puissante](simple_monitoring_stack.md) - alerting avec Prometheus et AlertManager
+* [Netdata, Prometheus et Grafana : une stack de monitoring simple et puissante](simple_monitoring_stack.md) - alerting avec Prometheus et Alertmanager
 * [Grafana Alloy](alloy.md) - collecteur universel pour les logs vers Loki
 * [Quelques tips pour la stack LGTM](tips_lgtm.md)

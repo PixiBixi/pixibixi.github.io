@@ -19,7 +19,7 @@ tags:
 
 * Pour voir les informations détaillées d'une table.
 
-Il y a un tools open-source Github permettant d'avoir une multitudes de commandes utiles rapidement : [Postgres DBA](https://github.com/NikolayS/postgres_dba)
+Il y a un tools open-source GitHub permettant d'avoir une multitudes de commandes utiles rapidement : [Postgres DBA](https://github.com/NikolayS/postgres_dba)
 
 ---
 

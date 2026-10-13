@@ -1,5 +1,5 @@
 ---
-description: Partager ses fichiers en ligne avec H5ai - installation, configuration Nginx et authentification basique
+description: Partager ses fichiers en ligne avec H5ai - installation, configuration nginx et authentification basique
 tags:
   - h5ai
 ---
@@ -53,7 +53,7 @@ On n'oublie pas de donner les droits adéquats
 chown -R www-data:www-data .h5ai
 ```
 
-Et enfin, on créer le server-block NGINX adéquat, sans oublier de faire le bon CNAME
+Et enfin, on créer le server-block nginx adéquat, sans oublier de faire le bon CNAME
 
 ```nginx
 server {

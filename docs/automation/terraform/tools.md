@@ -23,7 +23,7 @@ outils :
 * [`tfsec`](https://github.com/aquasecurity/tfsec) vérifie les bonnes pratiques de
     sécurité, avec possibilité de règles custom
 * [`checkov`](https://github.com/bridgecrewio/checkov) est un équivalent générique, il
-    scanne aussi les YAML K8S, les Dockerfile et les templates CloudFormation
+    scanne aussi les YAML K8s, les Dockerfile et les templates CloudFormation
 * [`infracost`](https://github.com/infracost/infracost) chiffre le coût mensuel d'un
     `terraform plan` avant l'apply
 

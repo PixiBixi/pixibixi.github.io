@@ -136,9 +136,9 @@ Les `%` doivent être doublés en `%%` dans une unit systemd, sinon systemd inte
 
 ## Une interface web par-dessus
 
-L'article portait à l'origine sur Youtube-DL-WebUI, une interface PHP dont le fork PixiBixi n'a pas reçu de commit depuis novembre 2017. Elle fonctionne encore si on lui donne un `yt-dlp` à jour derrière, mais ce n'est plus ce qu'on installerait aujourd'hui. Les projets actifs sur ce créneau sont [MeTube](https://github.com/alexta69/metube) pour du téléchargement à la demande et [Tube Archivist](https://www.tubearchivist.com/) pour de l'archivage de chaînes avec index et recherche.
+L'article portait à l'origine sur YouTube-DL-WebUI, une interface PHP dont le fork PixiBixi n'a pas reçu de commit depuis novembre 2017. Elle fonctionne encore si on lui donne un `yt-dlp` à jour derrière, mais ce n'est plus ce qu'on installerait aujourd'hui. Les projets actifs sur ce créneau sont [MeTube](https://github.com/alexta69/metube) pour du téléchargement à la demande et [Tube Archivist](https://www.tubearchivist.com/) pour de l'archivage de chaînes avec index et recherche.
 
-??? note "L'installation historique de Youtube-DL-WebUI, pour archive"
+??? note "L'installation historique de YouTube-DL-WebUI, pour archive"
     On clone le fork dans la racine web, puis on lui donne les droits du serveur. Le mot de passe par défaut est `root`, on le change en remplaçant le sha256 dans `config.php`.
 
 ```bash

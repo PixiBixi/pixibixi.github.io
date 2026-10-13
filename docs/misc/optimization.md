@@ -1,5 +1,5 @@
 ---
-description: Liens de référence pour optimiser les performances de NGINX, MySQL, PHP et d'autres logiciels
+description: Liens de référence pour optimiser les performances de nginx, MySQL, PHP et d'autres logiciels
 tags:
   - Performance
 ---
@@ -8,12 +8,12 @@ tags:
 
 Liens d'optimisations vers pas mal de logiciels
 
-## NGINX
+## nginx
 
-- [Optimiser les performances de NGINX (Buzut)](https://buzut.fr/optimiser-nginx/)
+- [Optimiser les performances de nginx (Buzut)](https://buzut.fr/optimiser-nginx/)
 - [How to Configure nginx for Optimized Performance (Linode)](https://www.linode.com/docs/websites/nginx/configure-nginx-for-optimized-performance)
 - [Un tutoriel de la mise en cache](https://www.mnot.net/cache_docs/)
-- [Servers for Hackers : Nginx Caching](https://serversforhackers.com/nginx-caching)
+- [Servers for Hackers : nginx Caching](https://serversforhackers.com/nginx-caching)
 
 ## Optimisation HTML
 

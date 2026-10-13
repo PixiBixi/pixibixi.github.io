@@ -61,7 +61,7 @@ Ces commandes proviennent d'un peu partout, principalement la documentation Kube
     nerdctl -H /run/k3s/containerd/containerd.sock --namespace k8s.io ps|grep -v pause
     ```
 
-!!! note "Forcer un noeud RKE2 K8S comme NotReady"
+!!! note "Forcer un noeud RKE2 K8s comme NotReady"
     ```bash
     systemctl stop rke2-agent
     ```
@@ -73,7 +73,7 @@ Ces commandes proviennent d'un peu partout, principalement la documentation Kube
     kubectl get nodes -o custom-columns=NAME:.metadata.name,TAINTS:.spec.taints --no-headers
     ```
 
-!!! note "Lister les CPU/RAM sur les noeuds K8S et allouables sur K8S"
+!!! note "Lister les CPU/RAM sur les noeuds K8s et allouables sur K8s"
     ```bash
     kubectl get nodes -o custom-columns=NAME:.metadata.name,"CPU_Capacity":.status.capacity.cpu,"CPU_Allocatable":.status.allocatable.cpu,"MEMORY_Capacity":.status.capacity.memory,"MEMORY_Allocatable":.status.allocatable.memory
     ```
@@ -83,7 +83,7 @@ Ces commandes proviennent d'un peu partout, principalement la documentation Kube
     kubectl get svc -o jsonpath='{range .items[*]}{.metadata.name}.{.metadata.namespace}.svc.cluster.local{"\n"}{end}'
     ```
 
-!!! note "Lister les zones pour les noeuds K8S"
+!!! note "Lister les zones pour les noeuds K8s"
     ```bash
     kubectl get nodes -o custom-columns='NAME:metadata.name, REGION:metadata.labels.topology\.kubernetes\.io/region, ZONE:metadata.labels.topology\.kubernetes\.io/zone'
     NAME                                                   REGION     ZONE
@@ -118,5 +118,5 @@ Le flag `-L` ajoute n'importe quel label en colonne. Bien pratique sur GKE pour 
 ## Voir aussi
 
 * [Commandes utiles](useful_commands.md) - gestion des pods, déploiements et débogage courant
-* [Outils pour K8S](tools.md) - kubectx, stern, kubecolor et autres utilitaires d'optimisation
+* [Outils pour K8s](tools.md) - kubectx, stern, kubecolor et autres utilitaires d'optimisation
 * [Plugins Krew](krew_plugins.md) - plugins essentiels pour étendre kubectl

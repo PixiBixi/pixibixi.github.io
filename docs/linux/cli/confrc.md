@@ -1,5 +1,5 @@
 ---
-description: Configuration de l'environnement de travail - zsh, aliases, fonctions, git, SSH, tmux et Wezterm via le dépôt dotfiles.
+description: Configuration de l'environnement de travail - zsh, aliases, fonctions, git, SSH, tmux et WezTerm via le dépôt dotfiles.
 tags:
   - Dotfiles
   - Zsh
@@ -293,7 +293,7 @@ Plus besoin de réorganiser manuellement après avoir tué un processus.
 
 ---
 
-## Terminal : Wezterm
+## Terminal : WezTerm
 
 [WezTerm](https://wezfurlong.org/wezterm/) est le terminal utilisé,
 configuré via `.wezterm.lua`. Il remplace iTerm2 avec le bénéfice d'une

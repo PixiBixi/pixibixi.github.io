@@ -1,14 +1,14 @@
 ---
-description: Forcer le HTTPS avec Nginx via redirection HTTP 301 et configuration SSL/TLS
+description: Forcer le HTTPS avec nginx via redirection HTTP 301 et configuration SSL/TLS
 tags:
-  - Nginx
+  - nginx
   - TLS
 ---
 
-# Forcer le SSL sous NGINX
+# Forcer le SSL sous nginx
 
 Pour forcer le SSL/TLS sous nginx, rien de plus simple, il suffit
-simplement d'ajouter cette directive dans votre server-block nginx. Voir [Installer son Serveur Web : NGINX, PHP-FPM et MariaDB](installation.md) pour la configuration de base.
+simplement d'ajouter cette directive dans votre server-block nginx. Voir [Installer son Serveur Web : nginx, PHP-FPM et MariaDB](installation.md) pour la configuration de base.
 
 ```nginx
 server {
@@ -24,5 +24,5 @@ fonctionnement du site web.
 
 ## Voir aussi
 
-* [Installer son Serveur Web : NGINX, PHP-FPM et MariaDB](installation.md) - Configuration complète de nginx avec SSL
-* [Être encore plus safe en customisant son header Server NGINX](custom_server_header.md) - Sécurité additionnelle via les headers
+* [Installer son Serveur Web : nginx, PHP-FPM et MariaDB](installation.md) - Configuration complète de nginx avec SSL
+* [Être encore plus safe en customisant son header Server nginx](custom_server_header.md) - Sécurité additionnelle via les headers

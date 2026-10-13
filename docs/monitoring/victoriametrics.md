@@ -89,7 +89,7 @@ Aucun de ces 6 n'est un bug de VictoriaMetrics. Ce sont des défauts de déploie
 
 ### Le `$ARGOCD_APP_NAME` qui ne se substitue pas
 
-Le chart expose `argocdReleaseOverride` et la doc suggère de le mettre à `$ARGOCD_APP_NAME`. ArgoCD ne substitue les variables de build que dans `helm.parameters`, **jamais dans un fichier de values**. La chaîne part littéralement dans `app.kubernetes.io/instance`, qui n'est pas un label valide, et l'API server rejette l'Ingress, le VMAgent, le VMCluster et le VMAlert d'un coup. Quand `helm.releaseName` est déjà fixé dans l'ApplicationSet, ce paramètre ne sert de toute façon à rien.
+Le chart expose `argocdReleaseOverride` et la doc suggère de le mettre à `$ARGOCD_APP_NAME`. ArgoCD ne substitue les variables de build que dans `helm.parameters`, **jamais dans un fichier de values**. La chaîne part littéralement dans `app.kubernetes.io/instance`, qui n'est pas un label valide, et l'API server rejette l'Ingress, le vmagent, le VMCluster et le vmalert d'un coup. Quand `helm.releaseName` est déjà fixé dans l'ApplicationSet, ce paramètre ne sert de toute façon à rien.
 
 ### La clé de values qui n'existe pas
 

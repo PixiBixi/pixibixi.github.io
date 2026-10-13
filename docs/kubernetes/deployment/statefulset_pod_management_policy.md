@@ -9,7 +9,7 @@ tags:
 
 Par défaut, un StatefulSet démarre ses pods un par un dans l'ordre : `pod-0` doit être Running et Ready avant que `pod-1` démarre. C'est `OrderedReady`.
 
-C'est bien pour les workloads où les pods s'initialisent entre eux (Kafka, Zookeeper, etcd), mais c'est lent pour tout le reste.
+C'est bien pour les workloads où les pods s'initialisent entre eux (Kafka, ZooKeeper, etcd), mais c'est lent pour tout le reste.
 
 ## Les 2 modes
 

@@ -7,7 +7,7 @@ tags:
 
 # GKE - Capacité réelle des nodes
 
-Sur GKE, le node size annoncé et ce que K8S voit réellement sont 2 choses différentes.
+Sur GKE, le node size annoncé et ce que K8s voit réellement sont 2 choses différentes.
 GKE réserve une part du CPU et de la RAM pour ses composants système et ce n'est pas négligeable sur les petits gabarits.
 
 Source : [GKE - Plan node sizes / Resource reservations](https://docs.cloud.google.com/kubernetes-engine/docs/concepts/plan-node-sizes#resource_reservations)
@@ -52,7 +52,7 @@ La RAM, en revanche, pique sur les petits nodes : sur un 4 GiB, on perd 27,5% av
 
 !!! tip "Implication FinOps"
     Privilégier des nodes plus grands améliore l'efficacité RAM (72% → 92%).
-    Sur des clusters avec beaucoup de petits nodes, on paye pour de la RAM que K8S ne peut pas utiliser.
+    Sur des clusters avec beaucoup de petits nodes, on paye pour de la RAM que K8s ne peut pas utiliser.
 
 ## Voir aussi
 

@@ -5,9 +5,9 @@ tags:
   - iSCSI
 ---
 
-# Initier des connexions iSCSi en CLI
+# Initier des connexions iSCSI en CLI
 
-Pour initier une connexion iSCSi en PowerShell, quelques étapes sont
+Pour initier une connexion iSCSI en PowerShell, quelques étapes sont
 nécessaires.
 
 On démarre le service et on le met en démarrage automatique
@@ -17,7 +17,7 @@ Start-Service msiscsi
 Set-Service msiscsi -StartupType "Automatic"
 ```
 
-On initie la connexion vers le serveur iSCSi
+On initie la connexion vers le serveur iSCSI
 
 ```powershell
 New-IscsiTargetPortal -TargetPortalAddress $IP_ISCSI

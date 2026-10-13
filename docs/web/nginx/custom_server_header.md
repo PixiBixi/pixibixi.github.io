@@ -1,10 +1,10 @@
 ---
-description: Personnaliser ou masquer le header Server de Nginx pour réduire la surface d'attaque
+description: Personnaliser ou masquer le header Server de nginx pour réduire la surface d'attaque
 tags:
-  - Nginx
+  - nginx
 ---
 
-# Être encore plus safe en customisant son header Server NGINX
+# Être encore plus safe en customisant son header Server nginx
 
 Editer son header Server n'est pas une chose inutile. En effet, selon
 celui-ci, nous pouvons déterminer la version du serveur web (nginx,
@@ -40,5 +40,5 @@ more_set_headers Server: MyServer;
 
 ## Voir aussi
 
-* [Installer son Serveur Web : NGINX, PHP-FPM et MariaDB](installation.md) - Configuration nginx complète avec `server_tokens` et `more_set_headers`
-* [Forcer le SSL sous NGINX](nginx_ssl.md) - Configuration SSL pour une sécurité complète
+* [Installer son Serveur Web : nginx, PHP-FPM et MariaDB](installation.md) - Configuration nginx complète avec `server_tokens` et `more_set_headers`
+* [Forcer le SSL sous nginx](nginx_ssl.md) - Configuration SSL pour une sécurité complète

@@ -4,24 +4,24 @@ tags:
   - Nextcloud
 ---
 
-# NextCloud, son cloud personnel
+# Nextcloud, son cloud personnel
 
 Nextcloud est une solution de stockage et de partage de fichiers en ligne. Il s'agit d'un logiciel gratuit se basant sur MySQL / PHP (et accessoirement redis).
 
 !!! danger
-    NextCloud n'est **pas** une solution de backup. Répliquer ses données sur un autre support de stockage et a minima installer NextCloud sur un RAID1 pour se prémunir d'une défaillance hardware.
+    Nextcloud n'est **pas** une solution de backup. Répliquer ses données sur un autre support de stockage et a minima installer Nextcloud sur un RAID1 pour se prémunir d'une défaillance hardware.
 
 Nous sommes à ce jour à la version 23, vous pouvez consulter le
 [changelog](https://nextcloud.com/changelog/)
 
 ## Pré-requis
 
-NextCloud étant un logiciel écrit en PHP, nous devons avoir une stack
+Nextcloud étant un logiciel écrit en PHP, nous devons avoir une stack
 LAMP fonctionnelle. Pour cela, je vous invite à aller consulter
 [l'article
 adéquate](https://wiki.jdelgado.fr/doku.php?id=linux:hosting:lemp:installation).
 
-## Installation de NextCloud
+## Installation de Nextcloud
 
 Il faut dans un premier temps télécharger nextcloud
 
@@ -54,13 +54,13 @@ EOF
 
 (Pensez à modifier le password évidemment)
 
-Enfin, le vhost NGINX adéquate à NextCloud, disponible
+Enfin, le vhost nginx adéquate à Nextcloud, disponible
 [ici](https://paste.jdelgado.fr/?3660056e57032240#d0OxuhjFWsyISwO83uoAjpe8935L/M9Q13STRFvCzzA=)
 
 Une fois tout ceci fait, on se rend sur notre server_name et on remplit
-les infos comme il demande, vous avez désormais un NextCloud utilisable
+les infos comme il demande, vous avez désormais un Nextcloud utilisable
 
-## Configuration de NextCloud
+## Configuration de Nextcloud
 
 Toute la configuration que nous faisons s'effectue via la ligne de
 commande **occ** pour un gain de temps, il est également possible de
@@ -102,14 +102,14 @@ rm "/var/www/nextcloud/core/skeleton/Nextcloud.webp"
 
 * **Gestion du stockage externe**
 
-Nous permet de connecter notre NextCloud à des Samba, FTP ou autre
+Nous permet de connecter notre Nextcloud à des Samba, FTP ou autre
 
 ```bash
 sudo -u www-data php /var/www/nextcloud/occ app:install files_external
 sudo -u www-data php /var/www/nextcloud/occ app:enable files_external
 ```
 
-* **Mise à jour des applications NextCloud**
+* **Mise à jour des applications Nextcloud**
 
 ```bash
 sudo -u www-data php /var/www/nextcloud/occ app:update --all
@@ -159,7 +159,7 @@ Petit reload de systemd + activation du timer :
 systemctl daemon-reload ; systemctl enable --now nextcloudcron.timer
 ```
 
-Une fois l'étape côté serveur effectué, on va indiquer à NextCloud
+Une fois l'étape côté serveur effectué, on va indiquer à Nextcloud
 d'utiliser cette méthode de cron
 
 ```bash
@@ -184,7 +184,7 @@ sudo -u www-data php occ maintenance:mode --off
 
 ### Installation de redis
 
-Redis vous permettra l'optimisation des performances de votre NextCloud
+Redis vous permettra l'optimisation des performances de votre Nextcloud
 via la mise en cache de quelques éléments. Nous allons configurer Redis
 avec un socket local afin de ne pas exposer un port supplémentaire,
 nécessitants quelques modifications.
@@ -226,7 +226,7 @@ On n'oublie pas de restart redis :
 systemctl restart redis-server
 ```
 
-Enfin, on configure tout ça côté NextCloud avec le fabuleux utilitaire
+Enfin, on configure tout ça côté Nextcloud avec le fabuleux utilitaire
 qu'est occ
 
 ```bash
@@ -247,7 +247,7 @@ sudo -u www-data php /var/www/nextcloud/occ config:system:set memcache.locking -
 
 ### Edition de documents
 
-Nous pouvons link NextCloud à OnlyOffice afin de modifier directement
+Nous pouvons link Nextcloud à OnlyOffice afin de modifier directement
 les documents docx odt ou autre format.
 
 ```bash
@@ -261,7 +261,7 @@ serveur
 ### Upload de gros fichiers
 
 Par défaut, vous ne pourrez pas upload de gros fichiers. Pour cela, il
-faut modifier des options dans votre pool FPM ainsi que dans NGINX.
+faut modifier des options dans votre pool FPM ainsi que dans nginx.
 
 Pour les options de votre pool FPM, ajoutez ceci :
 
@@ -270,7 +270,7 @@ php_value upload_max_filesize 16G
 php_value post_max_size 16G
 ```
 
-Côté NGINX, dans votre nginx.conf :
+Côté nginx, dans votre nginx.conf :
 
 ```nginx
 client_max_body_size 17G;

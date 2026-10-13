@@ -192,7 +192,7 @@ Vous observez que nous avons ici beaucoup plus d'informations qu'en temps normal
 * `ptmu` est la valeur du MTU pour la connection TCP
 * `mss` est la taille maximum du payload d'un paquet (hors entête)
 
-Si vous voulez plus d'informations sur ss, n'hésitez pas à consulter le wiki Archlinux ou directement dman7.org
+Si vous voulez plus d'informations sur ss, n'hésitez pas à consulter le wiki Arch Linux ou directement dman7.org
 
 ---
 

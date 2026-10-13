@@ -18,7 +18,7 @@ Tout d'abord, il faut créer un **Webhook** sur le panneau de configuration du W
 ## Configuration check_mk (CLI)
 
 Pour check_mk, on va utiliser un plugin disponible sur
-[Github](https://github.com/rmblake/check_mk-slack)
+[GitHub](https://github.com/rmblake/check_mk-slack)
 (rmblake/check_mk-slack) écrit en python.
 
 Dans le cas d'une installation via le package, il faudra placer le

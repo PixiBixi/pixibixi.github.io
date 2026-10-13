@@ -1,5 +1,5 @@
 ---
-description: Déployer Redis en haute disponibilité - configurer Sentinel, HAproxy et réplication pour la redondance complète
+description: Déployer Redis en haute disponibilité - configurer Sentinel, HAProxy et réplication pour la redondance complète
 tags:
   - Redis
   - HA
@@ -9,7 +9,7 @@ tags:
 
 Redis c'est bien, qu'il soit toujours dispo, c'est mieux. On va voir
 comment faire un cluster pour le rendre redondant côté applicatif
-(sentinel/HAproxy), mais également côté IP (IPFO).
+(sentinel/HAProxy), mais également côté IP (IPFO).
 
 ## Outils utilisés
 
@@ -18,15 +18,15 @@ Dans notre cluster, nous allons utiliser les outils suivants :
 * **sentinel** : Nous l'utiliserons pour surveiller nos nœuds
     maître/esclave, sentinel élira un esclave pour le passer en maître
     lorsqu'un problème survient.
-* **haproxy** : Équilibreur de charge TCP, HAproxy peut tester si un
+* **haproxy** : Équilibreur de charge TCP, HAProxy peut tester si un
     noeud redis est maître ou esclave, nous l'utiliserons comme
-    front-end auquel les clients se connecteront. HAproxy détectera quel
+    front-end auquel les clients se connecteront. HAProxy détectera quel
     noeud est maître et s'assurera que le trafic circule vers le bon
-    noeud. Nous pouvons égalment utiliser un autre frontend HAproxy afin
+    noeud. Nous pouvons égalment utiliser un autre frontend HAProxy afin
     de balancer les lectures sur tous les noeuds Redis
 * **pacemaker** : équilibreur de charge au niveau du réseau, nous
     utiliserons pacemaker pour exposer une ip virtuelle et gérer le
-    basculement entre nos noeuds HAproxy.
+    basculement entre nos noeuds HAProxy.
 
 ## Atteindre une disponibilité de 100%
 
@@ -42,12 +42,12 @@ Dans notre cluster, nous allons utiliser les outils suivants :
     nous assurons que deux systèmes distincts surveillent le maître et
     que les deux doivent convenir que le maître a échoué. Si 2 instances
     de sentinel sont d'accord, le processus redis-sentinel s'exécutant
-    sur le nœud esclave (redis2) convertira le nœud en maître. HAproxy
+    sur le nœud esclave (redis2) convertira le nœud en maître. HAProxy
     surveillera les nœuds maître et esclave (redis1/2) à tout moment, il
     s'assurera que le nœud maître sera celui vers lequel le trafic sera
     dirigé.
 
-* **Défaillance de HAproxy** : En cas de problème de HAproxy, nous
+* **Défaillance de HAProxy** : En cas de problème de HAProxy, nous
     avons probablement un problème plus important concernant le serveur.
     L'IP sera donc re-routée sur un autre serveur avec pacemaker.
 
@@ -131,19 +131,19 @@ redis1, on voit également qu'il est bien connecté.
 
 Pour debug notre replication & election de master, nous pouvons forcer
 un sleep du « master », empêchant ainsi les écritures. Nous devons
-observer un changement de master (côté Redis & HAproxy)
+observer un changement de master (côté Redis & HAProxy)
 
 ```bash
 root@dev redis1:/root$ redis-cli DEBUG sleep 30
 ```
 
 * Si tout se passe bien, nous verrons que le master se sera déplacé
-    sur redis02 ou redis03 et que le frontend HAproxy redis-write
+    sur redis02 ou redis03 et que le frontend HAProxy redis-write
     indiquera le même redis.
 
-### HAproxy
+### HAProxy
 
-La configuration de HAproxy est quand à elle assez simple. Il faut
+La configuration de HAProxy est quand à elle assez simple. Il faut
 l'adapter à son usage. Dans ce que je propose, nous avons 2 entrypoints
 
 * Un pour les écritures, qui va nous permettre de détecter le master.

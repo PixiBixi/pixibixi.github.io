@@ -25,7 +25,7 @@ La section la plus dense du wiki. On y trouve les fondamentaux, les outils CLI, 
 - [CLI - ss](cli/ss.md) - sockets et connexions réseau
 - [CLI - git](cli/git/git.md) - commandes git du quotidien
 - [CLI - Réécrire l'historique git](cli/git/rework_files.md) - filter-branch et rebase
-- [CLI - Dotfiles](cli/confrc.md) - zsh, aliases, git, SSH, tmux et Wezterm
+- [CLI - Dotfiles](cli/confrc.md) - zsh, aliases, git, SSH, tmux et WezTerm
 - [CLI - Hostname](cli/define_hostname.md) - /etc/hostname et /etc/hosts sans se tromper
 - [CLI - dfc](cli/dfc.md) - df en version lisible et colorée
 - [CLI - Simuler des conditions réseau](cli/limit_bandwidth.md) - latence, perte de paquets et bande passante
@@ -42,7 +42,7 @@ La section la plus dense du wiki. On y trouve les fondamentaux, les outils CLI, 
 - [Sécurité - Vitesse de connexion SSH](security/ssh_improve_speed.md) - ControlMaster et réutilisation des sessions TCP
 - [Sécurité - Clé SSH RFC 4716](security/pubkey_rfc4716.md) - exporter une clé publique au bon format
 - [Sécurité - RKHunter](security/rkhunter.md) - détection de rootkits par comparaison de hashs
-- [Sécurité - LogWatch](security/logwatch.md) - rapports d'analyse de logs par mail
+- [Sécurité - Logwatch](security/logwatch.md) - rapports d'analyse de logs par mail
 - [Sécurité - PortSentry](security/portsentry.md) - détecter et bloquer les scans de ports
 - [Sécurité - Désactiver les mitigations Meltdown & co](security/disable_patches.md) - récupérer les perfs, en connaissance de cause
 - [Shell - Template bash script](shell/template_bash_script.md) - squelette de script robuste

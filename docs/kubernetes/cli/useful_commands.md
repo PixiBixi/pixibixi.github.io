@@ -4,9 +4,9 @@ tags:
   - kubectl
 ---
 
-# Commandes utiles pour K8S
+# Commandes utiles pour K8s
 
-Pour K8S, les commandes sont assez difficiles de base. De plus, il existe certaines commandes assez tricky que je vais essayer de répertorier ici
+Pour K8s, les commandes sont assez difficiles de base. De plus, il existe certaines commandes assez tricky que je vais essayer de répertorier ici
 
 ???+ note "Delete all pods not running"
     ```bash
@@ -24,7 +24,7 @@ Permet de supprimer les pods de la liste qui ne sont pas running (Dont les evic
 
 ---
 
-Liste toutes les ressources K8S qui sont link à la génération d'un certificat
+Liste toutes les ressources K8s qui sont link à la génération d'un certificat
 
 ??? note "Resources linked to a certificate"
     ```bash
@@ -167,4 +167,4 @@ Le Cluster Autoscaler publie son état dans un ConfigMap `cluster-autoscaler-sta
 
 * [Commandes avancées](advanced_commands.md) - requêtes jsonpath, jq et débogage avancé
 * [Plugins Krew](krew_plugins.md) - outils essentiels pour améliorer la productivité
-* [Outils pour K8S](tools.md) - kubectx, stern, kubecolor et autres utilities
+* [Outils pour K8s](tools.md) - kubectx, stern, kubecolor et autres utilities

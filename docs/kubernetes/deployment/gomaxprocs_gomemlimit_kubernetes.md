@@ -147,7 +147,7 @@ Les fractions de CPU sont arrondies à l'entier supérieur : `limits.cpu: "1.5"`
 
 ### Solution 2 - uber-go/automaxprocs (dans le code)
 
-`automaxprocs` lit les cgroups du conteneur au démarrage et appelle `runtime.GOMAXPROCS()` avec la limite CPU arrondie à l'inférieur, minimum 1 : `limits.cpu: "1.5"` donne `1`, là où `resourceFieldRef` donne `2`. Pas de variable d'environnement, pas de config K8S, et il ne fait rien si l'env var `GOMAXPROCS` existe.
+`automaxprocs` lit les cgroups du conteneur au démarrage et appelle `runtime.GOMAXPROCS()` avec la limite CPU arrondie à l'inférieur, minimum 1 : `limits.cpu: "1.5"` donne `1`, là où `resourceFieldRef` donne `2`. Pas de variable d'environnement, pas de config K8s, et il ne fait rien si l'env var `GOMAXPROCS` existe.
 
 Installation :
 
@@ -161,7 +161,7 @@ Une seule ligne dans `main.go` suffit :
 import _ "go.uber.org/automaxprocs"
 ```
 
-L'import blank déclenche l'`init()` du package. Automaxprocs fonctionne hors K8S (Docker, systemd cgroups) et relit les limits à chaque démarrage. Préférer cette approche si l'app tourne sur plusieurs environnements.
+L'import blank déclenche l'`init()` du package. Automaxprocs fonctionne hors K8s (Docker, systemd cgroups) et relit les limits à chaque démarrage. Préférer cette approche si l'app tourne sur plusieurs environnements.
 
 ## Vérifier que les variables sont bien prises en compte
 
@@ -198,7 +198,7 @@ Avec **HPA** sur des métriques CPU custom : un `GOMAXPROCS` trop élevé gonfle
 
 ## Ces variables fonctionnent hors Kubernetes
 
-`GOMEMLIMIT` et `GOMAXPROCS` sont des variables d'environnement standard du runtime Go. On peut les injecter via `Dockerfile` (`ENV`), systemd (`Environment=`), ou directement depuis le code (`runtime.GOMAXPROCS(n)`, `debug.SetMemoryLimit(n)`). K8S n'est qu'un vecteur parmi d'autres.
+`GOMEMLIMIT` et `GOMAXPROCS` sont des variables d'environnement standard du runtime Go. On peut les injecter via `Dockerfile` (`ENV`), systemd (`Environment=`), ou directement depuis le code (`runtime.GOMAXPROCS(n)`, `debug.SetMemoryLimit(n)`). K8s n'est qu'un vecteur parmi d'autres.
 
 ## Voir aussi
 

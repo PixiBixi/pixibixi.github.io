@@ -40,7 +40,7 @@ La chose importante ici est l'utilisation d'un fichier temporaire en .$$ (qui co
 
 Il est évidemment possible d'écrire un script custom en n'importe quel language (python, bash...).
 
-La communauté prometheus met en libre services [quelques scripts](https://github.com/prometheus-community/node-exporter-textfile-collector-scripts) qui peuvent être utiles (métriques NVME, updates APT...)
+La communauté prometheus met en libre services [quelques scripts](https://github.com/prometheus-community/node-exporter-textfile-collector-scripts) qui peuvent être utiles (métriques NVMe, updates APT...)
 
 ## Voir aussi
 

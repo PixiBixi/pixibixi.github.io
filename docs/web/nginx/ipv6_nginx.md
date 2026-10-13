@@ -1,7 +1,7 @@
 ---
-description: Configurer Nginx pour écouter en IPv6 - directives listen, entrées DNS AAAA et vérification
+description: Configurer nginx pour écouter en IPv6 - directives listen, entrées DNS AAAA et vérification
 tags:
-  - Nginx
+  - nginx
   - IPv6
 ---
 
@@ -75,4 +75,4 @@ ne pourrons communiquer en IPv6 avec le client.
 
 ## Voir aussi
 
-* [Installer son Serveur Web : NGINX, PHP-FPM et MariaDB](installation.md) - Vérification de la compilation `--with-ipv6`
+* [Installer son Serveur Web : nginx, PHP-FPM et MariaDB](installation.md) - Vérification de la compilation `--with-ipv6`
