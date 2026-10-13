@@ -352,8 +352,9 @@
   color: var(--jd-link);
 }
 
+/* Must beat the row's display:grid (higher specificity), else filtered rows stay visible. */
 .jd-cat [hidden] {
-  display: none;
+  display: none !important;
 }
 
 /* Mobile (390px mock) */
