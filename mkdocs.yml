@@ -317,6 +317,11 @@ markdown_extensions:
   - pymdownx.details
   - attr_list
   - abbr
+  # Wiki-wide glossary tooltips: includes/abbreviations.md is appended to every page
+  - pymdownx.snippets:
+      base_path: [includes]
+      auto_append: [abbreviations.md]
+      check_paths: true
   - def_list
   - toc:
       permalink: true

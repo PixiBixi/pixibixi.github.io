@@ -44,8 +44,9 @@ Optional front matter, all rendered by the theme:
 | `tested_with` | `["Thanos 0.35+", "Redis Sentinel 6.2+"]` | "Testé avec" badge, `TechArticle.dependencies` in the JSON-LD |
 | `variables` | `[{name: namespace, default: monitoring}]` | Editable bar above the article; `<namespace>` in code blocks is substituted on display and on copy |
 
-Glossary tooltips (hover, tap on mobile) use the `abbr` extension: one definition line per
-term, at the end of the article, valid for that article only.
+Glossary tooltips (hover, tap on mobile) use the `abbr` extension. Definitions live in
+`includes/abbreviations.md`, appended to every page, so a term is defined once for the whole
+wiki. One line per term, sorted:
 
 ```markdown
 *[NUMA]: Non-Uniform Memory Access, une machine multi-socket où la latence mémoire dépend du CPU
