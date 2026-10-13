@@ -19,6 +19,16 @@ Theme overrides live in `overrides/` (`custom_dir`):
 
 - `main.html` (`extrahead` block) - Google Search Console meta tag, `og:locale`, and the Schema.org JSON-LD graph: `WebSite` + `Person` (anchored on `about/#author`) + `TechArticle` per page (`ProfilePage` on `about.md`, `image` = the social card) + a `BreadcrumbList` built from the nav sections that own an `index.md` (subfolders without one have no page, linking them gave 404 crumbs). A page's front matter `description` lands in the `TechArticle`, so a missing description degrades structured data silently.
 - `sitemap.xml` - custom template emitting `<lastmod>` from the git revision date.
+- `home.html`, `category.html`, `tags.html`, `404.html` and `partials/` - the redesigned theme (pinned to Material's HTML: Renovate never automerges `mkdocs-material`, review every bump visually).
+- `i18n/<language>.yml` - every theme UI string, read through `lang.t("jd.*")` in templates and `window.jdI18n` in scripts. Add new UI text there, never hardcoded.
+
+Build hooks (`hooks:` in `mkdocs.yml`):
+
+- `indexes.py` - virtual `index.md` for every folder without one (rendered by `category.html`), nav section titles and order
+- `article_meta.py` - reading time, series, backlinks ("Cité dans"), outdated banner (> 2 years without a content commit; commits touching more than 10 articles are sweeps and ignored)
+- `page_vars.py` - front matter `variables:` handed to `jd-vars.js`
+- `home.py` - recent articles and section counts for the home and tags pages
+- `i18n.py` - loads `overrides/i18n/`
 
 `remote_branch: docs` in `mkdocs.yml` is why `gh-deploy` pushes to a `docs` branch rather than `gh-pages`.
 
@@ -234,6 +244,15 @@ at the top of the article. The build stays green, so only a local preview catche
 
 Directory-level tags come from `.meta.yml` files (the `meta` plugin) - add per-article tags
 that are more specific than the directory defaults.
+
+### Theme features: add them without being asked
+
+When writing or rewriting an article, apply these whenever the condition holds (syntax in `README.md`):
+
+- **Series**: the article is one of several that read in order (same topic split into parts, explicit "partie 2") → `series:` with the exact same name on every part + `series_order:`. Check `rg -n '^series:' docs` for an existing series first.
+- **`tested_with`**: the article gives commands or configs tied to a version (flags, API fields, defaults) → list the versions actually tested, e.g. `"HAProxy 3.0+"`. Never invent one: no source, no badge.
+- **`variables`**: the code blocks repeat a value the reader must replace (namespace, cluster, bucket, hostname) → declare it and write `<name>` in the blocks.
+- **Glossary `*[TERM]: ...`**: an acronym the target reader may not know and that the prose does not expand (NUMA, IRQ, TTFB). 3 to 8 per article at most, not every acronym: K8s nouns, HTTP, CPU, DNS and the like are left alone. One sentence in French, no em dash.
 
 ## Gotchas
 
