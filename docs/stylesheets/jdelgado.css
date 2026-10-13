@@ -2294,3 +2294,13 @@ body {
 .jd-fresh[hidden] {
   display: none;
 }
+
+/* Material toast (code copy, section link): the inner node is also .md-typeset, whose ink matched the toast background */
+.md-dialog {
+  background: var(--jd-ink);
+}
+
+.md-dialog__inner.md-typeset {
+  color: var(--jd-bg);
+  font-size: 14px;
+}
