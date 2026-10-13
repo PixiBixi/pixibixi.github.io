@@ -206,6 +206,7 @@ Language patterns:
 - Prefer "sont" over "c'est des": "Les Spot VMs sont des instances..." not "c'est des instances..."
 - No formal French technical vocabulary → plain language
 - Mix English tech terms naturally in French: "inmaintenable at scale", `rotate` as a verb
+- **Product names keep their official casing**, in prose, titles and tags: HAProxy, nginx, K8s, GitHub, GitLab, PostgreSQL, Elasticsearch, Alertmanager, Nextcloud, macOS, curl. A binary or a path in backticks stays lowercase (`haproxy -c`).
 - **Never translate K8s/infra nouns**: registry, policy, limits, requests, namespace, label, binding - always left in English in French prose
 - Use numbers at sentence start: "2 solutions s'offrent ici à nous..."
 - Present alternatives explicitly: "on fait X ou on fait Y"
