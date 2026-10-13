@@ -57,7 +57,35 @@
     });
   }
 
+  // Right TOC fold: the class lives on <html> so it survives instant navigation, the choice in localStorage.
+  var FOLD_KEY = "jd-toc-folded";
+  function tocFold() {
+    var side = document.querySelector(".md-sidebar--secondary");
+    if (!side || side.querySelector(".jd-toc-fold")) return;
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "jd-toc-fold";
+    btn.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    var sync = function () {
+      var folded = document.documentElement.classList.contains("jd-toc-folded");
+      btn.setAttribute("aria-expanded", String(!folded));
+      btn.setAttribute("aria-label", folded ? "Afficher le sommaire" : "Masquer le sommaire");
+      btn.title = btn.getAttribute("aria-label");
+    };
+    btn.addEventListener("click", function () {
+      var folded = document.documentElement.classList.toggle("jd-toc-folded");
+      try { localStorage.setItem(FOLD_KEY, folded ? "1" : "0"); } catch (e) { /* private mode */ }
+      sync();
+    });
+    sync();
+    side.insertBefore(btn, side.firstChild);
+  }
+  try {
+    if (localStorage.getItem(FOLD_KEY) === "1") document.documentElement.classList.add("jd-toc-folded");
+  } catch (e) { /* private mode */ }
+
   function init() {
+    tocFold();
     navScroll();
     captions();
     titleBreaks();

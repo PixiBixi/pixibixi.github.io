@@ -701,6 +701,57 @@ body {
   font-weight: 600;
 }
 
+/* Fold button, aligned on the "Sur cette page" title; folded, the column shrinks to the button
+   and the article takes the freed width */
+.md-sidebar--secondary {
+  position: sticky;
+}
+
+.jd-toc-fold {
+  position: absolute;
+  top: 34px;
+  right: 0;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid var(--jd-border);
+  border-radius: 6px;
+  background: var(--jd-bg);
+  color: var(--jd-muted);
+  cursor: pointer;
+}
+
+.jd-toc-fold:hover,
+.jd-toc-fold:focus-visible {
+  color: var(--jd-link);
+  border-color: var(--jd-border-strong);
+}
+
+.jd-toc-fold svg {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.2s;
+}
+
+.jd-toc-folded .jd-toc-fold svg {
+  transform: rotate(180deg);
+}
+
+.jd-toc-folded .md-sidebar--secondary {
+  width: 28px;
+}
+
+.jd-toc-folded .md-sidebar--secondary .md-sidebar__scrollwrap {
+  visibility: hidden;
+}
+
+.jd-toc-folded .md-content {
+  max-width: none;
+}
+
 .jd-totop {
   display: inline-flex;
   align-items: center;
