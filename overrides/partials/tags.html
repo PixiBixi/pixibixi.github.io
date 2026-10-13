@@ -1,0 +1,24 @@
+{#- Material's tag pills plus the extra.tag_icons icon (partials/tag-icon.html) -#}
+{% if page.meta and page.meta.hide %}
+  {% set hidden = "hidden" if "tags" in page.meta.hide %}
+{% endif %}
+{% if tags %}
+  <nav class="md-tags" {{ hidden }}>
+    {% for tag in tags %}
+      {% set class = "md-tag" %}
+      {% if tag.hidden %}
+        {% set class = class ~ " md-tag-shadow" %}
+      {% endif %}
+      {% set jd_tag = tag.name %}
+      {% if tag.url %}
+        <a href="{{ tag.url | url }}" class="{{ class }}">
+          {%- include "partials/tag-icon.html" -%}{{- tag.name -}}
+        </a>
+      {% else %}
+        <span class="{{ class }}">
+          {%- include "partials/tag-icon.html" -%}{{- tag.name -}}
+        </span>
+      {% endif %}
+    {% endfor %}
+  </nav>
+{% endif %}

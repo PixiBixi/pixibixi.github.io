@@ -35,7 +35,7 @@
     <div class="jd-cat__chips" role="group" aria-label="{{ lang.t("jd.cat.tags") }}">
       <button type="button" class="jd-cat__chip" aria-pressed="true" data-jd-tag="">{{ lang.t("jd.cat.all") }} <span>{{ cat.total }}</span></button>
       {%- for t in cat.chips %}
-      <button type="button" class="jd-cat__chip" aria-pressed="false" data-jd-tag="{{ t.name | e }}">{{ t.name }} <span>{{ t.n }}</span></button>
+      <button type="button" class="jd-cat__chip" aria-pressed="false" data-jd-tag="{{ t.name | e }}">{% set jd_tag = t.name %}{% include "partials/tag-icon.html" %}{{ t.name }} <span>{{ t.n }}</span></button>
       {%- endfor %}
     </div>
     {% endif %}

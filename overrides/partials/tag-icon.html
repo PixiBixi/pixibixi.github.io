@@ -1,0 +1,3 @@
+{#- Inline icon for a tag name from extra.tag_icons, nothing when unmapped. Usage: set jd_tag = name, then include -#}
+{%- set jd_icon = (config.extra.tag_icons or {}).get(jd_tag) -%}
+{%- if jd_icon -%}<span class="jd-tag-ic" aria-hidden="true">{% include ".icons/" ~ jd_icon ~ ".svg" %}</span>{%- endif -%}

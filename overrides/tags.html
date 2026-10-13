@@ -30,7 +30,7 @@
       <div class="jd-tags__cards">
         {% for f in t.featured %}
         <a href="#tag:{{ f.slug }}" data-name="{{ f.name | lower }}">
-          <span class="jd-tags__ctitle"><strong>{{ f.name }}</strong><span>{{ f.n }}</span></span>
+          {% set jd_tag = f.name %}<span class="jd-tags__ctitle"><strong>{% include "partials/tag-icon.html" %}{{ f.name }}</strong><span>{{ f.n }}</span></span>
           <span class="jd-tags__ex">{% for e in f.ex %}<span>{{ e }}</span>{% endfor %}</span>
         </a>
         {% endfor %}
@@ -46,7 +46,7 @@
           <span class="jd-tags__letter">{{ g.letter }}</span>
           <div class="jd-tags__list">
             {% for x in g.tags %}
-            <a href="#tag:{{ x.slug }}" data-name="{{ x.name | lower }}"><span>{{ x.name }}</span><span>{{ x.n }}</span></a>
+            {% set jd_tag = x.name %}<a href="#tag:{{ x.slug }}" data-name="{{ x.name | lower }}"><span>{% include "partials/tag-icon.html" %}{{ x.name }}</span><span>{{ x.n }}</span></a>
             {% endfor %}
           </div>
         </div>

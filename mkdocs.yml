@@ -204,6 +204,35 @@ plugins:
       minify_css: true
 
 extra:
+  # Tag -> icon (path under Material's .icons, no .svg), shown on tag pills, cards and chips
+  tag_icons:
+    ArgoCD: simple/argo
+    Bash: simple/gnubash
+    Cisco: simple/cisco
+    CLI: material/console
+    Docker: fontawesome/brands/docker
+    GCP: simple/googlecloud
+    GitHub Actions: simple/githubactions
+    GKE: simple/googlecloud
+    Go: simple/go
+    Grafana: simple/grafana
+    kubectl: simple/kubernetes
+    Kubernetes: simple/kubernetes
+    Linux: fontawesome/brands/linux
+    macOS: fontawesome/brands/apple
+    MariaDB: simple/mariadb
+    MySQL: simple/mysql
+    Nginx: simple/nginx
+    OpenVPN: simple/openvpn
+    PHP: fontawesome/brands/php
+    PowerShell: material/powershell
+    Prometheus: simple/prometheus
+    Proxmox: simple/proxmox
+    Shell: material/console
+    Terraform: material/terraform
+    Windows: fontawesome/brands/windows
+    Windows Server: fontawesome/brands/windows
+    ZSH: simple/zsh
   generator: false
   analytics:
     provider: google

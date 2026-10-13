@@ -2256,3 +2256,16 @@ body {
     border-top: 0;
   }
 }
+
+/* Tag icons (extra.tag_icons): sized on the text, inherit its colour */
+.jd-tag-ic {
+  display: inline-flex;
+  vertical-align: -0.125em;
+  margin-right: 0.4em;
+}
+
+.jd-tag-ic svg {
+  width: 1em;
+  height: 1em;
+  fill: currentColor;
+}
