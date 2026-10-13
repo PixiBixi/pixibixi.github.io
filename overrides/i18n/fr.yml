@@ -77,7 +77,7 @@ jd.tags.featured: "Les plus utilisés"
 jd.tags.all: "Tous les tags"
 jd.tags.note: "Les tags utilisés au moins 4 fois."
 jd.tags.empty: "Aucun tag ne correspond."
-jd.tags.listing: "Articles par tag"
+jd.tags.back: "Tous les tags"
 
 jd.404.eyebrow: "Erreur 404"
 jd.404.title: "Cette page n'existe plus (ou pas encore)"

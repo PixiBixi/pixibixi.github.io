@@ -112,8 +112,26 @@ def on_page_context(context, page, config, nav):
     by_tag = defaultdict(list)
     for p in newest:
         for tag in dict.fromkeys(str(x) for x in (p.meta.get("tags") or [])):
-            by_tag[tag].append(p.title)
-    tags = [{"name": n, "n": len(t), "ex": t[:3], "slug": _slug(n, "-")} for n, t in by_tag.items()]
+            by_tag[tag].append(p)
+    # Every tag, even under _TAG_MIN, gets a panel: article pills link to tags/#tag:<slug>.
+    tags = [
+        {
+            "name": n,
+            "n": len(ps),
+            "ex": [x.title for x in ps[:3]],
+            "slug": _slug(n, "-"),
+            "pages": [
+                {
+                    "title": x.title,
+                    "url": x.url,
+                    "section": _label(_top(x).title) if _top(x) else "",
+                    "desc": str(x.meta.get("description") or ""),
+                }
+                for x in sorted(ps, key=lambda x: x.title.lower())
+            ],
+        }
+        for n, ps in by_tag.items()
+    ]
     popular = sorted(tags, key=lambda t: (-t["n"], t["name"].lower()))
     shown = [t for t in popular if t["n"] >= _TAG_MIN]
     groups = defaultdict(list)
@@ -125,6 +143,7 @@ def on_page_context(context, page, config, nav):
         "featured": popular[:12],
         "shown": len(shown),
         "popular": shown,
+        "all": sorted(tags, key=lambda t: t["name"].lower()),
         "groups": [{"letter": k, "tags": v} for k, v in groups.items()],
     }
     return context

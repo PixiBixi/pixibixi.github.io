@@ -1,10 +1,9 @@
 {% extends "main.html" %}
 
-{#- Tags index: counts, most used, filterable list. The plugin listing (one h2 per tag) stays below as link targets. -#}
+{#- Tags index: counts, most used, filterable list. One panel per tag below, the #tag:<slug> link targets. -#}
 {% block site_nav %}{% endblock %}
 {% block container %}
 {% set t = jd_tags %}
-{% set parts = ("%s" | format(page.content)).split("<h2", 1) %}
 <div class="md-content jd-page jd-tags" data-md-component="content">
   <article class="md-content__inner md-typeset">
     <nav class="jd-tags__crumb" aria-label="{{ lang.t("jd.common.breadcrumb") }}">
@@ -55,12 +54,30 @@
       <p class="jd-tags__empty" data-jd-tag-empty hidden>{{ lang.t("jd.tags.empty") }}</p>
     </section>
 
-    {% if parts | length > 1 %}
-    <details class="jd-tags__listing" id="articles-par-tag">
-      <summary>{{ lang.t("jd.tags.listing") }}</summary>
-      <div class="jd-tags__listing-body"><h2{{ parts[1] | safe }}</div>
-    </details>
-    {% endif %}
+    {#- One panel per tag, shown alone when the URL hash is #tag:<slug> (pages.js). Replaces the plugin listing. -#}
+    <div class="jd-tagpanels">
+      {% for x in t.all %}
+      {% set jd_tag = x.name %}
+      <section class="jd-tagpanel" id="tag:{{ x.slug }}" data-jd-tagpanel hidden>
+        <div class="jd-tagpanel__head">
+          <h2>{% include "partials/tag-icon.html" %}{{ x.name }}</h2>
+          <span>{{ (lang.t("jd.count.article_one") if x.n == 1 else lang.t("jd.count.article_other")) | replace("{n}", x.n) }}</span>
+          <a href="#tous" class="jd-tagpanel__close">{{ lang.t("jd.tags.back") }}</a>
+        </div>
+        <ul>
+          {% for a in x.pages %}
+          <li>
+            <a href="{{ a.url | url }}">
+              {% if a.section %}<span class="jd-tagpanel__sec">{{ a.section }}</span>{% endif %}
+              <strong>{{ a.title }}</strong>
+              {% if a.desc %}<span class="jd-tagpanel__desc">{{ a.desc }}</span>{% endif %}
+            </a>
+          </li>
+          {% endfor %}
+        </ul>
+      </section>
+      {% endfor %}
+    </div>
   </article>
 </div>
 {% endblock %}

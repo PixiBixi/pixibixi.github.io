@@ -164,6 +164,25 @@
 
     filter.addEventListener("input", apply);
     buttons.forEach(function (b) { b.addEventListener("click", function () { sort(b.dataset.jdTagSort); }); });
+
+    // #tag:<slug> shows that tag's panel alone; any other hash brings the index back.
+    function panel() {
+      var id = decodeURIComponent(location.hash.slice(1));
+      var hit = null;
+      root.querySelectorAll("[data-jd-tagpanel]").forEach(function (p) {
+        p.hidden = p.id !== id;
+        if (!p.hidden) hit = p;
+      });
+      root.classList.toggle("jd-tags--one", !!hit);
+      if (hit) window.scrollTo(0, 0);
+    }
+    // Material's instant navigation moves in-page anchors with pushState, no hashchange: follow the clicks too.
+    window.addEventListener("hashchange", panel);
+    window.addEventListener("popstate", panel);
+    root.addEventListener("click", function (e) {
+      if (e.target.closest('a[href^="#"]')) setTimeout(panel, 0);
+    });
+    panel();
   }
 
   function init() {
