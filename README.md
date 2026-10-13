@@ -53,6 +53,8 @@ term, at the end of the article, valid for that article only.
 
 The theme UI strings live in `overrides/i18n/<language>.yml` (English is the fallback).
 
+Tag icons are mapped in `extra.tag_icons` in `mkdocs.yml` (tag name to a Material `.icons` path, e.g. `Kubernetes: simple/kubernetes`). Unmapped tags show no icon.
+
 The sidebar is generated from the directory tree, but the landing pages are not - link the
 new file from `docs/index.md` **and** `docs/<section>/index.md`.
 
