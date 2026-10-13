@@ -223,7 +223,7 @@ When rewriting an article:
 3. Write: practical examples, real-world use cases - commands copy-pasteable on the spot
 4. **Wire both indexes** if it's a new file - `docs/index.md` *and* `docs/<section>/index.md`, hardcoded links, always
 5. Lint: `markdownlint-cli2 "path/to/file.md"`
-6. Preview: run `mkdocs serve --dirty` (background) and open the article in the browser
+6. Preview: build to a temp dir and serve it statically (see "Preview: never `mkdocs serve`" below), then open the article
    - URL pattern: `http://127.0.0.1:8000/<path-without-docs-prefix-and-md>/`
    - Example: `docs/linux/cli/sed.md` → `open http://127.0.0.1:8000/linux/cli/sed/`
 7. Commit + push - CI validates automatically
@@ -274,22 +274,15 @@ When writing or rewriting an article, apply these whenever the condition holds (
   Shallow clones (`--depth 1`) will cause errors. Use `git fetch --unshallow` if needed.
   Its `WARNING:root:` lines are non-blocking, even under `--strict`.
 
-- **Zombie `mkdocs serve` on port 8000**: `pgrep` alone isn't enough. Restart sequence:
+- **Preview: never `mkdocs serve`** (agents). Its first build takes ~9 min locally against ~1 min for `mkdocs build`, hooks are not reloaded, and after a plugin install it fails its rebuild and keeps serving nothing. Build, serve the output, rebuild after each change:
 
   ```bash
-  pkill -f "mkdocs serve"; sleep 1
-  lsof -i :8000                                    # must be empty
-  nohup uv run mkdocs serve --dirty >/tmp/mkdocs.log 2>&1 &
-  sleep 5 && lsof -i :8000 | grep LISTEN           # must print a line
+  SITE="$TMPDIR/wiki-site"
+  DISABLE_MKDOCS_2_WARNING=true \
+    DYLD_FALLBACK_LIBRARY_PATH="/opt/homebrew/lib:$HOME/lib:/usr/local/lib:/usr/lib" \
+    uv run mkdocs build --strict -d "$SITE"
+  # background, once; stop it with: pkill -f "http.server 8000"
+  python3 -m http.server 8000 --bind 127.0.0.1 -d "$SITE"
   ```
 
-  A `server_bind()` crash in `/tmp/mkdocs.log` means a zombie still holds the port - `lsof -i :8000` then `kill -9`.
-
-- **Case-only renames on macOS**: the filesystem is case-insensitive, so `git mv Foo.md foo.md`
-  is a no-op. Go through a temp name, or `git show HEAD:old.md > new.md && git rm old.md`.
-  Either way, add the `redirects` entry.
-
-## Local Working Files
-
-`.claude/` directory (gitignored) - local session files, plans, notes.
-Example: `.claude/rewrite-plan.md` tracks article rewrite progress.
+  `DYLD_FALLBACK_LIBRARY_PATH` lets the `social` plugin find Homebrew's `libcairo`; without it `--strict` aborts on cairo warnings.
