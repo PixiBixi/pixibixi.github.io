@@ -227,6 +227,22 @@
   fill: currentColor;
 }
 
+/* Desktop: the "missing article" card sits beside the suggestions, sticky, never below the fold */
+@media screen and (min-width: 60em) {
+  .jd-404__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap: 48px;
+    align-items: start;
+  }
+
+  .jd-404__card {
+    position: sticky;
+    top: 24px;
+    margin-top: 48px;
+  }
+}
+
 .jd-404__links {
   display: flex;
   flex-wrap: wrap;
