@@ -56,6 +56,8 @@ The theme UI strings live in `overrides/i18n/<language>.yml` (English is the fal
 
 Tag icons are mapped in `extra.tag_icons` in `mkdocs.yml` (tag name to a Material `.icons` path, e.g. `Kubernetes: simple/kubernetes`). Unmapped tags show no icon.
 
+RSS feeds (`feed_rss_created.xml`, `feed_rss_updated.xml`) come from `mkdocs-rss-plugin`; index pages, `tags.md` and `about.md` are excluded by `match_path`.
+
 The sidebar is generated from the directory tree, but the landing pages are not - link the
 new file from `docs/index.md` **and** `docs/<section>/index.md`.
 

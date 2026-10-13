@@ -67,6 +67,12 @@ plugins:
   - search:
       lang: fr
   - tags
+  # Articles only: index pages (hand-written and generated), tags and about stay out of the feeds
+  - rss:
+      match_path: '^(?!(.*/)?index\.md$|tags\.md$|about\.md$).+\.md$'
+      json_feed_enabled: false
+      categories:
+        - tags
   - privacy
   - redirects:
       redirect_maps:

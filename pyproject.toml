@@ -10,4 +10,5 @@ dependencies = [
     "mkdocs-redirects==1.2.3",
     "pillow",
     "cairosvg",
+    "mkdocs-rss-plugin==1.19.0",
 ]
