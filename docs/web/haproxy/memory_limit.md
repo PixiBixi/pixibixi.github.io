@@ -1,18 +1,18 @@
 ---
-description: Comprendre l'impact d'une limite mémoire sur les performances et la capacité de connexion de HAproxy
+description: Comprendre l'impact d'une limite mémoire sur les performances et la capacité de connexion de HAProxy
 tags:
   - HAProxy
 ---
 
-# HAproxy : Comportement d'une limite mémoire
+# HAProxy : Comportement d'une limite mémoire
 
-Il y a peu, j'ai observé un comportement assez étonnant avec HAproxy. (mais pas si inattendu quand on y réfléchit)
+Il y a peu, j'ai observé un comportement assez étonnant avec HAProxy. (mais pas si inattendu quand on y réfléchit)
 
-Déployant des HAproxy sur K8S, j'ai décidé (à mauvais titre) de mettre une limite de RAM pour mieux maitriser le comportement.
+Déployant des HAProxy sur K8s, j'ai décidé (à mauvais titre) de mettre une limite de RAM pour mieux maitriser le comportement.
 
-La documentation de HAproxy étant ce qu'elle est, voilà ce que j'ai vu au tout début dans celle-ci. Rien n'indiquant explicitement que cap la mémoire allait hardcode le maxconn ou autre paramètre.
+La documentation de HAProxy étant ce qu'elle est, voilà ce que j'ai vu au tout début dans celle-ci. Rien n'indiquant explicitement que cap la mémoire allait hardcode le maxconn ou autre paramètre.
 
-!!! note "-m parameter HAproxy"
+!!! note "-m parameter HAProxy"
     ```cfg
       -m <limit> : limit the total allocatable memory to <limit> megabytes across
         all processes. This may cause some connection refusals or some slowdowns
@@ -23,7 +23,7 @@ La documentation de HAproxy étant ce qu'elle est, voilà ce que j'ai vu au tout
         global.nbproc before forking.
     ```
 
-Il y a un hic, il s'agissait d'une ancienne documentation HAproxy. En regardant de plus proche une documentation de HAproxy 2.8, j'aurais pu mieux troubleshoot mon probleme
+Il y a un hic, il s'agissait d'une ancienne documentation HAProxy. En regardant de plus proche une documentation de HAProxy 2.8, j'aurais pu mieux troubleshoot mon probleme
 
 Au départ, j'ai alloué une limite de **2500mi** de RAM ce qui nous a donné le comportement suivant :
 
@@ -64,7 +64,7 @@ MaxconnReached: 0
 65000 maxconn avec un maxconnrate à 1600, déjà un peu mieux pour gérer les peaks.
 
 !!! warning
-    Ne pas négliger la mémoire allouée à HAproxy sous peine de surprises. S'assurer aussi que la documentation consultée correspond bien à la version de HAproxy en production.
+    Ne pas négliger la mémoire allouée à HAProxy sous peine de surprises. S'assurer aussi que la documentation consultée correspond bien à la version de HAProxy en production.
 
 ## Voir aussi
 

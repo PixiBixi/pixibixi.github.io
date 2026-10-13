@@ -23,7 +23,7 @@ Le plan complet est ci-dessous, sinon la recherche fait le job.
 - [Rappel des commandes de base](linux/fundamentals/base_commands.md)
 - [Rappel sur le cron](linux/fundamentals/cron.md)
 - [VIM: L'editeur de texte de la mort](linux/fundamentals/vim.md)
-- [cURL: La commande à tout faire](linux/fundamentals/curl.md)
+- [curl: La commande à tout faire](linux/fundamentals/curl.md)
 
 ### Ligne de commande
 
@@ -56,10 +56,10 @@ Le plan complet est ci-dessous, sinon la recherche fait le job.
 - [Désactiver les patchs de sécurité Meltdown & co](linux/security/disable_patches.md)
 - [Apprendre à se servir d'ipset](linux/security/ipset.md)
 - [Installer et configurer RKHunter](linux/security/rkhunter.md)
-- [Installer et configurer LogWatch](linux/security/logwatch.md)
+- [Installer et configurer Logwatch](linux/security/logwatch.md)
 - [Hardening simple du serveur SSH](linux/security/hardening_sshd.md)
 - [Installer et configurer PortSentry](linux/security/portsentry.md)
-- [Whitelister une série d'IP à l'aide d'IPset et iptables](linux/security/whitelist_ip.md)
+- [Whitelister une série d'IP à l'aide d'ipset et iptables](linux/security/whitelist_ip.md)
 - [Logger les actions SSH utilisateurs simplement](linux/security/ssh_log_commands.md)
 - [Chrooter un utilisateur en SFTP ou en SSH](linux/security/sftp.md)
 - [Améliorer la vitesse de connexion à votre serveur SSH](linux/security/ssh_improve_speed.md)
@@ -115,11 +115,11 @@ Le plan complet est ci-dessous, sinon la recherche fait le job.
 
 ### CLI & outillage
 
-- [Commandes utiles pour K8S](kubernetes/cli/useful_commands.md)
+- [Commandes utiles pour K8s](kubernetes/cli/useful_commands.md)
 - [Kubernetes : Commandes Avancées](kubernetes/cli/advanced_commands.md)
 - [Mes meilleurs plugins Krew](kubernetes/cli/krew_plugins.md)
 - [Manage son $KUBECONFIG](kubernetes/cli/kubeconfig.md)
-- [Outils pour mieux gérer K8S](kubernetes/cli/tools.md)
+- [Outils pour mieux gérer K8s](kubernetes/cli/tools.md)
 
 ### Déploiement
 
@@ -179,7 +179,7 @@ Le plan complet est ci-dessous, sinon la recherche fait le job.
 
 ### Elasticsearch
 
-- [Log des slow queries de ElasticSearch](databases/elasticsearch/log_slow_queries.md)
+- [Log des slow queries de Elasticsearch](databases/elasticsearch/log_slow_queries.md)
 
 ### MongoDB
 
@@ -260,7 +260,7 @@ Le plan complet est ci-dessous, sinon la recherche fait le job.
 
 ### GitLab
 
-- [Optimiser sa CI Gitlab](ci-cd/gitlab/ci/optimize.md)
+- [Optimiser sa CI GitLab](ci-cd/gitlab/ci/optimize.md)
 - [Intégrer un scan d'image à sa CI](ci-cd/gitlab/ci/scan_image.md)
 - [Utilisation de la CLI officielle](ci-cd/gitlab/cli.md)
 
@@ -277,21 +277,21 @@ Le plan complet est ci-dessous, sinon la recherche fait le job.
 
 ## Web & hébergement
 
-### NGINX & PHP
+### nginx & PHP
 
 - [Configurer nginx pour utiliser IPv6](web/nginx/ipv6_nginx.md)
-- [Forcer le SSL sous NGINX](web/nginx/nginx_ssl.md)
-- [Installer son Serveur Web : NGINX, PHP-FPM et MariaDB](web/nginx/installation.md)
+- [Forcer le SSL sous nginx](web/nginx/nginx_ssl.md)
+- [Installer son Serveur Web : nginx, PHP-FPM et MariaDB](web/nginx/installation.md)
 - [Installer une version custom de PHP](web/nginx/php_custom_version.md)
-- [Être encore plus safe en customisant son header Server NGINX](web/nginx/custom_server_header.md)
+- [Être encore plus safe en customisant son header Server nginx](web/nginx/custom_server_header.md)
 - [Obtenir les bonnes IP sur apache derrière un reverse proxy](web/nginx/fetch_good_ips.md)
 
 ### HAProxy
 
-- [Reverse proxy: HAproxy](web/haproxy/overview.md)
-- [HAproxy : exploitation au quotidien](web/haproxy/operations.md)
-- [HAproxy : Comportement d'une limite mémoire](web/haproxy/memory_limit.md)
-- [HAproxy : Performance tuning](web/haproxy/performance_tuning.md)
+- [Reverse proxy: HAProxy](web/haproxy/overview.md)
+- [HAProxy : exploitation au quotidien](web/haproxy/operations.md)
+- [HAProxy : Comportement d'une limite mémoire](web/haproxy/memory_limit.md)
+- [HAProxy : Performance tuning](web/haproxy/performance_tuning.md)
 
 ### Varnish
 
@@ -332,7 +332,7 @@ Le plan complet est ci-dessous, sinon la recherche fait le job.
 
 - [Commandes de base Cisco IOS](networking/cisco/commandes_base.md)
 - [Cisco : Créér son VLAN](networking/cisco/vlan.md)
-- [QOS Cisco](networking/cisco/qos.md)
+- [QoS Cisco](networking/cisco/qos.md)
 - [Cisco : Désactiver la résolution DNS](networking/cisco/dns.md)
 - [STP : Spanning Tree Protocol](networking/cisco/stp.md)
 - [Serveur SSH](networking/cisco/ssh.md)
@@ -371,8 +371,8 @@ Le plan complet est ci-dessous, sinon la recherche fait le job.
 
 ### Applications
 
-- [Selfoss, son Reader RSS self-hosted](selfhost/selfoss.md)
-- [NextCloud, son cloud personnel](selfhost/nextcloud.md)
+- [selfoss, son Reader RSS self-hosted](selfhost/selfoss.md)
+- [Nextcloud, son cloud personnel](selfhost/nextcloud.md)
 - [Sonerezh](selfhost/sonerezh.md)
 - [yt-dlp : télécharger et archiver ses vidéos en CLI](selfhost/youtubedl.md)
 - [Gérer son serveur en ligne via Ajenti](selfhost/ajenti.md)
@@ -389,8 +389,8 @@ Le plan complet est ci-dessous, sinon la recherche fait le job.
 
 ### macOS
 
-- [Brew, le package manager de MacOS](os/mac/brew.md)
-- [Brew : L'installer sans XCode](os/mac/brew_xcode.md)
+- [Brew, le package manager de macOS](os/mac/brew.md)
+- [Brew : L'installer sans Xcode](os/mac/brew_xcode.md)
 - [Enlever le premier caractère bizarre de iTerm](os/mac/iterm/troubleshooting/first_chat.md)
 - [Remap le Alt+Arrow de iTerm](os/mac/iterm/troubleshooting/alt_arrow.md)
 
@@ -399,7 +399,7 @@ Le plan complet est ci-dessous, sinon la recherche fait le job.
 - [Setup de base d'un Windows 2012R2](os/windows/server/powershell/first_setup.md)
 - [Monter un ISO directement via PowerShell](os/windows/server/powershell/mount_iso.md)
 - [Installer et configurer un serveur DHCP en PowerShell](os/windows/server/powershell/dhcp_server.md)
-- [Manipuler les HDD en Powershell](os/windows/server/powershell/storage/pool.md)
+- [Manipuler les HDD en PowerShell](os/windows/server/powershell/storage/pool.md)
 - [Autoriser l'ICMP sur un serveur Windows 2012R2 en PowerShell](os/windows/server/powershell/allow_icmp.md)
 - [Importer des utilisateurs CSV dans un AD via PowerShell](os/windows/server/powershell/import_csv_users.md)
 - [Windows : clés de registre utiles](os/windows/server/registry/useful_keys.md)
@@ -408,7 +408,7 @@ Le plan complet est ci-dessous, sinon la recherche fait le job.
 - [Connaitre le temps d'exécution d'une commande PowerShell](os/windows/server/powershell/command_time_execution.md)
 - [Accéder au Firewall sans Icône ni raccourci](os/windows/server/firewall/access_without_shortcut.md)
 - [PowerShell : variables built-in utiles](os/windows/server/powershell/useful_vars.md)
-- [Initier des connexions iSCSi en CLI](os/windows/server/powershell/initiate_iscsi.md)
+- [Initier des connexions iSCSI en CLI](os/windows/server/powershell/initiate_iscsi.md)
 - [Installer des drivers via PowerShell](os/windows/server/powershell/install_drivers.md)
 - [Définir PowerShell en temps que shell par défaut](os/windows/server/core/setup_default_powershell.md)
 
@@ -420,7 +420,7 @@ Le plan complet est ci-dessous, sinon la recherche fait le job.
 
 ### IDE
 
-- [SublimeText : Le codage Efficace](os/misc/st3.md)
+- [Sublime Text : Le codage Efficace](os/misc/st3.md)
 
 ## Hardware
 

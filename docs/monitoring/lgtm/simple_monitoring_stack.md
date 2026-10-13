@@ -82,12 +82,12 @@ d'afficher les données récoltées dans Prometheus à notre guise.
 
 #### Netdata
 
-Il existe beaucoup d'exporters (Node-Exporter + cAdvisor, Netdata,Telegraf)... pour tout logiciel (HAproxy,NGINX,PHP-FPM)
+Il existe beaucoup d'exporters (Node-Exporter + cAdvisor, Netdata,Telegraf)... pour tout logiciel (HAProxy,nginx,PHP-FPM)
 
 Cependant, j'ai fait le choix après avoir testé plusieurs exporters
 d'utiliser Netdata. Ce logiciel intégre des milliers de métriques
 matériels mais également de nombreuses logiciels (Plugins MySQL,
-Nginx...) tout ça sans aucune configuration. De plus, Netdata dispose
+nginx...) tout ça sans aucune configuration. De plus, Netdata dispose
 nativement d'un système d'alerte pertinent avec de nombreuses
 destinations : Slack, Email, Telegram...
 
@@ -592,7 +592,7 @@ la même façon par leur ID.
 
 ## Voir aussi
 
-* [Générer des alertes depuis Loki](loki_alerting.md) - alerting avec LogQL via AlertManager
+* [Générer des alertes depuis Loki](loki_alerting.md) - alerting avec LogQL via Alertmanager
 * [Ecrire une métrique custom pour node_exporter](custom_metrics_nodeexporter.md) - étendre les métriques collectées
 * [Grafana Alloy](alloy.md) - collecteur universel logs/métriques/traces
 * [Quelques tips pour la stack LGTM](tips_lgtm.md) - API calls et astuces
@@ -835,7 +835,7 @@ n'y a aucun intérêt à créer un utilisateur supplémentaire, vous pourrez
 lancer blackbox_exporter en tant que Prometheus et placer son fichier de
 configuration dans le répertoire de Prometheus.
 
-Il faut toujours se rendre sur la page Github afin de s'assurer que
+Il faut toujours se rendre sur la page GitHub afin de s'assurer que
 nous disposons de la dernière version de notre logiciel :
 
 ```bash
@@ -1028,7 +1028,7 @@ ReadWritePaths=/var/lib/alertmanager
 ```
 
 Amtool est un outil permettant d'interagir directement avec l'API de
-AlertManager et de valider la config avec
+Alertmanager et de valider la config avec
 `amtool check-config /etc/alertmanager/alertmanager.yml`.
 
 #### alertmanager.yml

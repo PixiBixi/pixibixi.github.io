@@ -4,7 +4,7 @@ tags:
   - Elasticsearch
 ---
 
-# Log des slow queries de ElasticSearch
+# Log des slow queries de Elasticsearch
 
 Dans une optique d'optimisation des performances, il est intéressant de
 log les slow queries afin de les optimiser si possible. Par défaut, rien

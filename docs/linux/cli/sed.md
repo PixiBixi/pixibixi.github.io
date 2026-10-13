@@ -11,7 +11,7 @@ tags:
     Sur macOS, `sed` est la version BSD. Installer **gnu-sed** via Homebrew :
     `brew install gnu-sed` - puis utiliser `gsed` ou ajuster le PATH.
 
-sed (Stream EDitor) lit un flux ligne par ligne et applique des expressions.
+sed (Stream Editor) lit un flux ligne par ligne et applique des expressions.
 Sa syntaxe de base :
 
 ```bash

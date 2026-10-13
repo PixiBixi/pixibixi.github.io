@@ -35,7 +35,7 @@ global
     cpu-map auto:1/1-4 0-3
 ```
 
-En K8S ou environnement conteneurisé, `cpu-map` n'a généralement pas de sens vu que le scheduler gère déjà l'affinité. Ne l'utiliser que sur du bare-metal ou des VMs avec des CPUs dédiés.
+En K8s ou environnement conteneurisé, `cpu-map` n'a généralement pas de sens vu que le scheduler gère déjà l'affinité. Ne l'utiliser que sur du bare-metal ou des VMs avec des CPUs dédiés.
 
 ### cpu-policy (3.2+)
 
@@ -571,13 +571,13 @@ global
 
 Monter à 90/80 préserve le pool beaucoup plus longtemps et ne recycle qu'en cas de vrai manque de FD. À ne faire qu'avec un `nofile` correctement dimensionné : on autorise ici le pool à manger 90% des FD disponibles.
 
-## Déploiement K8S
+## Déploiement K8s
 
 Sur Kubernetes, quelques patterns spécifiques au déploiement de HAProxy :
 
 ### hostNetwork
 
-Pour du trafic très haut débit, le réseau overlay de K8S (kube-proxy, iptables/IPVS) ajoute de la latence. Passer en `hostNetwork: true` bypass complètement la stack réseau K8S :
+Pour du trafic très haut débit, le réseau overlay de K8s (kube-proxy, iptables/IPVS) ajoute de la latence. Passer en `hostNetwork: true` bypass complètement la stack réseau K8s :
 
 ```yaml
 spec:
@@ -588,7 +588,7 @@ spec:
 `hostNetwork` fonctionne aussi bien en Deployment qu'en DaemonSet. En Deployment, on cumule hostNetwork (performance réseau) avec le scaling horizontal classique (replicaCount).
 
 !!! warning
-    Avec `hostNetwork`, penser à `dnsPolicy: ClusterFirstWithHostNet` - sans ça, le pod utilise le DNS du node et ne résout plus les Services K8S.
+    Avec `hostNetwork`, penser à `dnsPolicy: ClusterFirstWithHostNet` - sans ça, le pod utilise le DNS du node et ne résout plus les Services K8s.
 
 ### DaemonSet vs Deployment
 
@@ -597,7 +597,7 @@ spec:
 
 ### Sysctls via initContainers
 
-Les sysctls réseau sont per-namespace en K8S. On les applique via un initContainer privileged :
+Les sysctls réseau sont per-namespace en K8s. On les applique via un initContainer privileged :
 
 ```yaml
 initContainers:
@@ -826,7 +826,7 @@ global
 | `raw-deflate` | Deflate sans wrapper zlib, mieux supporté que `deflate` mais aucun avantage sur gzip. |
 | `identity` | Pas de compression, utile pour du debug uniquement. |
 
-Pas de support zstd à ce jour, même en HAProxy 3.x. Si on a besoin de zstd, le faire côté backend (Nginx, application).
+Pas de support zstd à ce jour, même en HAProxy 3.x. Si on a besoin de zstd, le faire côté backend (nginx, application).
 
 ### Niveau de compression
 
@@ -839,7 +839,7 @@ Pas de support zstd à ce jour, même en HAProxy 3.x. Si on a besoin de zstd, le
 Sur un HAProxy à forte charge, rester entre 1 et 4. Le gain de bande passante entre le niveau 4 et le niveau 9 justifie rarement le coût CPU.
 
 !!! warning
-    La compression consomme du CPU. Si les backends gèrent déjà la compression (Nginx, CDN), ne pas l'activer côté HAProxy - ça revient à compresser deux fois pour rien. HAProxy détecte automatiquement un `Content-Encoding` existant et ne recompresse pas.
+    La compression consomme du CPU. Si les backends gèrent déjà la compression (nginx, CDN), ne pas l'activer côté HAProxy - ça revient à compresser deux fois pour rien. HAProxy détecte automatiquement un `Content-Encoding` existant et ne recompresse pas.
 
 ## Exemple complet
 

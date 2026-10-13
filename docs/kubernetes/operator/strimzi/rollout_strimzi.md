@@ -7,7 +7,7 @@ tags:
 
 # Comment rollout restart un composant Strimzi
 
-Restart un déploiement est une chose facile sur K8S.
+Restart un déploiement est une chose facile sur K8s.
 
 Cependant, comme Strimzi a sa propre CRD (strimzipodset), c'est un peu plus ennuyeux.
 

@@ -1,5 +1,5 @@
 ---
-description: Applications self-hostées - Nextcloud, Koel, Guacamole, Rutorrent et autres outils à faire tourner soi-même.
+description: Applications self-hostées - Nextcloud, Koel, Guacamole, ruTorrent et autres outils à faire tourner soi-même.
 tags:
   - Nextcloud
   - Selfhost
@@ -15,10 +15,10 @@ Faire tourner ses propres services plutôt que de dépendre de tiers. Cloud pers
 - [Nextcloud](nextcloud.md) - cloud personnel avec MySQL, PHP et Redis
 - [Koel](koel.md) - streaming musical self-hosted
 - [Guacamole](guacamole.md) - accès bureau à distance via le navigateur
-- [Selfoss](selfoss.md) - agrégateur de flux RSS
+- [selfoss](selfoss.md) - agrégateur de flux RSS
 - [h5ai](h5ai.md) - index de fichiers web élégant
 - [Ajenti](ajenti.md) - panneau d'administration serveur
 - [Sonerezh](sonerezh.md) - alternative à Koel pour le streaming musical
 - [yt-dlp](youtubedl.md) - formats, templates de sortie, download-archive et automatisation systemd
 - [Torrent - mktorrent](torrent/mktorrent.md) - créer des fichiers .torrent
-- [Torrent - Rutorrent](torrent/rutorrent.md) - client BitTorrent web
+- [Torrent - ruTorrent](torrent/rutorrent.md) - client BitTorrent web

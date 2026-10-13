@@ -59,7 +59,7 @@ Voici le rendu du script :
 
 ![Proof files](./_img/proof_files.webp)
 
-## Iperf, kezako ?
+## iPerf, kezako ?
 
 iperf est un logiciel nécessitant un serveur et un client compatible
 IPv4 et IPv6, se basant sur les protocoles UDP, TCP et SCTP disponible

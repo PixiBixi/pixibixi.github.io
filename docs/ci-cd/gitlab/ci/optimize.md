@@ -5,7 +5,7 @@ tags:
   - CI/CD
 ---
 
-# Optimiser sa CI Gitlab
+# Optimiser sa CI GitLab
 
 Les CI c'est bien, une CI optimisée c'est mieux. Voici quelques tips pour l'optimiser. Il y a également des optimisations spécifiques aux différents langages.
 

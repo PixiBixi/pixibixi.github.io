@@ -8,7 +8,7 @@ tags:
 # Ajouter une gateway en dehors de son réseau
 
 Il est désormais commun d'avoir une gateway en dehors de son réseau
-avec les IP FailOver (Exemple typique avec Online ne fournissant qu'une
+avec les IP failover (Exemple typique avec Online ne fournissant qu'une
 Gateway quelque soit son IP : 62.210.0.1). Cependant, lors de la
 première initialisation de pfSense en ligne de commande, celui-ci refuse
 une gateway en dehors de son réseau.

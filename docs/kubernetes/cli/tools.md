@@ -5,15 +5,15 @@ tags:
   - CLI
 ---
 
-# Outils pour mieux gérer K8S
+# Outils pour mieux gérer K8s
 
 Kubernetes c'est bien, mais c'est très vite la galère à tout gérer.
 Voici donc quelques outils pour mieux gérer tout ça :
 
 * `kubectx` permet de switch rapidement entre plusieurs contextes
-    K8S : [a voir ici](https://github.com/ahmetb/kubectx).
+    K8s : [a voir ici](https://github.com/ahmetb/kubectx).
 * `kubeswitch` permet tout comme kubectx de switch de contextes rapidement. Avantage de kubeswitch, le switch n'est pas général mais est lié à la session, on peut donc utiliser sur un même terminal différents clusters : [a voir ici](https://github.com/danielfoehrKn/kubeswitch)
-* `kubens` permet de switch rapidement entre plusieurs namespaces K8S : [a voir ici](https://github.com/ahmetb/kubectx).
+* `kubens` permet de switch rapidement entre plusieurs namespaces K8s : [a voir ici](https://github.com/ahmetb/kubectx).
 * `stern` permet de tail plusieurs pods rapidement : [a voir ici](https://github.com/stern/stern)
 * `kail` permet de tail plusieurs pods rapidement : [a voir ici](https://github.com/boz/kail).
 * `kubepug` permet de vérifier la compatibilité des différentes APIVersion : [a voir ici](https://github.com/rikatz/kubepug).

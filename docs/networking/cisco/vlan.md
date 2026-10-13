@@ -44,13 +44,13 @@ Comme dans le routeur, on se place au bon niveau d'exécution
 
 On configure l'interface désirée
 
-    Switch(config)#interface Vlan 3
+    Switch(config)#interface VLAN 3
     Switch(config-vlan)#ip address 192.168.0.2 255.255.255.0
     Switch(config-vlan)#description VLAN3
     Switch(config-vlan)#no shutdown
 
-Enfin, on met un nom à notre Vlan, puis on sélectionne les interfaces
-qui doivent être utilisées pour ce Vlan
+Enfin, on met un nom à notre VLAN, puis on sélectionne les interfaces
+qui doivent être utilisées pour ce VLAN
 
     Switch(config)interface range Fa0/6-12
     Switch(config-if-range)#switchport mode access

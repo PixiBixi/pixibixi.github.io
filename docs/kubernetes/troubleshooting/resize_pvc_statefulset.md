@@ -9,7 +9,7 @@ tags:
 
 # Resize les PVC de son StatefulSet : cascade orphan et pièges
 
-Les Statefulset, c'est archaïque.
+Les StatefulSet, c'est archaïque.
 
 By-design, la spec ne permet pas de resize les PVC alors qu'on peut totalement resize les PVC des pods associés. Le champ `volumeClaimTemplates` est immuable, donc un `kubectl apply` avec une taille plus grande sort ça :
 
@@ -148,4 +148,4 @@ Si la demande était trop grande et que le provider la refuse définitivement, l
 - [StatefulSet - podManagementPolicy](../deployment/statefulset_pod_management_policy.md) - l'ordre de redémarrage des pods
 - [ArgoCD : Sync Options](../argocd/sync_options.md) - couper proprement la resynchro pendant une opération manuelle
 - [Comment rollout restart un composant Strimzi](../operator/strimzi/rollout_strimzi.md) - le cas d'un StatefulSet possédé par un opérateur
-- [Commandes utiles pour K8S](../cli/useful_commands.md) - les `custom-columns` et autres raccourcis kubectl
+- [Commandes utiles pour K8s](../cli/useful_commands.md) - les `custom-columns` et autres raccourcis kubectl

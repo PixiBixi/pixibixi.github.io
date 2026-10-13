@@ -1,15 +1,15 @@
 ---
-description: Guide complet de HAproxy - configuration, load balancing, ACLs, TLS et exemples pratiques
+description: Guide complet de HAProxy - configuration, load balancing, ACLs, TLS et exemples pratiques
 tags:
   - HAProxy
 ---
 
-# Reverse proxy: HAproxy
+# Reverse proxy: HAProxy
 
-!!! warning "Version HAproxy"
+!!! warning "Version HAProxy"
     Les directives et options évoluent entre les versions majeures. Vérifiez toujours la version installée (`haproxy -v`) et consultez la [documentation officielle](https://docs.haproxy.org/3.3/management.html) correspondante. La version actuelle stable est la **3.3**.
 
-HAproxy est un reverse proxy optimisé pour les fortes charges créé en
+HAProxy est un reverse proxy optimisé pour les fortes charges créé en
 2000 par Willy Tarreau, un contributeur kernel. Ce dernier propose
 toutes les fonctionnalités d'un reverse proxy classique :
 
@@ -19,7 +19,7 @@ toutes les fonctionnalités d'un reverse proxy classique :
 Il est également utilisé par de nombreux sites populaires :
 
 * Twitter
-* Github
+* GitHub
 * Reddit
 * Airbnb...
 
@@ -28,16 +28,16 @@ tel que *apt* ou autre.
 
 ## Terminologie
 
-HAproxy utilise des termes assez classiques, avec quelques terminologies spécifiques :
+HAProxy utilise des termes assez classiques, avec quelques terminologies spécifiques :
 
-* **bind** : attacher en Anglais, permet de dire sur quelle IP et quel port HAproxy va écouter. Par exemple, 192.168.1.1 sur le port 80
+* **bind** : attacher en Anglais, permet de dire sur quelle IP et quel port HAProxy va écouter. Par exemple, 192.168.1.1 sur le port 80
 * **frontend** : un bloc de configuration qui permet de définir toutes les règles qui s'appliqueront (domaines écoutés, limitations, etc). Un frontend peut s'appliquer à un ou plusieurs bind.
 * **backend** : un autre bloc de configuration, placé derrière un frontend. Si le frontend gère ce qui est public (l'avant du serveur), le backend gère l'arrière. C'est là qu'on définit les serveurs web vers lesquels envoyer les requêtes, les différents checks appliqués...
-* **ACL** : une "Access Control List" permet de définir des conditions dans un bloc, par exemple "si le domaine contient site1, alors faire cela, si la requête est en https, alors faire ceci". Il s'agit ici de la grande spécificité de HAproxy face à ses concurrents.
+* **ACL** : une "Access Control List" permet de définir des conditions dans un bloc, par exemple "si le domaine contient site1, alors faire cela, si la requête est en https, alors faire ceci". Il s'agit ici de la grande spécificité de HAProxy face à ses concurrents.
 
 ## Configuration Générale
 
-Par défaut, toute la configuration de HAproxy se fait dans un unique
+Par défaut, toute la configuration de HAProxy se fait dans un unique
 fichier : *haproxy.cfg*. Cependant, lors d'une configuration un peu
 poussée, il devient très vite illisible.
 
@@ -54,7 +54,7 @@ La variable CONFIG est utilisée pour le paramètre `-F $CONFIG` de
 l'unit systemd.
 Voici ce que dit la [documentation haproxy](https://docs.haproxy.org/3.3/management.html) :
 
-??? note "HAproxy : Official Documentation"
+??? note "HAProxy : Official Documentation"
     ```bash
       -f <cfgfile|cfgdir> : adds <cfgfile> to the list of configuration files to be
         loaded. If <cfgdir> is a directory, all the files (and only files) it
@@ -72,7 +72,7 @@ Voici ce que dit la [documentation haproxy](https://docs.haproxy.org/3.3/managem
         A file cannot contain just a server list for example.
     ```
 
-Tous les fichiers se terminant par .cfg seront chargés par HAproxy par
+Tous les fichiers se terminant par .cfg seront chargés par HAProxy par
 ordre alphabétique.
 
 Voici la configuration lancée par défaut via l'unit systemd :
@@ -82,9 +82,9 @@ ExecStartPre=/usr/sbin/haproxy -f ${CONFIG} -c -q
 ExecStart=/usr/sbin/haproxy-systemd-wrapper -f ${CONFIG} -p /run/haproxy.pid $EXTRAOPTS
 ```
 
-## Configuration HAproxy
+## Configuration HAProxy
 
-Pour rappel, avec une configuration splittée de HAproxy, il va lire les
+Pour rappel, avec une configuration splittée de HAProxy, il va lire les
 fichiers par ordre alphabétique, il est donc important d'avoir les
 sections global et defaults avant les frontend et backend. Pour être sûr
 de l'ordre, on peut préfixer les fichiers avec des numéros.
@@ -92,10 +92,10 @@ de l'ordre, on peut préfixer les fichiers avec des numéros.
 ### Global
 
 Comme son nom l'indique, toute la partie globale concerne les
-directives propres au fonctionnement interne de HAproxy. Voici un
-exemple simple qu'on retrouve dans un grand nombre de configurations HAproxy :
+directives propres au fonctionnement interne de HAProxy. Voici un
+exemple simple qu'on retrouve dans un grand nombre de configurations HAProxy :
 
-??? example "HAproxy: Global section"
+??? example "HAProxy: Global section"
     ```haproxy
     global
         maxconn 50000
@@ -112,7 +112,7 @@ exemple simple qu'on retrouve dans un grand nombre de configurations HAproxy :
     ```
 
 * `maxconn` permet de limiter le nombre de connexions acceptées
-par HAproxy pour prémunir un manque de mémoire. Attention à ne pas
+par HAProxy pour prémunir un manque de mémoire. Attention à ne pas
 faire un sizing trop juste, ce qui induirait un drop de
 connexions légitimes. Voir [le guide de tuning nbthread, maxconn et TLS](performance_tuning.md) et [limite mémoire](memory_limit.md) pour les détails.
 * `log` permet de spécifier où sont renvoyés les logs. Dans
@@ -121,14 +121,14 @@ local0. rsyslog s'occupe de traiter les logs. (par défaut,
 écriture dans /var/log/syslog).
 * `user/group` indique à haproxy qu'il ne faut pas lancer les fork
 en tant que root, mais en tant qu'haproxy.
-* `stats socket` permet de définir un socket afin d'y extraire les stats ou autre. Il est également possible d'écrire la configuration de HAproxy via ce moyen. Attention à bien restreindre les privilèges.
+* `stats socket` permet de définir un socket afin d'y extraire les stats ou autre. Il est également possible d'écrire la configuration de HAProxy via ce moyen. Attention à bien restreindre les privilèges.
     <!-- markdownlint-disable-next-line -->
     * SleepLessBeastie a écrit [un excellent article](https://sleeplessbeastie.eu/2020/01/29/how-to-use-haproxy-stats-socket/) sur la définition des privilèges et comment interagir avec l'API. Voir aussi [HAProxy : exploitation au quotidien](operations.md).
-* `nbthread` permet à HAproxy de scaler sur plusieurs threads. Utiliser `auto` pour détecter automatiquement le nombre de threads disponibles, ou spécifier un entier.
+* `nbthread` permet à HAProxy de scaler sur plusieurs threads. Utiliser `auto` pour détecter automatiquement le nombre de threads disponibles, ou spécifier un entier.
     <!-- markdownlint-disable-next-line -->
     * `nbproc` (multi-processus) est **déprécié depuis HAProxy 2.5** et **supprimé en 2.9**. Ne plus utiliser cette directive.
 * `cpu-map` permet de binder chaque thread sur un core CPU dédié. La syntaxe avec `nbthread` : `cpu-map auto:<thread-range> <cpu-range>`
-* `daemon` permet de lancer HAproxy en tant que daemon. Indépendant de `nbthread` - les deux directives n'ont aucune dépendance l'une envers l'autre.
+* `daemon` permet de lancer HAProxy en tant que daemon. Indépendant de `nbthread` - les deux directives n'ont aucune dépendance l'une envers l'autre.
 * `ssl-default-bind-ciphers` configure les ciphers **TLS 1.2**. `ssl-default-bind-ciphersuites` configure les ciphers **TLS 1.3** (directive distincte, obligatoire pour couvrir les deux versions). `ssl-default-bind-options` configure les versions autorisées et options associées.
     <!-- markdownlint-disable-next-line -->
     * La fondation Mozilla propose un [configurateur](https://ssl-config.mozilla.org/#server=haproxy&version=3.3&config=intermediate) pour HAProxy 3.x. Le profil Intermediate est adapté pour une utilisation en production.
@@ -141,7 +141,7 @@ frontend mais également pour les backends. On peut overwrite les
 paramètres pour un frontend/backend spécifique par la suite.
 
 <!-- markdownlint-disable MD046 -->
-??? example "HAproxy: Default section"
+??? example "HAProxy: Default section"
     ```haproxy
     defaults
         mode http
@@ -164,16 +164,16 @@ paramètres pour un frontend/backend spécifique par la suite.
     ```
 <!-- markdownlint-enable MD046 -->
 
-* `mode http` indique à HAproxy de fonctionner en tant que balancer
+* `mode http` indique à HAProxy de fonctionner en tant que balancer
 HTTP et non simplement TCP. Légèrement plus lent que le TCP mais
 permet une granularité de configuration bien supérieure.
-  * À noter que HAproxy est également un load-balancer L4. Il
+  * À noter que HAProxy est également un load-balancer L4. Il
     est donc possible de balancer tout type de traffic (mysql,
     rabbitmq, mongodb...)
 * `log global` indique à chaque frontend suivant d'utiliser le
 paramètre log contenu dans la section global. Ça évite de
 devoir le redéfinir pour chaque frontend.
-* `option httplog` indique à HAproxy de fournir à syslog un format
+* `option httplog` indique à HAProxy de fournir à syslog un format
 de log plus détaillé. Il existe également l'attribut `tcplog` si
 on utilise le load-balancer en tant que balancer L4 (TCP).
 * `option dontlognull` permet de ne pas logger les sessions n'ayant
@@ -202,10 +202,10 @@ Les frontends sont utilisés pour définir comment les demandes doivent
 #### Exemple basique
 
 L'exemple suivant est le plus simple qu'on puisse faire
-sur HAproxy. HAproxy va écouter sur le port 80 et tout renvoyer le
+sur HAProxy. HAProxy va écouter sur le port 80 et tout renvoyer le
 traffic vers le backend *servers*. Aucune ACL ici.
 
-??? example "HAproxy : Simple frontend"
+??? example "HAProxy : Simple frontend"
     ```vcl
     frontend http-in
         bind *:80
@@ -218,7 +218,7 @@ Un exemple avancé est l'utilisation d'une ACL. Il existe beaucoup de
 types d'ACL, que ce soit sur l'URI, les paramètres... Voici un exemple simple avec l'utilisation d'une ACL sur le nom de domaine.
 
 <!-- markdownlint-disable MD046 MD037 -->
-??? example "HAproxy : Simple frontend w/ ACL"
+??? example "HAProxy : Simple frontend w/ ACL"
     ```vcl
     frontend http
        bind *:80
@@ -235,12 +235,12 @@ types d'ACL, que ce soit sur l'URI, les paramètres... Voici un exemple simple a
 <!-- markdownlint-enable MD046 -->
 
 On définit ici un backend par défaut. Il est possible de ne pas en
-définir et HAproxy renverra une erreur 421 de lui même.
+définir et HAProxy renverra une erreur 421 de lui même.
 
 #### Terminaison TLS
 
-HAproxy peut terminer le TLS directement sur le `bind`. La méthode recommandée est
-le répertoire de certificats : HAproxy charge automatiquement tous les fichiers `.pem`
+HAProxy peut terminer le TLS directement sur le `bind`. La méthode recommandée est
+le répertoire de certificats : HAProxy charge automatiquement tous les fichiers `.pem`
 qu'il contient et sélectionne le bon certificat via SNI. Pour l'optimisation des handshakes TLS en charge, voir [Performance tuning](performance_tuning.md).
 
 Chaque fichier `.pem` doit contenir le certificat (fullchain) **et** la clé privée
@@ -254,7 +254,7 @@ chmod 600 /etc/haproxy/certs/wiki.jdelgado.fr.pem
 ```
 
 <!-- markdownlint-disable MD046 MD037 -->
-??? example "HAproxy : Frontend avec terminaison TLS"
+??? example "HAProxy : Frontend avec terminaison TLS"
     ```haproxy
     frontend https
         bind *:80
@@ -279,11 +279,11 @@ HTTP/2 via négociation ALPN.
 
 ### Backend
 
-Les backends sont la force de HAproxy, entièrement modulables. Voici quelques exemples :
+Les backends sont la force de HAProxy, entièrement modulables. Voici quelques exemples :
 
 #### Multiples servers
 
-??? example "HAproxy : Multiple backends"
+??? example "HAProxy : Multiple backends"
     ```vcl
     backend web_servers
         server server1 10.0.1.3:80
@@ -296,10 +296,10 @@ spécifique sur un éventuel check de disponibilité - chacun recevra 50% du tra
 
 #### Multiples avec persistance
 
-On peut demander à HAproxy de déposer un cookie sur le client pour
+On peut demander à HAProxy de déposer un cookie sur le client pour
 effectuer un équilibrage de charge :
 
-??? example "HAproxy : Multiple backends with persistance"
+??? example "HAProxy : Multiple backends with persistance"
     ```vcl
     backend web_servers
         balance roundrobin
@@ -318,7 +318,7 @@ Il est possible d'avoir plusieurs servers sur le même backend mais
 n'en utiliser qu'un primaire. Il suffit d'ajouter le mot clef
 `backup` au serveur secondaire :
 
-??? example "HAproxy : Multiple backends with backup"
+??? example "HAProxy : Multiple backends with backup"
     ```vcl
     backend web_servers
         server server1 10.0.1.3:80
@@ -327,7 +327,7 @@ n'en utiliser qu'un primaire. Il suffit d'ajouter le mot clef
 
 #### Check HTTP
 
-??? example "HAproxy : Multiple backends with HTTP check"
+??? example "HAProxy : Multiple backends with HTTP check"
     ```vcl
     backend web_servers
         option httpchk HEAD /
@@ -336,7 +336,7 @@ n'en utiliser qu'un primaire. Il suffit d'ajouter le mot clef
     ```
 
 Il s'agit du même backend qu'au préalable mais avec une différence
-importante, la présence de `httpchk`. On a ici un véritable check L7 au lieu d'un check TCP L4. HAproxy est capable
+importante, la présence de `httpchk`. On a ici un véritable check L7 au lieu d'un check TCP L4. HAProxy est capable
 de distinguer un serveur HTTP down au niveau L7 (tel qu'une erreur
 50x). Il est possible d'affiner le check, on a ici une simple
 requête HEAD sur /.
@@ -350,7 +350,7 @@ Ce test est légèrement plus détaillé. On spécifie ici un Host à utiliser (
 
 #### Check spécifiques
 
-HAproxy intègre différents checks pour différents protocoles. Voici les checks disponibles :
+HAProxy intègre différents checks pour différents protocoles. Voici les checks disponibles :
 
 * option mysql-check
 * option pgsql-check
@@ -361,7 +361,7 @@ HAproxy intègre différents checks pour différents protocoles. Voici les check
 
 ### Compression GZIP
 
-On peut activer la compression gzip directement au niveau de HAproxy.
+On peut activer la compression gzip directement au niveau de HAProxy.
 Génial si le backend ne le gère pas :
 
 ```vcl
@@ -371,7 +371,7 @@ compression type text/html text/plain text/xml text/css text/javascript applicat
 
 ### Désactiver tous les logs
 
-Par défaut, HAproxy log des évènements. Il ne suffit pas d'enlever
+Par défaut, HAProxy log des évènements. Il ne suffit pas d'enlever
 l'option tcplog ou autre.
 
 Dans la section defaults, il faut ajouter ceci :
@@ -387,7 +387,7 @@ très intéressant de spécifier le type de balance. **balance uri whole**
 indique à haproxy de toujours envoyer le traffic pour une URI spécifique
 vers le même backend, ce qui maximise le hitrate.
 
-??? example "HAproxy : Backend Varnish"
+??? example "HAProxy : Backend Varnish"
 <!-- markdownlint-disable MD046 -->
     ```vcl
     backend varnish
@@ -403,7 +403,7 @@ vers le même backend, ce qui maximise le hitrate.
 ### HTTP to HTTPS
 
 Il est facile de rediriger l'intégralité du traffic HTTP vers HTTPS
-avec HAproxy. Il suffit d'ajouter la ligne suivante dans le frontend :
+avec HAProxy. Il suffit d'ajouter la ligne suivante dans le frontend :
 
 ```vcl
 http-request redirect scheme https unless { ssl_fc }
@@ -421,7 +421,7 @@ http-request redirect scheme https code 301 unless { ssl_fc }
 Si pour quelconque raison on veut retourner des URLs custom selon
 des URI précises, la manière la plus facile :
 
-??? example "HAproxy : Using map"
+??? example "HAProxy : Using map"
     ```vcl
     acl     acl           hdr_beg(host) -i monsite.fr
     acl     acl           hdr_beg(host) -i www.monsite.fr

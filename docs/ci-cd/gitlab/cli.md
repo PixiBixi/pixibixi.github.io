@@ -27,7 +27,7 @@ Une petite commande magique pour créer une MR sans rien faire, juste magique.
 
 ## Configuration
 
-Des opérations sont particulièrement pénibles en GUI sur Gitlab tel que l'ajout de clé, c'est pourquoi nous pouvons le faire en CLI sans aucun probleme
+Des opérations sont particulièrement pénibles en GUI sur GitLab tel que l'ajout de clé, c'est pourquoi nous pouvons le faire en CLI sans aucun probleme
 
 ```bash
 glab ssh-key add ~/.ssh/id_ed25519.pub -t "ED25519 Mac"
@@ -35,7 +35,7 @@ glab ssh-key add ~/.ssh/id_ed25519.pub -t "ED25519 Mac"
 
 ## Divers
 
-Si tout comme moi vous avez plusieurs Gitlab, vous pouvez définir sur quel Gitlab vous souhaitez effectuer vos actions avec la variable `GL_HOST` (ou `GITLAB_HOST`)
+Si tout comme moi vous avez plusieurs GitLab, vous pouvez définir sur quel GitLab vous souhaitez effectuer vos actions avec la variable `GL_HOST` (ou `GITLAB_HOST`)
 
 ```bash
 GL_HOST=gitlab.myorg.com glab repo search -s myproject
@@ -45,7 +45,7 @@ Ici, nous allons rechercher le projet `myproject` dans le gitlab `gitlab.myorg.c
 
 ---
 
-Comme toute CLI en 2023, Gitlab vient avec sa propre auto completion disponible sous Bash, zsh et Fish
+Comme toute CLI en 2023, GitLab vient avec sa propre auto completion disponible sous Bash, zsh et Fish
 
 !!! warning "Lenteurs"
     Pour ma part, je n'ai pas activé cette autocompletion, je trouve mon shell (zsh) lent à charger après ajout de cette completion
@@ -56,7 +56,7 @@ Comme toute CLI en 2023, Gitlab vient avec sa propre auto completion disponible 
 glab completion -s fish > ~/.config/fish/completions/glab.fish
 ```
 
-### ZSH
+### Zsh
 
 ```bash
 echo "source <(glab completion -s zsh); compdef _glab glab" >> ~/.zshrc

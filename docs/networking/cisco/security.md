@@ -44,7 +44,7 @@ Nous loggons également les tentatives non-autorisées d'accès
 
 ## Tentatives Maximale
 
-Pour eviter le BruteForce, nous pouvons définir une politique de
+Pour eviter le bruteforce, nous pouvons définir une politique de
 tentative d'accès sur une plage de temps donné :
 
 ```cisco

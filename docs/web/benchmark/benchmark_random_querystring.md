@@ -9,9 +9,9 @@ tags:
 
 Pour benchmark, nous utilisons généralement l'outil `wrk`, un équivalent à ab.
 
-Celui-ci peut être étendu via des scripts LUA.
+Celui-ci peut être étendu via des scripts Lua.
 
-Pour cela, voici le petit script LUA :
+Pour cela, voici le petit script Lua :
 
 ```lua
 function getAlphaChar()

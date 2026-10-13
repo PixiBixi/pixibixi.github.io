@@ -1,11 +1,11 @@
 ---
-description: Agréger ses flux RSS avec Selfoss - installation, configuration MySQL et gestion des sources
+description: Agréger ses flux RSS avec selfoss - installation, configuration MySQL et gestion des sources
 tags:
-  - Selfoss
+  - selfoss
   - RSS
 ---
 
-# Selfoss, son Reader RSS self-hosted
+# selfoss, son Reader RSS self-hosted
 
 ## Introduction
 
@@ -19,11 +19,11 @@ Cependant, pour en profiter tellement, il faut ce que l'on appelle un
 « Reader RSS », sans quoi, un flux RSS est totalement inexploitable.
 
 Il en existe aujourd'hui une multitude, que ce soit Online (Feedly,
-Google Reader), self-hosted (FreshRSS, SelfOss), ou bien même en local
+Google Reader), self-hosted (FreshRSS, selfoss), ou bien même en local
 sur son PC (Reeder sur Mac), chacun trouvera chaussure à son pied.
 
-Pour moi, il s'agit de SelfOss. Ce petit reader RSS disponible sur
-[Github](https://github.com/SSilence/selfoss/) à pour mérite d'être
+Pour moi, il s'agit de selfoss. Ce petit reader RSS disponible sur
+[GitHub](https://github.com/SSilence/selfoss/) à pour mérite d'être
 libre, facilement configurable, compatible PHP7...
 
 Non seulement il vous permettra d'exploiter au mieux les RSS via un
@@ -118,11 +118,11 @@ systemctl restart nginx
 Vous avez désormais un selfoss installé, mais sans rien de configuré,
 nous allons maintenant voir comment le configurer
 
-## Configuration de SelfOss
+## Configuration de selfoss
 
-Toute la configuration de SelfOss se fait dans le fichier config.ini
+Toute la configuration de selfoss se fait dans le fichier config.ini
 
-Par défaut, SelfOss est livré avec le fichier defaults.ini, nous allons
+Par défaut, selfoss est livré avec le fichier defaults.ini, nous allons
 le copier afin de ne pas l'altérer
 
 ```bash
@@ -131,7 +131,7 @@ cp defaults.ini config.ini
 
 Nous allons voir ici seulement les paramètres que je juge utile, pour
 plus d'informations, aller sur la [page
-officielle](https://selfoss.aditu.de/) de SelfOSS
+officielle](https://selfoss.aditu.de/) de selfoss
 
 * db_type
 * db_host
@@ -150,12 +150,12 @@ n'est pas utile de les modifier.
 * password
 * salt
 
-Ces 3 champs servent à configurer la sécurité sur SelfOss. Je vous
+Ces 3 champs servent à configurer la sécurité sur selfoss. Je vous
 conseille de modifier la valeur du champ salt afin d'avoir un salt
 unique.
 
 Pour générer un password, il faut se rendre sur la page */password* de
-votre SelfOss **obligatoirement**
+votre selfoss **obligatoirement**
 
 * items_perpage
 

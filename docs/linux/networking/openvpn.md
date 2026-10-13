@@ -109,7 +109,7 @@ echo "net.ipv4.ip_forward=1" >> /etc/sysctl.conf
 sysctl -p
 ```
 
-Et on active le NAT via IPTables pour que le trafic des clients VPN sorte avec l'IP du serveur :
+Et on active le NAT via iptables pour que le trafic des clients VPN sorte avec l'IP du serveur :
 
 ```bash
 iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
@@ -178,4 +178,4 @@ Ou en fichiers séparés à copier sur le client : `pki/ca.crt`, `pki/issued/cli
 
 [OpenVPN-Install](https://github.com/Angristan/OpenVPN-install) - script Angristan, multi-distro (Debian, Ubuntu, CentOS), bonne sécu par défaut. C'est le plus maintenu.
 
-[piVPN](https://github.com/pivpn/pivpn) - interface de gestion des utilisateurs en plus, pratique sur Raspberry Pi.
+[PiVPN](https://github.com/pivpn/pivpn) - interface de gestion des utilisateurs en plus, pratique sur Raspberry Pi.

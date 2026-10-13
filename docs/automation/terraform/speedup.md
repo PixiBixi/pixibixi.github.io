@@ -39,9 +39,9 @@ La seconde manière, conseillée, est d'ajouter directement une variable d'envir
 export TF_PLUGIN_CACHE_DIR="${HOME}/.terraform.d/plugin-cache"
 ```
 
-## Bonus : Gitlab-CI
+## Bonus : GitLab-CI
 
-Il est également possible de setup du cache sur une pipeline Gitlab.
+Il est également possible de setup du cache sur une pipeline GitLab.
 
 Comme pour Terraform en local, il est nécessaire de définir la même variable puis on va utiliser le keyword cache de Terraform pour activer ce dernier :
 

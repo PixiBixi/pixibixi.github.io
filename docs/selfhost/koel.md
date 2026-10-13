@@ -156,7 +156,7 @@ chown -R www-data:www-data /var/www/koel
 chmod -R 755 /var/www/koel/storage
 ```
 
-### Nginx
+### nginx
 
 ```nginx
 server {

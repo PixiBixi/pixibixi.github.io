@@ -4,7 +4,7 @@ tags:
   - GitHub Actions
   - CI/CD
   - Security
-  - Supply Chain
+  - Supply chain
   - Renovate
   - Scorecard
   - cosign

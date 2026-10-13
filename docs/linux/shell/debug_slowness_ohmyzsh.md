@@ -1,5 +1,5 @@
 ---
-description: Mesurer le démarrage de zsh avec oh-my-zsh (zprof, xtrace horodaté), supprimer les forks évitables et les reconstructions du compdump
+description: Mesurer le démarrage de Zsh avec oh-my-zsh (zprof, xtrace horodaté), supprimer les forks évitables et les reconstructions du compdump
 tags:
   - Zsh
   - oh-my-zsh
@@ -7,7 +7,7 @@ tags:
 
 # Lenteurs oh-my-zsh : mesure, forks et compdump
 
-Un shell qui s'ouvre lentement vient rarement d'un seul plugin. Le temps se perd surtout dans 2 endroits que le profiler natif de zsh voit mal : les process externes lancés au démarrage et la reconstruction du dump de complétion.
+Un shell qui s'ouvre lentement vient rarement d'un seul plugin. Le temps se perd surtout dans 2 endroits que le profiler natif de Zsh voit mal : les process externes lancés au démarrage et la reconstruction du dump de complétion.
 
 ## Mesurer le temps d'ouverture
 

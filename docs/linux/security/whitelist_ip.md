@@ -5,7 +5,7 @@ tags:
   - Allowlist
 ---
 
-# Whitelister une série d'IP à l'aide d'IPset et iptables
+# Whitelister une série d'IP à l'aide d'ipset et iptables
 
 Dans certains cas, il peut être utile de whitelister une série d'IP
 comme par exemple lorsque nous souhaitons qu'une API ne soit
@@ -13,10 +13,10 @@ disponibles que pour certains utilisateurs...
 
 Pour y parvenir, plusieurs méthodes sont disponibles :
 
-* Ajout d'une règle par IP à whitelist au niveau d'IPTables
+* Ajout d'une règle par IP à whitelist au niveau d'iptables
 * Filtre IP au sein de l'API
 * Filtre IP sur le reverse-proxy
-* Ajout d'une règle IPTables et création d'une liste ipset
+* Ajout d'une règle iptables et création d'une liste ipset
 
 Dans ce tutoriel, nous allons appliquer la dernière règle qui est la plus optimisée. iptables charge un module appelé *xt_conntrack* qui s'occupe d'analyser les trames.
 

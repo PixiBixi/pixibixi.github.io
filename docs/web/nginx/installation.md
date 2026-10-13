@@ -1,24 +1,24 @@
 ---
-description: Installer une stack LEMP sous Linux - NGINX, PHP-FPM et MariaDB en version récente. Configuration et optimisation d'un serveur web performant.
+description: Installer une stack LEMP sous Linux - nginx, PHP-FPM et MariaDB en version récente. Configuration et optimisation d'un serveur web performant.
 tags:
-  - Nginx
+  - nginx
 ---
 
-# Installer son Serveur Web : NGINX, PHP-FPM et MariaDB
+# Installer son Serveur Web : nginx, PHP-FPM et MariaDB
 
-On va voir comment installer et configurer correctement NGINX,
+On va voir comment installer et configurer correctement nginx,
 PHP-FPM et MariaDB en ajoutant des sources pour obtenir des versions à jour.
 Pour les sources de nginx, remplacer *codename* par sa distribution.
 
 | **Sites officiels**              | **Liens utiles**                                                   |
 | -------------------------------- | ------------------------------------------------------------------ |
-| [NGINX](https://nginx.com/)      | [Doc NGINX](http://nginx.org/en/docs/)                             |
+| [nginx](https://nginx.com/)      | [Doc nginx](http://nginx.org/en/docs/)                             |
 | [PHP](http://php.net/)           | [Manuel PHP](http://php.net/manual/fr/)                            |
 | [MariaDB](https://mariadb.org/)  | [Documentation MariaDB](https://mariadb.com/kb/en/documentation/)  |
 
-## Installer et configurer NGINX
+## Installer et configurer nginx
 
-Tout d'abord, avant de vouloir installer le serveur web NGINX, il faut
+Tout d'abord, avant de vouloir installer le serveur web nginx, il faut
 déjà ajouter une source.
 
 ```bash
@@ -33,10 +33,10 @@ nginx:
 ```
 
 Si on utilise les repositories de base de Debian Buster, ceux-ci installent
-la version **1.14.2** de NGINX. Actuellement on en est à la **1.21.2**. C'est pour ça
+la version **1.14.2** de nginx. Actuellement on en est à la **1.21.2**. C'est pour ça
 qu'on ajoute les repositories du site officiel pour obtenir une version à jour.
 
-Tout d'abord, on commence par ajouter le depot NGINX à Debian
+Tout d'abord, on commence par ajouter le depot nginx à Debian
 
 ```bash
 $ echo "deb [signed-by=/usr/share/keyrings/nginx-archive-keyring.gpg] '
@@ -78,7 +78,7 @@ Si tout se passe comme il faut, on peut lancer l'installation
 
 Voici les options de compilations du paquet **nginx**
 
-??? note "NGINX Default Compilation Options"
+??? note "nginx Default Compilation Options"
     ```bash
     --prefix=/etc/nginx
     --sbin-path=/usr/sbin/nginx
@@ -206,14 +206,14 @@ de même certains points importants à conserver :
 * `server_tokens` une valeur très importante, celle-ci doit être
     mise à `off`. Cette valeur évite à nginx de montrer des éléments
     importants tel que son numéro de version. Ces éléments peuvent être
-    utilisés pour exploiter des failles sur nginx. Voir [Être encore plus safe en customisant son header Server NGINX](custom_server_header.md) pour plus de détails.
+    utilisés pour exploiter des failles sur nginx. Voir [Être encore plus safe en customisant son header Server nginx](custom_server_header.md) pour plus de détails.
 * `ignore_invalid_headers` est également une directive assez
     intéréssante. Si des bots tentent de se connecter avec un header
     incorrect, nginx leur retourne une erreur 404.
 * `resolver` permet de spécifier les DNS utilisés dans les logs pour résoudre les noms de domaines
 
 La directive *more_set_headers* permet de ne pas dévoiler son serveur
-web et n'est disponible que via le package **nginx-extras**. Voir [Être encore plus safe en customisant son header Server NGINX](custom_server_header.md).
+web et n'est disponible que via le package **nginx-extras**. Voir [Être encore plus safe en customisant son header Server nginx](custom_server_header.md).
 
 On inclut également différents fichiers :
 
@@ -259,7 +259,7 @@ internet.
 * `gzip_buffers` permet de spécifier le nombre de buffers qui vont
     être utilisés, ainsi que leur taille
 * `gzip_comp_level` spécifie l'agressivité de la compression gzip. Plus la valeur est forte (max 9), plus le CPU est sollicité - 4 est un bon compromis.
-* `gzip_disable` permet de désactiver la compression GZip selon
+* `gzip_disable` permet de désactiver la compression gzip selon
     l'User-Agent (par exemple, ici on désactive la compression gzip pour `IE4 à IE6`)
 * `gzip_min_length` spécifie la longueur minimale d'un élément qui doit être gzippé. Il dépend du header *Content-Length*
 * `gzip_proxied` spécifie les éléments qui doivent être gzippés lorsque nginx agit comme reverse-proxy
@@ -296,7 +296,7 @@ internet.
 <!-- markdownlint-enable MD046 MD034 -->
 
 Le fichier **ssl.conf** est à inclure seulement si l'on souhaite du SSL
-sur ses sites web. Voir [Forcer le SSL sous NGINX](nginx_ssl.md) pour les directives de redirection.
+sur ses sites web. Voir [Forcer le SSL sous nginx](nginx_ssl.md) pour les directives de redirection.
 
 Certaines lignes sont importantes tels que **ssl_ciphers** qui
 permet de sélectionner quels ciphers seront utilisés pour coder
@@ -452,6 +452,6 @@ mysql_secure_installation
 
 ## Voir aussi
 
-* [Forcer le SSL sous NGINX](nginx_ssl.md) - Configuration SSL/TLS et redirection HTTPS
+* [Forcer le SSL sous nginx](nginx_ssl.md) - Configuration SSL/TLS et redirection HTTPS
 * [Configurer nginx pour utiliser IPv6](ipv6_nginx.md) - Support IPv6 dans nginx
 * [Installer une version custom de PHP](php_custom_version.md) - Utiliser le dépôt Sury pour des versions récentes

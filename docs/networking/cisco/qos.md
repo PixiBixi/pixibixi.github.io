@@ -5,26 +5,26 @@ tags:
   - QoS
 ---
 
-# QOS Cisco
+# QoS Cisco
 
 ## Introduction
 
-La QOS (**Q**uality **O**f **S**ervice) est la mesure de la qualité de
+La QoS (**Q**uality **O**f **S**ervice) est la mesure de la qualité de
 transmission et de la disponibilité des services dun réseau.
 
 Elle dépend de la latence, des pertes, mais également des exigences de
 chacun.
 
-La QOS repose sur différentes opérations :
+La QoS repose sur différentes opérations :
 
 * Classification et marquage des trames
 * Gestion des trafics
 * Classification des trafics par priorité
 * Reordonnancement des trames
 
-## Application QOS Automatique
+## Application QoS Automatique
 
-Sous Cisco, il est possible d'activer automatiquement la QOS sur les
+Sous Cisco, il est possible d'activer automatiquement la QoS sur les
 routeurs mais également sur les switchs
 
 ```cisco

@@ -47,7 +47,7 @@ Voici en détail à quoi servent-ils :
 * `kor` permet de repérer les ressources qui ne servent plus (configmaps, secrets, services, PVCs...) et de les supprimer
 * `lineage` permet d'afficher les dépendances ou les dépendants d'une ressource, en gros l'inverse de `tree`
 * `modify-secret` permet de modifier un secret en plain text
-* `neat` permet de supprimer d'un yaml tous les champs qui sont gérés par K8S
+* `neat` permet de supprimer d'un yaml tous les champs qui sont gérés par K8s
 * `netshoot/netshoot` permet de simplifier l'utilisation du magnifique container netshoot
 * `node-resource` affiche l'allocation (`allocation`) et la consommation réelle (`utilization`) par node, avec le CPU, la RAM, le GPU, le nombre de pods et le free restant
 * `node-shell` permet d'ouvrir un shell sur un node
@@ -75,4 +75,4 @@ N'hésitez pas à voir la [liste des plugins Krew](https://krew.sigs.k8s.io/plug
 
 * [Commandes utiles](useful_commands.md) - gestion courante des pods et ressources
 * [Commandes avancées](advanced_commands.md) - requêtes jsonpath et débogage poussé
-* [Outils pour K8S](tools.md) - kubectx, stern, kubecolor et alternatives à kubectl natif
+* [Outils pour K8s](tools.md) - kubectx, stern, kubecolor et alternatives à kubectl natif

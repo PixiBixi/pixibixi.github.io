@@ -1,17 +1,17 @@
 ---
-description: Mitigation d'un DDoS Layer 7 - identification, blocage réseau, filtrage HAProxy et NGINX, tuning PHP-FPM et arbre de décision.
+description: Mitigation d'un DDoS Layer 7 - identification, blocage réseau, filtrage HAProxy et nginx, tuning PHP-FPM et arbre de décision.
 tags:
   - Security
   - DDoS
   - HAProxy
-  - Nginx
+  - nginx
 ---
 
 # Mitigation DDoS L7
 
 Un DDoS Layer 7 cible la couche applicative (HTTP/HTTPS) plutôt que la
 bande passante réseau. L'objectif est d'épuiser les ressources applicatives :
-workers PHP-FPM, connexions HAProxy, pool de threads NGINX.
+workers PHP-FPM, connexions HAProxy, pool de threads nginx.
 
 ![Arbre de décision DDoS L7](./_img/ddos_decision_tree.svg)
 
@@ -137,7 +137,7 @@ frontend http_front
 
 ---
 
-## Étape 4 : filtrage NGINX
+## Étape 4 : filtrage nginx
 
 ### Rate limiting
 
@@ -217,8 +217,8 @@ request_terminate_timeout = 10s
 
 ```text
 [ ] Identifier les IPs sources → bloquer en iptables si peu nombreuses
-[ ] Page ciblée fixe ?    → pool FPM dédié + rate limit NGINX sur la route
-[ ] User-Agent identique ? → drop UA dans HAProxy/NGINX
+[ ] Page ciblée fixe ?    → pool FPM dédié + rate limit nginx sur la route
+[ ] User-Agent identique ? → drop UA dans HAProxy/nginx
 [ ] Pays source suspect ?  → blocage ipset pays
 [ ] HTTP/1.0 ou 1.1 pur ?  → forcer HTTP/2 + rejeter les anciens protocols
 [ ] TLS faible ?           → drop TLS < 1.2 dans HAProxy

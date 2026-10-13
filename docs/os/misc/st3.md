@@ -4,16 +4,16 @@ tags:
   - Sublime Text
 ---
 
-# SublimeText : Le codage Efficace
+# Sublime Text : Le codage Efficace
 
-![Sublimetext](./_img/st3header.webp)
+![Sublime Text](./_img/st3header.webp)
 
 ## Préambule
 
-SublimeText est actuellement l'un des éditeurs les plus prisés du
-moment. Et pour cause, SublimeText gère une multitude de formats,
+Sublime Text est actuellement l'un des éditeurs les plus prisés du
+moment. Et pour cause, Sublime Text gère une multitude de formats,
 dispose d'une tonne de fonctionnalités, tout ça en étant simple
-d'utilisation. Malgré le fait que SublimeText est de base un excellent
+d'utilisation. Malgré le fait que Sublime Text est de base un excellent
 éditeur, il existe une multitude d'astuces, de shortcuts et de plugins
 pour encore le rendre encore plus performant, c'est ce que nous allons
 voir dans ce post.
@@ -157,7 +157,7 @@ fenêtre principale**, puis nous pouvons faire différents découpages :
 
 ## Configuraton
 
-La configuration de base de SublimeText est déjà excellente, mais il y a
+La configuration de base de Sublime Text est déjà excellente, mais il y a
 certaines options qui mériteraient d'être activées par défaut, mais qui
 ne le sont pas.
 
@@ -222,14 +222,14 @@ Nous allons décrire chaque ligne :
     désactiver le package Vintage pour ne pas se retrouver avec un mode
     vi)
 * `line_padding_bottom` et `line_padding_bottom` : Permet une mise
-    en forme plus aisée de SublimeText, nos yeux nous disent merci. La
+    en forme plus aisée de Sublime Text, nos yeux nous disent merci. La
     valeur `4` est également agréable, mais le padding est trop
     important
 * `overlay_scroll_bars` : Désactive l'affichage automatique des
     bars de scroll (Qui ne sont pas utiles)
-* `save_on_focus_lost` : L'option la plus utile de SublimeText,
+* `save_on_focus_lost` : L'option la plus utile de Sublime Text,
     elle permet de sauvegarder automatiquement les onglets lorsque
-    SublimeText n'est plus la fenêtre active, indispensable
+    Sublime Text n'est plus la fenêtre active, indispensable
 * `highlight_line` : Surligne la ligne où l'on se trouve, assez
     pratique pour ne pas être perdu
 * `default_line_ending` : Afin de suivre le standard, nous devons
@@ -256,7 +256,7 @@ ainsi que les liens officiels des PSR :
 
 ## Thèmes
 
-De base, je trouve le thème de SublimeText tout simplement affreux,
+De base, je trouve le thème de Sublime Text tout simplement affreux,
 c'est pour cela que j'ai sélectionné 2 thèmes que je juge superbes.
 
 ### Material Design
@@ -270,7 +270,7 @@ plusieurs teintes :
 * **Darker** le thème plus foncé
 * **Lighter** le thème plus clair
 
-Le dépot Github inclut également des colorations syntaxiques
+Le dépot GitHub inclut également des colorations syntaxiques
 additionnelles :
 
 * **OceanicNext**
@@ -330,9 +330,9 @@ fichiers.
 ### Divers
 
 [Package Control](https://packagecontrol.io/installation) est un peu
-comme l'*apt-get* pour SublimeText, il en convient donc qu'il s'agit
+comme l'*apt-get* pour Sublime Text, il en convient donc qu'il s'agit
 actuellement d'un plugin indispensable pour un usage convenable de
-SublimeText
+Sublime Text
 
 !!! warning
     La plupart des plugins Package Control ne sont plus maintenus - préférer l'installation depuis le dépôt Git officiel du plugin.
