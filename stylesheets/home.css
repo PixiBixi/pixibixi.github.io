@@ -1,0 +1,262 @@
+/* Home page (overrides/home.html). Shared page shell (.jd-page) also serves the 404 and tags pages. */
+
+.md-content.jd-page {
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+}
+
+.jd-page [hidden] {
+  display: none !important;
+}
+
+.jd-page .copy-llm-btn {
+  display: none;
+}
+
+.jd-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+
+[dir] .md-main .md-content.jd-page .md-content__inner {
+  padding: 64px 0 96px;
+}
+
+.jd-page h1,
+.jd-page h2 {
+  font-family: var(--jd-serif);
+  font-weight: 600;
+  color: var(--jd-ink);
+}
+
+/* Hero */
+.jd-home h1 {
+  margin: 0 0 20px;
+  font-size: 56px;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.jd-home .jd-home__lead {
+  max-width: 880px;
+  margin: 0 0 32px;
+  font-size: 21px;
+  line-height: 1.55;
+  color: var(--jd-ink-soft);
+}
+
+.jd-home__search {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  height: 56px;
+  padding: 0 18px;
+  border: 1px solid var(--jd-border-strong);
+  border-radius: 10px;
+  background: var(--jd-surface-raised);
+  color: var(--jd-muted);
+  font-size: 18px;
+  cursor: text;
+}
+
+.jd-home__search svg {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+
+.jd-home__search input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  color: var(--jd-ink);
+  outline: none;
+}
+
+.jd-home__search input::placeholder {
+  color: inherit;
+  opacity: 0.7;
+}
+
+.jd-home__search kbd {
+  padding: 2px 8px;
+  border: 1px solid var(--jd-border);
+  border-radius: 5px;
+  background: transparent;
+  box-shadow: none;
+  font-family: var(--jd-mono);
+  font-size: 13px;
+  color: var(--jd-muted);
+}
+
+.jd-home__meta {
+  margin: 14px 0 0;
+  font-size: 14px;
+  color: var(--jd-muted);
+}
+
+/* Blocks */
+.jd-home__block {
+  margin-top: 48px;
+}
+
+.jd-home__block h2 {
+  margin: 0 0 12px;
+  font-size: 26px;
+  line-height: 1.3;
+  letter-spacing: 0;
+}
+
+[dir] .md-typeset .jd-home__recent {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 0 40px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+[dir] .md-typeset .jd-home__recent li {
+  margin: 0;
+  padding: 12px 0 14px;
+  border-top: 1px solid var(--jd-border);
+}
+
+.jd-home__rmeta {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 2px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--jd-muted);
+}
+
+.jd-home__rmeta time {
+  font-family: var(--jd-mono);
+}
+
+.jd-home__recent a {
+  font-family: var(--jd-serif);
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--jd-ink);
+  text-decoration: none;
+}
+
+.jd-home__sections {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  column-gap: 40px;
+}
+
+.jd-home__sections a {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 10px 0;
+  border-top: 1px solid var(--jd-border);
+  color: var(--jd-ink);
+  text-decoration: none;
+}
+
+.jd-home__recent a:hover,
+.jd-home__sections a:hover strong {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.jd-home__sname {
+  flex: 1;
+  min-width: 0;
+}
+
+.jd-home__sname strong,
+.jd-home__sname span {
+  display: block;
+}
+
+.jd-home__sname strong {
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.6;
+}
+
+.jd-home__sname span {
+  overflow: hidden;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--jd-muted);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.jd-home__count {
+  font-family: var(--jd-mono);
+  font-size: 13px;
+  color: var(--jd-muted);
+}
+
+/* Hand-written link list, collapsed but kept in the page for crawlers */
+.jd-home__all {
+  margin: 56px 0 0;
+  border-top: 1px solid var(--jd-border);
+}
+
+.jd-home__all summary {
+  padding: 18px 0;
+  font-family: var(--jd-serif);
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--jd-ink);
+  cursor: pointer;
+}
+
+.jd-home__all-body {
+  padding-bottom: 24px;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.jd-home__all-body h2 {
+  margin: 32px 0 8px;
+  font-size: 24px;
+}
+
+.jd-home__all-body h3 {
+  margin: 20px 0 6px;
+  font-size: 15px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--jd-muted);
+}
+
+@media screen and (max-width: 59.98em) {
+  .jd-home h1 {
+    font-size: 34px;
+  }
+
+  .jd-home .jd-home__lead {
+    font-size: 19px;
+  }
+
+  .jd-home__search {
+    padding: 0 14px;
+  }
+
+  .jd-home__search kbd {
+    display: none;
+  }
+
+  .jd-home__block h2 {
+    font-size: 24px;
+  }
+}
