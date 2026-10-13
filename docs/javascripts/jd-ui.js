@@ -50,7 +50,15 @@
     });
   }
 
+  // Sidebar fade under the sticky section title: only while the scroll container is scrolled.
+  function navScroll() {
+    document.querySelectorAll(".md-sidebar__scrollwrap").forEach(function (w) {
+      w.classList.toggle("jd-scrolled", w.scrollTop > 0);
+    });
+  }
+
   function init() {
+    navScroll();
     captions();
     titleBreaks();
     themeState();
@@ -61,6 +69,13 @@
   } else {
     document.addEventListener("DOMContentLoaded", init);
   }
+
+  document.addEventListener("scroll", function (e) {
+    var w = e.target;
+    if (w && w.classList && w.classList.contains("md-sidebar__scrollwrap")) {
+      w.classList.toggle("jd-scrolled", w.scrollTop > 0);
+    }
+  }, true);
 
   document.addEventListener("click", function (e) {
     if (e.target.closest(".jd-drawer-theme")) setTimeout(themeState, 50);
