@@ -2,6 +2,8 @@
 (function () {
   "use strict";
 
+  function tr(k) { return (window.jdI18n || {})[k] || k; }
+
   // Opens the Cmd+K palette when present, else Material's search, prefilled with q.
   function openSearch(q) {
     if (window.jdPalette && typeof window.jdPalette.open === "function") {
@@ -75,9 +77,9 @@
       openSearch(input.value);
     });
 
-    var ref = document.referrer || "(aucune)";
-    var title = "404 : " + path;
-    var body = "URL demandée : " + path + "\nPage d'origine : " + ref + "\n";
+    var ref = document.referrer || tr("jd.404.no_referrer");
+    var title = tr("jd.404.issue_title").replace("{path}", path);
+    var body = tr("jd.404.issue_body").replace("{path}", path).replace("{ref}", ref);
     var base = root.dataset.repo;
     root.querySelector("[data-jd-issue]").href = base + "/issues/new?template=missing-page.yml" +
       "&title=" + encodeURIComponent(title) + "&body=" + encodeURIComponent(body) +
@@ -89,8 +91,7 @@
 
     if (!words.length) return;
     var wordsEl = root.querySelector("[data-jd-words]");
-    wordsEl.innerHTML = "On a cherché les mots du slug, " + words.map(function (w) { return "<code>" + esc(w) + "</code>"; }).join(", ") +
-      ", dans l'index du wiki : voilà ce qui s'en rapproche le plus.";
+    wordsEl.innerHTML = tr("jd.404.words").replace("{words}", words.map(function (w) { return "<code>" + esc(w) + "</code>"; }).join(", "));
     wordsEl.hidden = false;
 
     var descsReq = fetch(root.dataset.descs).then(function (r) { return r.json(); }).then(function (j) { return j.descriptions || {}; }).catch(function () { return {}; });

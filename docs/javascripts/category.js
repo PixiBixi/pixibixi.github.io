@@ -27,7 +27,7 @@
             var d = (b.dataset.jdDate || "").localeCompare(a.dataset.jdDate || "");
             if (d) return d;
           }
-          return a.dataset.jdTitle.localeCompare(b.dataset.jdTitle, "fr", { sensitivity: "base" });
+          return a.dataset.jdTitle.localeCompare(b.dataset.jdTitle, document.documentElement.lang || "fr", { sensitivity: "base" });
         });
         var visible = 0;
         items.forEach(function (el) {

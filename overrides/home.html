@@ -9,19 +9,19 @@
 <div class="md-content jd-page jd-home" data-md-component="content">
   <article class="md-content__inner md-typeset">
     <section class="jd-home__hero">
-      <h1>Wiki SRE - Kubernetes, HAProxy, Linux, Terraform</h1>
-      <p class="jd-home__lead">{{ home.total }} articles, du mémo de 10 lignes au tutoriel complet : commandes copy-pasteable, configs qui tournent vraiment et les gotchas croisés en route.</p>
+      <h1>{{ lang.t("jd.home.title") }}</h1>
+      <p class="jd-home__lead">{{ lang.t("jd.home.lead") | replace("{n}", home.total) }}</p>
       <label class="jd-home__search" for="jd-home-search">
         {% include ".icons/material/magnify.svg" %}
-        <span class="jd-sr">Rechercher dans le wiki</span>
-        <input id="jd-home-search" type="search" autocomplete="off" placeholder="GOMAXPROCS, ss, ProxySQL, Thanos..." data-jd-home-search>
+        <span class="jd-sr">{{ lang.t("jd.home.search_label") }}</span>
+        <input id="jd-home-search" type="search" autocomplete="off" placeholder="{{ lang.t("jd.home.search_placeholder") }}" data-jd-home-search>
         <kbd>⌘K</kbd>
       </label>
-      <p class="jd-home__meta">{{ home.sections | length }} sections · en ligne depuis 2017 · <a href="{{ 'tags/' | url }}">tous les tags</a></p>
+      <p class="jd-home__meta">{{ lang.t("jd.home.sections_count") | replace("{n}", home.sections | length) }} · {{ lang.t("jd.home.online_since") }} · <a href="{{ 'tags/' | url }}">{{ lang.t("jd.home.all_tags") }}</a></p>
     </section>
 
     <section class="jd-home__block">
-      <h2 id="derniers-articles">Derniers articles</h2>
+      <h2 id="derniers-articles">{{ lang.t("jd.home.latest") }}</h2>
       <ol class="jd-home__recent">
         {% for r in home.recent %}
         <li>
@@ -33,7 +33,7 @@
     </section>
 
     <section class="jd-home__block">
-      <h2 id="sections">Sections</h2>
+      <h2 id="sections">{{ lang.t("jd.home.sections") }}</h2>
       <div class="jd-home__sections">
         {% for s in home.sections %}
         <a href="{{ s.url | url }}">
@@ -46,7 +46,7 @@
 
     {% if rest | length > 1 %}
     <details class="jd-home__all">
-      <summary>Tous les articles ({{ home.total }})</summary>
+      <summary>{{ lang.t("jd.home.all_articles") | replace("{n}", home.total) }}</summary>
       <div class="jd-home__all-body"><h2{{ rest[1] | safe }}</div>
     </details>
     {% endif %}

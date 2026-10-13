@@ -7,26 +7,26 @@
 {% set parts = ("%s" | format(page.content)).split("<h2", 1) %}
 <div class="md-content jd-page jd-tags" data-md-component="content">
   <article class="md-content__inner md-typeset">
-    <nav class="jd-tags__crumb" aria-label="Fil d'Ariane">
-      <a href="{{ '' | url }}">Accueil</a><span>/</span><span aria-current="page">Tags</span>
+    <nav class="jd-tags__crumb" aria-label="{{ lang.t("jd.common.breadcrumb") }}">
+      <a href="{{ '' | url }}">{{ lang.t("jd.common.home") }}</a><span>/</span><span aria-current="page">{{ lang.t("jd.tags.title") }}</span>
     </nav>
-    <h1>Tags</h1>
-    <p class="jd-tags__count">{{ t.total }} tags · {{ t.articles }} articles · <a href="#tous">{{ t.shown }} affichés ci-dessous</a></p>
+    <h1>{{ lang.t("jd.tags.title") }}</h1>
+    <p class="jd-tags__count">{{ lang.t("jd.tags.count") | replace("{n}", t.total) }} · {{ lang.t("jd.count.article_other") | replace("{n}", t.articles) }} · <a href="#tous">{{ lang.t("jd.tags.shown") | replace("{n}", t.shown) }}</a></p>
 
     <div class="jd-tags__bar">
       <label class="jd-tags__filter">
         {% include ".icons/material/filter-variant.svg" %}
-        <span class="jd-sr">Filtrer les tags</span>
-        <input type="search" autocomplete="off" placeholder="Filtrer les tags" data-jd-tag-filter>
+        <span class="jd-sr">{{ lang.t("jd.tags.filter_label") }}</span>
+        <input type="search" autocomplete="off" placeholder="{{ lang.t("jd.tags.filter_placeholder") }}" data-jd-tag-filter>
       </label>
-      <div class="jd-tags__sort" role="group" aria-label="Tri">
-        <button type="button" aria-pressed="true" data-jd-tag-sort="popular">Populaires</button>
-        <button type="button" aria-pressed="false" data-jd-tag-sort="az">A-Z</button>
+      <div class="jd-tags__sort" role="group" aria-label="{{ lang.t("jd.common.sort") }}">
+        <button type="button" aria-pressed="true" data-jd-tag-sort="popular">{{ lang.t("jd.tags.popular") }}</button>
+        <button type="button" aria-pressed="false" data-jd-tag-sort="az">{{ lang.t("jd.sort.az") }}</button>
       </div>
     </div>
 
     <section class="jd-tags__block" data-jd-tag-featured>
-      <h2 id="plus-utilises">Les plus utilisés</h2>
+      <h2 id="plus-utilises">{{ lang.t("jd.tags.featured") }}</h2>
       <div class="jd-tags__cards">
         {% for f in t.featured %}
         <a href="#tag:{{ f.slug }}" data-name="{{ f.name | lower }}">
@@ -38,8 +38,8 @@
     </section>
 
     <section class="jd-tags__block" id="tous">
-      <h2 id="tous-les-tags">Tous les tags</h2>
-      <p class="jd-tags__note">Les tags utilisés au moins 4 fois.</p>
+      <h2 id="tous-les-tags">{{ lang.t("jd.tags.all") }}</h2>
+      <p class="jd-tags__note">{{ lang.t("jd.tags.note") }}</p>
       <div>
         {% for g in t.groups %}
         <div class="jd-tags__group">
@@ -52,12 +52,12 @@
         </div>
         {% endfor %}
       </div>
-      <p class="jd-tags__empty" data-jd-tag-empty hidden>Aucun tag ne correspond.</p>
+      <p class="jd-tags__empty" data-jd-tag-empty hidden>{{ lang.t("jd.tags.empty") }}</p>
     </section>
 
     {% if parts | length > 1 %}
     <details class="jd-tags__listing" id="articles-par-tag">
-      <summary>Articles par tag</summary>
+      <summary>{{ lang.t("jd.tags.listing") }}</summary>
       <div class="jd-tags__listing-body"><h2{{ parts[1] | safe }}</div>
     </details>
     {% endif %}

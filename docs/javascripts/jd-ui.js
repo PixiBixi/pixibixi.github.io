@@ -1,6 +1,8 @@
-/* Theme UI glue: closes the mobile "Sur cette page" panel on link click, Esc or outside click. */
+/* Theme UI glue: closes the mobile table of contents panel on link click, Esc or outside click. */
 (function () {
   "use strict";
+
+  function tr(k) { return (window.jdI18n || {})[k] || k; }
 
   function bar() { return document.querySelector(".jd-toc-bar"); }
 
@@ -59,8 +61,8 @@
 
   // Sidebar fold: the class lives on <html> so it survives instant navigation, the choice in localStorage.
   var FOLDS = [
-    { side: ".md-sidebar--primary", cls: "jd-nav-folded", label: "la navigation" },
-    { side: ".md-sidebar--secondary", cls: "jd-toc-folded", label: "le sommaire" },
+    { side: ".md-sidebar--primary", cls: "jd-nav-folded", key: "jd.fold.nav" },
+    { side: ".md-sidebar--secondary", cls: "jd-toc-folded", key: "jd.fold.toc" },
   ];
   function sideFold(f) {
     var side = document.querySelector(f.side);
@@ -72,7 +74,7 @@
     var sync = function () {
       var folded = document.documentElement.classList.contains(f.cls);
       btn.setAttribute("aria-expanded", String(!folded));
-      btn.setAttribute("aria-label", (folded ? "Afficher " : "Masquer ") + f.label);
+      btn.setAttribute("aria-label", tr(f.key + (folded ? "_show" : "_hide")));
       btn.title = btn.getAttribute("aria-label");
     };
     btn.addEventListener("click", function () {

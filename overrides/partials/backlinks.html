@@ -2,7 +2,7 @@
 {% set bl = page.meta.backlinks %}
 {% if bl %}
 <section class="jd-backlinks" aria-labelledby="cite-dans">
-  <h2 id="cite-dans" class="jd-backlinks__title">Cité dans · {{ bl | length }} article{{ "s" if bl | length > 1 }}</h2>
+  <h2 id="cite-dans" class="jd-backlinks__title">{{ lang.t("jd.backlinks.title") }} · {{ lang.t("jd.count.article_" ~ ("one" if bl | length == 1 else "other")) | replace("{n}", bl | length) }}</h2>
   {% for b in bl %}
   <div class="jd-backlinks__item">
     <a class="jd-backlinks__link" href="{{ b.url | url }}">{{ b.title }}</a>

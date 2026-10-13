@@ -7,10 +7,10 @@
 <details class="jd-toc-bar">
   <summary>
     {% include ".icons/material/format-list-bulleted.svg" %}
-    <span>Sur cette page</span>
+    <span>{{ lang.t("jd.toc.title") }}</span>
     {% include ".icons/material/chevron-down.svg" %}
   </summary>
-  <nav class="jd-toc-bar__panel" aria-label="Sur cette page">
+  <nav class="jd-toc-bar__panel" aria-label="{{ lang.t("jd.toc.title") }}">
     <ul class="md-nav__list">
       {% for toc_item in jd_toc %}
         {% include "partials/toc-item.html" %}
@@ -36,14 +36,14 @@
 {% endif %}
 <div class="jd-meta">
   <div class="jd-meta__info">
-  {% if updated %}<span>Mis à jour le <time>{{ updated }}</time></span>{% endif %}
-  {% if created %}<span>Créé le <time>{{ created }}</time></span>{% endif %}
-  {% if page.meta.reading_time %}<span>{{ page.meta.reading_time }} min de lecture</span>{% endif %}
+  {% if updated %}<span>{{ lang.t("jd.meta.updated") }} <time>{{ updated }}</time></span>{% endif %}
+  {% if created %}<span>{{ lang.t("jd.meta.created") }} <time>{{ created }}</time></span>{% endif %}
+  {% if page.meta.reading_time %}<span>{{ page.meta.reading_time }} {{ lang.t("jd.meta.reading") }}</span>{% endif %}
   {% include "partials/tags.html" %}
   </div>
   <span class="jd-meta__actions">
     {% if page.edit_url %}
-      <a href="{{ page.edit_url }}" class="jd-btn" rel="edit" title="Modifier sur GitHub" aria-label="Modifier sur GitHub">
+      <a href="{{ page.edit_url }}" class="jd-btn" rel="edit" title="{{ lang.t('jd.meta.edit') }}" aria-label="{{ lang.t('jd.meta.edit') }}">
         {% include ".icons/material/pencil-outline.svg" %}
       </a>
     {% endif %}
@@ -53,16 +53,16 @@
 {{ body }}
 {% include "partials/backlinks.html" %}
 {% if "navigation.footer" in features and (page.previous_page or page.next_page) %}
-  <nav class="jd-pn" aria-label="Article précédent et suivant">
+  <nav class="jd-pn" aria-label="{{ lang.t("jd.pn.label") }}">
     {% if page.previous_page %}
       <a href="{{ page.previous_page.url | url }}" class="jd-pn__link jd-pn__link--prev" rel="prev">
-        <span class="jd-pn__dir">← Précédent</span>
+        <span class="jd-pn__dir">{{ lang.t("jd.pn.prev") }}</span>
         <span class="jd-pn__title">{{ page.previous_page.title }}</span>
       </a>
     {% endif %}
     {% if page.next_page %}
       <a href="{{ page.next_page.url | url }}" class="jd-pn__link jd-pn__link--next" rel="next">
-        <span class="jd-pn__dir">Suivant →</span>
+        <span class="jd-pn__dir">{{ lang.t("jd.pn.next") }}</span>
         <span class="jd-pn__title">{{ page.next_page.title }}</span>
       </a>
     {% endif %}

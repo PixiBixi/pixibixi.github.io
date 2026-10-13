@@ -17,14 +17,14 @@
   </ul>
   <div class="jd-drawer-foot">
     {% if config.theme.palette and not config.theme.palette is mapping %}
-      <div class="jd-drawer-theme" role="group" aria-label="Thème">
+      <div class="jd-drawer-theme" role="group" aria-label="{{ lang.t("jd.theme.group") }}">
         {% for option in config.theme.palette %}
-          <label for="__palette_{{ loop.index0 }}" data-jd-idx="{{ loop.index0 }}">{{ ["Auto", "Clair", "Sombre"][loop.index0] }}</label>
+          <label for="__palette_{{ loop.index0 }}" data-jd-idx="{{ loop.index0 }}">{{ [lang.t("jd.theme.auto"), lang.t("jd.theme.light"), lang.t("jd.theme.dark")][loop.index0] }}</label>
         {% endfor %}
       </div>
     {% endif %}
     {% if config.repo_url %}
-      <a class="jd-drawer-gh" href="{{ config.repo_url }}" aria-label="Dépôt GitHub">
+      <a class="jd-drawer-gh" href="{{ config.repo_url }}" aria-label="{{ lang.t("jd.header.repo") }}">
         {% include ".icons/fontawesome/brands/github.svg" %}
         <span>GitHub</span>
       </a>

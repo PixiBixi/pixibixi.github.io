@@ -1,0 +1,4 @@
+{#- Material's lookup plus the theme strings from overrides/i18n (hooks/i18n.py); jd_t is absent in the search plugin's own env -#}
+{% import "partials/languages/" ~ config.theme.language ~ ".html" as lang %}
+{% import "partials/languages/en.html" as fallback %}
+{% macro t(key) %}{{ (jd_t(key) if jd_t is defined) or lang.t(key) or fallback.t(key) or key }}{% endmacro %}

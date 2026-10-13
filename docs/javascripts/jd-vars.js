@@ -2,6 +2,8 @@
 (function () {
   "use strict";
 
+  function tr(k) { return (window.jdI18n || {})[k] || k; }
+
   var KEY = "jd-vars";
 
   function load() {
@@ -102,8 +104,9 @@
     var bar = document.createElement("div");
     bar.className = "jd-vars";
     bar.setAttribute("role", "group");
-    bar.setAttribute("aria-label", "Variables de la page");
-    bar.innerHTML = '<span class="jd-vars__title"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M8 4c-2 0-3 1-3 3v2c0 1.5-1 2.5-2 3 1 .5 2 1.5 2 3v2c0 2 1 3 3 3M16 4c2 0 3 1 3 3v2c0 1.5 1 2.5 2 3-1 .5-2 1.5-2 3v2c0 2-1 3-3 3"/></svg>Variables</span>';
+    bar.setAttribute("aria-label", tr("jd.vars.label"));
+    bar.innerHTML = '<span class="jd-vars__title"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M8 4c-2 0-3 1-3 3v2c0 1.5-1 2.5-2 3 1 .5 2 1.5 2 3v2c0 2 1 3 3 3M16 4c2 0 3 1 3 3v2c0 1.5 1 2.5 2 3-1 .5-2 1.5-2 3v2c0 2-1 3-3 3"/></svg></span>';
+    bar.firstChild.appendChild(document.createTextNode(tr("jd.vars.title")));
     var inputs = {};
 
     function renderAll() { blocks.forEach(function (b) { render(b, ctx); }); }
@@ -148,7 +151,7 @@
     var reset = document.createElement("button");
     reset.type = "button";
     reset.className = "jd-vars__reset";
-    reset.textContent = "Réinitialiser";
+    reset.textContent = tr("jd.vars.reset");
     reset.addEventListener("click", function () {
       names.forEach(function (n) {
         values[n] = vars[n].default;
@@ -161,7 +164,7 @@
 
     var note = document.createElement("p");
     note.className = "jd-vars__note";
-    note.textContent = "Les variables s'appliquent à tous les blocs de la page et sont mémorisées dans le navigateur pour tout le wiki.";
+    note.textContent = tr("jd.vars.note");
 
     first.parentNode.insertBefore(bar, first);
     first.parentNode.insertBefore(note, first.nextSibling);

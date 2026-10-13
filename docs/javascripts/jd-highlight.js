@@ -2,7 +2,10 @@
 (function () {
   "use strict";
 
+  function tr(k) { return (window.jdI18n || {})[k] || k; }
+
   var obs = null;
+  function tn(k, n) { return tr(k + (n === 1 ? "_one" : "_other")).replace("{n}", n); }
 
   function marks(root) {
     // data-md-highlight is set by Material, so authored <mark> elements are left alone.
@@ -17,22 +20,22 @@
     bar.setAttribute("role", "status");
     var label = document.createElement("span");
     label.className = "jd-hl__label";
-    label.appendChild(document.createTextNode("Termes surlignés : "));
+    label.appendChild(document.createTextNode(tr("jd.hl.terms") + " "));
     var t = document.createElement("mark");
     t.textContent = term;
     label.appendChild(t);
     var count = document.createElement("span");
-    count.textContent = " · " + list.length + " occurrence" + (list.length > 1 ? "s" : "");
+    count.textContent = " · " + tn("jd.hl.occurrence", list.length);
     label.appendChild(count);
 
     var next = document.createElement("button");
     next.type = "button";
     next.className = "jd-hl__next";
-    next.textContent = "Suivante ↓";
+    next.textContent = tr("jd.hl.next");
     var clear = document.createElement("button");
     clear.type = "button";
     clear.className = "jd-hl__clear";
-    clear.textContent = "Effacer";
+    clear.textContent = tr("jd.hl.clear");
     bar.appendChild(label);
     bar.appendChild(next);
     bar.appendChild(clear);

@@ -2,6 +2,9 @@
 (function () {
   "use strict";
 
+  function tr(k) { return (window.jdI18n || {})[k] || k; }
+  function tn(k, n) { return tr(k + (n === 1 ? "_one" : "_other")).replace("{n}", n); }
+
   var IS_MAC = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
   var MOD = IS_MAC ? "⌘" : "Ctrl+";
   var MAX_PAGES = 3;
@@ -184,7 +187,7 @@
   function actions() {
     var list = [];
     list.push({
-      label: "Basculer clair / sombre", key: MOD + "⇧L", words: "theme sombre clair dark light",
+      id: "theme", label: tr("jd.pal.act_theme"), key: MOD + "⇧L", words: tr("jd.pal.act_theme_words"),
       run: function () {
         var cur = document.body.getAttribute("data-md-color-scheme");
         var want = cur === "slate" ? "default" : "slate";
@@ -195,14 +198,14 @@
     });
     if (document.querySelector(".copy-llm-btn")) {
       list.push({
-        label: "Copier la page pour LLM", key: MOD + "⇧C", words: "copier markdown llm",
+        id: "copy", label: tr("jd.pal.act_copy"), key: MOD + "⇧C", words: tr("jd.pal.act_copy_words"),
         run: function () { var b = document.querySelector(".copy-llm-btn"); if (b) b.click(); }
       });
     }
     var edit = document.querySelector('a[rel="edit"]');
     if (edit) {
       list.push({
-        label: "Modifier la page sur GitHub", key: "E", words: "editer edit github modifier",
+        id: "edit", label: tr("jd.pal.act_edit"), key: "E", words: tr("jd.pal.act_edit_words"),
         run: function () { window.open(edit.href, "_blank", "noopener"); }
       });
     }
@@ -219,7 +222,7 @@
     var dlg = el("div", "jd-pal__dlg");
     dlg.setAttribute("role", "dialog");
     dlg.setAttribute("aria-modal", "true");
-    dlg.setAttribute("aria-label", "Palette de commandes");
+    dlg.setAttribute("aria-label", tr("jd.pal.label"));
 
     var label = el("label", "jd-pal__in");
     var loupe = document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -227,22 +230,22 @@
     loupe.setAttribute("fill", "none"); loupe.setAttribute("stroke", "currentColor"); loupe.setAttribute("stroke-width", "2");
     loupe.setAttribute("stroke-linecap", "round"); loupe.setAttribute("aria-hidden", "true");
     loupe.innerHTML = '<circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path>';
-    var sr = el("span", "jd-pal__sr", "Rechercher une page, une section ou une action");
+    var sr = el("span", "jd-pal__sr", tr("jd.pal.search_label"));
     var input = el("input");
     input.type = "search";
-    input.placeholder = "Page, section, tag ou action...";
+    input.placeholder = tr("jd.pal.placeholder");
     input.setAttribute("autocomplete", "off");
     input.setAttribute("autocapitalize", "off");
     input.setAttribute("spellcheck", "false");
     input.setAttribute("enterkeyhint", "go");
     var esc = el("kbd", "jd-pal__esc", "esc");
-    var cancel = el("button", "jd-pal__cancel", "Annuler");
+    var cancel = el("button", "jd-pal__cancel", tr("jd.pal.cancel"));
     cancel.type = "button";
     label.appendChild(loupe); label.appendChild(sr); label.appendChild(input); label.appendChild(esc); label.appendChild(cancel);
 
     var list = el("div", "jd-pal__list");
     list.setAttribute("role", "listbox");
-    list.setAttribute("aria-label", "Résultats");
+    list.setAttribute("aria-label", tr("jd.pal.results"));
 
     var foot = el("div", "jd-pal__foot");
     function hint(k, t) {
@@ -251,9 +254,9 @@
       s.appendChild(document.createTextNode(" " + t));
       return s;
     }
-    foot.appendChild(hint("↑↓", "naviguer"));
-    foot.appendChild(hint("↵", "ouvrir"));
-    foot.appendChild(hint(MOD + "↵", "nouvel onglet"));
+    foot.appendChild(hint("↑↓", tr("jd.pal.hint_nav")));
+    foot.appendChild(hint("↵", tr("jd.pal.hint_open")));
+    foot.appendChild(hint(MOD + "↵", tr("jd.pal.hint_tab")));
     foot.appendChild(el("span", "jd-pal__spacer"));
     var count = el("span", "jd-pal__count");
     foot.appendChild(count);
@@ -308,17 +311,17 @@
     state.rows = [];
     var idx = state.index;
     if (!idx) {
-      ui.list.appendChild(el("p", "jd-pal__empty", "Chargement de l'index..."));
+      ui.list.appendChild(el("p", "jd-pal__empty", tr("jd.pal.loading")));
       return;
     }
-    ui.count.textContent = idx.count ? idx.count + " articles indexés" : "";
+    ui.count.textContent = idx.count ? tr("jd.pal.indexed").replace("{n}", idx.count) : "";
 
     var any = false;
     if (tokens.length) {
       var found = searchPages(idx, tokens);
       if (found.length) {
         any = true;
-        group("Pages");
+        group(tr("jd.pal.group_pages"));
         found.forEach(function (r) {
           var a = el("a");
           a.href = url(r.page.loc + (r.anchor || ""));
@@ -348,13 +351,13 @@
     }).sort(function (a, b) { return b.count - a.count; }).slice(0, 3) : [];
     if (secs.length || tags.length) {
       any = true;
-      group(tokens.length ? "Sections et tags" : "Sections");
+      group(tokens.length ? tr("jd.pal.group_sections_tags") : tr("jd.pal.group_sections"));
       secs.forEach(function (s) {
         var a = el("a"); a.href = url(s.seg + "/");
         a.appendChild(svg(ICON_FOLDER));
         var b = el("span", "jd-pal__body");
         var line = el("span", "jd-pal__line", s.title + " ");
-        line.appendChild(el("span", "jd-pal__muted", "· " + s.count + " article" + (s.count > 1 ? "s" : "")));
+        line.appendChild(el("span", "jd-pal__muted", "· " + tn("jd.count.article", s.count)));
         b.appendChild(line); a.appendChild(b); a.appendChild(enter());
         addRow(a);
       });
@@ -362,8 +365,8 @@
         var a = el("a"); a.href = url("tags/#tag:" + encodeURIComponent(t.tag.toLowerCase().replace(/\s+/g, "-")));
         a.appendChild(svg(ICON_TAG, true));
         var b = el("span", "jd-pal__body");
-        var line = el("span", "jd-pal__line", "Tag " + t.tag + " ");
-        line.appendChild(el("span", "jd-pal__muted", "· " + t.count + " article" + (t.count > 1 ? "s" : "")));
+        var line = el("span", "jd-pal__line", tr("jd.pal.tag").replace("{tag}", t.tag) + " ");
+        line.appendChild(el("span", "jd-pal__muted", "· " + tn("jd.count.article", t.count)));
         b.appendChild(line); a.appendChild(b); a.appendChild(enter());
         addRow(a);
       });
@@ -378,7 +381,7 @@
     if (!acts.length) acts = all;
     if (acts.length) {
       any = true;
-      group("Actions");
+      group(tr("jd.pal.group_actions"));
       acts.forEach(function (a) {
         var b = el("button"); b.type = "button";
         b.appendChild(el("span", "jd-pal__chev", "›"));
@@ -388,7 +391,7 @@
       });
     }
     if (!any) {
-      ui.list.appendChild(el("p", "jd-pal__empty", idx.failed ? "Index de recherche indisponible." : "Aucun résultat pour « " + q + " »."));
+      ui.list.appendChild(el("p", "jd-pal__empty", idx.failed ? tr("jd.pal.no_index") : tr("jd.pal.no_result").replace("{q}", q)));
     }
     select(0, true);
   }
@@ -415,8 +418,8 @@
     }
   }
 
-  function runAction(label) {
-    var a = actions().filter(function (x) { return x.label.indexOf(label) === 0; })[0];
+  function runAction(id) {
+    var a = actions().filter(function (x) { return x.id === id; })[0];
     if (a) { close(true); a.run(); }
   }
 
@@ -432,8 +435,8 @@
     }
     if ((e.metaKey || e.ctrlKey) && e.shiftKey) {
       var k = e.key.toLowerCase();
-      if (k === "l") { e.preventDefault(); runAction("Basculer"); }
-      else if (k === "c") { e.preventDefault(); runAction("Copier"); }
+      if (k === "l") { e.preventDefault(); runAction("theme"); }
+      else if (k === "c") { e.preventDefault(); runAction("copy"); }
     }
   }
 

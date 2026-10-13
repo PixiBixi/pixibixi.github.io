@@ -5,6 +5,8 @@
 (function () {
   "use strict";
 
+  function tr(k) { return (window.jdI18n || {})[k] || k; }
+
   function htmlToMarkdown(el) {
     var out = "";
     el.childNodes.forEach(function (node) {
@@ -171,8 +173,9 @@
 
     var btn = document.createElement("button");
     btn.className = "copy-llm-btn jd-btn md-icon";
-    btn.title = "Copier le contenu en Markdown pour utilisation dans un LLM";
-    btn.setAttribute("aria-label", "Copier pour LLM");
+    var idle = tr("jd.copy.title");
+    btn.title = idle;
+    btn.setAttribute("aria-label", tr("jd.copy.label"));
     // Robot/AI icon (Material Design "smart_toy")
     btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">' +
       '<path d="M20 9V7c0-1.1-.9-2-2-2h-3c0-1.66-1.34-3-3-3S9 3.34 9 5H6c-1.1 0-2 .9-2 2v2' +
@@ -187,10 +190,10 @@
 
       navigator.clipboard.writeText(text).then(function () {
         btn.classList.add("copy-llm-btn--done");
-        btn.title = "Copied!";
+        btn.title = tr("jd.copy.done");
         setTimeout(function () {
           btn.classList.remove("copy-llm-btn--done");
-          btn.title = "Copy for LLM";
+          btn.title = idle;
         }, 2000);
       });
     });

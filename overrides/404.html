@@ -13,45 +13,45 @@
      data-index="{{ 'search/search_index.json' | url }}" data-home="{{ base }}" data-descs="{{ 'search/jd-pages.json' | url }}"
      data-repo="{{ config.repo_url }}" data-branch="master">
   <article class="md-content__inner md-typeset">
-    <p class="jd-404__eyebrow">Erreur 404</p>
-    <h1>Cette page n'existe plus (ou pas encore)</h1>
-    <p class="jd-404__label">URL demandée</p>
+    <p class="jd-404__eyebrow">{{ lang.t("jd.404.eyebrow") }}</p>
+    <h1>{{ lang.t("jd.404.title") }}</h1>
+    <p class="jd-404__label">{{ lang.t("jd.404.requested") }}</p>
     <p><code class="jd-404__path" data-jd-path></code></p>
     <p class="jd-404__words" data-jd-words hidden></p>
 
     <div class="jd-404__grid">
     <div class="jd-404__main">
     <section class="jd-404__near" aria-labelledby="proches" data-jd-near hidden>
-      <h2 id="proches">Les pages les plus proches</h2>
+      <h2 id="proches">{{ lang.t("jd.404.near") }}</h2>
       <ol data-jd-near-list></ol>
     </section>
 
     <form class="jd-404__search" role="search" data-jd-search-form>
-      <label for="nf-search">Ou lancer la recherche sur tout le wiki</label>
+      <label for="nf-search">{{ lang.t("jd.404.search_label") }}</label>
       <div class="jd-404__field">
         {% include ".icons/material/magnify.svg" %}
         <input id="nf-search" type="search" autocomplete="off" data-jd-search-input>
-        <kbd aria-label="Raccourci clavier Commande K">⌘K</kbd>
+        <kbd aria-label="{{ lang.t("jd.kbd.cmdk") }}">⌘K</kbd>
       </div>
     </form>
     </div>
 
     <aside class="jd-404__card" aria-labelledby="ecrire">
-      <h2 id="ecrire">Il manque un article ?</h2>
-      <p>Ouvre une issue pré-remplie avec l'URL demandée et la page d'où tu viens : lien cassé ou article à écrire, on tranche ensuite.</p>
+      <h2 id="ecrire">{{ lang.t("jd.404.card_title") }}</h2>
+      <p>{{ lang.t("jd.404.card_text") }}</p>
       <div class="jd-404__actions">
         <a class="jd-404__btn" data-jd-issue href="{{ config.repo_url }}/issues/new?template=missing-page.yml" rel="noopener">
           {% include ".icons/octicons/issue-opened-16.svg" %}
-          Ouvrir une issue
+          {{ lang.t("jd.404.open_issue") }}
         </a>
-        <span>ou <a data-jd-pr href="{{ config.repo_url }}/new/master/docs" rel="noopener">l'écrire directement en PR</a></span>
+        <span>{{ lang.t("jd.404.or") }} <a data-jd-pr href="{{ config.repo_url }}/new/master/docs" rel="noopener">{{ lang.t("jd.404.write_pr") }}</a></span>
       </div>
     </aside>
     </div>
 
-    <nav class="jd-404__links" aria-label="Pour continuer">
-      <a href="{{ base }}">Retour à l'accueil</a>
-      <a href="{{ base }}#sections">Toutes les sections</a>
+    <nav class="jd-404__links" aria-label="{{ lang.t("jd.404.nav_label") }}">
+      <a href="{{ base }}">{{ lang.t("jd.404.back_home") }}</a>
+      <a href="{{ base }}#sections">{{ lang.t("jd.404.all_sections") }}</a>
     </nav>
   </article>
 </div>

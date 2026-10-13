@@ -53,6 +53,7 @@ hooks:
   - hooks/indexes.py
   - hooks/article_meta.py
   - hooks/page_vars.py
+  - hooks/i18n.py
   - hooks/home.py
 
 plugins:
