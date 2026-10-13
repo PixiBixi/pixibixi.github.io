@@ -82,7 +82,7 @@ GitHub Actions (`.github/workflows/main.yml`) runs three chained jobs - `lint` �
 2. `build` - `uv sync` + `uv run mkdocs build --strict`; warnings are fatal
 3. `deploy` - `uv run mkdocs gh-deploy --force -d site/` → pushes the built site to the `docs` branch → GitHub Pages
 
-Pull requests run `lint` + `build` only (`deploy` is gated on `github.event_name != 'pull_request'`). Every job checks out with `fetch-depth: 0` because `git-revision-date-localized` needs the full history. No manual deploy needed.
+Pull requests run `lint` + `build` only (`deploy` is gated on `github.event_name != 'pull_request'`). A push or PR touching only repo tooling (`AGENTS.md`, `README.md`, `LICENSE`, `renovate.json`, lint and pre-commit config, `.claude/`) skips `build` and `deploy`: the list is `files_ignore` in the `lint` job, and a skipped `build` still satisfies the required check. Every job checks out with `fetch-depth: 0` because `git-revision-date-localized` needs the full history. No manual deploy needed.
 
 Dependencies are managed by Renovate (`renovate.json`): minor, patch and digest updates automerge once `build` is green; majors wait for manual review.
 

@@ -82,6 +82,7 @@ fence.
 Push to `master` runs GitHub Actions: lint → build (`mkdocs build --strict`) → deploy
 (`mkdocs gh-deploy` onto the `docs` branch, served by GitHub Pages).
 Pull requests run lint + build only (no deploy).
+Changes limited to repo tooling (`AGENTS.md`, `README.md`, lint and pre-commit config...) skip build and deploy.
 
 ## Dependencies
 
