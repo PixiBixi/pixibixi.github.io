@@ -1524,6 +1524,9 @@ body {
 .md-typeset a.glightbox img {
   display: block;
   width: 100%;
+  /* Portrait diagrams stretched to the column width ran ~1000px tall; the lightbox shows them full size */
+  max-height: 70vh;
+  object-fit: contain;
   border-radius: 4px;
 }
 
