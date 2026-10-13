@@ -13,6 +13,8 @@
       var lang = Array.from(box.classList).find(function (c) { return c.indexOf("language-") === 0; });
       if (!lang) return;
       lang = lang.replace("language-", "");
+      // Plain-text fences get no bar: "text" says nothing to the reader.
+      if (lang === "text" && !box.querySelector(".filename")) return;
       var bar = box.querySelector(".filename");
       if (bar) {
         if (!bar.dataset.jdLang && lang !== "text") {
@@ -91,7 +93,34 @@
     } catch (e) { /* private mode */ }
   });
 
+  // Mobile TOC bar scrollspy: the last heading above the fold marks its link active, like the desktop TOC.
+  function barSpy() {
+    var b = bar();
+    if (!b || !b.offsetParent) return;
+    var links = b.querySelectorAll(".jd-toc-bar__panel a.md-nav__link");
+    var current = null;
+    links.forEach(function (a) {
+      var h = document.getElementById(decodeURIComponent(a.hash.slice(1)));
+      if (h && h.getBoundingClientRect().top < 96) current = a;
+    });
+    links.forEach(function (a) { a.classList.toggle("md-nav__link--active", a === current); });
+  }
+  document.addEventListener("toggle", function (e) {
+    if (!e.target.classList || !e.target.classList.contains("jd-toc-bar") || !e.target.open) return;
+    // Scroll the panel only: scrollIntoView would also move the page under it.
+    var panel = e.target.querySelector(".jd-toc-bar__panel");
+    var a = panel && panel.querySelector(".md-nav__link--active");
+    if (a) panel.scrollTop = a.offsetTop - panel.offsetTop - panel.clientHeight / 2;
+  }, true);
+  var spyQueued = false;
+  window.addEventListener("scroll", function () {
+    if (spyQueued) return;
+    spyQueued = true;
+    requestAnimationFrame(function () { spyQueued = false; barSpy(); });
+  }, { passive: true });
+
   function init() {
+    barSpy();
     FOLDS.forEach(sideFold);
     navScroll();
     captions();

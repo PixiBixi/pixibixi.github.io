@@ -1186,7 +1186,7 @@ body {
 }
 
 .md-typeset pre > code {
-  padding: 14px 16px;
+  padding: 10px 16px;
   border-radius: 0;
   background: transparent;
   font-size: 14px;
@@ -1656,9 +1656,12 @@ body {
    ========================================================================== */
 
 @media screen and (max-width: 76.234375em) {
+  /* Sticky so the reader can open it mid-article, its current-section mark (jd-ui.js) then means something */
   .md-typeset details.jd-toc-bar {
     display: block;
-    position: relative;
+    position: sticky;
+    top: 0;
+    z-index: 3;
     margin: 0 0 24px;
   }
 
