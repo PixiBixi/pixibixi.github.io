@@ -316,10 +316,15 @@ body {
 
 /* Material toggles [hidden] on the label following each radio: the visible one is the active state */
 .jd-seg:not([hidden]) {
-  /* Material sets display:block on the visible label, which un-centres the icon. */
-  display: grid !important;
   background: var(--jd-toggle-bg);
   color: var(--jd-toggle-ink);
+}
+
+/* Material sets display:block on the visible label, which un-centres the icon. Desktop only: on mobile the segment is hidden for the cycle button. */
+@media screen and (min-width: 60em) {
+  .jd-seg:not([hidden]) {
+    display: grid !important;
+  }
 }
 
 .jd-github {
