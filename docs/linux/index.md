@@ -50,7 +50,7 @@ La section la plus dense du wiki. On y trouve les fondamentaux, les outils CLI, 
 - [Shell - Tips bash](shell/tips_bash.md) - astuces et patterns
 - [Shell - Tips zsh](shell/tips_zsh.md) - spécificités zsh
 - [Shell - Commandes avancées](shell/useful_commands.md) - réseau, LVM, RAID, SMART et TLS
-- [Shell - Lenteurs oh-my-zsh](shell/debug_slowness_ohmyzsh.md) - profiler les plugins au démarrage
+- [Shell - Lenteurs oh-my-zsh](shell/debug_slowness_ohmyzsh.md) - profiler le démarrage, forks et reconstructions du compdump
 - [Réseau - Buffer NIC](networking/buffer_nic.md) - tuning des buffers réseau
 - [Réseau - OpenVPN](networking/openvpn.md) - monter un tunnel VPN
 - [Réseau - OpenVPN en IPv6](networking/openvpn_v6.md) - serveur dual-stack pour les clients VPN

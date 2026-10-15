@@ -47,7 +47,7 @@ Le plan complet est ci-dessous, sinon la recherche fait le job.
 - [Ecrire son script bash](linux/shell/write_bash_scripts.md)
 - [Astuces bash](linux/shell/tips_bash.md)
 - [Astuces zsh](linux/shell/tips_zsh.md)
-- [Debug ses lenteurs de ohmyzsh](linux/shell/debug_slowness_ohmyzsh.md)
+- [Lenteurs oh-my-zsh : mesure, forks et compdump](linux/shell/debug_slowness_ohmyzsh.md)
 - [Un template pour un script bash](linux/shell/template_bash_script.md)
 
 ### Sécurité
