@@ -132,8 +132,78 @@ fpath=(${fpath:#(/opt/homebrew/share/zsh/site-functions|$HOME/.oh-my-zsh/*)})
 fpath+=$HOME/.orbstack/shell/completions/zsh
 ```
 
-## Ce qui reste dans oh-my-zsh
+## Se passer de oh-my-zsh.sh
 
-Même avec un dump stable, oh-my-zsh lance à chaque ouverture `git rev-parse`, 3 `grep`, un `mkdir`, un `rm` et `zrecompile` pour vérifier son dump, soit environ 90ms sur le Mac mesuré. Ce coût ne disparaît qu'en sortant d'oh-my-zsh, par exemple avec un `compinit -C` géré à la main. Le plugin `kube-ps1` ajoute une quarantaine de millisecondes avec ses appels à `tput`.
+Même avec un dump stable, `oh-my-zsh.sh` lance à chaque ouverture `git rev-parse`, 3 `grep`, un `mkdir`, un `rm` et `zrecompile` pour vérifier son dump, soit environ 90ms sur le Mac mesuré. Ses fichiers `lib/grep.zsh` et `lib/theme-and-appearance.zsh` forkent aussi `grep`, `diff` et `ls` pour détecter des flags qui ne changent jamais sur une machine donnée.
 
-Avec les corrections ci-dessus, l'ouverture est passée d'environ 340ms à 300ms en moyenne. Surtout, le premier shell à plus d'une seconde a disparu.
+Pas besoin de changer de gestionnaire de plugins pour s'en débarrasser : on garde `~/.oh-my-zsh` comme réserve de fichiers et on remplace la ligne `source $ZSH/oh-my-zsh.sh` par un chargeur qui source les mêmes libs, plugins et thème.
+
+```zsh title="~/.zshrc"
+ZSH_CUSTOM="$ZSH/custom"
+ZSH_CACHE_DIR="$ZSH/cache"
+SHORT_HOST="${HOST/.*/}"
+fpath=($ZSH_CACHE_DIR/completions $ZSH/{functions,completions} $ZSH_CUSTOM/{functions,completions}
+  $ZSH_CUSTOM/plugins/${^plugins}(N/) $ZSH/plugins/${^plugins}(N/) $fpath)
+
+autoload -Uz compinit
+ZSH_COMPDUMP="$HOME/.zcompdump-lite-$ZSH_VERSION"
+_zcomp_stale=($ZSH_COMPDUMP(N.mh+24))
+if [[ -f $ZSH_COMPDUMP && -z $_zcomp_stale ]]; then
+  compinit -C -d "$ZSH_COMPDUMP"
+else
+  compinit -u -d "$ZSH_COMPDUMP"
+  { zcompile "$ZSH_COMPDUMP" } &!
+fi
+unset _zcomp_stale
+zcomp-rebuild() { rm -f "$ZSH_COMPDUMP"{,.zwc} && exec zsh }
+
+for _lib (async_prompt clipboard cli completion directories functions git history
+  key-bindings misc prompt_info_functions termsupport); do
+  source "$ZSH/lib/$_lib.zsh"
+done
+unset _lib
+
+# Ce que lib/grep.zsh et lib/theme-and-appearance.zsh détectaient, figé en dur
+alias grep='grep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn,.idea,.tox,.venv,venv}'
+autoload -U colors && colors
+setopt prompt_subst
+diff() { command diff --color "$@" }
+export LS_COLORS="di=1;36:ln=35:so=32:pi=33:ex=31:bd=34;46:cd=34;43:su=30;41:sg=30;46:tw=30;42:ow=30;43"
+
+for _plugin ($plugins); do
+  if [[ -f $ZSH_CUSTOM/plugins/$_plugin/$_plugin.plugin.zsh ]]; then
+    source "$ZSH_CUSTOM/plugins/$_plugin/$_plugin.plugin.zsh"
+  else
+    source "$ZSH/plugins/$_plugin/$_plugin.plugin.zsh"
+  fi
+done
+unset _plugin
+source "$ZSH/themes/$ZSH_THEME.zsh-theme"
+zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
+```
+
+Les valeurs figées (`LS_COLORS`, alias `grep`) se récupèrent dans un shell qui tourne encore avec oh-my-zsh, avec `alias grep` et `echo $LS_COLORS`. La liste des libs écarte celles qui ne servent pas (bzr, nvm, spectrum, vcs_info, diagnostics) et `compfix.zsh`.
+
+Le compromis est dans `compinit -C` : le dump n'est plus confronté au `fpath` à chaque ouverture, il est reconstruit quand il a plus de 24h. Après l'installation d'un outil qui apporte sa complétion, `zcomp-rebuild` la rend disponible tout de suite.
+
+!!! warning "SHORT_HOST"
+    Le plugin `ssh-agent` nomme son fichier d'état `~/.ssh/environment-$SHORT_HOST`, une variable calculée par `oh-my-zsh.sh`. Sans elle, chaque shell démarre un nouvel agent au lieu de réutiliser celui qui tourne.
+
+Pour vérifier que rien ne manque, on capture l'état du shell avant et après le changement puis on compare :
+
+```bash
+mkdir -p /tmp/before
+zsh -i -c 'alias | sort > $1/alias.txt; setopt | sort > $1/setopt.txt; zstyle -L | sort > $1/zstyle.txt; bindkey -L | sort > $1/bindkey.txt; print -l ${(ok)functions} > $1/functions.txt' -- /tmp/before
+```
+
+Même commande vers `/tmp/after` une fois le chargeur en place, puis `diff -r /tmp/before /tmp/after` : seules les fonctions des libs écartées doivent disparaître.
+
+## Résultat
+
+| Étape | Ouverture moyenne |
+|---|---|
+| Départ, avec un premier shell à plus d'une seconde | 340ms |
+| Forks évitables supprimés et `fpath` stabilisé | 300ms |
+| `oh-my-zsh.sh` remplacé par le chargeur minimal | 95ms |
+
+Il reste surtout le plugin `kube-ps1` et ses appels à `tput`, une dizaine de millisecondes.
