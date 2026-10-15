@@ -198,6 +198,27 @@ zsh -i -c 'alias | sort > $1/alias.txt; setopt | sort > $1/setopt.txt; zstyle -L
 
 Même commande vers `/tmp/after` une fois le chargeur en place, puis `diff -r /tmp/before /tmp/after` : seules les fonctions des libs écartées doivent disparaître.
 
+## Alléger le prompt git
+
+Le prompt git n'apparaît dans aucune des mesures précédentes : il est calculé à chaque affichage du prompt, pas à l'ouverture du shell. Depuis zsh 5.0.6, oh-my-zsh le calcule en asynchrone, donc il ne bloque pas la saisie, mais la branche et le `✗` arrivent avec un temps de retard après chaque commande.
+
+On le mesure en appelant directement la fonction que l'async exécute en arrière-plan, depuis un repo :
+
+```bash
+zmodload zsh/datetime
+s=$EPOCHREALTIME; _omz_git_prompt_info > /dev/null; echo "total: $(( (EPOCHREALTIME-s)*1000 )) ms"
+s=$EPOCHREALTIME; parse_git_dirty > /dev/null; echo "dirty: $(( (EPOCHREALTIME-s)*1000 )) ms"
+```
+
+`parse_git_dirty` lance un `git status` qui compte aussi les fichiers non suivis. C'est lui qui coûte le plus :
+
+| Repo | Avec les fichiers non suivis | Sans |
+|---|---|---|
+| Monorepo Terragrunt | 116ms | 38ms |
+| Repo ArgoCD | 84ms | 37ms |
+
+`DISABLE_UNTRACKED_FILES_DIRTY="true"` dans le `.zshrc` retire ce comptage. La contrepartie : un repo qui ne contient que des fichiers jamais ajoutés n'affiche plus de `✗`, alors que les fichiers modifiés ou indexés le déclenchent toujours. Pour un repo vraiment lourd, `git config oh-my-zsh.hide-dirty 1` coupe la détection dans ce repo uniquement et garde la branche.
+
 ## Résultat
 
 | Étape | Ouverture moyenne |
