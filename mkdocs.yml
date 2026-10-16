@@ -299,6 +299,7 @@ extra_javascript:
   - javascripts/jd-abbr.js
   - javascripts/pages.js
   - javascripts/jd-highlight.js
+  - javascripts/jd-svg.js
 
 extra_css:
   - stylesheets/jdelgado.css
@@ -311,6 +312,7 @@ extra_css:
   - stylesheets/home.css
   - stylesheets/notfound.css
   - stylesheets/tags.css
+  - stylesheets/jd-svg.css
 
 markdown_extensions:
   - pymdownx.highlight:

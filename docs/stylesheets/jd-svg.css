@@ -1,0 +1,20 @@
+/* Diagrams inlined by javascripts/jd-svg.js follow the theme, so their mat follows it too. */
+.md-typeset a.glightbox.jd-svg-live {
+  background: var(--jd-surface);
+}
+
+.md-typeset svg.jd-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 70vh;
+}
+
+.gslide-image svg.jd-svg {
+  display: block;
+  width: 90vw;
+  max-width: 1200px;
+  height: auto;
+  max-height: 90vh;
+  background: var(--jd-surface);
+}
