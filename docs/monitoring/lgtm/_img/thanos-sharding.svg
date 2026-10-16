@@ -1,45 +1,57 @@
-<svg width="640" height="266" viewBox="0 0 640 266" xmlns="http://www.w3.org/2000/svg" font-family="'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif">
+<svg class="jd-svg" data-jd-theme="" width="640" height="266" viewBox="0 0 640 266" xmlns="http://www.w3.org/2000/svg" font-family="'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif">
+  <style>
+    .jd-svg text { font-family: var(--jd-sans, 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif); }
+    .jd-svg .axis { stroke: var(--jd-border-strong, #30363d); }
+    .jd-svg .edge { stroke: var(--jd-muted, #8b949e); }
+    .jd-svg .info-fill { fill: var(--jd-note-border, #5b8fc9); }
+    .jd-svg .muted-fill { fill: var(--jd-border-strong, #8b949e); }
+    .jd-svg .ok-fill { fill: var(--jd-ok-border, #4e8f57); }
+    .jd-svg .on-fill { fill: var(--jd-ink, #0d1117); }
+    .jd-svg .page { fill: var(--jd-muted, #6e7781); }
+    .jd-svg .sub { fill: var(--jd-muted, #8b949e); }
+    .jd-svg .warm-fill { fill: var(--jd-warn-border, #c9714f); }
+  </style>
   <defs>
     <marker id="tick" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
-      <circle cx="3" cy="3" r="2" fill="#8b949e"/>
+      <circle class="muted-fill" cx="3" cy="3" r="2"/>
     </marker>
   </defs>
 
   <!-- Receive : la donnee fraiche -->
-  <text x="524" y="32" fill="#6e7781" font-size="11" font-weight="600">Receive</text>
-  <text x="524" y="46" fill="#8b949e" font-size="9" font-weight="500">TSDB locale</text>
-  <rect x="522" y="52" width="86" height="20" rx="3" fill="#c9714f"/>
-  <text x="530" y="66" fill="#0d1117" font-size="9">0 → 3h</text>
+  <text class="page" x="524" y="32" font-size="11" font-weight="600">Receive</text>
+  <text class="sub" x="524" y="46" font-size="9" font-weight="500">TSDB locale</text>
+  <rect class="warm-fill" x="522" y="52" width="86" height="20" rx="3"/>
+  <text class="on-fill" x="530" y="66" font-size="9">0 → 3h</text>
 
   <!-- shard 0 -->
-  <text x="418" y="96" fill="#6e7781" font-size="11" font-weight="600">store gateway · shard 0</text>
-  <text x="418" y="110" fill="#8b949e" font-size="9" font-weight="500">--min-time=-26h  --max-time=-3h</text>
-  <rect x="416" y="116" width="120" height="20" rx="3" fill="#5b8fc9"/>
+  <text class="page" x="418" y="96" font-size="11" font-weight="600">store gateway · shard 0</text>
+  <text class="sub" x="418" y="110" font-size="9" font-weight="500">--min-time=-26h  --max-time=-3h</text>
+  <rect class="info-fill" x="416" y="116" width="120" height="20" rx="3"/>
 
   <!-- shard 1 -->
-  <text x="240" y="96" fill="#6e7781" font-size="11" font-weight="600">shard 1</text>
-  <text x="240" y="110" fill="#8b949e" font-size="9" font-weight="500">--min-time=-8d  --max-time=-23h</text>
-  <rect x="238" y="140" width="198" height="20" rx="3" fill="#4e8f57"/>
+  <text class="page" x="240" y="96" font-size="11" font-weight="600">shard 1</text>
+  <text class="sub" x="240" y="110" font-size="9" font-weight="500">--min-time=-8d  --max-time=-23h</text>
+  <rect class="ok-fill" x="238" y="140" width="198" height="20" rx="3"/>
 
   <!-- shard 2 -->
-  <text x="30" y="96" fill="#6e7781" font-size="11" font-weight="600">shard 2</text>
-  <text x="30" y="110" fill="#8b949e" font-size="9" font-weight="500">--max-time=-6d</text>
-  <rect x="28" y="164" width="228" height="20" rx="3" fill="#8b949e"/>
-  <text x="36" y="178" fill="#0d1117" font-size="9">pas de min-time : tout le reste</text>
+  <text class="page" x="30" y="96" font-size="11" font-weight="600">shard 2</text>
+  <text class="sub" x="30" y="110" font-size="9" font-weight="500">--max-time=-6d</text>
+  <rect class="muted-fill" x="28" y="164" width="228" height="20" rx="3"/>
+  <text class="on-fill" x="36" y="178" font-size="9">pas de min-time : tout le reste</text>
 
   <!-- axe du temps -->
-  <line x1="28" y1="198" x2="616" y2="198" stroke="#30363d" stroke-width="1"/>
-  <line x1="608" y1="192" x2="608" y2="204" stroke="#8b949e" stroke-width="1"/>
-  <line x1="522" y1="192" x2="522" y2="204" stroke="#8b949e" stroke-width="1"/>
-  <line x1="428" y1="192" x2="428" y2="204" stroke="#8b949e" stroke-width="1"/>
-  <line x1="248" y1="192" x2="248" y2="204" stroke="#8b949e" stroke-width="1"/>
+  <line class="axis" x1="28" y1="198" x2="616" y2="198" stroke-width="1"/>
+  <line class="edge" x1="608" y1="192" x2="608" y2="204" stroke-width="1"/>
+  <line class="edge" x1="522" y1="192" x2="522" y2="204" stroke-width="1"/>
+  <line class="edge" x1="428" y1="192" x2="428" y2="204" stroke-width="1"/>
+  <line class="edge" x1="248" y1="192" x2="248" y2="204" stroke-width="1"/>
 
-  <text x="28" y="216" fill="#8b949e" font-size="9" font-weight="500">← plus ancien</text>
-  <text x="248" y="216" fill="#8b949e" font-size="9" font-weight="500" text-anchor="middle">~1 sem.</text>
-  <text x="428" y="216" fill="#8b949e" font-size="9" font-weight="500" text-anchor="middle">~1 j</text>
-  <text x="522" y="216" fill="#8b949e" font-size="9" font-weight="500" text-anchor="middle">3h</text>
-  <text x="608" y="216" fill="#8b949e" font-size="9" font-weight="500" text-anchor="end">maintenant</text>
+  <text class="sub" x="28" y="216" font-size="9" font-weight="500">← plus ancien</text>
+  <text class="sub" x="248" y="216" font-size="9" font-weight="500" text-anchor="middle">~1 sem.</text>
+  <text class="sub" x="428" y="216" font-size="9" font-weight="500" text-anchor="middle">~1 j</text>
+  <text class="sub" x="522" y="216" font-size="9" font-weight="500" text-anchor="middle">3h</text>
+  <text class="sub" x="608" y="216" font-size="9" font-weight="500" text-anchor="end">maintenant</text>
 
-  <text x="28" y="242" fill="#6e7781" font-size="10" font-weight="600">min-time = la borne la plus ancienne, max-time = la plus récente. Les 2 sont négatives.</text>
-  <text x="28" y="258" fill="#8b949e" font-size="9" font-weight="500">Échelle non proportionnelle. Les bornes se chevauchent volontairement, le querier fusionne.</text>
+  <text class="page" x="28" y="242" font-size="10" font-weight="600">min-time = la borne la plus ancienne, max-time = la plus récente. Les 2 sont négatives.</text>
+  <text class="sub" x="28" y="258" font-size="9" font-weight="500">Échelle non proportionnelle. Les bornes se chevauchent volontairement, le querier fusionne.</text>
 </svg>

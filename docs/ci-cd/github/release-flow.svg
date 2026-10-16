@@ -1,53 +1,70 @@
-<svg width="640" height="420" viewBox="0 0 640 420" xmlns="http://www.w3.org/2000/svg" font-family="'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif">
+<svg class="jd-svg" data-jd-theme="" width="640" height="420" viewBox="0 0 640 420" xmlns="http://www.w3.org/2000/svg" font-family="'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif">
+  <style>
+    .jd-svg text { font-family: var(--jd-sans, 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif); }
+    .jd-svg .box { fill: var(--jd-surface-raised, #161b22); }
+    .jd-svg .border { stroke: var(--jd-border-strong, #30363d); }
+    .jd-svg .ink { fill: var(--jd-ink, #e6edf3); }
+    .jd-svg .sub { fill: var(--jd-muted, #8b949e); }
+    .jd-svg .neutral { fill: var(--jd-muted, #8b949e); }
+    .jd-svg .edge { stroke: var(--jd-muted, #8b949e); }
+    .jd-svg .ok { fill: var(--jd-ok-ink, #3fb950); }
+    .jd-svg .ok-s { stroke: var(--jd-ok-ink, #3fb950); }
+    .jd-svg .warm { fill: var(--jd-warn-ink, #f78166); }
+    .jd-svg .warm-s { stroke: var(--jd-warn-ink, #f78166); }
+    .jd-svg .info { fill: var(--jd-note-ink, #58a6ff); }
+    .jd-svg .info-s { stroke: var(--jd-note-ink, #58a6ff); }
+    .jd-svg .amber { fill: var(--jd-warn-ink, #f9a825); }
+    .jd-svg .amber-s { stroke: var(--jd-warn-ink, #f9a825); }
+  </style>
 
   <defs>
     <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
-      <polygon points="0 0, 8 3, 0 6" fill="#8b949e"/>
+      <polygon class="neutral" points="0 0, 8 3, 0 6"/>
     </marker>
   </defs>
 
   <!-- ── Box 1: git tag ── -->
-  <rect x="80" y="24" width="480" height="68" fill="#161b22" rx="8" stroke="#30363d" stroke-width="1.5"/>
-  <rect x="80" y="24" width="4" height="68" fill="#8b949e" rx="2"/>
-  <text x="106" y="52" font-size="14" fill="#e6edf3" font-weight="600">git tag vX.Y.Z &amp;&amp; git push --tags</text>
-  <text x="106" y="73" font-size="12" fill="#8b949e">Tag sémantique poussé sur le remote</text>
+  <rect class="box border" x="80" y="24" width="480" height="68" rx="8" stroke-width="1.5"/>
+  <rect class="neutral" x="80" y="24" width="4" height="68" rx="2"/>
+  <text class="ink" x="106" y="52" font-size="14" font-weight="600">git tag vX.Y.Z &amp;&amp; git push --tags</text>
+  <text class="sub" x="106" y="73" font-size="12">Tag sémantique poussé sur le remote</text>
 
   <!-- Arrow 1 -->
-  <line x1="320" y1="92" x2="320" y2="125" stroke="#8b949e" stroke-width="1.5" marker-end="url(#arr)"/>
-  <text x="330" y="113" font-size="11" fill="#8b949e" text-anchor="start">trigger : push tag v*</text>
+  <line class="edge" x1="320" y1="92" x2="320" y2="125" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text class="sub" x="330" y="113" font-size="11" text-anchor="start">trigger : push tag v*</text>
 
   <!-- ── Box 2: GitHub Actions ── -->
-  <rect x="80" y="128" width="480" height="68" fill="#161b22" rx="8" stroke="#30363d" stroke-width="1.5"/>
-  <rect x="80" y="128" width="4" height="68" fill="#3fb950" rx="2"/>
-  <text x="106" y="156" font-size="14" fill="#e6edf3" font-weight="600">GitHub Actions — release.yml</text>
-  <text x="106" y="177" font-size="12" fill="#8b949e">Checkout · setup-go · Docker Buildx · login ghcr.io</text>
+  <rect class="box border" x="80" y="128" width="480" height="68" rx="8" stroke-width="1.5"/>
+  <rect class="ok" x="80" y="128" width="4" height="68" rx="2"/>
+  <text class="ink" x="106" y="156" font-size="14" font-weight="600">GitHub Actions — release.yml</text>
+  <text class="sub" x="106" y="177" font-size="12">Checkout · setup-go · Docker Buildx · login ghcr.io</text>
 
   <!-- Arrow 2 -->
-  <line x1="320" y1="196" x2="320" y2="228" stroke="#8b949e" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line class="edge" x1="320" y1="196" x2="320" y2="228" stroke-width="1.5" marker-end="url(#arr)"/>
 
   <!-- ── Box 3: GoReleaser ── -->
-  <rect x="80" y="232" width="480" height="68" fill="#161b22" rx="8" stroke="#30363d" stroke-width="1.5"/>
-  <rect x="80" y="232" width="4" height="68" fill="#f78166" rx="2"/>
-  <text x="106" y="260" font-size="11" fill="#f78166" font-weight="700" letter-spacing="0.5">GoReleaser</text>
-  <text x="106" y="280" font-size="14" fill="#e6edf3" font-weight="600">Build multi-arch · compression UPX · génération changelog</text>
+  <rect class="box border" x="80" y="232" width="480" height="68" rx="8" stroke-width="1.5"/>
+  <rect class="warm" x="80" y="232" width="4" height="68" rx="2"/>
+  <text class="warm" x="106" y="260" font-size="11" font-weight="700" letter-spacing="0.5">GoReleaser</text>
+  <text class="ink" x="106" y="280" font-size="14" font-weight="600">Build multi-arch · compression UPX · génération changelog</text>
 
   <!-- Arrow 3 -->
-  <line x1="320" y1="300" x2="320" y2="332" stroke="#8b949e" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line class="edge" x1="320" y1="300" x2="320" y2="332" stroke-width="1.5" marker-end="url(#arr)"/>
 
   <!-- ── Box 4: artefacts ── -->
-  <rect x="80" y="336" width="480" height="60" fill="#161b22" rx="8" stroke="#30363d" stroke-width="1.5"/>
-  <rect x="80" y="336" width="4" height="60" fill="#f78166" rx="2"/>
+  <rect class="box border" x="80" y="336" width="480" height="60" rx="8" stroke-width="1.5"/>
+  <rect class="warm" x="80" y="336" width="4" height="60" rx="2"/>
 
-  <rect x="106" y="348" width="88" height="22" fill="#161b22" rx="11" stroke="#f78166" stroke-width="1"/>
-  <text x="150" y="363" font-size="11" fill="#f78166" text-anchor="middle">binaires</text>
+  <rect class="box warm-s" x="106" y="348" width="88" height="22" rx="11" stroke-width="1"/>
+  <text class="warm" x="150" y="363" font-size="11" text-anchor="middle">binaires</text>
 
-  <rect x="204" y="348" width="110" height="22" fill="#161b22" rx="11" stroke="#f78166" stroke-width="1"/>
-  <text x="259" y="363" font-size="11" fill="#f78166" text-anchor="middle">images Docker</text>
+  <rect class="box warm-s" x="204" y="348" width="110" height="22" rx="11" stroke-width="1"/>
+  <text class="warm" x="259" y="363" font-size="11" text-anchor="middle">images Docker</text>
 
-  <rect x="324" y="348" width="84" height="22" fill="#161b22" rx="11" stroke="#f78166" stroke-width="1"/>
-  <text x="366" y="363" font-size="11" fill="#f78166" text-anchor="middle">Helm OCI</text>
+  <rect class="box warm-s" x="324" y="348" width="84" height="22" rx="11" stroke-width="1"/>
+  <text class="warm" x="366" y="363" font-size="11" text-anchor="middle">Helm OCI</text>
 
-  <rect x="418" y="348" width="122" height="22" fill="#161b22" rx="11" stroke="#f78166" stroke-width="1"/>
-  <text x="479" y="363" font-size="11" fill="#f78166" text-anchor="middle">GitHub Release</text>
+  <rect class="box warm-s" x="418" y="348" width="122" height="22" rx="11" stroke-width="1"/>
+  <text class="warm" x="479" y="363" font-size="11" text-anchor="middle">GitHub Release</text>
 
 </svg>

@@ -1,72 +1,86 @@
-<svg width="640" height="250" viewBox="0 0 640 250" xmlns="http://www.w3.org/2000/svg" font-family="'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif">
+<svg class="jd-svg" data-jd-theme="" width="640" height="250" viewBox="0 0 640 250" xmlns="http://www.w3.org/2000/svg" font-family="'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif">
+  <!-- Colors are site theme variables with the old palette as fallback: inlined by jd-svg.js they
+       follow the theme, as a plain img they render as before. -->
+  <style>
+    .jd-svg text { font-family: var(--jd-sans, 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif); }
+    .jd-svg .box { fill: var(--jd-surface-raised, #161b22); stroke: var(--jd-border-strong, #30363d); }
+    .jd-svg .ink { fill: var(--jd-ink, #e6edf3); }
+    .jd-svg .sub { fill: var(--jd-muted, #8b949e); }
+    .jd-svg .page { fill: var(--jd-muted, #6e7781); font-weight: 600; }
+    .jd-svg .edge { stroke: var(--jd-muted, #8b949e); }
+    .jd-svg .neutral { fill: var(--jd-muted, #8b949e); }
+    .jd-svg .warm { fill: var(--jd-warn-ink, #f78166); }
+    .jd-svg .info { fill: var(--jd-note-ink, #58a6ff); }
+    .jd-svg .ok { fill: var(--jd-ok-ink, #3fb950); }
+  </style>
   <defs>
     <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
-      <polygon points="0 0, 8 3, 0 6" fill="#8b949e"/>
+      <polygon class="neutral" points="0 0, 8 3, 0 6"/>
     </marker>
   </defs>
 
   <!-- ligne 1 : ingestion -->
   <g>
-    <rect x="8" y="30" width="132" height="46" rx="4" fill="#161b22" stroke="#30363d"/>
-    <rect x="8" y="30" width="4" height="46" fill="#8b949e"/>
-    <text x="24" y="50" fill="#e6edf3" font-size="12">Prometheus × N</text>
-    <text x="24" y="66" fill="#8b949e" font-size="10">un par cluster source</text>
+    <rect class="box" x="8" y="30" width="132" height="46" rx="4"/>
+    <rect class="neutral" x="8" y="30" width="4" height="46"/>
+    <text class="ink" x="24" y="50" font-size="12">Prometheus × N</text>
+    <text class="sub" x="24" y="66" font-size="10">un par cluster source</text>
   </g>
-  <line x1="146" y1="53" x2="196" y2="53" stroke="#8b949e" stroke-width="1.5" marker-end="url(#arr)"/>
-  <text x="171" y="46" fill="#6e7781" font-size="9" font-weight="600" text-anchor="middle">remote_write</text>
+  <line class="edge" x1="146" y1="53" x2="196" y2="53" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text class="page" x="171" y="46" font-size="9" text-anchor="middle">remote_write</text>
 
   <g>
-    <rect x="204" y="30" width="140" height="46" rx="4" fill="#161b22" stroke="#30363d"/>
-    <rect x="204" y="30" width="4" height="46" fill="#f78166"/>
-    <text x="220" y="50" fill="#e6edf3" font-size="12">Thanos Receive</text>
-    <text x="220" y="66" fill="#f78166" font-size="9">on-demand · priorityClass</text>
+    <rect class="box" x="204" y="30" width="140" height="46" rx="4"/>
+    <rect class="warm" x="204" y="30" width="4" height="46"/>
+    <text class="ink" x="220" y="50" font-size="12">Thanos Receive</text>
+    <text class="warm" x="220" y="66" font-size="9">on-demand · priorityClass</text>
   </g>
-  <line x1="350" y1="53" x2="400" y2="53" stroke="#8b949e" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line class="edge" x1="350" y1="53" x2="400" y2="53" stroke-width="1.5" marker-end="url(#arr)"/>
 
   <g>
-    <rect x="408" y="30" width="140" height="46" rx="4" fill="#161b22" stroke="#30363d"/>
-    <rect x="408" y="30" width="4" height="46" fill="#58a6ff"/>
-    <text x="424" y="50" fill="#e6edf3" font-size="12">Object storage</text>
-    <text x="424" y="66" fill="#8b949e" font-size="10">1 bucket par tenant</text>
+    <rect class="box" x="408" y="30" width="140" height="46" rx="4"/>
+    <rect class="info" x="408" y="30" width="4" height="46"/>
+    <text class="ink" x="424" y="50" font-size="12">Object storage</text>
+    <text class="sub" x="424" y="66" font-size="10">1 bucket par tenant</text>
   </g>
 
   <!-- descente vers la ligne 2 -->
-  <path d="M 478 84 L 478 104 L 74 104 L 74 138" fill="none" stroke="#8b949e" stroke-width="1.5" stroke-dasharray="3 3" marker-end="url(#arr)"/>
+  <path class="edge" d="M 478 84 L 478 104 L 74 104 L 74 138" fill="none" stroke-width="1.5" stroke-dasharray="3 3" marker-end="url(#arr)"/>
 
   <!-- ligne 2 : lecture -->
   <g>
-    <rect x="8" y="146" width="132" height="46" rx="4" fill="#161b22" stroke="#30363d"/>
-    <rect x="8" y="146" width="4" height="46" fill="#3fb950"/>
-    <text x="24" y="166" fill="#e6edf3" font-size="12">Store Gateway</text>
-    <text x="24" y="182" fill="#3fb950" font-size="10">spot · 3 shards</text>
+    <rect class="box" x="8" y="146" width="132" height="46" rx="4"/>
+    <rect class="ok" x="8" y="146" width="4" height="46"/>
+    <text class="ink" x="24" y="166" font-size="12">Store Gateway</text>
+    <text class="ok" x="24" y="182" font-size="10">spot · 3 shards</text>
   </g>
-  <line x1="146" y1="169" x2="188" y2="169" stroke="#8b949e" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line class="edge" x1="146" y1="169" x2="188" y2="169" stroke-width="1.5" marker-end="url(#arr)"/>
 
   <g>
-    <rect x="196" y="146" width="116" height="46" rx="4" fill="#161b22" stroke="#30363d"/>
-    <rect x="196" y="146" width="4" height="46" fill="#3fb950"/>
-    <text x="212" y="166" fill="#e6edf3" font-size="12">Querier</text>
-    <text x="212" y="182" fill="#3fb950" font-size="10">spot · régional</text>
+    <rect class="box" x="196" y="146" width="116" height="46" rx="4"/>
+    <rect class="ok" x="196" y="146" width="4" height="46"/>
+    <text class="ink" x="212" y="166" font-size="12">Querier</text>
+    <text class="ok" x="212" y="182" font-size="10">spot · régional</text>
   </g>
-  <line x1="318" y1="169" x2="360" y2="169" stroke="#8b949e" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line class="edge" x1="318" y1="169" x2="360" y2="169" stroke-width="1.5" marker-end="url(#arr)"/>
 
   <g>
-    <rect x="368" y="146" width="122" height="46" rx="4" fill="#161b22" stroke="#30363d"/>
-    <rect x="368" y="146" width="4" height="46" fill="#3fb950"/>
-    <text x="384" y="166" fill="#e6edf3" font-size="12">Querier global</text>
-    <text x="384" y="182" fill="#3fb950" font-size="10">spot · fan-out</text>
+    <rect class="box" x="368" y="146" width="122" height="46" rx="4"/>
+    <rect class="ok" x="368" y="146" width="4" height="46"/>
+    <text class="ink" x="384" y="166" font-size="12">Querier global</text>
+    <text class="ok" x="384" y="182" font-size="10">spot · fan-out</text>
   </g>
-  <line x1="496" y1="169" x2="538" y2="169" stroke="#8b949e" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line class="edge" x1="496" y1="169" x2="538" y2="169" stroke-width="1.5" marker-end="url(#arr)"/>
 
   <g>
-    <rect x="546" y="146" width="86" height="46" rx="4" fill="#161b22" stroke="#30363d"/>
-    <rect x="546" y="146" width="4" height="46" fill="#8b949e"/>
-    <text x="562" y="173" fill="#e6edf3" font-size="12">Grafana</text>
+    <rect class="box" x="546" y="146" width="86" height="46" rx="4"/>
+    <rect class="neutral" x="546" y="146" width="4" height="46"/>
+    <text class="ink" x="562" y="173" font-size="12">Grafana</text>
   </g>
 
   <!-- legende -->
-  <rect x="8" y="216" width="10" height="10" rx="2" fill="#f78166"/>
-  <text x="24" y="225" fill="#6e7781" font-size="10" font-weight="600">on-demand : seul chemin d'ingestion stateful</text>
-  <rect x="300" y="216" width="10" height="10" rx="2" fill="#3fb950"/>
-  <text x="316" y="225" fill="#6e7781" font-size="10" font-weight="600">spot : stateless, rejouable après éviction</text>
+  <rect class="warm" x="8" y="216" width="10" height="10" rx="2"/>
+  <text class="page" x="24" y="225" font-size="10">on-demand : seul chemin d'ingestion stateful</text>
+  <rect class="ok" x="300" y="216" width="10" height="10" rx="2"/>
+  <text class="page" x="316" y="225" font-size="10">spot : stateless, rejouable après éviction</text>
 </svg>

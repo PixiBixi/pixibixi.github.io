@@ -1,73 +1,90 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 270" font-family="Inter, Helvetica, sans-serif">
+<svg class="jd-svg" data-jd-theme="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 270" font-family="Inter, Helvetica, sans-serif">
+  <style>
+    .jd-svg text { font-family: var(--jd-sans, Inter, Helvetica, sans-serif); }
+    .jd-svg .box { fill: var(--jd-surface-raised, white); }
+    .jd-svg .ink { fill: var(--jd-ink, #222); }
+    .jd-svg .sub { fill: var(--jd-muted, #666); }
+    .jd-svg .soft { fill: var(--jd-ink-soft, #444); }
+    .jd-svg .blue { fill: var(--jd-note-ink, #4285F4); }
+    .jd-svg .blue-s { stroke: var(--jd-note-ink, #4285F4); }
+    .jd-svg .orange { fill: var(--jd-warn-ink, #E37400); }
+    .jd-svg .orange-s { stroke: var(--jd-warn-ink, #E37400); }
+    .jd-svg .indigo { fill: var(--jd-accent, #6366F1); }
+    .jd-svg .indigo-s { stroke: var(--jd-accent, #6366F1); }
+    .jd-svg .green { fill: var(--jd-ok-ink, #16A34A); }
+    .jd-svg .green-s { stroke: var(--jd-ok-ink, #16A34A); }
+    .jd-svg .zone-b { fill: var(--jd-note-bg, #EEF3FF); }
+    .jd-svg .zone-o { fill: var(--jd-warn-bg, #FFF8EE); }
+  </style>
   <defs>
     <marker id="arr-blue" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
-      <polygon points="0 0, 8 3, 0 6" fill="#4285F4"/>
+      <polygon class="blue" points="0 0, 8 3, 0 6"/>
     </marker>
     <marker id="arr-indigo" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
-      <polygon points="0 0, 8 3, 0 6" fill="#6366F1"/>
+      <polygon class="indigo" points="0 0, 8 3, 0 6"/>
     </marker>
     <marker id="arr-green" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
-      <polygon points="0 0, 8 3, 0 6" fill="#16A34A"/>
+      <polygon class="green" points="0 0, 8 3, 0 6"/>
     </marker>
     <marker id="arr-orange" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
-      <polygon points="0 0, 8 3, 0 6" fill="#E37400"/>
+      <polygon class="orange" points="0 0, 8 3, 0 6"/>
     </marker>
   </defs>
 
   <!-- Zone Kubernetes -->
-  <rect x="10" y="15" width="330" height="235" rx="10" fill="#EEF3FF" stroke="#4285F4" stroke-width="1.5"/>
-  <text x="175" y="40" text-anchor="middle" font-size="13" font-weight="600" fill="#4285F4">Kubernetes Cluster</text>
+  <rect class="zone-b blue-s" x="10" y="15" width="330" height="235" rx="10" stroke-width="1.5"/>
+  <text class="blue" x="175" y="40" text-anchor="middle" font-size="13" font-weight="600">Kubernetes Cluster</text>
 
   <!-- Zone GCP -->
-  <rect x="420" y="15" width="330" height="235" rx="10" fill="#FFF8EE" stroke="#E37400" stroke-width="1.5"/>
-  <text x="585" y="40" text-anchor="middle" font-size="13" font-weight="600" fill="#E37400">Google Cloud</text>
+  <rect class="zone-o orange-s" x="420" y="15" width="330" height="235" rx="10" stroke-width="1.5"/>
+  <text class="orange" x="585" y="40" text-anchor="middle" font-size="13" font-weight="600">Google Cloud</text>
 
   <!-- Pod -->
-  <rect x="40" y="108" width="90" height="42" rx="6" fill="white" stroke="#4285F4" stroke-width="1.5"/>
-  <text x="85" y="134" text-anchor="middle" font-size="13" fill="#222">Pod</text>
+  <rect class="box blue-s" x="40" y="108" width="90" height="42" rx="6" stroke-width="1.5"/>
+  <text class="ink" x="85" y="134" text-anchor="middle" font-size="13">Pod</text>
 
   <!-- KSA -->
-  <rect x="210" y="108" width="110" height="42" rx="6" fill="white" stroke="#4285F4" stroke-width="1.5"/>
-  <text x="265" y="128" text-anchor="middle" font-size="12" font-weight="600" fill="#222">KSA</text>
-  <text x="265" y="143" text-anchor="middle" font-size="10" fill="#666">K8s ServiceAccount</text>
+  <rect class="box blue-s" x="210" y="108" width="110" height="42" rx="6" stroke-width="1.5"/>
+  <text class="ink" x="265" y="128" text-anchor="middle" font-size="12" font-weight="600">KSA</text>
+  <text class="sub" x="265" y="143" text-anchor="middle" font-size="10">K8s ServiceAccount</text>
 
   <!-- GSA -->
-  <rect x="448" y="108" width="110" height="42" rx="6" fill="white" stroke="#E37400" stroke-width="1.5"/>
-  <text x="503" y="128" text-anchor="middle" font-size="12" font-weight="600" fill="#222">GSA</text>
-  <text x="503" y="143" text-anchor="middle" font-size="10" fill="#666">GCP Service Account</text>
+  <rect class="box orange-s" x="448" y="108" width="110" height="42" rx="6" stroke-width="1.5"/>
+  <text class="ink" x="503" y="128" text-anchor="middle" font-size="12" font-weight="600">GSA</text>
+  <text class="sub" x="503" y="143" text-anchor="middle" font-size="10">GCP Service Account</text>
 
   <!-- GCP Services -->
-  <rect x="610" y="75" width="120" height="30" rx="5" fill="white" stroke="#E37400" stroke-width="1"/>
-  <text x="670" y="95" text-anchor="middle" font-size="12" fill="#222">GCS</text>
+  <rect class="box orange-s" x="610" y="75" width="120" height="30" rx="5" stroke-width="1"/>
+  <text class="ink" x="670" y="95" text-anchor="middle" font-size="12">GCS</text>
 
-  <rect x="610" y="115" width="120" height="30" rx="5" fill="white" stroke="#E37400" stroke-width="1"/>
-  <text x="670" y="135" text-anchor="middle" font-size="12" fill="#222">Cloud SQL</text>
+  <rect class="box orange-s" x="610" y="115" width="120" height="30" rx="5" stroke-width="1"/>
+  <text class="ink" x="670" y="135" text-anchor="middle" font-size="12">Cloud SQL</text>
 
-  <rect x="610" y="155" width="120" height="30" rx="5" fill="white" stroke="#E37400" stroke-width="1"/>
-  <text x="670" y="175" text-anchor="middle" font-size="12" fill="#222">Secret Manager</text>
+  <rect class="box orange-s" x="610" y="155" width="120" height="30" rx="5" stroke-width="1"/>
+  <text class="ink" x="670" y="175" text-anchor="middle" font-size="12">Secret Manager</text>
 
   <!-- Pod → KSA -->
-  <line x1="132" y1="129" x2="208" y2="129" stroke="#4285F4" stroke-width="2" marker-end="url(#arr-blue)"/>
-  <text x="170" y="121" text-anchor="middle" font-size="11" fill="#4285F4">uses</text>
+  <line class="blue-s" x1="132" y1="129" x2="208" y2="129" stroke-width="2" marker-end="url(#arr-blue)"/>
+  <text class="blue" x="170" y="121" text-anchor="middle" font-size="11">uses</text>
 
   <!-- KSA → GSA : annotation (tirets indigo, en dessous) -->
-  <line x1="322" y1="143" x2="446" y2="143" stroke="#6366F1" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arr-indigo)"/>
-  <text x="384" y="163" text-anchor="middle" font-size="10" font-weight="600" fill="#6366F1">annotation: iam.gke.io/gcp-service-account</text>
+  <line class="indigo-s" x1="322" y1="143" x2="446" y2="143" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arr-indigo)"/>
+  <text class="indigo" x="384" y="163" text-anchor="middle" font-size="10" font-weight="600">annotation: iam.gke.io/gcp-service-account</text>
 
   <!-- KSA → GSA : IAM binding (tirets vert, au dessus) -->
-  <line x1="322" y1="115" x2="446" y2="115" stroke="#16A34A" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arr-green)"/>
-  <text x="384" y="100" text-anchor="middle" font-size="10" font-weight="600" fill="#16A34A">IAM: roles/iam.workloadIdentityUser</text>
+  <line class="green-s" x1="322" y1="115" x2="446" y2="115" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arr-green)"/>
+  <text class="green" x="384" y="100" text-anchor="middle" font-size="10" font-weight="600">IAM: roles/iam.workloadIdentityUser</text>
 
   <!-- GSA → services -->
-  <line x1="560" y1="120" x2="608" y2="93" stroke="#E37400" stroke-width="1.5" marker-end="url(#arr-orange)"/>
-  <line x1="560" y1="129" x2="608" y2="130" stroke="#E37400" stroke-width="1.5" marker-end="url(#arr-orange)"/>
-  <line x1="560" y1="138" x2="608" y2="167" stroke="#E37400" stroke-width="1.5" marker-end="url(#arr-orange)"/>
-  <text x="586" y="108" text-anchor="middle" font-size="10" fill="#E37400">IAM roles</text>
+  <line class="orange-s" x1="560" y1="120" x2="608" y2="93" stroke-width="1.5" marker-end="url(#arr-orange)"/>
+  <line class="orange-s" x1="560" y1="129" x2="608" y2="130" stroke-width="1.5" marker-end="url(#arr-orange)"/>
+  <line class="orange-s" x1="560" y1="138" x2="608" y2="167" stroke-width="1.5" marker-end="url(#arr-orange)"/>
+  <text class="orange" x="586" y="108" text-anchor="middle" font-size="10">IAM roles</text>
 
   <!-- Légende : carrés colorés -->
-  <rect x="30" y="211" width="12" height="12" rx="2" fill="#6366F1"/>
-  <text x="48" y="222" font-size="11" fill="#444">Config (annotation YAML / gcloud)</text>
+  <rect class="indigo" x="30" y="211" width="12" height="12" rx="2"/>
+  <text class="soft" x="48" y="222" font-size="11">Config (annotation YAML / gcloud)</text>
 
-  <rect x="230" y="211" width="12" height="12" rx="2" fill="#16A34A"/>
-  <text x="248" y="222" font-size="11" fill="#444">Permission IAM</text>
+  <rect class="green" x="230" y="211" width="12" height="12" rx="2"/>
+  <text class="soft" x="248" y="222" font-size="11">Permission IAM</text>
 </svg>
