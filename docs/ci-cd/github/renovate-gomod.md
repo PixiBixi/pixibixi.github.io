@@ -1,5 +1,5 @@
 ---
-description: "Le manager gomod de Renovate : pourquoi une majeure Go arrive en no-op sans gomodUpdateImportPaths, constraintsFiltering strict et pourquoi une règle sur la directive go ne bumpe rien."
+description: "Le manager gomod de Renovate : pourquoi une majeure Go arrive en no-op sans gomodUpdateImportPaths, pourquoi constraintsFiltering strict coupe toutes les mises à jour et pourquoi une règle sur la directive go ne bumpe rien."
 tags:
   - GitHub Actions
   - CI/CD
@@ -10,7 +10,7 @@ tags:
 
 # Renovate et les modules Go : majeures, contraintes et directive go
 
-Le manager `gomod` a 3 comportements qui ne ressemblent à aucun autre écosystème, et les 3 produisent une PR verte qui ne fait pas ce qu'on croit. Une majeure qui ne migre rien, une mise à jour qui casse la compatibilité avec sa propre directive `go` et une `packageRule` sur cette directive qui ne matche jamais. Le point commun : la CI passe, donc rien ne le signale.
+Le manager `gomod` a 3 comportements qui ne ressemblent à aucun autre écosystème, et les 3 produisent une PR verte qui ne fait pas ce qu'on croit. Une majeure qui ne migre rien, un filtre sur la directive `go` qui fait disparaître toutes les mises à jour et une `packageRule` sur cette directive qui ne matche jamais. Le point commun : la CI passe, donc rien ne le signale.
 
 ## Une majeure Go qui ne migre rien
 
@@ -105,27 +105,33 @@ Pour les majeures qui, elles, demandent du travail, Renovate recommande de ne pa
 
 La PR n'est plus ouverte qu'après avoir coché la case dans le dependency dashboard, ce qui évite d'avoir en permanence une majeure ouverte que personne ne peut merger.
 
-## N'accepter que ce qui compile avec sa directive go
+## constraintsFiltering strict : un filtre qui vide la liste
 
-La directive `go` du `go.mod` veut dire « compatible avec cette version ou une plus récente ». Une dépendance qui bumpe la sienne rend sa nouvelle version inutilisable tant qu'on n'a pas bumpé la nôtre, et Renovate la propose quand même par défaut. On s'en aperçoit au build, pas à la lecture de la PR.
+La directive `go` du `go.mod` veut dire « compatible avec cette version ou une plus récente ». Une dépendance qui monte la sienne au-dessus de la nôtre n'est plus utilisable tant qu'on n'a pas bumpé la nôtre, et Renovate la propose quand même par défaut. L'option qui a l'air faite pour ça est `constraintsFiltering: "strict"`, et elle ne fait pas ce que son nom laisse croire.
 
-`constraintsFiltering` ferme ça :
+Le manager convertit d'abord notre directive en plage semver, réduite à la mineure :
 
-```json title="renovate.json"
-{
-  "packageRules": [
-    {
-      "description": "Ne proposer que les versions compatibles avec la directive go du projet",
-      "matchManagers": ["gomod"],
-      "constraintsFiltering": "strict"
-    }
-  ]
-}
+```ts title="lib/modules/manager/gomod/extract.ts"
+const parts = goDirective.split('.');
+return {
+  version: `~${parts[0]}.${parts[1]}.x`,
+  versioning: 'semver-coerced',
+};
 ```
 
-Renovate filtre alors les releases sur la contrainte détectée et ne propose plus que ce qui compile en l'état. C'est `none` par défaut, donc aucun filtrage.
+En mode `strict`, le datasource lit ensuite la directive `go` du `go.mod` de chaque release et ne garde que celles qui tombent dans cette plage. Avec `go 1.27.1`, la plage vaut `~1.27.x`, donc une release qui demande `go 1.26.0` est rejetée alors qu'elle compile très bien en 1.27. Seules passent les releases qui déclarent notre mineure et celles qui n'ont pas de directive du tout, c'est-à-dire presque aucune. Sur kubectl-klens, le log debug d'un dry-run local (`renovate --platform=local --dry-run=lookup`) le montre :
 
-Une nuance qui compte sur l'app Mend, qui tourne en `binarySource=install` : elle choisit la dernière Go `1.x` compatible pour exécuter ses commandes, et lit `go 1.22` comme `^1.22` et pas comme `=1.22`. La contrainte est un plancher, jamais un pin.
+```text title="log debug, extrait"
+Filtered out 61 non-matching releases out of 61 total for golang.org/x/net
+Filtered out 47 non-matching releases out of 47 total for golang.org/x/term
+Filtered out 650 non-matching releases out of 652 total for k8s.io/api
+```
+
+Rien n'échoue, aucune issue n'est ouverte et le dependency dashboard liste simplement les modules sans mise à jour. Sur ce dépôt, `golang.org/x/net` est resté 5 semaines en v0.58.0 alors que 3 versions étaient sorties, jusqu'à ce que govulncheck remonte 5 advisories HTTP/2 corrigées en v0.60.0.
+
+Le défaut `none` est donc le bon. Une release qui exige une Go plus récente se voit dans la PR elle-même, parce que le `go.mod` du diff remonte notre directive `go`, et l'automerge n'agit que sur une CI verte. Le contrôle a lieu à la relecture de la PR, ce que le filtre promettait sans le tenir.
+
+L'app Mend, qui tourne en `binarySource=install`, lit la même directive autrement quand elle choisit la Go qui exécute ses commandes : elle prend la dernière `1.x` compatible et lit `go 1.22` comme `^1.22`, pas comme `=1.22`. Pour l'exécution, la directive est un plancher et jamais un pin.
 
 ## Directive go et toolchain : 2 comportements opposés
 
@@ -189,6 +195,7 @@ Aucune de ces 3 situations ne produit de CI rouge, donc le garde-fou ne peut pas
 |---|---|
 | `go mod why -m <module>/vN` sur une PR de majeure | La majeure ajoutée mais jamais importée |
 | Le diff touche-t-il des `.go` sur une majeure | Le même symptôme, en un coup d'œil |
+| Un module listé sans mise à jour dans le dependency dashboard alors qu'une version plus récente existe | Un filtre qui vide la liste des releases |
 | `git log -L` sur la directive `go` | Une `packageRule` qui ne matche rien depuis toujours |
 
 !!! tip "Aller plus loin"
