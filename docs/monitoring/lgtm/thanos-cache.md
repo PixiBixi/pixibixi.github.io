@@ -43,6 +43,8 @@ Et c'est là que ça rejoint le choix du spot. Une éviction ne coûte rien en c
 
 Un backend partagé règle les 2 problèmes d'un coup. Un seul cache chaud pour tous les replicas, qui survit aux évictions, et une seule enveloppe mémoire au lieu de 100.
 
+Quand les 2 replicas d'un shard sont déclarés au querier comme un seul endpoint `dns+` en groupe, chaque requête n'est servie que par l'un des deux et ne réchauffe que son cache, donc la requête suivante a une chance sur 2 de tomber sur le replica qui n'a jamais vu ces séries. Un cache partagé supprime ce demi-cache froid.
+
 !!! warning "Les 3 caches IN-MEMORY n'expirent pas de la même façon"
     Attention à ne pas généraliser, les 3 implémentations diffèrent. `validity` n'existe que
     dans le cache de résultats du query frontend, et ce n'est pas une éviction mais un
@@ -56,6 +58,12 @@ Un backend partagé règle les 2 problèmes d'un coup. Un seul cache chaud pour 
 Ce qui fait qu'une taille de cache IN-MEMORY ne mesure pas un working set, elle mesure **depuis combien de temps le pod tourne**. En basculant sur un backend Redis avec un vrai TTL, on a vu le cache tomber à un dixième du nombre d'entrées et le hit ratio **monter** de 76 à 91 %. Les 90 % d'entrées en trop étaient du poids mort : périmées, incapables de servir un hit et occupant la RAM quand même.
 
 Corollaire pratique : ne jamais dimensionner un cache partagé sur la taille observée du cache IN-MEMORY qu'il remplace. On surdimensionne d'un ordre de grandeur.
+
+## Un block neuf est froid partout
+
+Un cache partagé et persistant ne protège pas d'un cas, le block qui vient d'être compacté. Toutes les clés, index comme chunks, portent l'ULID du block et le compactor en crée un nouveau à chaque niveau de compaction. Le block de 48h qui remplace ses sources n'a donc aucune entrée nulle part, quel que soit le backend.
+
+La première requête longue qui le couvre lit ses chunks depuis le stockage objet. Sur la flotte, ça donne des `get_range` de 6 à 8s au p99, un `Series` autour de 16s au p99 et le hit ratio de l'index cache qui passe de 0,95 à 0,8, alors que la même requête rejouée quelques minutes plus tard répond en 1s environ. La première lecture se paye une fois par block et par cache, il n'y a rien à optimiser côté requête.
 
 ## Le caching bucket ne se partage pas entre tenants
 
@@ -97,7 +105,11 @@ Le premier est de lire ça sur un instantané. Un `increase` pris à un moment d
 
 Le second est le facteur de déduplication. Il est tentant de diviser par le nombre de pods, mais des store gateways shardées cachent des blocks **disjoints** : seuls les replicas d'un même shard cachent la même chose. Avec 3 shards et 2 replicas, on divise par 2, pas par 6. Se tromper là sous-dimensionne d'un facteur 3.
 
+Pour l'index cache, les métriques des pods encore en `IN-MEMORY` donnent un encadrement. La borne basse est la somme, shard par shard, du pic de `thanos_store_index_cache_items_size_bytes` du replica le plus chargé, puisque l'union des 2 replicas vaut au moins le plus gros des deux. La borne haute est la somme sur tous les pods. Un pod qui évicte déjà est au plafond de son `max_size` et sa mesure n'est qu'un plancher, alors qu'un pod sans éviction garde tout depuis son démarrage et tire vers le haut, pour la raison vue plus haut.
+
 Et le résultat reste une borne haute, parce qu'un cache qui évicte réadmet en boucle les mêmes clés et gonfle le compteur d'admissions. Le vrai working set se trouve en montant le plafond par paliers jusqu'à ce que le taux d'éviction s'effondre. Le plateau, c'est la réponse.
+
+Sur le caching bucket, les sous-plages de chunks sont écrites avec `chunk_subrange_ttl`, à 24h par défaut, et le champ `expiration` de la config du client Redis ne les gouverne pas : avec `expiration: 2h`, les clés échantillonnées sur le backend portaient bien un TTL de 24h. Le working set à viser est donc celui de 24h. Si le cache plafonne avant, c'est sa mémoire qui borne la rétention et pas le TTL, ce que dit le rapport entre `evicted_keys` et `expired_keys` : quand les évictions dominent, c'est `maxmemory` qu'il faut monter.
 
 Enfin le `limits.memory` du conteneur se dimensionne sur le **RSS**, avec une marge absolue et pas un ratio. Les métadonnées et la fragmentation de l'allocateur vivent bien en dehors du `maxmemory`, mais elles ne suivent pas la taille du cache : sur une instance dont le keyspace oscille, on mesure 1,4 Gio de rétention d'allocateur pour un keyspace qui plafonne à 236 Mio et qui ne sont jamais rendus à l'OS, quand la même instance à plein remplissage n'a que 50 Mio de surcoût sur 3,2 Gio. Un ratio sous-dimensionne donc les petits plafonds et gonfle les gros, là où `maxmemory` plus une marge fixe de l'ordre de 2 Gio tient dans les 2 cas. Et le backend ne pré-alloue pas sur son plafond, ce qui se vérifie en comparant 2 instances : celle dont le `maxmemory` est 8 fois plus grand peut avoir le RSS le plus petit.
 
@@ -135,6 +147,10 @@ enabled_items: []
 ttl: 24h
 ```
 
+Quand le caching bucket tourne déjà sur le même backend, l'index cache prend une db à part (`db: 1` à côté du `db: 0` du caching bucket), ce qui permet de le vider seul avec un `FLUSHDB` sans perdre les chunks. Si la config `IN-MEMORY` de départ vient d'un fichier de values Helm partagé, l'override par stack s'écrit en chaîne YAML (`indexCacheConfig: |`) et pas en map : Helm fusionne les maps en profondeur, donc les clés `IN-MEMORY` comme `max_size` fuiraient dans la config REDIS.
+
+Juste après la bascule, les logs sortent une rafale de plusieurs milliers de `failed to cache series in memcached err=the async buffer is full` en une seconde, puis plus rien. Le message garde le mot memcached même sur Redis, parce que le code est commun aux backends distants. La file d'écriture asynchrone déborde le temps que le cache vide se remplisse et les écritures en trop sont abandonnées sans toucher aux requêtes, donc `max_async_buffer_size` ne se règle que si ça dure.
+
 Le query frontend, lui, ne peut **pas** relire ce fichier : son parseur fait un
 `yaml.UnmarshalStrict` sur un `{type, config}` qui ne connaît ni `enabled_items` ni `ttl`,
 donc le composant refuse de démarrer. Son TTL s'appelle `expiration` et vit à l'intérieur
@@ -162,7 +178,10 @@ args:
     à Sentinel qui est le master courant au lieu de le supposer.
 
 Sur Sentinel 6.2 et plus, activer aussi `sentinel resolve-hostnames yes`, sinon les IP des
-replicas s'accumulent dans la liste des slaves.
+replicas s'accumulent dans la liste que Sentinel garde de ses replicas.
+
+!!! warning "Redis devient une dépendance de démarrage"
+    Le client Redis se connecte dès sa création : une store gateway dont le caching bucket ou l'index cache pointe sur un backend injoignable sort en erreur au boot et part en crashloop jusqu'au retour du cache. Redémarrer le cache pendant un rollout des store gateways suffit à le déclencher, d'où l'ordre de livraison : le redimensionnement du cache d'abord, le changement de config ensuite.
 
 Un mot sur `cache_size` : à une valeur non nulle, il active un cache côté client par-dessus le cache Redis. Utile quand les mêmes clés reviennent en boucle, ce qui est exactement le cas d'un dashboard rafraîchi toutes les 30 secondes.
 

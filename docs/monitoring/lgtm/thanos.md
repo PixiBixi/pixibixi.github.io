@@ -94,6 +94,8 @@ queryFrontend:
 
 Ce qui compte n'est pas dans les flags, c'est que la liste des stores à interroger est dérivée du même sélecteur de labels que le générateur des stacks, pas écrite en dur. Une liste statique dérive toujours. On finit avec une entrée qui pointe vers un Thanos mort ou un tenant que personne n'interroge.
 
+Encore faut-il que cette liste sorte toujours dans le même ordre. Le générateur `clusters` d'un ApplicationSet ArgoCD ne garantit pas l'ordre de ses éléments, donc la liste rendue dans `--endpoint.sd-config` se réordonne d'un rendu à l'autre, le hash du pod template change et le Deployment repart en rollout sans aucun changement réel, 11 fois en 3 jours chez nous. Un `sortAlpha` au moment du rendu suffit.
+
 `--query-frontend.log-queries-longer-than=10s` est à activer dès le premier jour. C'est ce qui permet de savoir quel dashboard fait souffrir la stack, plutôt que de le deviner.
 
 Mais attention à ce qu'on y lira. Le querier global attend **toutes** les stacks avant de répondre, donc la latence perçue est celle de la branche la plus lente. Une stack qui répond en 150 ms au p99 mais en 4 s dans sa queue suffit à produire des requêtes utilisateur à 25 s, dès lors que le fan-out en interroge une vingtaine : la probabilité de tomber sur au moins un traînard devient forte.
@@ -151,6 +153,8 @@ Il se vérifie dans l'info endpoint et pas dans la conf, le label doit apparaît
 `ProxyStore.LabelSet()` passe par `ExtendSortedLabels`, donc le flag **étend** les label
 sets remontés des stores en aval au lieu de les remplacer : tout ce qui filtrait déjà sur
 les autres labels continue de marcher.
+
+Pour compter les stores connectés, la même métrique a une série par endpoint, donc un `max()` vaut 1 quelle que soit la taille de la flotte. Il faut compter par pod de querier puis garder le pire, `min(count by (pod) (thanos_store_nodes_grpc_connections > 0))`.
 
 !!! warning "Une stack qui ingère 2 clusters ne peut pas être annotée"
     La seconde condition n'est pas théorique : 4 de nos stacks reçoivent 2 clusters chacun,
@@ -294,6 +298,8 @@ compactor:
 430 jours plutôt que 365, parce que comparer un pic saisonnier à celui de l'année d'avant demande un peu de marge et 2 mois de plus ne coûtent presque rien à cette résolution.
 
 Et c'est là que le downsampling devient intéressant : la longue traîne est quasi gratuite. Passer de 15 secondes à 1 heure, c'est 240 fois moins de points, mais chaque point downsamplé garde 5 agrégats (count, sum, min, max, counter), donc un facteur réel autour de 48 avant compression. Les 430 jours en résolution horaire pèsent une fraction des 45 jours en résolution native. Garder un an ne coûte pas 12 fois 2 mois.
+
+Avec `--query.auto-downsampling`, le querier prend comme résolution source maximale le pas divisé par 5, donc il faut un pas d'au moins 25 minutes pour lire le 5m et de 5h pour lire le 1h. Un dashboard de 24h à un pas de 240s lit le raw. Le downsampling n'aide que les timeranges assez longs pour que Grafana élargisse le pas.
 
 !!! warning "Ne jamais gérer les blocks avec une lifecycle policy du bucket"
     Le compactor est le seul composant qui connaît les dépendances entre un block raw et ses
@@ -453,6 +459,8 @@ Le blast radius se réduit aussi, puisqu'une requête de 6 mois ne tape que le s
     La doc Thanos recommande explicitement le chevauchement : le querier sait fusionner et
     ça évite un trou si un shard est indisponible. À l'inverse, des bornes jointives au
     millimètre garantissent une fenêtre aveugle dès qu'un replica manque.
+
+Un block dont la plage franchit une borne est chargé par les 2 shards, qui gardent chacun son index-header et le lisent chacun quand une requête couvre la zone, ce qui double la RAM et les lectures pour ce block.
 
 Le filtrage se fait au niveau du chunk et pas de l'échantillon, donc un shard peut renvoyer des points hors de sa plage annoncée. La découverte des blocks est aussi asynchrone, à l'intervalle de `--sync-block-duration` qui vaut 15 minutes par défaut, ce qui s'ajoute au délai d'upload.
 
