@@ -110,10 +110,11 @@ All content lives under `docs/`. Organized by technology domain:
 
 Sidebar navigation is **auto-generated** from the `docs/` directory structure (no `nav:` in `mkdocs.yml`).
 
-Two hand-maintained TOCs must both be updated when adding a file - neither is generated, and a stale link only surfaces as a `--strict` build failure:
+One hand-maintained TOC must be updated when adding a file - it is not generated, and a stale link only surfaces as a `--strict` build failure:
 
 - `docs/index.md` - global landing page
-- `docs/<section>/index.md` - per-section landing page (every content section has one)
+
+`docs/<section>/index.md` (every content section has one) only feeds its title, description and intro paragraph: `hooks/indexes.py` renders it with `category.html` and drops everything from its first `##` heading, so the article list is generated from the folder. A folder holding a single article (recursively) gets a redirect page to that article instead of a category page, and every link to the folder is rewritten to the article.
 
 Non-Markdown files under `docs/` are copied verbatim into the build:
 
@@ -179,7 +180,7 @@ Always run `mkdocs build --strict` before committing file renames or new article
 uv run mkdocs build --strict 2>&1 | grep -E "WARNING|ERROR"
 ```
 
-`docs/index.md` and the per-section `index.md` contain hardcoded links - renames break the build silently until CI catches it.
+`docs/index.md` contains hardcoded links - renames break the build silently until CI catches it.
 
 A green `--strict` build does not mean the page renders correctly (broken front matter, an
 oversized SVG). Preview locally before committing a new or rewritten article.
@@ -221,7 +222,7 @@ When rewriting an article:
 1. Read the existing file first
 2. Fetch external sources if needed (dotfiles repo, upstream docs)
 3. Write: practical examples, real-world use cases - commands copy-pasteable on the spot
-4. **Wire both indexes** if it's a new file - `docs/index.md` *and* `docs/<section>/index.md`, hardcoded links, always
+4. **Wire the landing page** if it's a new file - `docs/index.md`, hardcoded link, always (section pages list their articles on their own)
 5. Lint: `markdownlint-cli2 "path/to/file.md"`
 6. Preview: build to a temp dir and serve it statically (see "Preview: never `mkdocs serve`" below), then open the article
    - URL pattern: `http://127.0.0.1:8000/<path-without-docs-prefix-and-md>/`
