@@ -58,8 +58,7 @@ Tag icons are mapped in `extra.tag_icons` in `mkdocs.yml` (tag name to a Materia
 
 RSS feeds (`feed_rss_created.xml`, `feed_rss_updated.xml`) come from `mkdocs-rss-plugin`; index pages, `tags.md` and `about.md` are excluded by `match_path`.
 
-The sidebar is generated from the directory tree, but the landing pages are not - link the
-new file from `docs/index.md` **and** `docs/<section>/index.md`.
+The sidebar and the section pages are generated from the directory tree (a section `index.md` only provides the title, description and intro paragraph), but the home page is not - link the new file from `docs/index.md`.
 
 ## Lint & build
 
