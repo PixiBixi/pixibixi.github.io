@@ -15,20 +15,22 @@
     var sorts = root.querySelectorAll("[data-jd-sort]");
     var lists = root.querySelectorAll("[data-jd-list]");
     var empty = root.querySelector("[data-jd-empty]");
-    var state = { q: "", tag: "", sort: "az" };
+    var state = { q: "", tag: "", sort: "recent" };
+
+    function compare(a, b) {
+      if (state.sort === "recent") {
+        var d = (b.dataset.jdDate || "").localeCompare(a.dataset.jdDate || "");
+        if (d) return d;
+      }
+      return a.dataset.jdTitle.localeCompare(b.dataset.jdTitle, document.documentElement.lang || "fr", { sensitivity: "base" });
+    }
 
     function apply() {
       var q = fold(state.q).trim();
       var shown = 0;
       lists.forEach(function (list) {
         var items = Array.prototype.slice.call(list.children);
-        items.sort(function (a, b) {
-          if (state.sort === "recent") {
-            var d = (b.dataset.jdDate || "").localeCompare(a.dataset.jdDate || "");
-            if (d) return d;
-          }
-          return a.dataset.jdTitle.localeCompare(b.dataset.jdTitle, document.documentElement.lang || "fr", { sensitivity: "base" });
-        });
+        items.sort(compare);
         var visible = 0;
         items.forEach(function (el) {
           var tags = (el.dataset.jdTags || "").split("|");
@@ -44,6 +46,13 @@
         shown += visible;
       });
       if (empty) empty.hidden = shown !== 0;
+      var filtered = !!(q || state.tag);
+      root.classList.toggle("is-filtered", filtered);
+      // Merged grid: sort every card together, not group by group.
+      var cards = Array.prototype.slice.call(root.querySelectorAll(".jd-cat__card"));
+      cards.sort(compare).forEach(function (el, i) {
+        el.style.order = filtered ? i : "";
+      });
     }
 
     function press(nodes, current) {

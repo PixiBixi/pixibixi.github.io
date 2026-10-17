@@ -37,7 +37,7 @@
 <div class="jd-meta">
   <div class="jd-meta__info">
   {% if updated %}<span>{{ lang.t("jd.meta.updated") }} <time>{{ updated }}</time></span>{% endif %}
-  {% if created %}<span>{{ lang.t("jd.meta.created") }} <time>{{ created }}</time></span>{% endif %}
+  {% if created %}<span class="jd-meta__created">{{ lang.t("jd.meta.created") }} <time>{{ created }}</time></span>{% endif %}
   {% if page.meta.reading_time %}<span>{{ page.meta.reading_time }} {{ lang.t("jd.meta.reading") }}</span>{% endif %}
   {% include "partials/tags.html" %}
   </div>

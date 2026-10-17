@@ -23,6 +23,7 @@
     {%- endif %}
     {%- if cat.updated %} · {{ lang.t("jd.cat.updated_on") }} <time datetime="{{ cat.updated }}">{{ cat.updated }}</time>{% endif %}
   </p>
+  {% if cat.intro %}<div class="jd-cat__intro">{{ page.content }}</div>{% endif %}
 
   {% if cat.total > 1 %}
   <div class="jd-cat__toolbar">
@@ -40,8 +41,8 @@
     </div>
     {% endif %}
     <div class="jd-cat__sort" role="group" aria-label="{{ lang.t("jd.common.sort") }}">
-      <button type="button" aria-pressed="true" data-jd-sort="az">{{ lang.t("jd.sort.az") }}</button>
-      <button type="button" aria-pressed="false" data-jd-sort="recent">{{ lang.t("jd.cat.recent") }}</button>
+      <button type="button" aria-pressed="true" data-jd-sort="recent">{{ lang.t("jd.cat.recent") }}</button>
+      <button type="button" aria-pressed="false" data-jd-sort="az">{{ lang.t("jd.sort.az") }}</button>
     </div>
   </div>
   {% endif %}
@@ -61,6 +62,7 @@
   </ol>
   {% endif %}
 
+  <div class="jd-cat__groups">
   {% for s in cat.subfolders if s.articles %}
   <section class="jd-cat__sub" id="{{ s.id }}" data-jd-group>
     <h2 class="jd-cat__h2">
@@ -70,6 +72,7 @@
     <div class="jd-cat__grid" data-jd-list>
       {% for a in s.articles %}
       <div class="jd-cat__card" {{ tag_attrs(a) }}>
+        <p class="jd-cat__folder">{{ s.title }}</p>
         <a class="jd-cat__title" href="{{ a.url | url }}">{{ a.title }}</a>
         {% if a.desc %}<p class="jd-cat__desc">{{ a.desc }}</p>{% endif %}
         <p class="jd-cat__info"><span data-jd-fresh data-jd-created="{{ a.created }}" data-jd-updated="{{ a.date }}" hidden></span> {{ a.min }} {{ lang.t("jd.common.min") }}{% if a.date %} · <time datetime="{{ a.date }}">{{ a.date }}</time>{% endif %}</p>
@@ -78,6 +81,7 @@
     </div>
   </section>
   {% endfor %}
+  </div>
 
   <p class="jd-cat__empty" data-jd-empty hidden>{{ lang.t("jd.cat.empty") }}</p>
 

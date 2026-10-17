@@ -152,7 +152,7 @@
       {%- set ns = namespace(pos=2) %}
       {%- for section in page.ancestors | reverse %}
       {%- set idx = section.children | selectattr('is_index') | first %}
-      {%- if idx and idx.url != page.url %},
+      {%- if idx and idx.url != page.url and idx.url not in jd_single %},
       {
         "@type": "ListItem",
         "position": {{ ns.pos }},
