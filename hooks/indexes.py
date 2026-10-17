@@ -10,6 +10,8 @@ from __future__ import annotations
 import datetime
 import logging
 import os
+import posixpath
+from html import escape
 import re
 import subprocess
 import unicodedata
@@ -80,6 +82,11 @@ WORDS_PER_MINUTE = 220
 _folders: dict[str, dict] = {}
 _articles: dict[str, dict] = {}
 _virtual: set[str] = set()
+# Generated folder index URL -> URL of the only article below it. Recomputed
+# every build: a second article turns the folder back into a real category.
+_single: dict[str, str] = {}
+
+_HREF = re.compile(r'href="?([^"\s>]+)"?')
 
 
 def _folder_title(dirname: str) -> str:
@@ -193,6 +200,7 @@ def on_files(files: Files, config) -> Files:
     _folders.clear()
     _articles.clear()
     _virtual.clear()
+    _single.clear()
     dates = _git_dates(config["docs_dir"])
 
     pages = [f for f in files.documentation_pages() if f.src_uri.endswith(".md")]
@@ -238,12 +246,67 @@ def on_files(files: Files, config) -> Files:
             "template": "category.html",
             "hide": ["toc"],
         }
+        if total == 1:
+            front["search"] = {"exclude": True}
         content = "---\n" + yaml.safe_dump(front, allow_unicode=True, sort_keys=False) + "---\n\n" + _index_body(d, data["title"], files)
         vf = File.generated(config, src_uri, content=content)
         files.append(vf)
         data["index"] = vf
         _virtual.add(src_uri)
+        if total == 1:
+            _single[vf.url] = files.get_file_from_path(_recursive_articles(d)[0]).url
     return files
+
+
+def on_env(env, config, files: Files):
+    env.globals["jd_single"] = _single
+    return env
+
+
+def _resolve(href: str, base: str, site_url: str) -> tuple[str, str] | None:
+    """Site-relative URL a link points to, plus its #fragment; None for anything off-site."""
+    path, _, frag = href.partition("#")
+    if not path:
+        return None
+    if path.startswith(site_url):
+        path = "/" + path[len(site_url):]
+    elif re.match(r"^[a-z][a-z0-9+.-]*:", path) or path.startswith("//"):
+        return None
+    elif not path.startswith("/"):
+        path = posixpath.join("/" + base, path)
+    norm = posixpath.normpath(path)
+    if path.endswith("/") and norm != "/":
+        norm += "/"
+    return norm.lstrip("/"), frag
+
+
+def on_post_page(output: str, page: Page, config) -> str:
+    """Single-article folders: their page becomes a redirect, every link to them goes to the article."""
+    if not _single:
+        return output
+    site_url = config["site_url"] or ""
+    target = _single.get(page.url)
+    if target is not None:
+        abs_url = site_url + target
+        return (
+            '<!doctype html><html lang="fr"><head><meta charset="utf-8">'
+            f'<title>{escape(page.title or "")}</title><meta name="robots" content="noindex">'
+            f'<link rel="canonical" href="{abs_url}"><meta http-equiv="refresh" content="0; url={abs_url}">'
+            f'</head><body><a href="{abs_url}">{abs_url}</a></body></html>'
+        )
+    base = page.url if page.url.endswith("/") or not page.url else posixpath.dirname(page.url) + "/"
+
+    def swap(m: re.Match) -> str:
+        hit = _resolve(m.group(1), base, site_url)
+        if hit is None or hit[0] not in _single:
+            return m.group(0)
+        article = _single[hit[0]]
+        if article == page.url:
+            return "data-jd-self"
+        rel = posixpath.relpath("/" + article, "/" + base) + "/"
+        return f'href="{rel}"'
+
+    return _HREF.sub(swap, output)
 
 
 def _context(folder: str) -> dict:
@@ -258,9 +321,13 @@ def _context(folder: str) -> dict:
     def card(uri: str) -> dict:
         return dict(_articles[uri])
 
+    def recent_first(uris: list[str]) -> list[str]:
+        by_title = sorted(uris, key=lambda u: _sort_key(_articles[u]["title"]))
+        return sorted(by_title, key=lambda u: _articles[u]["date"] or "", reverse=True)
+
     subs = []
     for s in data["subdirs"]:
-        items = sorted(_recursive_articles(s), key=lambda u: _sort_key(_articles[u]["title"]))
+        items = recent_first(_recursive_articles(s))
         subs.append({
             "id": PurePosixPath(s).name,
             "title": _folders[s]["title"],
@@ -287,7 +354,7 @@ def _context(folder: str) -> dict:
         "crumbs": crumbs,
         "total": len(every),
         "updated": max((_articles[u]["date"] for u in every), default=""),
-        "articles": [card(u) for u in data["articles"]],
+        "articles": [card(u) for u in recent_first(data["articles"])],
         "subfolders": subs,
         "chips": [{"name": n, "n": c} for n, c in chips],
         "parent_title": _folders[parent]["title"] if parent else "",
@@ -302,6 +369,15 @@ def on_page_markdown(markdown: str, page: Page, config, files: Files) -> str:
         # Runs after the meta plugin (50) and before tags (-50): directory
         # tags would list every category page in the tags index.
         page.meta["tags"] = []
+    elif src.count("/") == 1 and src.endswith("/index.md"):
+        # Hand-written section index: keep its intro, the article list comes
+        # from the folder like a generated one (its "## Contenus" is dropped).
+        page.meta["jd_cat"] = dict(_context(_parent(src)), intro=True)
+        page.meta["template"] = "category.html"
+        page.meta["hide"] = ["toc"]
+        page.meta.setdefault("title", _folders[_parent(src)]["title"])
+        intro = markdown.split("\n## ", 1)[0]
+        return re.sub(r"^# .*$", "", intro, count=1, flags=re.M)
     return markdown
 
 
@@ -350,7 +426,9 @@ def on_nav(nav: Navigation, config, files: Files) -> Navigation:
                 collect(item.children)
 
     collect(nav.items)
-    for prev, cur, nxt in zip([None, *pages[:-1]], pages, [*pages[1:], None]):
-        cur.previous_page, cur.next_page = prev, nxt
     nav.pages = pages
+    # Single-article folder pages are redirects: keep them out of prev/next.
+    chain = [p for p in pages if p.url not in _single]
+    for prev, cur, nxt in zip([None, *chain[:-1]], chain, [*chain[1:], None]):
+        cur.previous_page, cur.next_page = prev, nxt
     return nav

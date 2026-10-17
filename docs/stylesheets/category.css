@@ -91,6 +91,19 @@
   font-size: 14px;
 }
 
+/* Section index intro (hand-written index.md, hooks/indexes.py) */
+
+.md-typeset .jd-cat__intro {
+  max-width: 68ch;
+  margin-top: 20px;
+  font-size: 17px;
+  color: var(--jd-ink-soft);
+}
+
+.md-typeset .jd-cat__intro > :last-child {
+  margin-bottom: 0;
+}
+
 /* Toolbar: filter, tag chips, sort */
 
 .jd-cat__toolbar {
@@ -307,6 +320,34 @@
 .jd-cat__card {
   padding: 14px 0;
   border-top: 1px solid var(--jd-border);
+}
+
+/* Filter active: groups merge into one grid, each card names its folder */
+.md-typeset .jd-cat__folder {
+  display: none;
+  margin: 0 0 4px;
+  font-size: 13px;
+  color: var(--jd-muted);
+}
+
+.jd-cat.is-filtered .jd-cat__groups {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr));
+  gap: 0 40px;
+  margin-top: 32px;
+}
+
+.jd-cat.is-filtered .jd-cat__sub,
+.jd-cat.is-filtered .jd-cat__grid {
+  display: contents;
+}
+
+.jd-cat.is-filtered .jd-cat__h2 {
+  display: none;
+}
+
+.md-typeset .jd-cat.is-filtered .jd-cat__folder {
+  display: block;
 }
 
 .md-typeset .jd-cat__card > .jd-cat__title {
