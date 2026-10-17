@@ -2215,14 +2215,37 @@ body {
 }
 
 @media screen and (max-width: 29.9375em) {
-  /* Flatten so the icons join the last meta row instead of owning one */
-  .jd-meta__info,
-  .md-typeset .jd-meta nav.md-tags {
+  /* Two rows: date + reading time, then one swipeable tag row sharing its line with the icons */
+  .jd-meta {
+    gap: 10px 8px;
+    font-size: 13px;
+  }
+
+  .jd-meta__info {
     display: contents;
   }
 
+  .jd-meta__created {
+    display: none;
+  }
+
+  .md-typeset .jd-meta nav.md-tags {
+    flex: 1 1 60%;
+    flex-wrap: nowrap;
+    order: 1;
+    min-width: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+    mask-image: linear-gradient(to right, #000 85%, transparent);
+  }
+
+  .jd-meta .md-tag {
+    flex: 0 0 auto;
+  }
+
   .jd-meta__actions {
-    margin-block: -10px;
+    order: 2;
+    margin-block: -6px;
   }
 }
 
