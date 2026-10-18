@@ -225,7 +225,9 @@ Le listing du bucket est un poste à part. Chaque replica de store gateway déco
 
 `--block-discovery-strategy` décide comment on liste. La stratégie `concurrent`, celle par défaut, lance un appel par répertoire et fait donc N+1 requêtes. La stratégie `recursive` itère sur tout le bucket : moins d'appels, mais une itération plus lente.
 
-`--sync-block-duration` décide à quelle fréquence, 15 minutes par défaut. L'allonger divise mécaniquement le nombre d'appels, au prix d'un block qui devient interrogeable plus tard. C'est un compromis moins cher qu'il n'y paraît, parce que la donnée fraîche est servie par Receive et que le shard le plus récent de la store gateway ne démarre qu'à 3 heures.
+`--sync-block-duration` décide à quelle fréquence, 15 minutes par défaut. Le caching bucket absorbe l'essentiel des appels d'un sync (hits mesurés : `exists` 97 %, `get` de meta 88 %, `iter` 51 %), et seul `iter` dépend de l'intervalle, le reste suit les TTL du caching bucket (5 minutes pour `iter`, 2h pour `exists`, 15 minutes pour les fichiers absents, par défaut). Passer de 5 à 15 minutes ne divise donc pas les appels par 3 : seuls les `iter` baissent, d'un facteur 1,5 à 1,9. Sur une flotte de store gateways, ça représente de l'ordre de 1 USD par mois sur 8 à 11 USD de coût d'opérations GCS (tarifs publics de mémoire, à prendre comme des ordres de grandeur).
+
+Côté fraîcheur, aucune donnée n'est ratée à 15 minutes : Receive garde 12h en local et les blocks sources d'une compaction restent servis 24h avant suppression. Revenir à 15 minutes est donc juste, mais ça ne vaut pas un rollout dédié, qui redémarre toutes les store gateways spot avec des caches froids et des index-headers à recharger : on le fait au prochain redémarrage prévu.
 
 Sur une centaine de pods qui listent chacun de leur côté, les 2 arbitrages valent d'être posés.
 

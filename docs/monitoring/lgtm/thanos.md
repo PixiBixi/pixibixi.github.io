@@ -96,7 +96,7 @@ Le parallélisme du query frontend global est à 14, comme sur les stacks régio
 
 Ce qui compte n'est pas dans les flags, c'est que la liste des stores à interroger est dérivée du même sélecteur de labels que le générateur des stacks, pas écrite en dur. Une liste statique dérive toujours. On finit avec une entrée qui pointe vers un Thanos mort ou un tenant que personne n'interroge.
 
-Encore faut-il que cette liste sorte toujours dans le même ordre. Le générateur `clusters` d'un ApplicationSet ArgoCD ne garantit pas l'ordre de ses éléments, donc la liste rendue dans `--endpoint.sd-config` se réordonne d'un rendu à l'autre, le hash du pod template change et le Deployment repart en rollout sans aucun changement réel, 11 fois en 3 jours chez nous. Un `sortAlpha` au moment du rendu suffit.
+Encore faut-il que cette liste sorte toujours dans le même ordre. Le générateur `clusters` d'un ApplicationSet ArgoCD ne garantit pas l'ordre de ses éléments, donc la liste rendue dans `--endpoint.sd-config` se réordonne d'un rendu à l'autre, le hash du pod template change et le Deployment repart en rollout sans aucun changement réel (11 fois en 3 jours sur une flotte observée). Il faut trier la liste au moment du rendu avec `sortAlpha`.
 
 `--query-frontend.log-queries-longer-than=10s` est à activer dès le premier jour. C'est ce qui permet de savoir quel dashboard fait souffrir la stack, plutôt que de le deviner.
 
@@ -232,7 +232,7 @@ nodeSelector:
 priorityClassName: thanos-receive-critical
 ```
 
-Le prix à payer se voit à la reprise. Une store gateway peut mettre jusqu'à **30 minutes** à redevenir prête après une éviction, le temps de retélécharger ses index-headers. Il faut caler les alertes dessus, sinon on se réveille la nuit pour rien.
+Le prix à payer se voit à la reprise. Une store gateway peut mettre jusqu'à **30 minutes** à redevenir prête après une éviction, le temps de retélécharger ses index-headers. Il faut caler les alertes dessus, sinon on se réveille la nuit pour rien. On recommande une alerte sur l'écart de replicas du StatefulSet, avec un `for` qui couvre la reprise :
 
 ```yaml
 - alert: ThanosStoreIsDown
@@ -401,7 +401,7 @@ Depuis la v0.24 le compactor expose 4 gauges faites pour ça, `thanos_compact_to
     `--wait-interval`, qui ne sert à rien sans `--wait` : en CronJob, chaque run fait une
     seule passe puis sort, donc le poser est inoffensif mais n'a aucun effet.
 
-On ne récupère pas ces gauges sans revenir au Deployment, donc sans rendre le disque à la facturation. Le compromis qu'on a retenu est de lire le backlog du côté des store gateways, qui tournent en continu et resynchronisent les métadonnées de blocks toutes les 5 minutes.
+On ne récupère pas ces gauges sans revenir au Deployment, donc sans rendre le disque à la facturation. Le compromis qu'on recommande est de lire le backlog du côté des store gateways, qui tournent en continu et resynchronisent les métadonnées de blocks à chaque `--sync-block-duration`.
 
 ```yaml
 # Le nombre de blocks du bucket ne redescend plus sur 24h
@@ -426,14 +426,14 @@ Or les 2 profils d'accès n'ont rien à voir :
 - les données récentes sont interrogées en permanence, sur un petit volume et doivent répondre vite
 - les données anciennes sont interrogées rarement, mais chaque requête scanne énormément et supporte d'être lente
 
-On a donc découpé la store gateway en 3 shards par timerange, avec 2 replicas chacun. Le plus récent démarre à 3 heures, parce qu'en dessous c'est Receive qui sert encore la donnée depuis sa TSDB.
+On recommande donc de découper la store gateway en 3 shards par timerange, avec 2 replicas chacun. Le plus récent couvre le dernier jour : un `--max-time` dans le futur (par exemple `3h`) veut dire pas de borne haute, donc il va de maintenant moins 1 jour jusqu'à maintenant et ne « démarre » pas à 3 heures. Les dernières heures sont aussi servies par Receive depuis sa TSDB.
 
 ![Sharding temporel de la store gateway Thanos avec min-time et max-time](./_img/thanos-sharding.svg)
 
 Les 2 flags sont négatifs et se lisent à l'envers de ce qu'on croit. `--min-time` est la borne la plus ancienne, donc le nombre le plus grand en valeur absolue. `--max-time` est la plus récente.
 
 ```yaml
-# shard 0 : de 3h à 1 jour, le chaud, sollicité en continu
+# shard 0 : le dernier jour, le chaud, sollicité en continu
 - --min-time=-26h
   --max-time=-3h
 
@@ -459,7 +459,7 @@ Le blast radius se réduit aussi, puisqu'une requête de 6 mois ne tape que le s
 
 Un block dont la plage franchit une borne est chargé par les 2 shards, qui gardent chacun son index-header et le lisent chacun quand une requête couvre la zone, ce qui double la RAM et les lectures pour ce block.
 
-Le filtrage se fait au niveau du chunk et pas de l'échantillon, donc un shard peut renvoyer des points hors de sa plage annoncée. La découverte des blocks est aussi asynchrone, à l'intervalle de `--sync-block-duration` qui vaut 15 minutes par défaut et 5 minutes chez nous, ce qui s'ajoute au délai d'upload.
+Le filtrage se fait au niveau du chunk et pas de l'échantillon, donc un shard peut renvoyer des points hors de sa plage annoncée. La découverte des blocks est aussi asynchrone, à l'intervalle de `--sync-block-duration` (15 minutes par défaut), ce qui s'ajoute au délai d'upload. Ce délai ne fait pas perdre de donnée : Receive garde 12h de TSDB en local et les blocks sources d'une compaction restent servis 24h avant d'être supprimés. Le flag ne pilote que les appels `iter` du bucket, le reste suit les TTL du caching bucket (voir [Les caches Thanos](thanos-cache.md#le-gain-cote-facture)).
 
 Ce découpage temporel n'est pas le seul possible. Quand c'est le bucket d'un seul tenant qui devient trop gros, le sharding par labels externes via `--selector.relabel-config` répond mieux et les 2 se combinent.
 
@@ -494,7 +494,7 @@ et le gain côté facture.
 
 Logger les requêtes lentes ne suffit pas, il faut pouvoir les arrêter. Avec RF=1 et des store gateways sur spot, un seul dashboard qui balaie plusieurs mois de raw peut saturer une store qui mettra ensuite ses 30 minutes à revenir.
 
-Côté lecture, les garde-fous sont sur la store gateway. Les 3 premières limites ci-dessous sont celles qu'on recommande, mais on ne les pose pas chez nous :
+Côté lecture, les garde-fous sont sur la store gateway. Les valeurs ci-dessous sont celles qu'on recommande :
 
 ```yaml
 extraFlags:
@@ -504,7 +504,7 @@ extraFlags:
   - --store.grpc.series-max-concurrency=50
 ```
 
-Les 2 premiers remplacent `--store.grpc.touched-series-limit` et `--store.grpc.series-sample-limit`, qui sont dépréciés. Les 3 limites valent 0 par défaut, c'est-à-dire aucune limite. `--store.grpc.series-max-concurrency` est l'exception, et chez nous c'est la seule qui est posée : la gate tourne à 50 alors que le défaut est de 20. On est monté à 100 un temps, et les store gateways se sont fait OOMKill, donc 50 est une borne mémoire (le pic de RSS suit le nombre de `Series` en vol) et pas un bouton de débit : le remonter ne rend rien plus rapide, ça ne fait que rapprocher l'OOMKill.
+Les 2 premiers remplacent `--store.grpc.touched-series-limit` et `--store.grpc.series-sample-limit`, qui sont dépréciés. Les 3 limites valent 0 par défaut, c'est-à-dire aucune limite. `--store.grpc.series-max-concurrency` est l'exception : on recommande 50 alors que le défaut est de 20. À 100, des store gateways se sont fait OOMKill, donc 50 est une borne mémoire (le pic de RSS suit le nombre de `Series` en vol) et pas un bouton de débit : le remonter ne rend rien plus rapide, ça ne fait que rapprocher l'OOMKill.
 
 Côté ingestion c'est plus intéressant financièrement, parce que Receive est on-demand donc le plus cher au vCPU et que rien ne le protège d'un tenant qui explose en cardinalité.
 
@@ -533,6 +533,8 @@ write:
     peu la limite et la fonctionnalité est marquée expérimentale.
 
 Les 2 familles de limites ne rendent pas le même code et la nuance décide de qui perd de la donnée. Les limites de requête (`series_limit`, `samples_limit`, `size_bytes_limit`) rendent un **413**, que Prometheus ne rejoue pas : ce qui est refusé est perdu, et une limite trop basse fait des trous dans les métriques du tenant. Le `head_series_limit`, lui, rend un **429** (`tenant is above active series limit`), que Prometheus rejoue selon son `retry_on_http_429`. Poser une limite de séries actives ralentit donc un tenant, poser une limite de requête l'ampute.
+
+Sur 14 jours de mesure, aucune explosion de cardinalité : la plus grosse stack oscille chaque jour de 0,86M à 3,7M de séries (pic à 4,6M) et son plus gros saut sur 1h est d'environ +1M. Une limite à pic × 1,5 ne se déclenche donc jamais, et la limite mémoire du pod tient environ 2 fois le pic. Avec un seul replica et sans HA sur Receive, un 429 bloque toutes les écritures du tenant tant qu'il reste au-dessus de la limite, alors qu'un OOM ne coûte qu'un restart et un replay du WAL. Le levier est donc la limite mémoire, dimensionnée sur le pic de séries. Le `head_series_limit` garde sa valeur dans un Receive partagé entre plusieurs tenants, ou avec de la réplication.
 
 ## GOMAXPROCS : le parallélisme qu'on n'a pas choisi
 

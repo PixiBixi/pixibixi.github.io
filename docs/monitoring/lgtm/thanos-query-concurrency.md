@@ -73,7 +73,7 @@ D'où 2 familles de leviers, une par terme. Pour borner λ, ce sont les multipli
 
 Le sens de `--query.max-concurrent-select` se lit à l'envers de ce qu'on croit : il ne multiplie rien, il borne. Le vrai multiplicateur est le nombre de sélecteurs de vecteur de la requête, et le flag ne fait que l'écrêter, `min(nb de sélecteurs, 4)`. Le compte par pod est donc `max-query-parallelism` fois ce minimum.
 
-L'invariant qu'on voudrait est que ce produit reste sous le plus petit des 2 plafonds. **Les valeurs par défaut ne le respectent pas** : 14 fois 4 fait 56 pour une gate à 20. Rien ne casse tant que le trafic est faible, parce que la gate met en file d'attente au lieu de refuser, mais ça veut dire qu'une requête à 4 sélecteurs suffit à demander presque 3 fois la place disponible. La marge n'existe pas, elle est empruntée au fait que personne ne requête en même temps.
+L'invariant qu'on voudrait est que ce produit reste sous le plus petit des 2 plafonds. **Les valeurs par défaut ne le respectent pas** : 14 fois 4 fait 56 pour une gate à 20. Rien ne casse tant que le trafic est faible, parce que la gate met en file d'attente au lieu de refuser, mais ça veut dire qu'une requête à 4 sélecteurs suffit à demander presque 3 fois la place disponible. La marge n'existe pas, elle est empruntée au fait que personne ne requête en même temps. La règle reste valable, mais elle ne mord que sur les requêtes larges : en pratique la plupart des requêtes portent bien moins de 4 sélecteurs (mesure plus bas).
 
 C'est en montant l'un des 2 termes qu'on rend la chose visible, et corriger un seul des 2 ne suffit pas : une flotte ramenée de 256 à 14 sur le découpage a vu son amplification de pointe tomber de 74 à 21 sans que la series gate décolle de son plafond, parce que le cap des selects était resté à 64. La tentation de monter le parallélisme est réelle, puisque ça rend effectivement plus rapide une requête large prise isolément.
 
@@ -86,7 +86,18 @@ Quand le parallélisme approche `--query.max-concurrent`, le problème change de
 !!! note "Les valeurs actuelles ont changé depuis ces mesures"
     Les 64 ci-dessus sont l'état au moment des mesures. La prod tourne aujourd'hui avec des queriers régionaux à 128 pour `--query.max-concurrent` comme pour `--query.max-concurrent-select`, le querier global à 64 et 64, et la gate de la store gateway à 50 (`--store.grpc.series-max-concurrency`). Avec un parallélisme de 14, 14 fois le nombre de sélecteurs (plafonné à 128) dépasse encore 50 dès 4 sélecteurs, donc la gate reste atteignable par une seule requête.
 
-<!-- TODO measurements -->
+### Ce que la flotte mesure vraiment
+
+Mesures sur 7 jours, côté store gateway et côté querier. La gate de la store gateway (cap 50) est au plafond 0,44 % des minutes, soit 44 minutes par semaine, surtout sur le shard le plus ancien des plus grosses stacks. L'attente à la gate y est de 102 ms en moyenne, 1,6 s au p99 et 26 s au p999 : la file existe, mais elle est étroite. La saturation vient de plusieurs requêtes concurrentes sur le shard d'historique, pas d'une seule requête large.
+
+Les requêtes portent en moyenne 1,5 sélecteur de vecteur (3 au maximum sur une moyenne à 5 minutes). Le vrai multiplicateur est donc 14 × 1,5 = 21, sous la gate à 50, alors que 14 × 4 = 56 n'est que le pire cas théorique. Abaisser `--query.max-concurrent-select` à 3 n'écrêterait presque rien avec 1,5 sélecteur : le levier est le shard d'historique (plus de replicas ou un découpage plus fin) et la concurrence entre requêtes, pas le cap des selects.
+
+!!! warning "Un pic de 468 pour un cap de 64 n'est pas une saturation"
+    `--query.max-concurrent-select` s'applique **par requête**, alors que la gauge `thanos_query_concurrent_selects_gate_selects_in_flight` additionne toutes les requêtes. Un pic de 468 pour un cap de 64 est donc normal (l'attente moyenne à cette gate est de l'ordre de la microseconde). Le signal de saturation côté querier est la gate PromQL, pas celle des selects.
+
+Autre piège : le querier global joint les queriers régionaux par la StoreAPI, qui ne passe pas par leurs gates PromQL. `--query.max-concurrent` sur un querier régional ne borne donc rien pour le trafic du global, et leurs caps à 128 n'ont jamais dépassé 1 requête en vol sur la semaine. Seule la gate PromQL du querier global (64) touche son plafond, quelques minutes par semaine.
+
+Pour compter le parc, `up` ne remontait aucune série pour ces cibles sur la datasource globale. À défaut, on compte depuis la métrique `_max` de la gate : `count(group by (pod) (thanos_bucket_store_series_gate_queries_max))`, en instantané et pas sous un `max_over_time`.
 
 !!! tip "Poser l'invariant dans le manifest, pas dans une tête"
     Les 4 flags vivent dans des blocs de config différents, souvent dans des fichiers différents. Rien ne signale qu'ils sont liés, donc un commentaire sur chaque multiplicateur qui nomme le plafond aval et dit pourquoi il doit rester en dessous est le seul garde-fou qui survit au prochain qui voudra accélérer une requête lente.
@@ -116,7 +127,7 @@ Le contraste est net : sur la même fenêtre et au même pas de 30 minutes, l'ex
 Le même biais frappe ailleurs : un `increase(<compteur>[2h])` lu en instantané n'est qu'un échantillon arbitraire et sous-estime lourdement tout ce qui est en burst. Pour un chiffre de dimensionnement, il faut un percentile de la fenêtre glissante sur plusieurs jours, avec un pas de sous-requête explicite.
 
 !!! warning "Un `max_over_time` sur 24h ramène aussi les pods qui n'existent plus"
-    La même enveloppe qui rend le créneau visible fait remonter toutes les séries de la fenêtre, y compris celles des ReplicaSets remplacés depuis. On croit compter 24 queriers dont 7 saturent, alors qu'il y en a 3 et qu'ils saturent tous les 3. Compter le parc avec `count(group by (pod) (up{...} == 1))` avant de raisonner sur des pods, jamais avec le `max_over_time` qui sert à lire les pics.
+    La même enveloppe qui rend le créneau visible fait remonter toutes les séries de la fenêtre, y compris celles des ReplicaSets remplacés depuis. On croit compter 24 queriers dont 7 saturent, alors qu'il y en a 3 et qu'ils saturent tous les 3. Compter le parc avec `count(group by (pod) (up{...} == 1))` avant de raisonner sur des pods, jamais avec le `max_over_time` qui sert à lire les pics. Si `up` ne remonte rien pour ces cibles, on compte depuis la métrique `_max` de la gate, toujours en instantané.
 
 ## La gate sature, elle ne bloque pas
 
