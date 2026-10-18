@@ -29,7 +29,7 @@ The full rule set (R1-R102, flags, defaults, metrics, anchors) is in `references
 
 **Querier.**
 
-- `--query.partial-response` without `--store.response-timeout` bounds nothing: the timeout defaults to `0ms` (disabled).
+- Partial response is on by default (`--query.partial-response` defaults to `true`): an absent flag is not a safe default. It drops stores that error, not slow ones: `--store.response-timeout` defaults to `0ms` (disabled), so one slow store fails the whole query at `--query.timeout` (default 2m) instead of being dropped.
 - Partial response on a querier used by the ruler or alerting can silently miss alerts, and partial responses are never cached. Enable it per request on human Grafana datasources only.
 - `--selector-label` must never be a template default: a stack ingesting 2 values of the label returns EMPTY for the second one (silent data loss). Opt in per stack, single-valued label that queries actually carry. Check every stack where it is set against what that stack really ingests.
 - `--grpc-compression` is deprecated after v0.43.0. Its replacement, `client_config.compression` per endpoint in `--endpoint.sd-config`, is ignored unless that endpoint also sets its own `tls_config` (e.g. `enabled: false`): the global flag still wins otherwise.
