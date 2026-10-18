@@ -1,4 +1,5 @@
 ---
+skill: reviewing-thanos-deployments
 description: "Pourquoi une gate de store gateway Thanos sature alors que le trafic entrant est plat : amplification du split et du fan-out, décomposition avec la loi de Little, ordonnancement des limites de concurrence et lecture au bon pas d'échantillonnage."
 tags:
   - Thanos

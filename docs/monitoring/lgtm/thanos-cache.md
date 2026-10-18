@@ -1,4 +1,5 @@
 ---
+skill: reviewing-thanos-deployments
 description: "Mutualiser les caches Thanos sur un backend partagé : index cache, caching bucket et cache de résultats, dimensionnement réel contre taille IN-MEMORY, Memcached ou Redis, et ce que ça change sur la facture."
 variables:
   - name: namespace

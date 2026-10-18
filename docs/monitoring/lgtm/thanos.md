@@ -1,4 +1,5 @@
 ---
+skill: reviewing-thanos-deployments
 description: "Scaler Thanos sur une vingtaine de clusters sans exploser la facture : Receive par tenant, compactor en CronJob, spot, downsampling et arithmétique Hyperdisk."
 tags:
   - Thanos
