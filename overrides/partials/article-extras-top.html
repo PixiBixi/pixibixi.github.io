@@ -13,6 +13,19 @@
   {% if updated %}<span class="jd-tested__date">{{ lang.t("jd.meta.tested_on") }} <time>{{ updated }}</time></span>{% endif %}
 </div>
 {% endif %}
+{#- Claude Code skill callout: front matter `skill:`, plugin coordinates in extra.skills -#}
+{% set sk = config.extra.skills %}
+{% if page.meta.skill and sk %}
+<aside class="jd-skill" aria-label="{{ lang.t('jd.skill.title') }}">
+  {% include ".icons/material/robot-outline.svg" %}
+  <div class="jd-skill__body">
+    <p class="jd-skill__title">{{ lang.t("jd.skill.title") }}</p>
+    <p>{{ lang.t("jd.skill.text") | replace("{name}", "<code>" ~ page.meta.skill ~ "</code>") }}</p>
+    <pre class="jd-skill__cmd"><code>/plugin install {{ sk.plugin }} --marketplace {{ sk.marketplace }}</code></pre>
+    <a class="jd-skill__link" href="{{ sk.source }}/{{ page.meta.skill }}">{{ lang.t("jd.skill.source") }}</a>
+  </div>
+</aside>
+{% endif %}
 {% set sb = page.meta.series_box %}
 {% if sb %}
 <aside class="jd-series" aria-label="{{ lang.t('jd.series.label') | replace('{name}', sb.name) }}">

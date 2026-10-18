@@ -223,3 +223,56 @@
 .md-typeset .jd-outdated p {
   margin: 0;
 }
+
+/* Claude Code skill callout: front matter `skill:` */
+.jd-skill {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin: 28px 0 0;
+  padding: 16px 20px;
+  border: 1px solid var(--jd-note-border);
+  border-radius: 10px;
+  background: var(--jd-surface);
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+.jd-skill > svg {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  margin-top: 2px;
+  fill: var(--jd-note-ink);
+}
+
+.jd-skill__body {
+  min-width: 0;
+}
+
+.md-typeset .jd-skill p {
+  margin: 0 0 8px;
+}
+
+.md-typeset .jd-skill__title {
+  font-weight: 700;
+  color: var(--jd-note-ink);
+}
+
+.md-typeset .jd-skill__cmd {
+  margin: 4px 0 10px;
+}
+
+.md-typeset .jd-skill__cmd code {
+  display: block;
+  padding: 8px 12px;
+  overflow-x: auto;
+  border-radius: 6px;
+  background: var(--jd-code-bg);
+  color: var(--jd-code-ink);
+  font-size: 13px;
+}
+
+.jd-skill__link {
+  font-size: 14px;
+}

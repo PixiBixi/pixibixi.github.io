@@ -275,6 +275,11 @@ extra:
     Windows: fontawesome/brands/windows
     Windows Server: fontawesome/brands/windows
     Zsh: simple/zsh
+  # Claude Code plugin shipping the skills, shown on articles with a `skill:` front matter key
+  skills:
+    plugin: wiki
+    marketplace: PixiBixi/claude-skills
+    source: https://github.com/PixiBixi/claude-skills/tree/main/plugins/wiki/skills
   generator: false
   analytics:
     provider: google

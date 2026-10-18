@@ -43,6 +43,7 @@ Optional front matter, all rendered by the theme:
 | `series` + `series_order` | `series: "Thanos at scale"`, `series_order: 2` | Series box with numbering and a "next" link, grouped by exact series name |
 | `tested_with` | `["Thanos 0.35+", "Redis Sentinel 6.2+"]` | "Testé avec" badge, `TechArticle.dependencies` in the JSON-LD |
 | `variables` | `[{name: namespace, default: monitoring}]` | Editable bar above the article; `<namespace>` in code blocks is substituted on display and on copy |
+| `skill` | `reviewing-thanos-deployments` | "Utiliser cet article avec Claude Code" callout with the install command; plugin coordinates in `extra.skills` (`mkdocs.yml`), skills live in the `wiki` plugin of [PixiBixi/claude-skills](https://github.com/PixiBixi/claude-skills) |
 
 Glossary tooltips (hover, tap on mobile) use the `abbr` extension. Definitions live in
 `includes/abbreviations.md`, appended to every page, so a term is defined once for the whole
