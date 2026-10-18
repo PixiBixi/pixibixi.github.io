@@ -83,6 +83,11 @@ Quand le parallélisme atteint le cap de la gate, **une seule requête suffit à
 
 Quand le parallélisme approche `--query.max-concurrent`, le problème change de nature et devient un problème d'isolation. Le calcul se fait sur le pool entier de queriers et pas sur un pod : 3 queriers à 64 donnent 192 places, qu'un parallélisme de 50 remplit avec 4 requêtes larges concurrentes. Mesuré au pas de 1 minute sur un burst, les 3 queriers étaient épinglés à 64 en même temps, somme exacte de 192, pendant que le débit entrant restait plat entre 6 et 13 requêtes par seconde et que les sous-requêtes montaient à 171 par seconde. Personne ne relie ça à un flag de découpage, on le vit comme « le Grafana est lent ».
 
+!!! note "Les valeurs actuelles ont changé depuis ces mesures"
+    Les 64 ci-dessus sont l'état au moment des mesures. La prod tourne aujourd'hui avec des queriers régionaux à 128 pour `--query.max-concurrent` comme pour `--query.max-concurrent-select`, le querier global à 64 et 64, et la gate de la store gateway à 50 (`--store.grpc.series-max-concurrency`). Avec un parallélisme de 14, 14 fois le nombre de sélecteurs (plafonné à 128) dépasse encore 50 dès 4 sélecteurs, donc la gate reste atteignable par une seule requête.
+
+<!-- TODO measurements -->
+
 !!! tip "Poser l'invariant dans le manifest, pas dans une tête"
     Les 4 flags vivent dans des blocs de config différents, souvent dans des fichiers différents. Rien ne signale qu'ils sont liés, donc un commentaire sur chaque multiplicateur qui nomme le plafond aval et dit pourquoi il doit rester en dessous est le seul garde-fou qui survit au prochain qui voudra accélérer une requête lente.
 

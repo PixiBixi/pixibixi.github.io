@@ -85,12 +85,14 @@ query:
 queryFrontend:
   extraFlags:
     - --query-range.split-interval=12h
-    - --labels.max-query-parallelism=256      # 50 en régional, 14 par défaut
-    - --query-range.max-query-parallelism=256
+    - --labels.max-query-parallelism=14
+    - --query-range.max-query-parallelism=14
     - --query-frontend.compress-responses
     - --cache-compression-type=snappy
     - --query-frontend.log-queries-longer-than=10s
 ```
+
+Le parallélisme du query frontend global est à 14, comme sur les stacks régionales. On l'avait monté à 256, mais à ce niveau une seule requête large sature la gate de la store gateway sur toutes les stacks à la fois (voir [la concurrence des queries](thanos-query-concurrency.md)).
 
 Ce qui compte n'est pas dans les flags, c'est que la liste des stores à interroger est dérivée du même sélecteur de labels que le générateur des stacks, pas écrite en dur. Une liste statique dérive toujours. On finit avec une entrée qui pointe vers un Thanos mort ou un tenant que personne n'interroge.
 
@@ -135,16 +137,14 @@ aucun matcher ne le contredira jamais et l'annonce ne sert à rien, et il ne doi
 seule valeur par stack, sinon la stack se retirera des requêtes qui cherchent ses autres
 valeurs. Les 2 ensemble ne laissent en général qu'un candidat.
 
-Chez nous c'est le label de cluster que les Prometheus posent en external label et sur
-lequel toutes les variables de dashboard sont câblées, `k8s_cluster_name` de son petit nom.
-Il n'a rien de standard, c'est une convention interne : ce qui compte est qu'il coche les 2
-cases, pas comment il s'appelle.
+Le bon label dépend donc de la manière dont les clients écrivent leurs requêtes et de comment les stacks sont découpées, il n'y a pas de nom universel. Chez nous, 2 labels cochent les 2 cases. Le premier est le label de cluster que les Prometheus posent en external label et sur lequel toutes les variables de dashboard sont câblées, `k8s_cluster_name`. Le second est `dc`, annoncé aussi par stack en opt-in, avec la même règle d'une seule valeur par stack. Ce sont des conventions internes, donc à lire comme des exemples : ce qui compte est qu'un label coche les 2 cases, pas comment il s'appelle.
 
-Le flag se pose ensuite sur le querier de chaque tenant :
+Le flag se pose ensuite sur le querier de chaque tenant, avec le label retenu :
 
 ```yaml
 extraFlags:
   - --selector-label=k8s_cluster_name="<le cluster de ce tenant>"
+  - --selector-label=dc="<le dc de ce tenant>"   # seulement si la stack n'a qu'un dc
 ```
 
 Il se vérifie dans l'info endpoint et pas dans la conf, le label doit apparaître dans les
@@ -357,7 +357,7 @@ failedJobsHistoryLimit: 1
 ttlSecondsAfterFinished: 600
 persistence:
   ephemeral: true
-  storageClass: hyperdisk-balanced
+  storageClass: hyperdisk-standard
 ```
 
 Le `concurrencyPolicy: Forbid` n'est pas cosmétique. **2 compactors simultanés sur le même bucket corrompent les blocks.** C'est une garantie que le Deployment assurait tout seul et qu'il faut réclamer explicitement en CronJob.
@@ -382,7 +382,7 @@ Il faut la neutraliser et la remplacer par des règles qui interrogent l'état d
 
 # Un job en échec
 - alert: ThanosCompactCronJobFailed
-  expr: kube_job_failed{job_name=~".*thanos-compact.*", condition="true"} > 0
+  expr: kube_job_status_failed{job_name=~"thanos-compactor.*"} > 0
   for: 5m
 ```
 
@@ -398,10 +398,10 @@ Depuis la v0.24 le compactor expose 4 gauges faites pour ça, `thanos_compact_to
     le dit noir sur blanc : *when `--wait` has been enabled*. Un compactor en CronJob
     tourne sans `--wait`, donc il n'enregistre jamais ces gauges. Une alerte posée dessus
     ne se déclenche pas, ce qui est pire qu'une alerte absente. Même piège avec
-    `--wait-interval`, qui ne sert à rien sans `--wait` : c'est pour ça qu'il ne figure
-    pas dans les `extraFlags` plus haut.
+    `--wait-interval`, qui ne sert à rien sans `--wait` : en CronJob, chaque run fait une
+    seule passe puis sort, donc le poser est inoffensif mais n'a aucun effet.
 
-On ne récupère pas ces gauges sans revenir au Deployment, donc sans rendre le disque à la facturation. Le compromis qu'on a retenu est de lire le backlog du côté des store gateways, qui tournent en continu et resynchronisent les métadonnées de blocks toutes les 15 minutes.
+On ne récupère pas ces gauges sans revenir au Deployment, donc sans rendre le disque à la facturation. Le compromis qu'on a retenu est de lire le backlog du côté des store gateways, qui tournent en continu et resynchronisent les métadonnées de blocks toutes les 5 minutes.
 
 ```yaml
 # Le nombre de blocks du bucket ne redescend plus sur 24h
@@ -411,14 +411,11 @@ On ne récupère pas ces gauges sans revenir au Deployment, donc sans rendre le 
       - min(thanos_blocks_meta_synced{state="loaded", job=~".*thanos-store.*"} offset 24h)
       > 0
   for: 24h
-
-# Des compactions échouent, tous groupes confondus
-- alert: ThanosCompactGroupFailures
-  expr: sum(increase(thanos_compact_group_compactions_failures_total[24h])) > 0
-  for: 5m
 ```
 
-C'est un proxy, pas le compte exact des compactions en attente : un bucket dont le nombre de blocks ne redescend jamais est un bucket que le compactor ne rattrape pas. `thanos_compact_group_compactions_failures_total` porte un label `resolution` et pas `group`, donc on ne peut pas isoler le groupe qui traîne, seulement la résolution.
+C'est un proxy, pas le compte exact des compactions en attente : un bucket dont le nombre de blocks ne redescend jamais est un bucket que le compactor ne rattrape pas.
+
+Les échecs de compaction ne se détectent pas avec `thanos_compact_group_compactions_failures_total`, et une règle `ThanosCompactGroupFailures` posée dessus ne se déclenche jamais en CronJob. Cette métrique est exportée par le compactor lui-même, qu'on ne scrape que pendant un run : il n'y a ni Service ni cible entre 2 passes, donc la série n'existe presque jamais côté Prometheus. Un run qui échoue sort en erreur (`--no-debug.halt-on-error`), et c'est le Job en échec que `ThanosCompactCronJobFailed` et `ThanosCompactCronJobStale` voient via `kube-state-metrics`.
 
 ## Un shard par timerange
 
@@ -462,7 +459,7 @@ Le blast radius se réduit aussi, puisqu'une requête de 6 mois ne tape que le s
 
 Un block dont la plage franchit une borne est chargé par les 2 shards, qui gardent chacun son index-header et le lisent chacun quand une requête couvre la zone, ce qui double la RAM et les lectures pour ce block.
 
-Le filtrage se fait au niveau du chunk et pas de l'échantillon, donc un shard peut renvoyer des points hors de sa plage annoncée. La découverte des blocks est aussi asynchrone, à l'intervalle de `--sync-block-duration` qui vaut 15 minutes par défaut, ce qui s'ajoute au délai d'upload.
+Le filtrage se fait au niveau du chunk et pas de l'échantillon, donc un shard peut renvoyer des points hors de sa plage annoncée. La découverte des blocks est aussi asynchrone, à l'intervalle de `--sync-block-duration` qui vaut 15 minutes par défaut et 5 minutes chez nous, ce qui s'ajoute au délai d'upload.
 
 Ce découpage temporel n'est pas le seul possible. Quand c'est le bucket d'un seul tenant qui devient trop gros, le sharding par labels externes via `--selector.relabel-config` répond mieux et les 2 se combinent.
 
@@ -474,7 +471,9 @@ D'où un PVC dédié pour la store gateway, dimensionné pour le débit et non p
 
 Sur Hyperdisk Balanced, la performance est découplée de la capacité, et c'est le piège quand on arrive du Persistent Disk. Les IOPS et le débit se provisionnent explicitement, les 3000 premières IOPS et 140 Mio/s sont offerts, **le reste est facturé**. La capacité ne fait que relever le plafond de ce qu'on a le droit de provisionner, `MIN(500 x Gio, 160000)`, ce qui impose au minimum 6 Gio pour avoir droit aux 3000 IOPS de base.
 
-Grossir le disque sans toucher au reste ne donne donc presque rien : sans `provisioned-iops-on-create`, le défaut suit `6x + 3000`, et passer de 6 à 20 Gio fait passer de 3036 à 3120 IOPS, soit 3 % de mieux. Le volume d'index-header est à 20 Gio pour débloquer le plafond, mais ce sont les IOPS provisionnées dans la StorageClass qui coûtent et qui font le travail.
+Grossir le disque sans toucher au reste ne donne donc presque rien : sans `provisioned-iops-on-create`, le défaut suit `6x + 3000`, et passer de 6 à 20 Gio fait passer de 3036 à 3120 IOPS, soit 3 % de mieux. Ce sont les IOPS provisionnées dans la StorageClass qui coûtent et qui font le travail, pas la capacité.
+
+Le volume est à 20 Gio par défaut, ce qui suffit à débloquer le plafond d'IOPS, et on le relève stack par stack là où les index-headers le demandent : 30 ou 40 Gio sur 2 stacks, 80 Gio sur la plus grosse. Le dimensionnement suit le volume d'index-headers du shard le plus chargé (celui des blocks de plus d'une semaine), qui grossit à chaque compaction, et une valeur unique s'applique à tous les shards d'une stack. Les `volumeClaimTemplates` d'un StatefulSet sont immutables et un Hyperdisk ne sait que grossir, donc on dimensionne toujours vers le haut et on ne revient jamais en arrière.
 
 !!! note "C'est un contournement, pas une optimisation"
     Tout ce calcul existe parce qu'on a choisi des instances économiques qui sont IO bound.
@@ -495,17 +494,17 @@ et le gain côté facture.
 
 Logger les requêtes lentes ne suffit pas, il faut pouvoir les arrêter. Avec RF=1 et des store gateways sur spot, un seul dashboard qui balaie plusieurs mois de raw peut saturer une store qui mettra ensuite ses 30 minutes à revenir.
 
-Côté lecture, les garde-fous sont sur la store gateway :
+Côté lecture, les garde-fous sont sur la store gateway. Les 3 premières limites ci-dessous sont celles qu'on recommande, mais on ne les pose pas chez nous :
 
 ```yaml
 extraFlags:
   - --store.limits.request-series=2000000
   - --store.limits.request-samples=100000000
   - --store.grpc.downloaded-bytes-limit=10GB
-  - --store.grpc.series-max-concurrency=20
+  - --store.grpc.series-max-concurrency=50
 ```
 
-Les 2 premiers remplacent `--store.grpc.touched-series-limit` et `--store.grpc.series-sample-limit`, qui sont dépréciés. Les 3 limites valent 0 par défaut, c'est-à-dire aucune limite. `--store.grpc.series-max-concurrency` est l'exception : il vaut déjà 20, donc la ligne ci-dessus ne change rien et sert surtout à rendre la valeur visible dans le manifest.
+Les 2 premiers remplacent `--store.grpc.touched-series-limit` et `--store.grpc.series-sample-limit`, qui sont dépréciés. Les 3 limites valent 0 par défaut, c'est-à-dire aucune limite. `--store.grpc.series-max-concurrency` est l'exception, et chez nous c'est la seule qui est posée : la gate tourne à 50 alors que le défaut est de 20. On est monté à 100 un temps, et les store gateways se sont fait OOMKill, donc 50 est une borne mémoire (le pic de RSS suit le nombre de `Series` en vol) et pas un bouton de débit : le remonter ne rend rien plus rapide, ça ne fait que rapprocher l'OOMKill.
 
 Côté ingestion c'est plus intéressant financièrement, parce que Receive est on-demand donc le plus cher au vCPU et que rien ne le protège d'un tenant qui explose en cardinalité.
 
@@ -631,17 +630,17 @@ chargement de 28 secondes le conteneur consommait 0,04 cœur et les disques tour
 moins de la moitié de leur temps d'occupation. C'est un gros fichier qu'on relit, rien de
 plus.
 
-Aucun flag ne règle ça. Monter le délai d'inactivité déplace le problème sans le supprimer,
-puisqu'un pod qui redémarre repart avec zéro header chargé et charger tout au démarrage
-revient à provisionner la RAM pour l'intégralité du corpus d'index-header.
+Tout ça, c'est le comportement avec le délai par défaut. Le flag `--store.index-header-lazy-reader-idle-timeout` (5 minutes) est caché : il n'apparaît pas dans `--help`, mais il existe bel et bien. Le monter à 10h, soit une journée de travail, garde les index-headers ouverts entre 2 chargements de dashboard : le premier de la matinée paie le rechargement, les suivants lisent un header déjà résident. Sur notre plus gros tenant, le temps de chargement a baissé de 84 %, soit environ 6 fois plus rapide.
 
-Le flag ne supprime donc pas le coût, il le déplace du démarrage vers la première requête.
-Tant que les évictions spot sont fréquentes et le disque lent, c'est le bon arbitrage :
-30 secondes sur un dashboard valent mieux qu'une store gateway absente une demi-heure. Il
-cesse de l'être le jour où la cardinalité rend le rechargement plus cher que le démarrage
-qu'il évite, et sur notre plus gros tenant ce jour est arrivé. C'est un choix contraint par
-le gabarit d'instance, pas un réglage de performance, et le vrai levier est une couche plus
-bas : des disques plus rapides ou moins de séries.
+```yaml
+extraFlags:
+  - --store.enable-index-header-lazy-reader
+  - --store.index-header-lazy-reader-idle-timeout=10h
+```
+
+Le prix est de la mémoire résidente : un header qu'on ne décharge plus occupe de la RAM jusqu'au bout du délai, donc la RAM de la store gateway doit suivre le corpus réellement lu dans la journée. Un pod qui redémarre repart toujours avec zéro header chargé, le délai n'y change rien, et charger tout au démarrage reviendrait à provisionner la RAM pour l'intégralité du corpus. Comme le flag est caché, rien ne garantit qu'il survive à une montée de version : on le revérifie à chaque upgrade.
+
+Le flag de lecture paresseuse ne supprime donc pas le coût du rechargement, il le déplace du démarrage vers la première requête, et le délai d'inactivité décide combien de fois on le paie. Tant que les évictions spot sont fréquentes et le disque lent, c'est le bon arbitrage : 30 secondes sur un dashboard valent mieux qu'une store gateway absente une demi-heure. Le vrai levier de fond reste une couche plus bas, des disques plus rapides ou moins de séries.
 
 ### Les métriques que personne n'affiche
 
@@ -668,13 +667,13 @@ plein tarif.
 
 ## Réplication : le choix assumé
 
-Thanos Receive sait faire du hashring et de la réplication. L'infrastructure est déployée, le `receive-controller` tourne, la ConfigMap de hashring existe, le flag est câblé.
+Thanos Receive sait faire du hashring et de la réplication. Le chart sait le déployer, en opt-in par stack, avec le `receive-controller` et la ConfigMap de hashring.
 
-Il n'est activé nulle part. **Le facteur de réplication réel est de 1.**
+Il n'est activé nulle part : ni le `receive-controller` ni le hashring ne sont déployés aujourd'hui, sur aucune stack. **Le facteur de réplication réel est de 1.**
 
 La résilience ne repose donc pas sur la duplication de l'ingestion, mais sur 2 autres choses : la rétention locale de la TSDB (12 heures de head) et l'upload continu vers l'object storage. Si un receive tombe, on perd la fenêtre non uploadée de ce tenant, pas l'historique.
 
-C'est un arbitrage coût contre disponibilité, pas un oubli. Un facteur de réplication supérieur à 1 multiplie la mémoire, puisque chaque replica maintient sa propre copie des séries en RAM et on parle du composant qui est justement en on-demand. Le flag reste prêt pour basculer un tenant précis si son SLA le justifie.
+C'est un arbitrage coût contre disponibilité, pas un oubli. Un facteur de réplication supérieur à 1 multiplie la mémoire, puisque chaque replica maintient sa propre copie des séries en RAM et on parle du composant qui est justement en on-demand. L'opt-in reste disponible pour basculer un tenant précis si son SLA le justifie.
 
 Le raisonnement se retourne d'ailleurs, parce qu'avec RF=2 et au moins 2 replicas une éviction devient survivable, donc receive pourrait descendre sur spot comme le reste et on récupérerait l'économie sur le composant le plus cher. Ce qu'on paierait à la place, c'est une archi nettement plus complexe, avec le hashring à maintenir, le receive-controller qui le recalcule à chaque changement de topologie et les rééquilibrages qui vont avec. On a préféré payer de l'on-demand plutôt que de la complexité.
 
