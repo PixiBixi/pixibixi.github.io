@@ -55,6 +55,7 @@ hooks:
   - hooks/page_vars.py
   - hooks/i18n.py
   - hooks/home.py
+  - hooks/bundle.py
 
 plugins:
   - social
