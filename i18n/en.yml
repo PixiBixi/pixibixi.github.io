@@ -14,6 +14,7 @@ jd.brand.sub: "SRE / infra"
 jd.header.search: "Search"
 jd.header.repo: "GitHub repository"
 jd.header.menu: "Menu"
+jd.code.line: "Line {n}"
 jd.kbd.cmdk: "Keyboard shortcut Command K"
 
 jd.theme.group: "Theme"
