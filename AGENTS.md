@@ -17,9 +17,11 @@ Config lives in `mkdocs.yml` (no `nav:` - sidebar is auto-generated). Active plu
 
 Theme overrides live in `overrides/` (`custom_dir`):
 
+- `main.html` (`fonts` block) - Google Fonts linked from the HTML with the latin woff2 preloaded (self-hosted by `privacy`); the preload URLs pin the font version, update them on a bump.
 - `main.html` (`extrahead` block) - Google Search Console meta tag, `og:locale`, and the Schema.org JSON-LD graph: `WebSite` + `Person` (anchored on `about/#author`) + `TechArticle` per page (`ProfilePage` on `about.md`, `image` = the social card) + a `BreadcrumbList` built from the nav sections that own an `index.md` (subfolders without one have no page, linking them gave 404 crumbs). A page's front matter `description` lands in the `TechArticle`, so a missing description degrades structured data silently.
 - `sitemap.xml` - custom template emitting `<lastmod>` from the git revision date.
 - `home.html`, `category.html`, `tags.html`, `404.html` and `partials/` - the redesigned theme (pinned to Material's HTML: Renovate never automerges `mkdocs-material`, review every bump visually).
+- `partials/integrations/analytics/google.html` - Material's GA partial, but `gtag.js` loads on the first interaction or 10 s after load. Re-check it on a `mkdocs-material` bump.
 - `i18n/<language>.yml` - every theme UI string, read through `lang.t("jd.*")` in templates and `window.jdI18n` in scripts. Add new UI text there, never hardcoded.
 
 Build hooks (`hooks:` in `mkdocs.yml`):
@@ -29,6 +31,8 @@ Build hooks (`hooks:` in `mkdocs.yml`):
 - `page_vars.py` - front matter `variables:` handed to `jd-vars.js`
 - `home.py` - recent articles and section counts for the home and tags pages
 - `i18n.py` - loads `overrides/i18n/`
+- `bundle.py` - concatenates, minifies and content-hashes `extra_css` and `extra_javascript` into `stylesheets/bundle.<hash>.css` and a deferred `javascripts/bundle.<hash>.js`. The lists in `mkdocs.yml` stay the source, in cascade order; a new stylesheet or script is added there as before. Template CSS stays in the bundle: `navigation.instant` keeps the `<head>`.
+- `a11y.py` - `aria-label` (`jd.code.line`) on the line-number links of code blocks
 
 `remote_branch: docs` in `mkdocs.yml` is why `gh-deploy` pushes to a `docs` branch rather than `gh-pages`.
 
