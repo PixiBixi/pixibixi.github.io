@@ -1,0 +1,39 @@
+{#- Material's google.html, but gtag.js (~166 KB) loads on the first interaction or 10 s after load;
+    dataLayer is set up at boot, so queued page views are sent then. No feedback widget (not configured).
+    Re-check against Material's partial on a mkdocs-material bump. -#}
+{% if config.extra.analytics %}
+  {% set property = config.extra.analytics.property | d("", true) %}
+{% endif %}
+<script id="__analytics">
+function __md_analytics() {
+  function gtag() { dataLayer.push(arguments); }
+  window.dataLayer = window.dataLayer || [];
+  gtag("js", new Date());
+  gtag("config", "{{ property }}");
+
+  document.addEventListener("DOMContentLoaded", function () {
+    if (document.forms.search) {
+      document.forms.search.query.addEventListener("blur", function () {
+        if (this.value) gtag("event", "search", { search_term: this.value });
+      });
+    }
+    location$.subscribe(function (url) {
+      gtag("config", "{{ property }}", { page_path: url.pathname });
+    });
+  });
+
+  var events = ["pointerdown", "keydown", "scroll", "touchstart"];
+  var loaded = false;
+  function load() {
+    if (loaded) return;
+    loaded = true;
+    events.forEach(function (name) { removeEventListener(name, load, { passive: true }); });
+    var script = document.createElement("script");
+    script.async = true;
+    script.src = "https://www.googletagmanager.com/gtag/js?id={{ property }}";
+    document.head.appendChild(script);
+  }
+  events.forEach(function (name) { addEventListener(name, load, { passive: true }); });
+  addEventListener("load", function () { setTimeout(load, 10000); });
+}
+</script>
