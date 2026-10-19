@@ -1,5 +1,13 @@
 {% extends "base.html" %}
 
+{#- Linked from the HTML, not @imported from jdelgado.css: the chain CSS -> CSS -> woff2 delayed the first text paint.
+    The privacy plugin self-hosts these URLs. The preloads are the latin subsets of css2: update them on a font version bump. -#}
+{% block fonts %}
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="https://fonts.gstatic.com/s/sourcesans3/v20/nwpStKy2OAdR1K-IwhWudF-R3w8aZQ.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="https://fonts.gstatic.com/s/sourceserif4/v15/vEFI2_tTDB4M7-auWDN0ahZJW1gb8tc.woff2">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Source+Sans+3:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+{% endblock %}
+
 {% block extrahead %}
   <meta name="google-site-verification" content="qZ1L3_oqDstaUZ-aoXa5IGd6A_ZzxunPo6tFJYPv984" />
   <meta property="og:locale" content="fr_FR" />
