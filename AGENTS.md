@@ -277,6 +277,10 @@ When writing or rewriting an article, apply these whenever the condition holds (
 
 - **SVG diagrams**: store in `docs/<section>/_img/<name>.svg` - run `mkdir -p` first as the dir may not exist. Reference with `![](./_img/name.svg)` - Glightbox applies automatically.
 
+- **Font preload URLs**: Google serves a different woff2 URL per user agent, so a URL fetched with `curl` does not match what the `privacy` plugin downloads. Read the preload URLs from the built `site/assets/external/fonts.googleapis.com/css2.*.css` (latin block), then write them as `https://fonts.gstatic.com/s/...` in `overrides/main.html`.
+
+- **Hooks and i18n**: `on_page_content` runs before `on_env`, so `jd_t` does not exist yet in a page content hook. Read `overrides/i18n/<language>.yml` in `on_config` instead (see `hooks/a11y.py`).
+
 - **Shallow clones**: `mkdocs serve` requires full git history due to `git-revision-date-localized`.
   Shallow clones (`--depth 1`) will cause errors. Use `git fetch --unshallow` if needed.
   Its `WARNING:root:` lines are non-blocking, even under `--strict`.
