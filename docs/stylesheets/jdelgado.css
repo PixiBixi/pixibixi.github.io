@@ -216,6 +216,16 @@ body {
   background: var(--jd-pill-bg);
 }
 
+/* Accessible name for icon-only controls: aria-label is not allowed on <label> */
+.jd-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
 /* ==========================================================================
    Header (desktop)
    ========================================================================== */
@@ -1655,8 +1665,11 @@ body {
   text-underline-offset: 3px;
 }
 
+/* Underlined: colour alone is 1.22:1 against the footer text, a link in prose needs 3:1 or a non-colour cue */
 .jd-footer__inner > span a {
   color: var(--jd-link);
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 /* ==========================================================================

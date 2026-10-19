@@ -22,10 +22,14 @@
     {% if "material/search" in config.plugins %}
       {% set search = config.plugins["material/search"] | attr("config") %}
       {% if search.enabled %}
-        <label class="md-header__button md-icon jd-search-toggle" for="__search" aria-label="{{ lang.t("jd.header.search") }}">
+        <label class="md-header__button md-icon jd-search-toggle" for="__search">
           {% include ".icons/material/magnify.svg" %}
+          <span class="jd-sr">{{ lang.t("jd.header.search") }}</span>
         </label>
-        {% include "partials/search.html" %}
+        {#- Material's dialog has no accessible name: patched here so the partial stays upstream's -#}
+        {% filter replace('role="dialog">', 'role="dialog" aria-label="' ~ lang.t("jd.header.search") ~ '">') %}
+          {% include "partials/search.html" %}
+        {% endfilter %}
       {% endif %}
     {% endif %}
     {% if config.repo_url %}
@@ -33,8 +37,9 @@
         {% include ".icons/fontawesome/brands/github.svg" %}
       </a>
     {% endif %}
-    <label class="md-header__button md-icon jd-burger" for="__drawer" aria-label="{{ lang.t("jd.header.menu") }}">
+    <label class="md-header__button md-icon jd-burger" for="__drawer">
       {% include ".icons/material/menu.svg" %}
+      <span class="jd-sr">{{ lang.t("jd.header.menu") }}</span>
     </label>
   </nav>
 </header>
