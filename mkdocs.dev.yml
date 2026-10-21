@@ -1,0 +1,16 @@
+# Local preview only: same theme and hooks, without the plugins that only matter in
+# production (social cards, git dates, feeds, privacy downloads, redirects).
+# search stays: hooks/article_meta.py writes into its output directory.
+INHERIT: mkdocs.yml
+
+# Glossary and theme overrides live outside docs/, so serve would not rebuild on them
+watch:
+  - includes
+  - overrides
+
+plugins:
+  - meta
+  - glightbox
+  - search:
+      lang: fr
+  - tags

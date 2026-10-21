@@ -43,8 +43,8 @@ Build hooks (`hooks:` in `mkdocs.yml`):
 uv sync
 pre-commit install   # install git hook for markdown linting
 
-# Live preview (hot reload at http://127.0.0.1:8000)
-uv run mkdocs serve
+# Live preview (hot reload at http://127.0.0.1:8000, ~6s rebuild)
+DISABLE_MKDOCS_2_WARNING=true uv run mkdocs serve -f mkdocs.dev.yml --livereload
 
 # Static build (validates without serving)
 uv run mkdocs build --strict
@@ -229,7 +229,7 @@ When rewriting an article:
 3. Write: practical examples, real-world use cases - commands copy-pasteable on the spot
 4. **Wire the landing page** if it's a new file - `docs/index.md`, hardcoded link, always (section pages list their articles on their own)
 5. Lint: `markdownlint-cli2 "path/to/file.md"`
-6. Preview: build to a temp dir and serve it statically (see "Preview: never `mkdocs serve`" below), then open the article
+6. Preview: serve with `mkdocs.dev.yml` (see "Preview" below), then open the article
    - URL pattern: `http://127.0.0.1:8000/<path-without-docs-prefix-and-md>/`
    - Example: `docs/linux/cli/sed.md` → `open http://127.0.0.1:8000/linux/cli/sed/`
 7. Commit + push - CI validates automatically
@@ -281,11 +281,18 @@ When writing or rewriting an article, apply these whenever the condition holds (
 
 - **Hooks and i18n**: `on_page_content` runs before `on_env`, so `jd_t` does not exist yet in a page content hook. Read `overrides/i18n/<language>.yml` in `on_config` instead (see `hooks/a11y.py`).
 
-- **Shallow clones**: `mkdocs serve` requires full git history due to `git-revision-date-localized`.
+- **Shallow clones**: the full `mkdocs build` requires full git history due to `git-revision-date-localized`.
   Shallow clones (`--depth 1`) will cause errors. Use `git fetch --unshallow` if needed.
   Its `WARNING:root:` lines are non-blocking, even under `--strict`.
 
-- **Preview: never `mkdocs serve`** (agents). Its first build takes ~9 min locally against ~1 min for `mkdocs build`, hooks are not reloaded, and after a plugin install it fails its rebuild and keeps serving nothing. Build, serve the output, rebuild after each change:
+- **Preview: `mkdocs serve` only with `mkdocs.dev.yml`**. With the full config the first build hangs for minutes (`social`, `privacy`, `git-revision-date-localized`); the dev config drops the production-only plugins and rebuilds in ~6s. `search` must stay in it: `hooks/article_meta.py` writes into its output dir. Hooks are not reloaded: restart the server after editing `hooks/`.
+
+  ```bash
+  # background; stop it with: pkill -f "mkdocs serve"
+  DISABLE_MKDOCS_2_WARNING=true uv run mkdocs serve -f mkdocs.dev.yml --livereload
+  ```
+
+  Social cards, git dates, feeds and redirects only exist in the full build. Check them, and run `--strict`, before committing:
 
   ```bash
   SITE="$TMPDIR/wiki-site"
