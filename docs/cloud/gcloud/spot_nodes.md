@@ -8,7 +8,7 @@ tags:
 
 # Spot sur GKE : node pools, scheduling et workloads éligibles
 
-Les Spot VMs sont des instances que GCP peut évincer à tout moment avec 30 secondes de préavis. En échange, la [doc Compute Engine](https://cloud.google.com/compute/docs/instances/spot#pricing) annonce une remise allant jusqu'à 91 % du prix on-demand, qui varie selon le type de machine et la région (voir la [grille tarifaire](https://cloud.google.com/spot-vms/pricing)).
+Les Spot VMs sont des instances que GCP peut évicter à tout moment avec 30 secondes de préavis. En échange, la [doc Compute Engine](https://cloud.google.com/compute/docs/instances/spot#pricing) annonce une remise allant jusqu'à 91 % du prix on-demand, qui varie selon le type de machine et la région (voir la [grille tarifaire](https://cloud.google.com/spot-vms/pricing)).
 
 La fréquence des évictions varie selon le type de machine et la zone. Un workload stateless et répliqué les absorbe en général sans impact visible.
 
@@ -96,7 +96,7 @@ Les 30 secondes de préavis ne vont pas toutes à l'application. GKE donne 15 se
 
 ## Ce que le PDB couvre sur Spot
 
-Un PDB ne retient pas GCP quand il évince un node Spot, car cette éviction est involontaire et ne passe pas par l'API Eviction. La doc GKE prévient qu'on peut subir plus d'indisponibilité que ce que le PDB autorise. Le PDB couvre en revanche le drain manuel, l'autoscaler et l'upgrade de pool. Le détail est dans [PDB et topology spread](../../kubernetes/deployment/pdb_topology_spread.md).
+Un PDB ne retient pas GCP quand il évicte un node Spot, car cette éviction est involontaire et ne passe pas par l'API Eviction. La doc GKE prévient qu'on peut subir plus d'indisponibilité que ce que le PDB autorise. Le PDB couvre en revanche le drain manuel, l'autoscaler et l'upgrade de pool. Le détail est dans [PDB et topology spread](../../kubernetes/deployment/pdb_topology_spread.md).
 
 ```yaml
 apiVersion: policy/v1
