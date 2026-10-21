@@ -581,16 +581,11 @@ optimisation. Autant le savoir avant d'ouvrir le ticket.
 
 ## Nos tests et nos échecs
 
-Le PVC de la store gateway réglait le problème de disque saturé, mais pas la lenteur du téléchargement lui-même. L'étape suivante paraissait donc évidente : activer la stratégie de téléchargement paresseux, pour ne charger que ce dont on a besoin. Moins de disque, moins de trafic, un démarrage plus rapide.
+Le PVC de la store gateway réglait le problème de disque saturé, mais pas la lenteur du téléchargement lui-même. L'étape suivante paraissait donc évidente : activer la stratégie de lazy download, pour ne charger que ce dont on a besoin. Moins de disque, moins de trafic, un démarrage plus rapide.
 
 On l'a **retirée**. Sur des dashboards historiques larges, ceux qui balaient plusieurs mois d'un coup, le p99 est monté jusqu'à environ **224 secondes**. L'économie de disque ne valait pas des dashboards inutilisables.
 
-Ce qui reste activé, c'est uniquement la lecture paresseuse en mémoire :
-
-```yaml
-extraFlags:
-  - --store.enable-index-header-lazy-reader
-```
+On avait gardé le lazy load des index-headers en mémoire, avant de le retirer lui aussi une fois les disques changés (voir la section « Lazy load » plus bas).
 
 Toutes les optimisations de coût ne passent pas. Celle-là s'est payée en latence et on est revenus en arrière.
 
@@ -603,13 +598,11 @@ Toutes les optimisations de coût ne passent pas. Celle-là s'est payée en late
 
 Dès qu'une pathologie touche nettement moins de 1 % des requêtes, mesurer au p999 ou au p9999, ou ne pas mesurer du tout. On a tiré 2 conclusions fausses avant de s'en apercevoir.
 
-## Lecture paresseuse : le prix du rechargement
+## Lazy load : le prix du rechargement
 
-Ce flag n'est pas une optimisation qu'on serait allés chercher, c'est la contrepartie du
-spot. Une store gateway évictée doit récupérer ses index-headers avant de pouvoir répondre,
-et sur des instances économiques qui sont IO bound ça se compte en dizaines de minutes, les
-mêmes que celles de la reprise après éviction plus haut. La lecture paresseuse évite de charger
-tous les index-headers en mémoire au démarrage, donc on la garde. Le téléchargement, lui, reste eager. Ce qu'on n'avait jamais fait, c'est mesurer ce qu'elle déplace.
+Le flag `--store.enable-index-header-lazy-reader` ne charge l'index-header d'un block qu'à la première requête qui le touche, et le décharge après un délai d'inactivité. Il promet 2 choses : une store gateway qui démarre sans attendre d'avoir lu tous ses headers, et une mémoire qui ne porte que les blocks réellement interrogés.
+
+On l'avait activé pour la première, comme contrepartie du spot. Une store gateway évictée doit relire ses index-headers avant de pouvoir répondre. Sur des instances économiques qui sont IO bound, ça se compte en dizaines de minutes, les mêmes que celles de la reprise après éviction plus haut. Le téléchargement, lui, reste eager. Ce qu'on n'avait jamais fait, c'est mesurer ce que le lazy load déplace.
 
 Le flag décharge un index-header après un délai d'inactivité qui vaut 5 minutes par défaut.
 Sur une plateforme où les dashboards ne sont ouverts que par intermittence, les headers ne
@@ -633,6 +626,8 @@ chargement de 28 secondes le conteneur consommait 0,04 cœur et les disques tour
 moins de la moitié de leur temps d'occupation. C'est un gros fichier qu'on relit, rien de
 plus.
 
+### Allonger le délai d'inactivité
+
 Tout ça, c'est le comportement avec le délai par défaut. Le flag `--store.index-header-lazy-reader-idle-timeout` (5 minutes) est caché : il n'apparaît pas dans `--help`, mais il existe bel et bien. Le monter à 10h, soit une journée de travail, garde les index-headers ouverts entre 2 chargements de dashboard : le premier de la matinée paie le rechargement, les suivants lisent un header déjà résident. Sur notre plus gros tenant, le temps de chargement a baissé de 84 %, soit environ 6 fois plus rapide.
 
 ```yaml
@@ -641,9 +636,17 @@ extraFlags:
   - --store.index-header-lazy-reader-idle-timeout=10h
 ```
 
-Le prix est de la mémoire résidente : un header qu'on ne décharge plus occupe de la RAM jusqu'au bout du délai, donc la RAM de la store gateway doit suivre le corpus réellement lu dans la journée. Un pod qui redémarre repart toujours avec zéro header chargé, le délai n'y change rien, et charger tout au démarrage reviendrait à provisionner la RAM pour l'intégralité du corpus. Comme le flag est caché, rien ne garantit qu'il survive à une montée de version : on le revérifie à chaque upgrade.
+Ça n'a réglé qu'une partie du problème. Une nuit dure plus de 10h, donc le premier dashboard du matin rechargeait encore tout. La résidence plafonnait d'ailleurs autour de 50 % sur la flotte : la moitié des blocks restait plus de 10h sans être lue.
 
-Le flag de lecture paresseuse ne supprime donc pas le coût du rechargement, il le déplace du démarrage vers la première requête, et le délai d'inactivité décide combien de fois on le paie. Tant que les évictions spot sont fréquentes et le disque lent, c'est le bon arbitrage : 30 secondes sur un dashboard valent mieux qu'une store gateway absente une demi-heure. Le vrai levier de fond reste une couche plus bas, des disques plus rapides ou moins de séries.
+### Tout charger au démarrage
+
+L'étape suivante a été de couper le lazy load sur une stack de test. Sur le shard qui porte les blocks les plus vieux, la part des requêtes au-delà de 9 secondes est passée de 1 à 4,5 % selon les jours à 0. Le pic quotidien de heap, lui, est resté à 3,4 Gio là où il montait jusqu'à 20 Gio auparavant. La seconde promesse du flag ne pesait donc presque rien : un header chargé est surtout un fichier mappé en mémoire, du page cache que le noyau sait reprendre, pas du heap qu'il faudrait provisionner pour tout le corpus.
+
+Le prix se paie au démarrage, puisque la store gateway ne passe Ready qu'après avoir lu tous ses headers. Sur la stack de test, le shard des blocks les plus vieux porte 24 index-headers pour 39 Gio et met 3 min 30 à 4 min à démarrer, soit 160 à 190 Mio/s, à peu près le débit du disque. Les 2 autres shards, avec 1,5 Gio et 0,2 Gio, démarrent tous les 2 en une trentaine de secondes : à cette taille, on ne mesure plus que le démarrage du process. Ce chiffre ne tient que parce que les headers sont sur un PVC Hyperdisk provisionné à 3000 IOPS et 200 Mio/s (voir « Payer de la capacité disque pour acheter du débit » plus haut), et le temps de boot suit ce débit : doubler le volume de headers double l'attente. Sur le disque de boot d'une instance IO bound, le même chargement se comptait en dizaines de minutes. Sans disque à IOPS provisionnées, il vaut donc toujours mieux garder le lazy load : 30 secondes sur un dashboard valent mieux qu'une store gateway absente une demi-heure.
+
+Le chart bitnami rend une seule liste `extraFlags` pour tous les shards d'une stack, donc impossible de couper le flag sur le seul shard qui souffre : le test a basculé les 3 shards de la stack. La généralisation redémarre de même toutes les store gateways de la flotte. Les stacks archivées, qu'on n'interroge presque plus, gardent le lazy load.
+
+Le flag ne supprime pas le coût du chargement, il le déplace du démarrage vers la première requête, où le délai d'inactivité décide combien de fois on le paie. Avec des disques rapides, le payer une fois par redémarrage coûte moins cher que de le payer chaque matin.
 
 ### Les métriques que personne n'affiche
 
