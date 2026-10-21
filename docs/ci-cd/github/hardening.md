@@ -234,7 +234,7 @@ Reste un trou que la CI verte ne bouche pas : automerger une version publiée il
 }
 ```
 
-5 jours couvre à peu près la fenêtre pendant laquelle une release compromise se fait repérer. Le prix apparent, c'est un retard de 5 jours sur les patchs de sécurité, sauf que Renovate neutralise le cooldown dans sa config `vulnerabilityAlerts` (`minimumReleaseAge: null` par défaut) : les updates qui répondent à une CVE connue passent tout de suite, à condition que les alertes Dependabot soient actives sur le repo : c'est la seule source de CVE que Renovate interroge sur GitHub.
+5 jours couvre à peu près la fenêtre pendant laquelle une release compromise se fait repérer. Le prix apparent, c'est un retard de 5 jours sur les patchs de sécurité, sauf que Renovate neutralise le cooldown dans sa config `vulnerabilityAlerts` (`minimumReleaseAge: null` par défaut) : les updates qui répondent à une CVE connue passent tout de suite. Encore faut-il que Renovate connaisse la CVE. Par défaut, sa seule source sur GitHub est les alertes Dependabot du repo, qu'il doit avoir le droit de lire. On ajoute `"osvVulnerabilityAlerts": true` pour qu'il interroge aussi la base [OSV](https://osv.dev/) lui-même, avec le même bypass du cooldown. OSV ne couvre que les dépendances directes : une CVE sur une dépendance transitive du lockfile reste l'affaire de Dependabot.
 
 `digest` est le type qu'on oublie et c'est le plus intéressant des 4. Un update `digest` seul veut dire que la version n'a pas bougé mais que le SHA derrière le tag, si, donc que quelqu'un a redéplacé `v7` sur un autre commit. C'est précisément le scénario contre lequel on épingle et c'est aussi le type le plus automergé. Il a plus besoin du cooldown que les autres.
 
