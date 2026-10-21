@@ -22,22 +22,26 @@ series_order: 1
 
 Un Prometheus garde ses métriques aussi longtemps qu'on le lui demande. On pose
 `--storage.tsdb.retention.time` ou `--storage.tsdb.retention.size` si on préfère plafonner
-en volume et c'est réglé. La rétention n'a jamais été le problème.
+en volume et c'est réglé. On croit souvent que Thanos sert à allonger la rétention : ce
+n'est pas là que Prometheus coince.
 
-Le problème est ailleurs. La TSDB vit sur un seul disque sans réplication et elle grossit
-linéairement parce que Prometheus ne downsample pas. Surtout, elle ne sait répondre que
-pour elle-même alors qu'avec une vingtaine de clusters on veut une requête qui les traverse
-toutes.
+La TSDB vit sur un seul disque sans réplication et elle grossit
+linéairement parce que Prometheus ne downsample pas. Enfin, elle ne répond que pour
+elle-même, alors que certains déploiements multi-cluster gagnent à croiser leurs sources
+simplement, dans une seule requête.
 
-C'est pour ça qu'on met Thanos devant. La doc explique très bien les mécanismes, mais
+Thanos répond à ces trois limites : il pousse les blocs vers un object store, les
+downsample, et une seule requête interroge tous les clusters. La doc explique très bien les mécanismes, mais
 personne n'écrit la facture, ni le fait que chaque décision est un arbitrage où on gagne
-sur le coût pour payer ailleurs. Certaines de ces décisions, on a dû les annuler.
+sur le coût pour payer ailleurs. Cet article raconte les nôtres, y compris celles qu'on a dû annuler.
 
 ## Thanos, Mimir ou VictoriaMetrics
 
-Premier malentendu à lever. On associe souvent Thanos au mode sidecar, donc à du pull, par opposition à Mimir qui serait du push. C'est faux dès qu'on utilise Thanos Receive : les Prometheus font un `remote_write`, exactement comme vers Mimir. Le chemin d'ingestion est le même, la config Alloy aussi (voir [Grafana Alloy](alloy.md), il suffit de changer l'URL).
+Premier malentendu à lever : on associe souvent Thanos au mode sidecar, donc à du pull, par opposition à Mimir qui serait du push. C'est faux dès qu'on utilise Thanos Receive : les Prometheus font un `remote_write`, exactement comme vers Mimir. Le chemin d'ingestion est le même, la config Alloy aussi (voir [Grafana Alloy](alloy.md), il suffit de changer l'URL).
 
-Et le mode Receive apporte quelque chose que le sidecar ne peut pas donner : le filtrage à la source. Le sidecar uploade les blocks de la TSDB telle qu'elle est, donc tout ce qui est scrapé finit dans le bucket. Le seul filtre disponible est `metric_relabel_configs`, au scrape, qui supprime la métrique localement aussi. Avec `remote_write` on utilise `write_relabel_configs`, qui ne touche que ce qui part.
+Le mode Receive apporte en plus quelque chose que le sidecar ne peut pas donner : **le filtrage à la source**. Le sidecar uploade les blocks de la TSDB telle qu'elle est, donc tout ce qui est scrapé finit dans le bucket. Le seul filtre disponible est `metric_relabel_configs`, au scrape, qui supprime la métrique localement aussi.
+
+Grâce à `remote_write`, on dispose de `write_relabel_configs`, qui ne touche que ce qui part. On choisit donc ce qui va en long terme : les métriques produit dont on suit la tendance sur des mois partent, les métriques techniques qui les accompagnent restent en local.
 
 ```yaml
 remote_write:
@@ -53,7 +57,7 @@ remote_write:
         action: drop
 ```
 
-C'est le levier de coût le plus direct de toute la stack, parce qu'il agit avant l'ingestion : on ne paye ni le stockage, ni la compaction, ni la cardinalité de ce qu'on a laissé sur place. La rétention locale de Prometheus reste complète pour du debug à chaud, seule la longue traîne est filtrée.
+Une métrique qui ne part pas ne coûte rien côté Thanos, ni en stockage, ni en compaction, ni en cardinalité. C'est le moyen le plus simple de faire baisser la facture. En local, Prometheus garde tout pour le debug à chaud, seul le long terme est filtré.
 
 Le vrai critère de choix est ailleurs : une stack isolée par tenant ou un cluster mutualisé ?
 
@@ -64,9 +68,8 @@ On a pris le chemin inverse du manuel : un jeu complet de composants par cluster
 
 Ce qu'on y gagne :
 
-- le blast radius d'un tenant en surcharge s'arrête à son namespace
+- un tenant en surcharge ne ralentit que sa stack, et le querier global
 - le dimensionnement se fait par tenant, un petit cluster ne paye pas pour le gros
-- pas de bruit de voisinage sur l'ingestion
 
 Ce qu'on y perd : une vingtaine de compactors, de queriers et de store gateways à opérer. C'est tout le sujet de la suite.
 
@@ -76,7 +79,7 @@ Une stack complète par tenant et au-dessus un querier global qui fait le fan-ou
 
 ![Topologie Thanos multi-tenant avec le querier global au-dessus des stacks régionales](./_img/thanos-topology.svg)
 
-Ce querier global pousse la parallélisation bien plus haut que les régionaux, avec son propre cache de résultats. Rien n'oblige à n'en avoir qu'un. On peut poser un second querier global sur un sous-ensemble de tenants, pour donner à une équipe une vue limitée à son périmètre sans lui ouvrir la flotte entière.
+Ce querier global a son propre query frontend et son propre cache de résultats. Rien n'oblige à n'en avoir qu'un. On peut poser un second querier global sur un sous-ensemble de tenants, pour donner à une équipe une vue limitée à son périmètre sans lui ouvrir la flotte entière.
 
 ```yaml
 query:
@@ -95,15 +98,15 @@ queryFrontend:
 
 Le parallélisme du query frontend global est à 14, comme sur les stacks régionales. On l'avait monté à 256, mais à ce niveau une seule requête large sature la gate de la store gateway sur toutes les stacks à la fois (voir [la concurrence des queries](thanos-query-concurrency.md)).
 
-Ce qui compte n'est pas dans les flags, c'est que la liste des stores à interroger est dérivée du même sélecteur de labels que le générateur des stacks, pas écrite en dur. Une liste statique dérive toujours. On finit avec une entrée qui pointe vers un Thanos mort ou un tenant que personne n'interroge.
+Le plus important n'est pas dans les flags. La liste des stores interrogés est dynamique. Elle suit les clusters déclarés, comme les stacks elles-mêmes. Une liste statique dérive toujours. On finit avec une entrée qui pointe vers un Thanos mort ou un tenant que personne n'interroge.
 
-Encore faut-il que cette liste sorte toujours dans le même ordre. Le générateur `clusters` d'un ApplicationSet ArgoCD ne garantit pas l'ordre de ses éléments, donc la liste rendue dans `--endpoint.sd-config` se réordonne d'un rendu à l'autre, le hash du pod template change et le Deployment repart en rollout sans aucun changement réel (11 fois en 3 jours sur une flotte observée). Il faut trier la liste au moment du rendu avec `sortAlpha`.
+Le piège d'une liste dynamique, c'est son ordre. Le générateur `clusters` d'un ApplicationSet ArgoCD ne garantit pas l'ordre de ses éléments, donc la liste rendue dans `--endpoint.sd-config` change d'ordre d'un rendu à l'autre. Pour Kubernetes, c'est un nouveau pod template : le Deployment repart en rollout sans aucun changement réel (11 fois en 3 jours chez nous). Il faut trier la liste au moment du rendu avec `sortAlpha`.
 
-`--query-frontend.log-queries-longer-than=10s` est à activer dès le premier jour. C'est ce qui permet de savoir quel dashboard fait souffrir la stack, plutôt que de le deviner.
+Le flag `--query-frontend.log-queries-longer-than=10s` est à activer dès le premier jour. C'est ce qui permet de savoir quel dashboard fait souffrir la stack, plutôt que de le deviner.
 
-Mais attention à ce qu'on y lira. Le querier global attend **toutes** les stacks avant de répondre, donc la latence perçue est celle de la branche la plus lente. Une stack qui répond en 150 ms au p99 mais en 4 s dans sa queue suffit à produire des requêtes utilisateur à 25 s, dès lors que le fan-out en interroge une vingtaine : la probabilité de tomber sur au moins un traînard devient forte.
+Une requête lente dans ce log ne veut pas dire que le dashboard est mal écrit, la lenteur vient souvent d'une seule stack. Le querier global attend **toutes** les stacks avant de répondre et la latence perçue est celle de la plus lente. Une stack qui répond en 150 ms au p99 mais en 4 s dans sa queue suffit à produire des requêtes utilisateur à 25 s, dès lors que le fan-out en interroge une vingtaine : la probabilité de tomber sur au moins un traînard devient forte.
 
-On a chassé longtemps des requêtes coûteuses avant de comprendre que les plus lentes étaient triviales. Un sélecteur sur 9 séries qui met 26 secondes ne coûte rien à calculer, il attend. Le levier n'est alors ni le cache ni le sizing : c'est de réduire le fan-out, en s'assurant que les external labels annoncés par chaque stack permettent au querier global d'élaguer ceux qui ne peuvent pas matcher, ou de borner la queue avec le couple `--store.response-timeout` et `--query.partial-response`.
+On a longtemps cherché des requêtes trop lourdes. En réalité, les plus lentes étaient des requêtes simples qui attendaient la stack la plus lente. Un sélecteur sur 9 séries qui met 26 secondes ne calcule presque rien : **il attend**. Le levier n'est alors ni le cache ni le sizing : c'est de réduire le fan-out, en s'assurant que les external labels annoncés par chaque stack permettent au querier global d'élaguer ceux qui ne peuvent pas matcher, ou de borner la queue avec le couple `--store.response-timeout` et `--query.partial-response`.
 
 !!! warning "Partial response et alerting ne font pas bon ménage"
     Si les principaux appelants sont des règles d'alerte - et c'est souvent le cas, elles
@@ -111,34 +114,35 @@ On a chassé longtemps des requêtes coûteuses avant de comprendre que les plus
     incomplète peut sous-rapporter silencieusement et ne pas déclencher. Borner la latence au
     prix d'une alerte qui rate n'est pas un bon échange.
 
-Et il y a un effet de bord qu'on ne voit pas venir : **une réponse partielle n'est jamais cachée**. Le query frontend refuse de cacher les réponses partielles comme celles assorties d'un warning, ce qui veut dire qu'on perd le cache **précisément** au moment où il servirait le plus. Les requêtes passent en partiel, donc deviennent non cachables, donc chaque rafraîchissement repart de zéro sur une infrastructure déjà en souffrance. C'est un amplificateur, pas un amortisseur.
+Il y a aussi un effet de bord qu'on ne voit pas venir. En principe, **une réponse partielle n'est pas cachée** et le cache disparaît **précisément** quand il servirait le plus. Chaque rafraîchissement repart alors de zéro sur une infrastructure déjà en souffrance. C'est un **amplificateur**, pas un amortisseur.
 
-Le flag ne fixe qu'un défaut et les clients peuvent le surcharger par requête avec le paramètre `partial_response`. La voie médiane est donc de laisser le défaut désactivé, ce qui protège les règles d'alerte et le cache et de l'activer uniquement sur la datasource Grafana des humains, où une réponse partielle assortie d'un warning vaut mieux qu'un spinner de 25 secondes.
+En pratique, la règle a des trous. On a déjà vu un résultat partiel rester en cache pendant 30 jours, avec des datacenters absents d'un dashboard alors que l'API répondait complet. Ajouter `+ 0` à la fin de la requête change sa clé de cache et suffit à le confirmer.
+
+Le flag ne fixe qu'un défaut et les clients peuvent le surcharger par requête avec le paramètre `partial_response`. Le compromis consiste à désactiver le partial response par défaut pour protéger les règles d'alerte et le cache. Seule la datasource Grafana des humains le garde activé. Pour eux, une réponse partielle avec un warning vaut mieux qu'un spinner de 25 secondes.
 
 ## Annoncer le label sur lequel on filtre
 
-Le querier global n'écarte une stack que si les matchers de la requête contredisent un label
-que cette stack **annonce**. Pas un label présent dans ses séries, un label présent dans son
-info endpoint : la nuance décide de tout et on a mis longtemps à la voir.
+Le querier global n'écarte une stack que si la requête contredit un label que cette stack
+annonce dans son info endpoint, ses external labels. Les labels présents dans ses séries ne
+comptent pas. Tout repose sur cette différence et on a mis longtemps à la voir.
 
 Nos queriers de tenant annonçaient leurs labels de receive, qui identifient bien la stack
 mais que personne n'écrit jamais dans une requête. Les dashboards, eux, filtrent sur le nom
-du cluster. Aucun matcher ne pouvait donc contredire quoi que ce soit, aucune branche
-n'était élaguable et chaque requête partait sur la vingtaine de stacks.
+du cluster. Aucun matcher ne pouvait donc contredire quoi que ce soit, aucune stack
+n'était écartée et chaque requête partait sur la vingtaine de stacks.
 
-![Le querier global confronte le matcher de la requête au label set annoncé par chaque branche : compatible, contredite ou sans label à contredire](./_img/thanos-pruning.svg)
+![Le querier global confronte le matcher de la requête au label set annoncé par chaque stack : compatible, contredite ou sans label à contredire](./_img/thanos-pruning.svg)
 
-Ça se lit sans rien instrumenter : toutes les stacks servaient le même débit d'appels `Series`
-à 0,4 % près. Un tenant qui pèse quelques dizaines de milliers de séries encaissait
-exactement le même nombre d'appels que le plus gros de la flotte.
+Les métriques existantes le montraient déjà, sans rien instrumenter de plus. Toutes les
+stacks servaient les mêmes QPS sur `Series`, à 0,4 % près. Un tenant qui pèse quelques
+dizaines de milliers de séries encaissait autant d'appels que le plus gros de la flotte.
 
-Reste à choisir quel label annoncer. Le choix se contraint tout seul, parce que 2 conditions
-pèsent en même temps : le label doit être celui que les requêtes portent réellement, sinon
-aucun matcher ne le contredira jamais et l'annonce ne sert à rien, et il ne doit avoir qu'une
-seule valeur par stack, sinon la stack se retirera des requêtes qui cherchent ses autres
-valeurs. Les 2 ensemble ne laissent en général qu'un candidat.
+Il faut ensuite choisir quel label annoncer. Il doit remplir 2 conditions.
 
-Le bon label dépend donc de la manière dont les clients écrivent leurs requêtes et de comment les stacks sont découpées, il n'y a pas de nom universel. Chez nous, 2 labels cochent les 2 cases. Le premier est le label de cluster que les Prometheus posent en external label et sur lequel toutes les variables de dashboard sont câblées, `k8s_cluster_name`. Le second est `dc`, annoncé aussi par stack en opt-in, avec la même règle d'une seule valeur par stack. Ce sont des conventions internes, donc à lire comme des exemples : ce qui compte est qu'un label coche les 2 cases, pas comment il s'appelle.
+- Les requêtes doivent réellement le porter. Sinon aucun matcher ne le contredit jamais et l'annonce ne sert à rien.
+- Chaque stack ne doit porter qu'une seule valeur de ce label. Une stack qui reçoit `dc="euw1"` et `dc="euw4"` mais n'annonce que `euw1` est écartée des requêtes sur `euw4`, et ses données disparaissent sans erreur.
+
+En général, un seul label remplit les 2. Il dépend de la manière dont les clients écrivent leurs requêtes et du découpage des stacks. Il n'y a pas de nom universel. Chez nous, 2 labels cochent les 2 cases. Le premier est le label de cluster que les Prometheus posent en external label et sur lequel toutes les variables de dashboard sont câblées, `k8s_cluster_name`. Le second est `dc`, annoncé aussi par stack en opt-in, avec la même règle d'une seule valeur par stack. Ce sont des conventions internes, à lire comme des exemples. Ce qui compte est qu'un label coche les 2 cases, pas son nom.
 
 Le flag se pose ensuite sur le querier de chaque tenant, avec le label retenu :
 
@@ -151,7 +155,7 @@ extraFlags:
 Il se vérifie dans l'info endpoint et pas dans la conf, le label doit apparaître dans les
 `external_labels` que le querier global expose sur `thanos_store_nodes_grpc_connections`.
 
-`ProxyStore.LabelSet()` passe par `ExtendSortedLabels`, donc le flag **étend** les label
+Dans le code, `ProxyStore.LabelSet()` passe par `ExtendSortedLabels`, donc le flag **étend** les label
 sets remontés des stores en aval au lieu de les remplacer : tout ce qui filtrait déjà sur
 les autres labels continue de marcher.
 
@@ -169,22 +173,25 @@ Le gain réel a été de 28 % d'appels en moins sur les stacks annotées, pas le
 visait. L'écart vaut pour toute flotte multi-tenant.
 
 Une stack qu'on n'a pas pu annoter reste interrogée par 100 % des requêtes, donc même une
-requête parfaitement scopée sur un cluster touche encore tous ceux-là. Et surtout la
+requête parfaitement scopée sur un cluster touche encore tous ceux-là. Surtout, la
 plupart des requêtes ne portent aucun filtre de cluster : en passant en revue les 1300
 dashboards de notre Grafana, sur les 417 qui interrogent le store global, 71 ont une
 variable de cluster et 346 n'en ont aucune. Une variable laissée sur « All » ne compte pas
 davantage, elle se rend en regex qui matche tout.
 
 Ce n'est pas de la négligence. Un développeur qui regarde son API ne sait pas, et n'a pas à
-savoir, sur quel cluster tourne son pod : sa requête filtre sur un job ou un namespace et
-aucun label ne permet de l'élaguer. Le fan-out est réductible pour les dashboards d'infra
-qui savent où ils regardent, irréductible pour tout le reste.
+savoir, sur quel cluster tourne son pod. Sa requête filtre sur un job ou un namespace et
+aucun label annoncé ne permet d'écarter une stack.
 
-La charge de fan-out d'un tenant ne dit rien de
-sa taille, elle suit le workload de requêtes. Sur 24h les stacks montent et descendent
-ensemble, de 17,7 à 45,1 appels par seconde selon l'heure, tous à quelques pourcents les uns
-des autres. Dimensionner une stack sur sa volumétrie ignore donc la moitié de ce qui la
-sollicite.
+L'annonce de labels réduit le fan-out pour les requêtes qui portent le bon label, typiquement
+les dashboards d'infra. Les autres demandent d'autres leviers, comme une variable de cluster
+dans le dashboard ou un querier global limité au périmètre d'une équipe.
+
+Tant que le querier global n'écarte aucune stack, chaque requête part vers toutes et une
+petite stack en reçoit autant qu'une grosse. Sa charge suit le
+trafic des dashboards, pas son volume de données. Sur 24h, toutes les stacks montent et
+descendent ensemble, de 17,7 à 45,1 QPS selon l'heure, à quelques pourcents près.
+Dimensionner une stack sur sa seule volumétrie laisse de côté toute cette charge de requêtes.
 
 ## Le chemin d'une métrique
 
@@ -196,12 +203,12 @@ La couleur porte l'essentiel : tout ce qui est stateless et rejouable tourne sur
 
 Chaque flèche du schéma précédent est du trafic facturé. Receive qui uploade ses blocks, la store gateway qui les retélécharge à chaque miss de cache, les séries qui remontent en gRPC vers le querier, puis le fan-out du querier global sur tous les régionaux. À une vingtaine de tenants le volume est conséquent et personne ne le regarde parce qu'il n'apparaît pas sur la ligne compute.
 
-Sur GCP, un transfert entre 2 zones d'une même région est facturé, alors qu'il est gratuit à l'intérieur d'une zone. On colle donc tous les composants d'une stack dans la même zone, au lieu de laisser le scheduler les répartir pour faire de la haute dispo.
+Sur GCP, un transfert entre 2 zones d'une même région est facturé, alors qu'il est gratuit à l'intérieur d'une zone. Chez nous, tous les composants d'une stack tournent dans une seule zone. Les répartir entre zones apporte de la haute dispo mais rend chaque échange entre eux facturé. Si on fait ce choix, il faut d'abord mesurer ce que coûte le trafic inter-zone.
 
 Le bucket suit la même logique mais à la maille région, un bucket GCS étant régional et pas zonal. Depuis une VM de la même région la sortie ne coûte rien, alors qu'un bucket dans une autre région ou en multi-région se paye à chaque lecture et la store gateway lit beaucoup.
 
 !!! warning "Le prix : plus de redondance de zone"
-    Une stack dans une seule zone tombe avec sa zone. C'est le même arbitrage que le RF=1 :
+    Une stack dans une seule zone tombe avec sa zone. C'est le même arbitrage que le RF=1 sur receive (voir « Réplication : le choix assumé ») :
     on accepte de perdre un tenant le temps d'une panne zonale plutôt que de payer du trafic
     inter-zone en permanence. Sur des métriques la perte est bornée et l'historique reste
     dans le bucket, ce qui rend le compromis tenable là où il ne le serait pas sur une base
@@ -233,7 +240,7 @@ nodeSelector:
 priorityClassName: thanos-receive-critical
 ```
 
-Le prix à payer se voit à la reprise. Une store gateway peut mettre jusqu'à **30 minutes** à redevenir prête après une éviction, le temps de retélécharger ses index-headers. Il faut caler les alertes dessus, sinon on se réveille la nuit pour rien. On recommande une alerte sur l'écart de replicas du StatefulSet, avec un `for` qui couvre la reprise :
+Le prix à payer se voit à la reprise. Après une éviction, une store gateway n'est prête qu'une fois ses index-headers retéléchargés. **Plus ses index sont gros, plus la reprise est longue.** Il faut caler les alertes dessus, sinon on se réveille la nuit pour rien. On recommande une alerte sur l'écart de replicas du StatefulSet, avec un `for` qui couvre la reprise :
 
 ```yaml
 - alert: ThanosStoreIsDown
@@ -242,7 +249,7 @@ Le prix à payer se voit à la reprise. Une store gateway peut mettre jusqu'à *
   for: 30m      # et pas 5m : la reprise après éviction spot est lente
 ```
 
-!!! warning "`partial-response` seul ne coupe aucune branche lente"
+!!! warning "`partial-response` seul ne coupe aucune stack lente"
     `--store.response-timeout` vaut **`0ms` par défaut, ce qui désactive le timeout**. Tant
     qu'on n'y touche pas, une store gateway lente mais vivante est attendue jusqu'à
     `--query.timeout`, et la réponse partielle ne sauve que le cas d'un store réellement
@@ -250,9 +257,9 @@ Le prix à payer se voit à la reprise. Une store gateway peut mettre jusqu'à *
     tighter timeout to underlying StoreAPI than overall query timeout*. C'est le couple des
     2 flags qui borne la latence, pas `partial-response` tout seul.
 
-Reste une question qu'on oublie de se poser : pendant ces 30 minutes, que voit l'utilisateur ? Ça dépend de `--query.partial-response`, activé par défaut. La query renvoie ce qu'elle a pu récupérer, assorti d'un warning, plutôt qu'une erreur. Un dashboard affiche donc un graphe avec un trou dedans et le trou ne se voit pas forcément.
+Une question qu'on oublie souvent de se poser : pendant cette reprise, que voit l'utilisateur ? Ça dépend de `--query.partial-response`, activé par défaut. La query renvoie ce qu'elle a pu récupérer, assorti d'un warning, plutôt qu'une erreur. Un dashboard affiche donc un graphe avec un trou dedans et le trou ne se voit pas forcément.
 
-C'est le bon comportement pour du dashboard temps réel, beaucoup moins pour une règle d'alerting ou un rapport de capacité. Le paramètre se surcharge par requête et une réponse partielle n'est jamais mise en cache.
+C'est le bon comportement pour du dashboard temps réel, beaucoup moins pour une règle d'alerting ou un rapport de capacité. Le paramètre se surcharge par requête et une réponse partielle n'est en principe pas mise en cache.
 
 Le tout tourne sur des instances ARM, ce qui se cumule avec le spot sur le ratio prix/performance. La tolération `arch=arm64` est posée sur tous les composants.
 
@@ -296,9 +303,9 @@ compactor:
   retentionResolution1h: 430d
 ```
 
-430 jours plutôt que 365, parce que comparer un pic saisonnier à celui de l'année d'avant demande un peu de marge et 2 mois de plus ne coûtent presque rien à cette résolution.
+On garde 430 jours plutôt que 365. Comparer un pic saisonnier à celui de l'année d'avant demande un peu de marge, et 2 mois de plus ne coûtent presque rien à cette résolution.
 
-Et c'est là que le downsampling devient intéressant : la longue traîne est quasi gratuite. Passer de 15 secondes à 1 heure, c'est 240 fois moins de points, mais chaque point downsamplé garde 5 agrégats (count, sum, min, max, counter), donc un facteur réel autour de 48 avant compression. Les 430 jours en résolution horaire pèsent une fraction des 45 jours en résolution native. Garder un an ne coûte pas 12 fois 2 mois.
+C'est là que le downsampling devient intéressant : la longue traîne est quasi gratuite. Passer de 15 secondes à 1 heure, c'est 240 fois moins de points, mais chaque point downsamplé garde 5 agrégats (count, sum, min, max, counter), donc un facteur réel autour de 48 avant compression. Les 430 jours en résolution horaire pèsent une fraction des 45 jours en résolution native. Garder un an ne coûte pas 12 fois 2 mois.
 
 Avec `--query.auto-downsampling`, le querier prend comme résolution source maximale le pas divisé par 5, donc il faut un pas d'au moins 25 minutes pour lire le 5m et de 5h pour lire le 1h. Un dashboard de 24h à un pas de 240s lit le raw. Le downsampling n'aide que les timeranges assez longs pour que Grafana élargisse le pas.
 
@@ -342,7 +349,7 @@ Les 3 flags de concurrence sont à 1 ou 2 volontairement. Ils valent 1 par défa
 
 C'est l'optimisation la plus rentable de la stack et celle qui a le plus d'effets de bord.
 
-Un compactor déployé en Deployment tourne 24h/24 avec son PVC attaché en permanence. Sauf qu'il ne travaille réellement que quelques minutes toutes les quelques heures. Sur une vingtaine de stacks, ça fait une vingtaine de disques facturés en continu pour un usage marginal.
+Un compactor déployé en Deployment tourne 24h/24 avec son PVC attaché en permanence, alors qu'il ne travaille réellement que quelques minutes toutes les quelques heures. Sur une vingtaine de stacks, ça fait une vingtaine de disques facturés en continu pour un usage marginal.
 
 On l'a donc passé en CronJob avec un volume éphémère :
 
@@ -391,7 +398,7 @@ La fenêtre de 12 heures tolère un cycle manqué. `ThanosCompactCronJobFailed` 
 
 Ces 2 règles disent si le job tourne, pas s'il fait son travail. Un compactor peut réussir tous ses runs et laisser le backlog s'accumuler parce que la concurrency ne suit pas le volume produit. Le bucket grossit alors en continu sans que rien ne s'allume.
 
-Depuis la v0.24 le compactor expose 4 gauges faites pour ça, `thanos_compact_todo_compactions`, `thanos_compact_todo_compaction_blocks`, `thanos_compact_todo_downsample_blocks` et `thanos_compact_todo_deletion_blocks`. Sauf qu'elles ne servent à rien ici.
+Depuis la v0.24 le compactor expose 4 gauges faites pour ça, `thanos_compact_todo_compactions`, `thanos_compact_todo_compaction_blocks`, `thanos_compact_todo_downsample_blocks` et `thanos_compact_todo_deletion_blocks`. Elles ne servent pourtant à rien ici.
 
 !!! danger "Les gauges de backlog n'existent pas en CronJob"
     Les 3 calculateurs de progression qui les alimentent sont enfermés dans un
@@ -422,7 +429,7 @@ Les échecs de compaction ne se détectent pas avec `thanos_compact_group_compac
 
 Une store gateway qui sert tout le bucket doit être dimensionnée pour la requête la plus violente qu'on lui posera jamais, par exemple un dashboard avec un timerange de 6 mois qui va charger énormément de donnée en RAM sur tous les replicas, pendant que le dashboard temps réel attend derrière.
 
-Or les 2 profils d'accès n'ont rien à voir :
+Les 2 profils d'accès n'ont pourtant rien à voir :
 
 - les données récentes sont interrogées en permanence, sur un petit volume et doivent répondre vite
 - les données anciennes sont interrogées rarement, mais chaque requête scanne énormément et supporte d'être lente
@@ -466,9 +473,9 @@ Ce découpage temporel n'est pas le seul possible. Quand c'est le bucket d'un se
 
 ## Payer de la capacité disque pour acheter du débit
 
-La store gateway tournait au départ sur `emptyDir`, donc sur le disque de boot du nœud. Sur les gabarits qu'on avait choisis, le téléchargement des index-headers au démarrage saturait ce disque : les instances sont IO bound et un store qui doit rapatrier ses index-headers y passe un temps déraisonnable. Ce sont ces mêmes minutes qu'on retrouve dans les 30 minutes de reprise après éviction.
+La store gateway tournait au départ sur `emptyDir`, donc sur le disque de boot du nœud. Sur les gabarits qu'on avait choisis, le téléchargement des index-headers au démarrage saturait ce disque : les instances sont IO bound et un store qui doit rapatrier ses index-headers y passe un temps déraisonnable. C'est ce même téléchargement qui rallonge la reprise après une éviction.
 
-D'où un PVC dédié pour la store gateway, dimensionné pour le débit et non pour la place.
+On a donc donné à la store gateway un PVC dédié, dimensionné pour le débit et non pour la place.
 
 Sur Hyperdisk Balanced, la performance est découplée de la capacité, et c'est le piège quand on arrive du Persistent Disk. Les IOPS et le débit se provisionnent explicitement, les 3000 premières IOPS et 140 Mio/s sont offerts, **le reste est facturé**. La capacité ne fait que relever le plafond de ce qu'on a le droit de provisionner, `MIN(500 x Gio, 160000)`, ce qui impose au minimum 6 Gio pour avoir droit aux 3000 IOPS de base.
 
@@ -485,15 +492,18 @@ Le volume est à 20 Gio par défaut, ce qui suffit à débloquer le plafond d'IO
 
 ## Mutualiser les caches
 
-Thanos a 3 caches, tous en mémoire du process par défaut, ce qui donne une centaine de
-caches froids sur la flotte et fait payer chaque éviction spot deux fois. Le sujet a sa
-propre page : [Les caches Thanos](thanos-cache.md) couvre la mutualisation sur un backend
-partagé, ce que le caching bucket ne sait pas partager entre tenants, le dimensionnement
-et le gain côté facture.
+Thanos a 3 caches et, par défaut, chacun vit dans la mémoire de son process. Sur la flotte,
+ça fait une centaine de caches séparés qui repartent à froid à chaque redémarrage. Une
+éviction spot coûte donc deux fois, le pod à relancer puis toutes les données à relire
+depuis le bucket.
+
+Les caches sont un sujet à part entière et ont [leur propre page](thanos-cache.md). Elle couvre le backend
+partagé, les limites du caching bucket entre tenants, le dimensionnement et le gain sur la
+facture.
 
 ## Mettre des limites en lecture et en ingestion
 
-Logger les requêtes lentes ne suffit pas, il faut pouvoir les arrêter. Avec RF=1 et des store gateways sur spot, un seul dashboard qui balaie plusieurs mois de raw peut saturer une store qui mettra ensuite ses 30 minutes à revenir.
+Logger les requêtes lentes ne suffit pas, il faut pouvoir les arrêter. Avec RF=1 et des store gateways sur spot, un seul dashboard qui balaie plusieurs mois de raw peut saturer une store qui mettra ensuite longtemps à revenir.
 
 Côté lecture, les garde-fous sont sur la store gateway. Les valeurs ci-dessous sont celles qu'on recommande :
 
@@ -506,6 +516,14 @@ extraFlags:
 ```
 
 Les 2 premiers remplacent `--store.grpc.touched-series-limit` et `--store.grpc.series-sample-limit`, qui sont dépréciés. Les 3 limites valent 0 par défaut, c'est-à-dire aucune limite. `--store.grpc.series-max-concurrency` est l'exception : on recommande 50 alors que le défaut est de 20. À 100, des store gateways se sont fait OOMKill, donc 50 est une borne mémoire (le pic de RSS suit le nombre de `Series` en vol) et pas un bouton de débit : le remonter ne rend rien plus rapide, ça ne fait que rapprocher l'OOMKill.
+
+!!! warning "Une requête coupée n'est jamais servie"
+    Une limite atteinte ne ralentit pas la requête, elle la rejette. Le dashboard qui la
+    déclenche échoue donc à chaque rafraîchissement, tant que personne ne réduit son
+    timerange ou sa cardinalité. Sans partial response, le panel affiche une erreur. Avec,
+    il affiche un résultat incomplet assorti d'un warning que personne ne remarque. Avant
+    de poser ces limites, repérer les dashboards qui les dépassent dans le log des requêtes
+    lentes et prévenir leurs propriétaires.
 
 Côté ingestion c'est plus intéressant financièrement, parce que Receive est on-demand donc le plus cher au vCPU et que rien ne le protège d'un tenant qui explose en cardinalité.
 
@@ -552,8 +570,9 @@ if opts.DecodingConcurrency < 1 {
 
 Depuis Go 1.25 le runtime lit la limite CPU du cgroup pour fixer GOMAXPROCS. Le seul
 composant de la stack qui porte une limite CPU est donc le seul dont le parallélisme de
-requête est plafonné et chez nous c'était le querier global, celui qui fusionne toutes les
-branches : il décodait sur 4 shards là où chacune de ses feuilles en utilisait 8. Personne
+requête est plafonné et chez nous c'était le querier global, celui qui fusionne les réponses
+de toutes les stacks. Il décodait sur 4 shards alors que le querier de chaque stack en
+utilisait 8. Personne
 n'a pris cette décision, elle est tombée d'un commit qui montait les requests et limits
 mémoire et qui a emmené le CPU avec lui.
 
@@ -563,7 +582,7 @@ ce matin-là, il change sans commit et sans que rien ne le signale.
 
 Avant de corriger quoi que ce soit, la case `Analyze` de l'UI Thanos affiche le temps passé
 dans chaque nœud du plan d'exécution. Sur la requête qui nous intriguait, 1,88 s au total
-dont 1,38 s dans le sélecteur feuille et les 4 shards rendaient la même durée à la
+dont 1,38 s dans la lecture des séries et les 4 shards rendaient la même durée à la
 milliseconde près : ils finissaient ensemble parce qu'ils attendaient tous la même chose,
 les stores. Le décodage n'était pas le goulot, le CPU des pods plafonnait à 0,3 cœur sur une
 limite de 8 et doubler le nombre de shards n'aurait rien acheté.
@@ -585,9 +604,9 @@ Le PVC de la store gateway réglait le problème de disque saturé, mais pas la 
 
 On l'a **retirée**. Sur des dashboards historiques larges, ceux qui balaient plusieurs mois d'un coup, le p99 est monté jusqu'à environ **224 secondes**. L'économie de disque ne valait pas des dashboards inutilisables.
 
-On avait gardé le lazy load des index-headers en mémoire, avant de le retirer lui aussi une fois les disques changés (voir la section « Lazy load » plus bas).
+On avait gardé le lazy load des index-headers en mémoire, avant de le retirer lui aussi une fois les disques changés (voir [le prix du rechargement en lazy load](#le-prix-du-rechargement-en-lazy-load) plus bas).
 
-Toutes les optimisations de coût ne passent pas. Celle-là s'est payée en latence et on est revenus en arrière.
+Toutes les optimisations de coût ne passent pas. Celle-là s'est payée en latence et on a rollback.
 
 !!! warning "Le p99 est aveugle aux pathologies rares"
     Nos requêtes pathologiques représentaient 0,12 % du trafic. Un p99 se calcule sur les 99 %
@@ -598,7 +617,7 @@ Toutes les optimisations de coût ne passent pas. Celle-là s'est payée en late
 
 Dès qu'une pathologie touche nettement moins de 1 % des requêtes, mesurer au p999 ou au p9999, ou ne pas mesurer du tout. On a tiré 2 conclusions fausses avant de s'en apercevoir.
 
-## Lazy load : le prix du rechargement
+## Le prix du rechargement en lazy load
 
 Le flag `--store.enable-index-header-lazy-reader` ne charge l'index-header d'un block qu'à la première requête qui le touche, et le décharge après un délai d'inactivité. Il promet 2 choses : une store gateway qui démarre sans attendre d'avoir lu tous ses headers, et une mémoire qui ne porte que les blocks réellement interrogés.
 
@@ -681,7 +700,10 @@ La résilience ne repose donc pas sur la duplication de l'ingestion, mais sur 2 
 
 C'est un arbitrage coût contre disponibilité, pas un oubli. Un facteur de réplication supérieur à 1 multiplie la mémoire, puisque chaque replica maintient sa propre copie des séries en RAM et on parle du composant qui est justement en on-demand. L'opt-in reste disponible pour basculer un tenant précis si son SLA le justifie.
 
-Le raisonnement se retourne d'ailleurs, parce qu'avec RF=2 et au moins 2 replicas une éviction devient survivable, donc receive pourrait descendre sur spot comme le reste et on récupérerait l'économie sur le composant le plus cher. Ce qu'on paierait à la place, c'est une archi nettement plus complexe, avec le hashring à maintenir, le receive-controller qui le recalcule à chaque changement de topologie et les rééquilibrages qui vont avec. On a préféré payer de l'on-demand plutôt que de la complexité.
+Le raisonnement se retourne d'ailleurs. Avec RF=2 et 2 replicas, une éviction devient survivable et Receive pourrait descendre sur spot comme le reste et on récupérerait l'économie sur le composant le plus cher. Ce qu'on paierait à la place, c'est une archi nettement plus complexe, avec le hashring à maintenir, le receive-controller qui le recalcule à chaque changement de topologie et les rééquilibrages qui vont avec. On a préféré payer de l'on-demand plutôt que de la complexité.
+
+!!! warning "Le quorum d'écriture en RF=2 a changé en v0.37"
+    Receive accepte une écriture quand un quorum de replicas l'a reçue. La formule générale est `RF/2 + 1`, soit 2 replicas sur 2 en RF=2. Avant la v0.37, un seul replica évicté bloquait donc toutes les écritures et il fallait RF=3 sur 3 replicas pour survivre à la perte d'un pod. La [PR #7669](https://github.com/thanos-io/thanos/pull/7669) a fait du RF=2 un cas particulier avec un quorum de 1, pour garder les garanties d'un setup sidecar à 2 Prometheus. En contrepartie, une écriture acceptée pendant l'éviction n'existe qu'en un exemplaire jusqu'au retour du second replica.
 
 !!! note "À ne pas confondre avec la déduplication"
     Le `--deduplication.replica-label=prom_replica` vu plus haut n'a rien à voir. Il traite
@@ -692,18 +714,24 @@ Le raisonnement se retourne d'ailleurs, parce qu'avec RF=2 et au moins 2 replica
 
 Une stack par cluster, ça veut dire dupliquer la configuration autant de fois. La réponse tient en 2 mécanismes.
 
-Un ApplicationSet ArgoCD génère les stacks à partir d'un sélecteur de labels sur le registre de clusters. Ajouter un cluster à la flotte ne demande aucune merge request sur Thanos : on pose le label sur le cluster, la stack apparaît.
+Un ApplicationSet ArgoCD génère les stacks avec son générateur `clusters`, qui parcourt les clusters déclarés dans ArgoCD et ne retient que ceux qui portent un label donné. Ajouter un cluster à la flotte ne demande aucune merge request sur Thanos : on pose le label sur le cluster, la stack apparaît.
 
 Les values Helm sont empilées en couches, de la plus générique à la plus spécifique :
 
 ```text
-values/common/            defaults partagés par toutes les stacks
-values/thanos-common/     defaults de l'archétype « stack régional »
-values/thanos-<type>/     surcharge par type de bucket
-values/thanos-<tenant>/   surcharge dédiée à un tenant
+values/common/                          defaults partagés par toutes les stacks
+values/thanos-common/                   defaults de l'archétype « stack régionale »
+values/thanos-stack/                    flags et hostnames, communs à tous les environnements
+values/thanos-<type>/                   surcharge par type de bucket
+<env>/values/...                        les mêmes couches, propres à un environnement
+<env>/values/thanos-<tenant>-<type>/    surcharge dédiée à un tenant
 ```
 
-L'option qui rend le tout praticable est `ignoreMissingValueFiles: true` : chaque étage devient optionnel. On déclare les 4 couches partout et seules celles qui existent s'appliquent.
+Tout repose sur `ignoreMissingValueFiles: true`, qui rend chaque étage optionnel. On déclare toutes les couches partout et seules celles qui existent s'appliquent.
+
+L'ApplicationSet ne porte que l'identité de la stack. Les flags, les hostnames et le sizing vivent dans un chart wrapper du repo, qui embarque le chart Thanos en dépendance. Un bloc `values:` inline en goTemplate ne se rend que dans ArgoCD, si bien que ni `helm template` ni la revue d'une MR ne le voient. Le sortir de l'ApplicationSet rend chaque stack reproductible en local.
+
+Un opt-in par stack se branche sur le même mécanisme. La couche `thanos-receive-ha` est nommée `thanos-receive-ha-off` quand l'option est désactivée, et `ignoreMissingValueFiles` ignore ce dossier qui n'existe pas.
 
 Les versions récentes d'ArgoCD acceptent le glob dans `valueFiles`. Une couche découpée en 12 fichiers par composant tient alors en 1 ligne au lieu de 12 :
 
