@@ -238,6 +238,21 @@ Reste un trou que la CI verte ne bouche pas : automerger une version publiée il
 
 `digest` est le type qu'on oublie et c'est le plus intéressant des 4. Un update `digest` seul veut dire que la version n'a pas bougé mais que le SHA derrière le tag, si, donc que quelqu'un a redéplacé `v7` sur un autre commit. C'est précisément le scénario contre lequel on épingle et c'est aussi le type le plus automergé. Il a plus besoin du cooldown que les autres.
 
+Sauf qu'un digest d'image Docker n'a pas de date de release. Depuis Renovate 42, `minimumReleaseAgeBehaviour` vaut `timestamp-required` par défaut : sans date, l'update est bloqué indéfiniment, le check `renovate/stability-days` reste `pending` et la PR pourrit des semaines. Il faut donc relâcher les digests explicitement :
+
+```json title="renovate.json"
+{
+  "packageRules": [
+    {
+      "matchUpdateTypes": ["digest"],
+      "minimumReleaseAgeBehaviour": "timestamp-optional"
+    }
+  ]
+}
+```
+
+Le cooldown s'applique encore quand une date existe. Un digest Docker passe sans attendre, ce qui reste mieux qu'un digest qu'on ne merge jamais.
+
 Les 2 règles ne se recouvrent pas : celle-ci ne pose que `minimumReleaseAge`, l'automerge reste défini par la règle précédente. Renovate applique les settings de chaque règle indépendamment, sans héritage de l'une vers l'autre, donc un `major` récupère le cooldown et rien d'autre - il attend toujours une revue.
 
 Sur Dependabot, le même réglage se pose par écosystème et il existe déjà par défaut à 3 jours :
