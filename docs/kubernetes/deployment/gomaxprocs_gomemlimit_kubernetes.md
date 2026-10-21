@@ -63,7 +63,7 @@ Sans `GOMEMLIMIT`, seul `GOGC` pilote le GC : avec `GOGC=100`, la heap peut grim
 
 La règle : **90% de `limits.memory`**. `GOMEMLIMIT` compte déjà tout ce que le runtime Go gère (heap, stacks de goroutines), les 10% restants couvrent ce qu'il ne voit pas : allocations cgo, binaire et fichiers mappés en mémoire.
 
-### Solution 1 - KimMachineGun/automemlimit (dans le code)
+### Solution 1 - [KimMachineGun/automemlimit](https://github.com/KimMachineGun/automemlimit) (dans le code)
 
 C'est l'équivalent d'`automaxprocs` pour la mémoire : il lit la limite du cgroup au démarrage et pose `GOMEMLIMIT` à 90% par défaut.
 
@@ -145,7 +145,7 @@ Kubernetes injecte les valeurs de `limits.memory` et `limits.cpu` directement da
 
 Les fractions de CPU sont arrondies à l'entier supérieur : `limits.cpu: "1.5"` donne `GOMAXPROCS=2`, `250m` donne `1`. Sans `limits.cpu` sur le conteneur, Kubernetes injecte les limits du pod, ou à défaut le CPU allocatable du node, ce qui ramène au problème de départ.
 
-### Solution 2 - uber-go/automaxprocs (dans le code)
+### Solution 2 - [uber-go/automaxprocs](https://github.com/uber-go/automaxprocs) (dans le code)
 
 `automaxprocs` lit les cgroups du conteneur au démarrage et appelle `runtime.GOMAXPROCS()` avec la limite CPU arrondie à l'inférieur, minimum 1 : `limits.cpu: "1.5"` donne `1`, là où `resourceFieldRef` donne `2`. Pas de variable d'environnement, pas de config K8s, et il ne fait rien si l'env var `GOMAXPROCS` existe.
 
