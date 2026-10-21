@@ -8,7 +8,9 @@
 *[OCSP]: Online Certificate Status Protocol, la vérification de révocation d'un certificat
 *[PDB]: PodDisruptionBudget, le nombre de pods qu'une éviction volontaire peut retirer à la fois
 *[RTT]: Round-Trip Time, le temps d'un aller-retour réseau
+*[skew]: Écart entre le nombre de pods d'un domaine et celui du domaine le moins chargé, borné par maxSkew
 *[TSDB]: Time Series Database, une base de séries temporelles, comme le stockage local de Prometheus
 *[TTFB]: Time To First Byte, le délai avant de recevoir le premier octet de la réponse
 *[TTL]: Time To Live, la durée de vie d'une entrée avant son expiration
 *[ULID]: Identifiant unique triable par date, qui nomme chaque block Thanos
+*[WAL]: Write-Ahead Log, le journal qu'une base écrit avant d'appliquer une modification et rejoue au redémarrage
