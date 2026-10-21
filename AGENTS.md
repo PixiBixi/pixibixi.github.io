@@ -259,7 +259,7 @@ When writing or rewriting an article, apply these whenever the condition holds (
 - **`tested_with`**: the article gives commands or configs tied to a version (flags, API fields, defaults) → list the versions actually tested, e.g. `"HAProxy 3.0+"`. Never invent one: no source, no badge.
 - **`variables`**: the code blocks repeat a value the reader must replace (namespace, cluster, bucket, hostname) → declare it and write `<name>` in the blocks.
 - **`skill`**: a skill distilled from the article exists in the `wiki` plugin of PixiBixi/claude-skills (`plugins/wiki/skills/<name>`) → set `skill: <name>`. Never for a skill that is not published there: the callout's install command would fail.
-- **Glossary `*[TERM]: ...`**: an acronym the target reader may not know and that the prose does not expand (NUMA, IRQ, TTFB) → add it to `includes/abbreviations.md` (wiki-wide, sorted), never at the bottom of the article. Check it is not already there. Not every acronym: K8s nouns, HTTP, CPU, DNS and the like are left alone. One sentence in French, no em dash.
+- **Glossary `*[TERM]: ...`**: an acronym or a jargon term the target reader may not know and that the prose does not explain (NUMA, IRQ, TTFB, fan-out) → add it to `includes/abbreviations.md` (wiki-wide, sorted), never at the bottom of the article. Check it is not already there. Not every acronym: K8s nouns, HTTP, CPU, DNS and the like are left alone. One sentence in French, no em dash.
 
 ## Gotchas
 

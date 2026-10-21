@@ -1,5 +1,6 @@
 <!-- markdownlint-disable-file MD041 -->
 *[ECDSA]: Signature sur courbes elliptiques, des handshakes TLS bien moins coûteux que RSA
+*[fan-out]: Une requête envoyée en parallèle à plusieurs backends, dont on attend toutes les réponses avant de répondre
 *[IRQ]: Interruption matérielle envoyée par une carte réseau ou un disque au CPU
 *[MTU]: Maximum Transmission Unit, la taille maximale d'un paquet sur le lien
 *[NUMA]: Non-Uniform Memory Access, une machine multi-socket où la latence mémoire dépend du CPU
