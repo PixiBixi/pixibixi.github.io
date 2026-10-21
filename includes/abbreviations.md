@@ -6,7 +6,9 @@
 *[MTU]: Maximum Transmission Unit, la taille maximale d'un paquet sur le lien
 *[NUMA]: Non-Uniform Memory Access, une machine multi-socket où la latence mémoire dépend du CPU
 *[OCSP]: Online Certificate Status Protocol, la vérification de révocation d'un certificat
+*[PDB]: PodDisruptionBudget, le nombre de pods qu'une éviction volontaire peut retirer à la fois
 *[RTT]: Round-Trip Time, le temps d'un aller-retour réseau
+*[TSDB]: Time Series Database, une base de séries temporelles, comme le stockage local de Prometheus
 *[TTFB]: Time To First Byte, le délai avant de recevoir le premier octet de la réponse
 *[TTL]: Time To Live, la durée de vie d'une entrée avant son expiration
 *[ULID]: Identifiant unique triable par date, qui nomme chaque block Thanos
