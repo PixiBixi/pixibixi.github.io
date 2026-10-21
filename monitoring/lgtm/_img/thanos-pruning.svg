@@ -36,7 +36,7 @@
     <text class="sub" x="210" y="172" font-size="10">au label annoncé</text>
   </g>
 
-  <!-- branche 1 : compatible -->
+  <!-- stack 1 : compatible -->
   <path class="edge" d="M 314 144 C 342 144, 346 46, 372 46" stroke-width="1" fill="none" marker-end="url(#arr)"/>
   <g>
     <rect class="box-fill box-stroke" x="378" y="14" width="254" height="64" rx="4"/>
@@ -46,7 +46,7 @@
     <text class="ok" x="394" y="70" font-size="10">compatible, interrogée</text>
   </g>
 
-  <!-- branche 2 : contredite, élaguée -->
+  <!-- stack 2 : contredite, élaguée -->
   <path class="edge" d="M 314 150 L 372 150" stroke-width="1" stroke-dasharray="3 3" fill="none" marker-end="url(#arr)"/>
   <g>
     <rect class="box-fill box-stroke" x="378" y="118" width="254" height="64" rx="4"/>
@@ -56,7 +56,7 @@
     <text class="sub" x="394" y="174" font-size="10">contredite, écartée</text>
   </g>
 
-  <!-- branche 3 : rien à contredire -->
+  <!-- stack 3 : rien à contredire -->
   <path class="edge" d="M 314 156 C 342 156, 346 254, 372 254" stroke-width="1" fill="none" marker-end="url(#arr)"/>
   <g>
     <rect class="box-fill box-stroke" x="378" y="222" width="254" height="64" rx="4"/>
@@ -67,7 +67,7 @@
   </g>
 
   <!-- légende -->
-  <text class="page" x="8" y="212" font-size="11" font-weight="600">Une branche n'est écartée</text>
+  <text class="page" x="8" y="212" font-size="11" font-weight="600">Une stack n'est écartée</text>
   <text class="page" x="8" y="228" font-size="11" font-weight="600">que sur un label</text>
   <text class="page" x="8" y="244" font-size="11" font-weight="600">qu'elle annonce.</text>
 </svg>
