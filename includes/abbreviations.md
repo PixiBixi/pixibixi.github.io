@@ -2,8 +2,11 @@
 *[ECDSA]: Signature sur courbes elliptiques, des handshakes TLS bien moins coûteux que RSA
 *[fan-out]: Une requête envoyée en parallèle à plusieurs backends, dont on attend toutes les réponses avant de répondre
 *[IRQ]: Interruption matérielle envoyée par une carte réseau ou un disque au CPU
+*[LRU]: Least Recently Used, on évicte d'abord l'entrée lue le moins récemment
 *[MTU]: Maximum Transmission Unit, la taille maximale d'un paquet sur le lien
 *[NUMA]: Non-Uniform Memory Access, une machine multi-socket où la latence mémoire dépend du CPU
 *[OCSP]: Online Certificate Status Protocol, la vérification de révocation d'un certificat
 *[RTT]: Round-Trip Time, le temps d'un aller-retour réseau
 *[TTFB]: Time To First Byte, le délai avant de recevoir le premier octet de la réponse
+*[TTL]: Time To Live, la durée de vie d'une entrée avant son expiration
+*[ULID]: Identifiant unique triable par date, qui nomme chaque block Thanos
