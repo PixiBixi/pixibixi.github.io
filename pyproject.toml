@@ -12,3 +12,7 @@ dependencies = [
     "cairosvg",
     "mkdocs-rss-plugin==1.19.0",
 ]
+
+[tool.uv]
+# glightbox 0.5.2 drops every <img> with selectolax 1.x (empty <p> in place of each image).
+constraint-dependencies = ["selectolax<1"]
