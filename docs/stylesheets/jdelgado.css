@@ -1158,9 +1158,6 @@ body {
   border-bottom: 0;
   text-decoration: underline dotted var(--jd-accent);
   text-underline-offset: 3px;
-  background: var(--jd-abbr-hl);
-  border-radius: 3px;
-  padding: 0 2px;
   cursor: help;
 }
 

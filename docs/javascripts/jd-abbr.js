@@ -77,7 +77,10 @@
 
   function init() {
     hide();
+    var seen = {};
     document.querySelectorAll(".md-typeset abbr[title]").forEach(function (a) {
+      var key = a.textContent.trim().toLowerCase();
+      if (!seen[key]) { seen[key] = true; a.classList.add("jd-abbr--first"); }
       a.setAttribute("data-jd-tip", a.getAttribute("title"));
       a.removeAttribute("title");
       if (!a.hasAttribute("tabindex")) a.setAttribute("tabindex", "0");

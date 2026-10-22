@@ -12,10 +12,14 @@
 .md-typeset abbr[data-jd-tip] {
   text-decoration: underline dotted var(--jd-accent);
   text-underline-offset: 3px;
+  cursor: help;
+}
+
+/* Only the first occurrence of a term on the page is highlighted, the rest keep the underline. */
+.md-typeset abbr.jd-abbr--first {
   background: var(--jd-abbr-hl);
   border-radius: 3px;
   padding: 0 2px;
-  cursor: help;
 }
 
 .jd-tip {
