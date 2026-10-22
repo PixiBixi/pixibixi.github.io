@@ -16,7 +16,7 @@ Les paramètres par défaut de HAProxy suffisent pour la plupart des infrastruct
 
 ### nbthread
 
-Depuis HAProxy 1.8, `nbthread` remplace l'ancien `nbproc` (déprécié). Le réglage de base est un thread par cœur CPU.
+Depuis HAProxy 1.8, `nbthread` remplace l'ancien `nbproc`, supprimé en 2.5 (sa présence fait échouer le démarrage). Le réglage de base est un thread par cœur CPU.
 
 ```haproxy
 global
@@ -48,10 +48,12 @@ global
 
 | Policy | Comportement |
 | ------ | ------------ |
-| `performance` | Utilise tous les cœurs performance sur tous les NUMA nodes (défaut en 3.3) |
+| `performance` | Comme `group-by-ccx`, en écartant les cœurs à moins de 80 % des plus performants, typiquement les E-cores (défaut en 3.3) |
 | `group-by-ccx` | Un thread group par CCX, pour réduire la latence entre threads sur les AMD EPYC |
 | `group-by-cluster` | Un thread group par cluster CPU, proche de `group-by-ccx` sur la plupart des serveurs |
 | `efficiency` | N'utilise que les cœurs basse consommation (E-cores Intel) |
+| `resource` | N'utilise que le plus petit cluster CPU, pour limiter HAProxy au strict minimum |
+| `none` | Aucune sélection, tous les CPUs activés sont utilisables |
 | `first-usable-node` | Se limite au premier NUMA node (défaut en 3.2) |
 
 !!! tip
@@ -72,7 +74,7 @@ HAProxy 2.4 à 3.2 se limite par défaut au premier NUMA node pour éviter les �
 
 Un thread group est un ensemble de threads qui partagent le même espace de travail. Les threads d'un même groupe coopèrent (partage de connexions, de caches internes). Les threads de groupes différents restent presque indépendants et se disputent peu de verrous.
 
-HAProxy supporte au plus 64 threads par groupe et 16 groupes, soit 1024 threads au total. Une machine de plus de 64 cœurs a donc besoin de plusieurs thread groups.
+HAProxy supporte au plus 64 threads par groupe sur une machine 64 bits. Depuis la 3.2, il accepte 32 groupes et 1024 threads au total, contre 16 groupes et 256 threads de la 2.7 à la 3.1. Une machine de plus de 64 cœurs a donc besoin de plusieurs thread groups.
 
 En 3.2+, `cpu-policy` crée ces groupes automatiquement. De la 2.7 à la 3.1, on les définit à la main :
 
@@ -103,7 +105,7 @@ global
 ```
 
 !!! warning
-    Dès qu'on définit `nbthread`, `thread-groups` ou `cpu-map` manuellement, l'auto-détection NUMA est désactivée. Préférer `cpu-policy` quand la version le permet.
+    Dès qu'on définit `nbthread` ou `cpu-map` ou qu'on lance HAProxy sous `taskset`, l'auto-détection NUMA est désactivée. On préfère `cpu-policy` quand la version le permet.
 
 ### Shards (contention sur le socket d'écoute)
 
@@ -269,7 +271,7 @@ defaults
     timeout client-fin 1s
 ```
 
-Pour du long-polling ou du streaming (beaconing, DASH), on garde des keep-alive longs :
+Pour du long-polling ou du streaming (DASH), on garde des keep-alive longs :
 
 ```haproxy
 defaults
@@ -321,7 +323,7 @@ Le x86 est 1,4x à 4x plus rapide par cœur selon l'algorithme. L'écart entre E
 
 En tenant compte du prix (GCP spot, standard-16, avril 2026 : C4a environ 179$/mois, C4d environ 216$/mois), le x86 reste aussi plus rentable en crypto pure :
 
-| Algo | C4a sign/s/$ | C4d sign/s/$ | Avantage |
+| Algo | C4a sign/s par $/mois et par vCPU | C4d sign/s par $/mois et par vCPU | Avantage |
 | ---- | ------------ | ------------ | -------- |
 | ECDSA P-256 | 4 545 | 5 131 | x86 +13% |
 | RSA 2048 | 113 | 343 | x86 +3x |
@@ -366,7 +368,7 @@ TLS 1.3 supporte le 0-RTT : le client envoie des données dès le premier paquet
 bind *:443 ssl crt /etc/haproxy/certs/ allow-0rtt
 ```
 
-HAProxy reçoit la requête immédiatement sans attendre le handshake complet. Pour relayer le 0-RTT vers les backends :
+`allow-0rtt` s'active par ligne `bind` et HAProxy reçoit alors la requête sans attendre le handshake complet. Il faut aussi que le client négocie l'ALPN. Pour relayer le 0-RTT vers les backends :
 
 ```haproxy
 backend app_servers
@@ -377,7 +379,7 @@ backend app_servers
 `retry-on 0rtt-rejected` relance automatiquement la requête en full handshake si le backend refuse les early data.
 
 !!! danger "Attaques par rejeu"
-    Le 0-RTT est vulnérable aux attaques par rejeu, car un attaquant peut renvoyer les early data. N'activer `allow-0rtt` que sur des requêtes **idempotentes** (GET, HEAD). Pour les requêtes non-idempotentes, utiliser `wait-for-handshake`.
+    Le 0-RTT est vulnérable aux attaques par rejeu, car un attaquant peut renvoyer les early data. `allow-0rtt` s'applique à tout le `bind` et ne filtre pas les méthodes. C'est `wait-for-handshake` qui fait attendre la fin du handshake aux requêtes **non idempotentes**, en laissant passer les méthodes sûres (GET, HEAD, OPTIONS).
 
 ```haproxy
 http-request wait-for-handshake if !{ method GET HEAD OPTIONS }
@@ -443,7 +445,7 @@ global
 L'OCSP stapling réduit la latence TLS, car le client n'a plus besoin de contacter la CA pour vérifier le certificat.
 
 !!! danger "`ocsp-update on` ne se met pas sur une ligne `bind`"
-    Cette erreur est fréquente. La doc HAProxy est explicite : « `ocsp-update on` argument can be included only in a `crt-list`. It cannot be added to a `bind` line. » Sur un `bind`, le parsing de la configuration échoue. Les 3 emplacements valides sont l'option globale, une crt-list et un crt-store.
+    Cette erreur est fréquente. `ocsp-update` est une option de certificat et non de `bind`. La doc HAProxy 3.3 indique que pour l'activer sur une ligne `bind`, on passe par un crt-store ou par l'option globale `ocsp-update.mode` (disponible depuis la 3.0). Les 3 emplacements valides sont l'option globale, une crt-list et un crt-store.
 
 L'option globale, la plus simple, s'applique à tous les certificats :
 
@@ -516,7 +518,7 @@ sysctl -w fs.nr_open=1048576
 !!! warning "`tcp_fin_timeout` ne touche pas au TIME_WAIT"
     Les 2 réglages sont souvent confondus. `tcp_fin_timeout` contrôle l'état **FIN_WAIT_2**, quand on a envoyé un FIN et qu'on attend celui d'en face. La durée du TIME_WAIT est la constante `TCP_TIMEWAIT_LEN`, fixée à 60s dans le kernel. Aucun sysctl ne la change et seule une recompilation la modifie.
 
-Le sysctl reste utile, car il libère les FIN_WAIT_2 laissés par des peers qui ne referment jamais, mais il ne règle pas un problème de TIME_WAIT. Pour celui-ci, `tcp_tw_reuse=1` autorise le kernel à réutiliser un socket en TIME_WAIT pour une nouvelle connexion **sortante**. C'est le cas d'un load balancer qui ouvre des milliers de connexions par seconde vers ses backends.
+Le sysctl reste utile, car il libère les FIN_WAIT_2 laissés par des peers qui ne referment jamais, mais il ne règle pas un problème de TIME_WAIT. Pour celui-ci, `tcp_tw_reuse=1` autorise le kernel à réutiliser un socket en TIME_WAIT pour une nouvelle connexion **sortante**. C'est le cas d'un load balancer qui ouvre des milliers de connexions par seconde vers ses backends. Depuis Linux 4.19, la valeur par défaut est 2, qui n'active la réutilisation que sur le loopback : il faut donc passer à 1 explicitement.
 
 `ip_local_port_range="1024 65023"` étend la plage de ports éphémères à environ 64k ports. Le défaut `32768 60999` n'en donne qu'environ 28k, trop peu quand HAProxy ouvre beaucoup de connexions sortantes.
 
@@ -561,7 +563,7 @@ HAProxy calcule son `ulimit-n` à partir du `maxconn` et il n'y a pas besoin de 
 | `tune.pool-low-fd-ratio` | 20 | HAProxy **arrête de mettre** de nouvelles connexions dans le pool idle |
 | `tune.pool-high-fd-ratio` | 25 | HAProxy **ferme** des connexions idle quand il doit en ouvrir une neuve et ne peut pas en réutiliser |
 
-Les valeurs par défaut sont très conservatrices, puisqu'à peine 1 FD sur 4 peut servir de connexion backend en pool. Sur du trafic à longs keep-alive (beaconing, long-polling), les connexions du pool sont fermées bien avant toute pression sur les FD. Les reconnexions TCP qui en résultent ne servent à rien et consomment du CPU.
+Les valeurs par défaut sont très conservatrices, puisqu'à peine 1 FD sur 4 peut servir de connexion backend en pool. Sur du trafic à longs keep-alive (long-polling, streaming), les connexions du pool sont fermées bien avant toute pression sur les FD. Les reconnexions TCP qui en résultent ne servent à rien et consomment du CPU.
 
 ```haproxy
 global
@@ -629,7 +631,7 @@ spec:
 
 ## Réutiliser les connexions backend
 
-Par défaut, HAProxy ouvre une nouvelle connexion TCP vers le backend pour chaque requête client. Sur du HTTP/1.1 avec TLS, chaque requête coûte alors un handshake TCP et un handshake TLS, en latence comme en CPU.
+Sans réutilisation, chaque requête client vers un backend en HTTP/1.1 avec TLS coûte un handshake TCP et un handshake TLS, en latence comme en CPU. Par défaut, HAProxy est en mode `safe` : il réutilise les connexions idle, mais seulement à partir de la 2e requête d'une session.
 
 `http-reuse` réutilise les connexions idle vers les backends :
 
@@ -672,6 +674,9 @@ defaults
 
 HAProxy décide seul quand le splice est utile. Le gain se voit surtout sur du gros débit (vidéo, téléchargements) et beaucoup moins sur du trafic HTTP aux petites réponses.
 
+!!! warning "Sans effet quand HAProxy termine TLS"
+    `splice()` copie des octets bruts d'un socket à l'autre. Quand HAProxy déchiffre le TLS, les données passent forcément par l'espace utilisateur et le splice ne s'applique pas. La compression désactive aussi ce transfert direct.
+
 ### tune.ssl.maxrecord
 
 `tune.ssl.maxrecord` limite la taille des records TLS envoyés au début d'une connexion. Par défaut, un record TLS fait jusqu'à 16 KB et le client ne peut le déchiffrer qu'après l'avoir reçu en entier.
@@ -695,7 +700,7 @@ global
 | Mode | Comportement |
 | ---- | ------------ |
 | `on` | Envoie vers le thread le moins chargé (défaut, adapté aux connexions longues) |
-| `fair` | Round-robin entre tous les threads (adapté aux connexions courtes et au très haut débit) |
+| `fair` | Round-robin entre tous les threads, depuis HAProxy 2.8 (adapté aux connexions courtes et aux machines à très nombreux threads) |
 | `off` | Le thread qui accepte garde la connexion (risque de déséquilibre) |
 
 ### tune.sched.low-latency
@@ -754,7 +759,7 @@ defaults
     timeout server  2s
     retries 2
     retry-on 502 503 504 0rtt-rejected conn-failure empty-response response-timeout
-    option redispatch
+    option redispatch 1
 
 backend app_servers
     default-server inter 1s fall 1 rise 10 observe layer7 error-limit 3 on-error mark-down
@@ -765,7 +770,7 @@ backend app_servers
 | Paramètre | Rôle |
 | --------- | ---- |
 | `retry-on` | Liste des erreurs qui déclenchent un retry sur un autre serveur |
-| `option redispatch` | Autorise le retry sur un autre serveur (sinon le retry vise le même) |
+| `option redispatch 1` | Envoie chaque retry sur un autre serveur. Sans valeur, seul le dernier retry change de serveur |
 | `retries 2` | Nombre maximum de tentatives |
 | `observe layer7` | Surveille le trafic réel (codes HTTP, headers illisibles, timeouts) en plus des health checks |
 | `error-limit 3` | Nombre d'erreurs consécutives qui déclenche `on-error` (défaut 10) |
@@ -785,7 +790,7 @@ En layer7, les codes valides sont 100 à 499, 501 et 505. Un 500, 502, 503 ou 50
 
 ### spread-checks
 
-Par défaut, les health checks se lancent tous en même temps. Sur 500 backends, ils produisent un pic de trafic inutile.
+Au démarrage, HAProxy étale déjà les premiers health checks sur l'intervalle. Ensuite, chaque serveur garde le même rythme et les checks de 500 backends peuvent se resynchroniser en pics de trafic.
 
 ```haproxy
 global
@@ -800,10 +805,10 @@ Sur les gros volumes, les logs peuvent devenir le goulot d'étranglement.
 
 ```haproxy
 global
-    log /dev/log local0 notice
+    log /dev/log local0 info
 ```
 
-Passer de `info` à `notice` ou `warning` réduit fortement le volume de logs. En production, `notice` suffit souvent en dehors du debug.
+HAProxy émet les logs de requêtes au niveau `info`. Un plafond à `notice` ou `warning` ne réduit donc pas le volume, il supprime **tous** les logs de requêtes, erreurs comprises.
 
 Sur les frontends à très haut débit, on désactive le log par requête pour ne garder que les erreurs :
 
@@ -812,7 +817,7 @@ frontend high_traffic
     option dontlog-normal
 ```
 
-`dontlog-normal` ne journalise plus que les cas anormaux, c'est-à-dire les **5xx**, les erreurs, les timeouts, les retries et les redispatch. Les **4xx** n'en font pas partie, car un 404 ou un 403 servi proprement compte comme une connexion « normale » et disparaît des logs. Pour suivre les 4xx, on garde les logs complets et `option log-separate-errors` les envoie ailleurs.
+`dontlog-normal` ne journalise plus que les cas anormaux, c'est-à-dire les **5xx**, les erreurs, les timeouts, les retries et les redispatch. Les **4xx** n'en font pas partie, car un 404 ou un 403 servi proprement compte comme une connexion « normale » et disparaît des logs. Pour suivre les 4xx, on garde les logs complets. `option log-separate-errors` fait passer les erreurs, timeouts, retries, redispatch et 5xx du niveau `info` au niveau `err`. Le syslog peut alors les isoler dans un fichier à part.
 
 ## Compresser sans saturer le CPU
 
@@ -865,7 +870,7 @@ global
     tune.ssl.cachesize 100000
     tune.ssl.lifetime 600
     ocsp-update.mode on
-    log /dev/log local0 notice
+    log /dev/log local0 info
 
 defaults
     mode http
@@ -892,7 +897,7 @@ backend app_servers
     server web2 10.0.0.2:8080 maxconn 2000 check inter 3s fall 3 rise 2
 ```
 
-Cette config ne pose pas `tune.bufsize` et garde le défaut de 16 KB. Avec `maxconn 300000`, passer à 64 KB demanderait environ 37 GB de RAM pour les seuls buffers. La doc HAProxy le dit explicitement : « At least the global maxconn parameter should be decreased by the same factor as this one is increased. » On monte le `bufsize` ou on monte le `maxconn`, rarement les 2.
+Cette config ne pose pas `tune.bufsize` et garde le défaut de 16 KB. Avec `maxconn 300000`, passer à 64 KB demanderait environ 37 GB de RAM pour les seuls buffers. La doc HAProxy le dit explicitement : « At least the global maxconn parameter should be decreased by the same factor as this one is increased. » Monter le `bufsize` impose donc de baisser le `maxconn` du même facteur.
 
 `tune.ssl.default-dh-param` n'y figure pas non plus, car il ne sert plus en ECDHE ni en TLS 1.3.
 
