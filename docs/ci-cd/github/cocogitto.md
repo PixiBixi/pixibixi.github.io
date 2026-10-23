@@ -10,7 +10,7 @@ tags:
 
 # Releases automatiques avec cocogitto
 
-Cocogitto valide les conventional commits, bumpe le semver automatiquement et génère un CHANGELOG. Tout se déclenche sur `git push` vers master, sans PR intermédiaire.
+Cocogitto valide les conventional commits, bumpe le semver automatiquement et génère un CHANGELOG. Tout se déclenche sur `git push` vers `main`, sans PR intermédiaire.
 
 ## Cocogitto vs release-please
 
@@ -18,8 +18,8 @@ Les 2 outils s'appuient sur les [Conventional Commits](https://www.conventionalc
 
 | | cocogitto | release-please |
 |---|---|---|
-| **Déclencheur** | Push direct sur master | Merge d'une Release PR |
-| **Validation locale** | `cog check`, hook pre-commit | Aucune |
+| **Déclencheur** | Push direct sur `main` | Merge d'une Release PR |
+| **Validation locale** | `cog check`, hook `commit-msg` | Aucune |
 | **Bump** | Immédiat au push | À la merge de la PR |
 | **CHANGELOG** | Format cog (`- - -`) | Keep a Changelog |
 | **GitHub Release** | `gh release create` à ajouter | Créée automatiquement |
@@ -30,10 +30,12 @@ En pratique, les 2 flows divergent dès le premier push :
 
 ![Comparaison cocogitto vs release-please](./cocogitto-comparison.svg)
 
-Release-please accumule les commits dans une PR ; la release n'a lieu que si quelqu'un merge manuellement, c'est un gate humain intégré. Cocogitto bumpe au push : zéro friction, mais zéro gate, il faut de la discipline sur les branches.
+Release-please accumule les commits dans une PR et ne publie qu'au merge de celle-ci, avec une approbation humaine avant chaque release. Cocogitto bumpe dès le push, sans approbation, et la discipline sur les branches remplace cette étape.
 
-!!! warning "Bumps à répétition"
-    Pousser plusieurs commits `fix:` directement sur master = autant de patch bumps. Travailler sur une branche feature et merger en une fois produit un seul bump.
+Cocogitto convient à un projet solo ou à une petite équipe qui merge directement sur `main`, valide ses commits en local et veut publier sans étape manuelle. Release-please convient à une équipe qui impose une review avant chaque release et travaille déjà avec la PR comme unité de travail.
+
+!!! warning "Un bump par push"
+    Cocogitto calcule un seul bump par push, sur l'ensemble des commits depuis le dernier tag. Pousser 3 `fix:` l'un après l'autre sur `main` produit 3 patch bumps, alors qu'une branche feature mergée en une fois n'en produit qu'un.
 
 ## Installation
 
@@ -41,22 +43,17 @@ Release-please accumule les commits dans une PR ; la release n'a lieu que si que
 # macOS
 brew install cocogitto
 
-# Linux (binaire direct)
-curl -L https://github.com/cocogitto/cocogitto/releases/latest/download/cocogitto-x86_64-unknown-linux-musl.tar.gz \
-  | tar xz -C ~/.local/bin
+# Linux (binaire direct) : le nom de l'archive porte la version
+COG_VERSION=7.0.0
+curl -sSfL "https://github.com/cocogitto/cocogitto/releases/download/${COG_VERSION}/cocogitto-${COG_VERSION}-x86_64-unknown-linux-musl.tar.gz" \
+  | tar xz --strip-components=1 -C ~/.local/bin x86_64-unknown-linux-musl/cog
 ```
 
 ## Configuration
 
 ```toml title="cog.toml"
 ignore_merge_commits = true
-tag_prefix = "v"          # obligatoire si vos tags existants sont en v*
-
-[commit_types]
-# Types custom pour le changelog
-refacto = { changelog_title = "Refactoring" }
-# perf ne bumpe pas par défaut - voir « Logique de bump »
-perf = { changelog_title = "Performance Improvements", bump_patch = true }
+tag_prefix = "v"          # obligatoire quand les tags existants sont en v*
 
 [changelog]
 path = "CHANGELOG.md"
@@ -67,8 +64,10 @@ owner = "mon-org"
 authors = []
 ```
 
+Les types de commit qui déclenchent un bump se règlent dans `[commit_types]`, décrit dans [Logique de bump](#logique-de-bump).
+
 !!! note "tag_prefix"
-    Sans `tag_prefix = "v"`, cocogitto cherche des tags `1.2.3` (sans `v`). Si les tags existants sont `v1.2.3` (format release-please, goreleaser…), ce champ est obligatoire.
+    Sans `tag_prefix = "v"`, cocogitto cherche des tags `1.2.3` sans `v`. Quand les tags existants sont en `v1.2.3`, comme ceux de release-please, ce champ est obligatoire.
 
 ## CHANGELOG.md
 
@@ -96,15 +95,15 @@ Cocogitto requiert un séparateur `- - -` pour savoir où insérer chaque nouvel
 ```
 
 !!! warning "Migration depuis release-please"
-    Le CHANGELOG généré par release-please n'a pas de `- - -`. Il faut en ajouter un manuellement avant le premier `cog bump` sinon l'erreur `cannot find default separator` bloque le CI.
+    Le CHANGELOG généré par release-please n'a pas de `- - -`. Il faut en ajouter un à la main avant le premier `cog bump`, faute de quoi l'erreur `cannot find default separator` fait échouer le job de release.
 
 ## Validation locale
 
 ```bash
-# Valider tous les commits depuis le dernier tag
+# Valider tout l'historique
 cog check
 
-# Valider uniquement depuis le dernier tag (plus rapide)
+# Valider uniquement depuis le dernier tag
 cog check --from-latest-tag
 
 # Voir ce que le prochain bump produirait
@@ -118,7 +117,7 @@ cog bump --major   # 1.2.3 → 2.0.0
 
 ## Hook pre-commit
 
-Cog peut valider le message de commit avant qu'il soit enregistré :
+Cog peut valider le message de commit avant son enregistrement, par un hook `commit-msg` :
 
 ```yaml title=".pre-commit-config.yaml"
 repos:
@@ -127,136 +126,167 @@ repos:
       - id: cog-verify
         name: Conventional commit check
         language: system
-        entry: cog verify
+        entry: cog verify --file
         stages: [commit-msg]
-        args: ["--file", ".git/COMMIT_EDITMSG"]
 ```
+
+pre-commit ajoute lui-même le chemin du message à la fin de la commande, d'où le `--file` sans valeur. Un `args: ["--file", ".git/COMMIT_EDITMSG"]` en plus fait passer le chemin 2 fois et cog refuse la commande, puisque `--file` et le message positionnel s'excluent. Le hook ne s'active qu'après `pre-commit install --hook-type commit-msg`.
 
 ## GitHub Actions
 
-<!-- markdownlint-disable MD046 -->
-??? example ".github/workflows/release.yml"
-    ```yaml
-    name: Release
+```yaml title=".github/workflows/release.yml"
+name: Release
 
-    on:
-      push:
-        branches: [master]
+on:
+  push:
+    branches: [main]
 
+permissions: {}
+
+jobs:
+  release:
+    runs-on: ubuntu-24.04
     permissions:
-      contents: write
-      packages: write
+      contents: write   # commit du CHANGELOG, tag et GitHub Release
+    outputs:
+      bumped: ${{ steps.bump.outputs.bumped }}
+      tag_name: ${{ steps.bump.outputs.tag_name }}
+    steps:
+      - uses: step-security/harden-runner@dc2769abcc0fcfbadfc1df54081c1608579ef6b2 # v2.22.2
+        with:
+          egress-policy: audit
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0          # obligatoire : cog calcule le bump sur tout l'historique
+          persist-credentials: false
 
-    jobs:
-      release:
-        runs-on: ubuntu-latest
-        outputs:
-          bumped: ${{ steps.bump.outputs.bumped }}
-          tag_name: ${{ steps.bump.outputs.tag_name }}
-        steps:
-          - uses: actions/checkout@v7
-            with:
-              fetch-depth: 0          # obligatoire : cog a besoin de tout l'historique
-              token: ${{ secrets.GITHUB_TOKEN }}
+      # installe cog et configure l'identité git du commit de bump
+      - uses: cocogitto/cocogitto-action@52d0023b4396897f1815648e553db2ab8d782f3a # v4.2.0
+        with:
+          git-user: github-actions[bot]
+          git-user-email: github-actions[bot]@users.noreply.github.com
+          command: check
+          args: --from-latest-tag   # ne valide que les commits depuis le dernier tag
 
-          - uses: cocogitto/cocogitto-action@v4
-            with:
-              git-user: github-actions[bot]
-              git-user-email: github-actions[bot]@users.noreply.github.com
-              command: check
-              args: --from-latest-tag   # ne valide que les commits depuis le dernier tag
+      # cog renvoie 0 quand aucun commit ne justifie de bump : une erreur fait échouer le job
+      - name: Bump version
+        id: bump
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          BEFORE=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          cog bump --auto
+          AFTER=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          if [ "$BEFORE" != "$AFTER" ]; then
+            git push --atomic "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" \
+              HEAD:main "refs/tags/${AFTER}"
+            echo "bumped=true" >> "$GITHUB_OUTPUT"
+            echo "tag_name=$AFTER" >> "$GITHUB_OUTPUT"
+          else
+            echo "bumped=false" >> "$GITHUB_OUTPUT"
+          fi
 
-          - name: Bump version
-            id: bump
-            run: |
-              BEFORE=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
-              cog bump --auto || true
-              AFTER=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
-              if [ "$BEFORE" != "$AFTER" ]; then
-                git push
-                git push origin "$AFTER"
-                echo "bumped=true" >> "$GITHUB_OUTPUT"
-                echo "tag_name=$AFTER" >> "$GITHUB_OUTPUT"
-              else
-                echo "bumped=false" >> "$GITHUB_OUTPUT"
-              fi
+      - name: Create GitHub release
+        if: steps.bump.outputs.bumped == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ steps.bump.outputs.tag_name }}
+        run: |
+          set -euo pipefail
+          NOTES=$(awk "/^## .*${TAG#v}/{found=1; next} found && /^- - -/{exit} found{print}" CHANGELOG.md)
+          gh release create "$TAG" \
+            --title "$TAG" \
+            --notes "${NOTES:-Release $TAG}" \
+            --verify-tag
 
-          - name: Create GitHub release
-            if: steps.bump.outputs.bumped == 'true'
-            env:
-              GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            run: |
-              TAG="${{ steps.bump.outputs.tag_name }}"
-              NOTES=$(awk "/^## .*${TAG#v}/{found=1; next} found && /^- - -/{exit} found{print}" CHANGELOG.md)
-              gh release create "$TAG" \
-                --title "$TAG" \
-                --notes "${NOTES:-Release $TAG}" \
-                --verify-tag
+  build-push:
+    needs: release
+    if: needs.release.outputs.bumped == 'true'
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      packages: write   # push vers ghcr.io
+    steps:
+      - uses: step-security/harden-runner@dc2769abcc0fcfbadfc1df54081c1608579ef6b2 # v2.22.2
+        with:
+          egress-policy: audit
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.release.outputs.tag_name }}
+          persist-credentials: false
 
-      build-push:
-        needs: release
-        if: needs.release.outputs.bumped == 'true'
-        runs-on: ubuntu-latest
-        steps:
-          - uses: actions/checkout@v7
-            with:
-              ref: ${{ needs.release.outputs.tag_name }}
+      - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
 
-          - uses: docker/setup-buildx-action@v4
+      - uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-          - uses: docker/login-action@v4
-            with:
-              registry: ghcr.io
-              username: ${{ github.repository_owner }}
-              password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6.2.0
+        id: meta
+        with:
+          images: ghcr.io/${{ github.repository }}
+          tags: |
+            type=semver,pattern={{version}},value=${{ needs.release.outputs.tag_name }}
+            type=semver,pattern={{major}}.{{minor}},value=${{ needs.release.outputs.tag_name }}
+            type=raw,value=latest   # non généré automatiquement hors push de tag natif
+            type=sha,prefix=sha-
 
-          - uses: docker/metadata-action@v6
-            id: meta
-            with:
-              images: ghcr.io/${{ github.repository }}
-              tags: |
-                type=semver,pattern={{version}},value=${{ needs.release.outputs.tag_name }}
-                type=semver,pattern={{major}}.{{minor}},value=${{ needs.release.outputs.tag_name }}
-                type=raw,value=latest   # non généré automatiquement hors push de tag natif
-                type=sha,prefix=sha-
+      - uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          push: true
+          platforms: linux/amd64,linux/arm64
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+```
 
-          - uses: docker/build-push-action@v7
-            with:
-              push: true
-              platforms: linux/amd64,linux/arm64
-              cache-from: type=gha
-              cache-to: type=gha,mode=max
-              tags: ${{ steps.meta.outputs.tags }}
-              labels: ${{ steps.meta.outputs.labels }}
-
-    ```
-<!-- markdownlint-enable MD046 -->
-
-<!-- markdownlint-disable MD046 -->
-!!! warning "cocogitto-action : nom du dépôt et migration v3 → v4"
-    L'action vit sous `cocogitto/cocogitto-action`. Les exemples qui traînent en
-    ligne référencent souvent `oknozor/cocogitto-action` : c'est le même dépôt,
-    transféré du compte personnel du mainteneur vers l'organisation et ça ne
-    fonctionne que par la redirection GitHub. Autant pointer le nom canonique.
-
-    La **v4 est cassante** et l'échec est silencieux au moment du bump :
-
-    | v3 | v4 |
-    |---|---|
-    | `check: true` (défaut) | `command: check` - **obligatoire** |
-    | `check-latest-tag-only: true` | `args: --from-latest-tag` |
-    | `release: true` | `command: bump` + `args` |
-
-    Un input inconnu ne fait qu'un warning côté Actions, mais `command` manquant
-    fait sortir le script en erreur : `Error: No command specified`. Le job release
-    échoue à chaque push sur master.
-
-    v4 embarque aussi cog 6.4.0 au lieu de 6.3.0 - à garder en tête si un
-    comportement de bump change.
-<!-- markdownlint-enable MD046 -->
+Les actions sont épinglées par SHA, les permissions sont posées job par job et le checkout ne garde pas le token, pour les raisons détaillées dans [l'article sur le durcissement](hardening.md). Le step de bump pousse alors le commit et le tag avec le `GITHUB_TOKEN` passé explicitement, en un seul push atomique.
 
 !!! note "tag latest non automatique"
     `docker/metadata-action` ne génère `latest` automatiquement que sur un push de tag GitHub (`on: push: tags: ['v*']`). Ici le trigger est un push de branche, donc il faut `type=raw,value=latest` explicitement.
+
+### Enchaîner GoReleaser dans le même job
+
+Un tag poussé avec le `GITHUB_TOKEN` ne déclenche aucun autre workflow, GitHub bloque ces événements pour éviter les boucles. Un workflow GoReleaser sur `on: push: tags` ne démarre donc pas après le bump. GoReleaser tourne alors dans le job `release`, à la place du step `Create GitHub release`, et reprend la section du CHANGELOG avec `--release-notes` :
+
+```yaml title=".github/workflows/release.yml"
+      - name: Extract release notes
+        if: steps.bump.outputs.bumped == 'true'
+        env:
+          TAG: ${{ steps.bump.outputs.tag_name }}
+        run: awk "/^## .*${TAG#v}/{found=1; next} found && /^- - -/{exit} found{print}" CHANGELOG.md > "$RUNNER_TEMP/notes.md"
+
+      - name: Run GoReleaser
+        if: steps.bump.outputs.bumped == 'true'
+        uses: goreleaser/goreleaser-action@f06c13b6b1a9625abc9e6e439d9c05a8f2190e94 # v7.2.3
+        with:
+          version: '~> v2'
+          args: release --clean --release-notes ${{ runner.temp }}/notes.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
+
+Le CHANGELOG de cocogitto reste ainsi la seule source des notes de release, comme le recommande [l'article GoReleaser](goreleaser.md#le-changelog-vit-dans-la-release-github). Les autres prérequis (setup-go, cosign, syft, permissions) sont ceux de [son workflow complet](goreleaser.md#le-workflow-complet).
+
+### Migrer cocogitto-action de v3 à v4
+
+L'action est publiée sous `cocogitto/cocogitto-action`. Les exemples trouvés en ligne référencent souvent `oknozor/cocogitto-action`, ancien nom du même dépôt avant son transfert du compte du mainteneur vers l'organisation. Seule la redirection GitHub fait encore fonctionner cet ancien nom et il vaut mieux pointer le nom canonique.
+
+La v4 casse la compatibilité avec la v3 :
+
+| v3 | v4 |
+|---|---|
+| `check: true` (défaut) | `command: check` - **obligatoire** |
+| `check-latest-tag-only: true` | `args: --from-latest-tag` |
+| `release: true` | `command: bump` + `args` |
+
+Un input inconnu ne produit qu'un warning dans GitHub Actions, mais l'absence de `command` fait échouer le script avec `Error: No command specified`. Le job release échoue alors à chaque push sur `main`.
+
+La version de cog dépend aussi du tag de l'action : v3.11.0 installe cog 6.3.0, v4.0.0 installe 6.4.0 et v4.2.0 installe 7.0.0. À la date du 2026-10-23, le tag flottant `v4` pointe encore sur un commit qui installe 6.4.0. Épingler le SHA d'une version précise fixe aussi la version de cog qui calcule le bump.
 
 ## Logique de bump
 
@@ -265,83 +295,48 @@ repos:
 | `fix:` | patch (`1.2.3 → 1.2.4`) |
 | `feat:` | minor (`1.2.3 → 1.3.0`) |
 | `feat!:` ou `BREAKING CHANGE` | major (`1.2.3 → 2.0.0`) |
-| `perf:`, `refactor:` | aucun bump (configurable, voir ci-dessous) |
-| `chore:`, `docs:`, `ci:` | aucun bump (configurable, voir ci-dessous) |
+| `perf:`, `refactor:` | aucun bump ([configurable](#un-push-perf-seul-ne-publie-rien)) |
+| `chore:`, `docs:`, `ci:` | aucun bump ([configurable](#faire-bumper-chore)) |
 
-<!-- markdownlint-disable MD046 -->
-!!! warning "`perf:` ne déclenche aucune release"
-    Seuls `feat` et `fix` bumpent par défaut. Une PR ne contenant que des commits
-    `perf:` produit un job de release **vert** mais sans tag :
+### Un push `perf:` seul ne publie rien
 
-    ```text
-    No conventional commits for your repository that required a bump.
-    ```
+Seuls `feat` et `fix` bumpent par défaut. Un push qui ne contient que des commits `perf:` donne un job de release vert, sans tag :
 
-    Le piège est que tout a l'air de fonctionner : `release` passe en success et
-    ce sont les jobs conditionnés par `bumped == 'true'` (build Docker, publication
-    Helm) qui sont *skipped*. L'optimisation reste sur master et ne sortira qu'au
-    prochain `fix:` sans rapport, qui l'embarquera au passage.
-<!-- markdownlint-enable MD046 -->
+```text
+No conventional commits for your repository that required a bump.
+```
+
+Tout semble fonctionner. Le job `release` réussit, puis les jobs conditionnés par `bumped == 'true'` (le build et le push de l'image) sont ignorés. L'optimisation reste sur `main` et n'est publiée qu'avec le prochain `fix:`, même sans rapport.
 
 Pour qu'un type déclenche un bump, `[commit_types]` accepte `bump_patch` et `bump_minor` :
 
 ```toml title="cog.toml"
 [commit_types]
-perf = { changelog_title = "Performance Improvements", bump_patch = true }
+perf = { bump_patch = true }
 ```
 
-Un type que cocogitto connaît déjà garde son titre de section même sans le redéclarer :
-en 7.0.0, un `chore = { bump_patch = true }` sort toujours sous « Miscellaneous Chores ».
-Pour un type inventé maison il n'y a aucun défaut à conserver et `changelog_title` est
-ce qui lui donne une section plutôt que de le laisser hors du CHANGELOG.
+Un type que cocogitto connaît déjà garde son titre de section sans qu'on le redéclare. En 7.0.0, `perf = { bump_patch = true }` reste sous « Performance Improvements » et `chore = { bump_patch = true }` sous « Miscellaneous Chores ». Un type propre au projet n'a pas de titre par défaut et reste hors du CHANGELOG tant qu'on ne lui donne pas de `changelog_title`.
 
-Le type qu'on finit par vouloir bumper n'est d'ailleurs pas `perf:` mais `chore:`.
-Renovate et Dependabot rangent sous ce type tout ce qui n'est pas une dépendance de
-production. Le piège est exactement celui de l'optimisation : le bump atterrit sur
-master, aucun tag ne sort et la dépendance corrigée n'est jamais reconstruite si l'image
-et le chart sont conditionnés à `bumped == 'true'`. Elle est à jour dans le lockfile et
-absente de ce qui tourne.
+### Faire bumper `chore:`
+
+Le type qu'on finit par vouloir bumper n'est d'ailleurs pas `perf:` mais `chore:`. Renovate et Dependabot rangent sous ce type tout ce qui n'est pas une dépendance de production. Le piège est exactement celui de l'optimisation : le bump atterrit sur `main`, aucun tag ne sort et la dépendance corrigée n'est jamais reconstruite si l'image est conditionnée à `bumped == 'true'`. Elle est à jour dans le lockfile et absente de ce qui tourne.
 
 ```toml title="cog.toml"
 [commit_types]
 chore = { bump_patch = true }
 ```
 
-`bump_patch` plutôt que `bump_minor`. Ce n'est pas une question de goût. Un bot qui
-vérifie tous les jours produit plusieurs merges par semaine : en minor le numéro atteint
-la v1.15.0 en un mois sans qu'une seule fonctionnalité soit sortie et le minor ne veut
-plus rien dire le jour où une vraie feature arrive. En patch la version reste lisible et
-dit ce qu'elle est, du contenu qui bouge sans surface nouvelle.
+`bump_patch` plutôt que `bump_minor`. Ce n'est pas une question de goût. Un bot qui vérifie tous les jours produit plusieurs merges par semaine : en minor le numéro atteint la v1.15.0 en un mois sans qu'une seule fonctionnalité soit sortie et le minor ne veut plus rien dire le jour où une vraie feature arrive. En patch la version reste lisible et dit ce qu'elle est, du contenu qui bouge sans surface nouvelle.
 
 !!! warning "La règle vaut pour tous les `chore:`"
-    `[commit_types]` est indexé par type, pas par scope : le réglage s'applique à
-    `chore(docs)` comme à `chore(deps)`. Un simple rangement de documentation coupera
-    lui aussi une release, avec son image et son chart.
+    `[commit_types]` est indexé par type, pas par scope : le réglage s'applique à `chore(docs)` comme à `chore(deps)`. Un simple rangement de documentation coupera lui aussi une release, avec son image.
 
 !!! tip "Vérifier avant de pousser"
-    `cog bump --auto --dry-run` répond `No conventional commits...` ou la version
-    calculée. C'est la façon la plus rapide de confirmer qu'un changement de
-    `[commit_types]` produit bien l'effet attendu. Attention, `cog bump` refuse de
-    tourner sur un arbre de travail sale : il affiche un `git status` au lieu du
-    résultat. Committer d'abord.
-
-## Quand choisir quoi
-
-### Cocogitto
-
-- Projet solo ou petite équipe, merge direct sur main
-- On veut valider les commits localement avant de pousser
-- On veut des releases immédiates sans étape manuelle
-
-### release-please
-
-- Équipe avec review obligatoire avant release
-- On veut un gate humain explicite sur chaque release
-- On travaille déjà avec les PR GitHub comme unité de travail
+    `cog bump --auto --dry-run` répond `No conventional commits...` ou la version calculée. C'est la façon la plus rapide de confirmer qu'un changement de `[commit_types]` produit bien l'effet attendu. Attention, `cog bump` refuse de tourner sur un arbre de travail sale : il affiche un `git status` au lieu du résultat. Committer d'abord.
 
 ## Voir aussi
 
-- [GoReleaser](goreleaser.md) - construire et publier les artefacts que cocogitto vient de tagger
-- [CI Go sur GitHub Actions](go-ci.md) - les jobs qui doivent passer avant qu'un bump ait un sens
-- [Hardening des workflows GitHub Actions](hardening.md) - protéger le token qui pousse le tag et la release
-- [Valider une config Renovate](renovate-config.md) - garder les commits automerge conformes à la convention
+- [GoReleaser](goreleaser.md) - publier binaires et images dans le même job que le bump
+- [CI GitHub Actions pour un projet Go](go-ci.md) - les jobs qui doivent passer avant qu'un bump ait un sens
+- [Durcir une CI GitHub Actions](hardening.md) - protéger le token qui pousse le tag et la release
+- [Renovate : valider la config et son silence sur les forks](renovate-config.md) - garder les commits automerge conformes à la convention
