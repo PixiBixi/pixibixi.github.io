@@ -16,3 +16,5 @@ dependencies = [
 [tool.uv]
 # glightbox 0.5.2 drops every <img> with selectolax 1.x (empty <p> in place of each image).
 constraint-dependencies = ["selectolax<1"]
+# mkdocs-rss-plugin 1.19.0 pins gitpython<3.2, which blocks the RCE fix (Dependabot #13).
+override-dependencies = ["gitpython>=3.2.1"]
