@@ -251,7 +251,7 @@ Le plan complet est ci-dessous, sinon la recherche fait le job.
 
 ### GitHub Actions
 
-- [Durcir une CI GitHub Actions : pins, permissions, injections](ci-cd/github/hardening.md)
+- [Durcir une CI GitHub Actions : workflows, dépendances et releases](ci-cd/github/hardening.md)
 - [CI GitHub Actions pour un projet Go](ci-cd/github/go-ci.md)
 - [GoReleaser : binaires multi-arch, images OCI et charts Helm](ci-cd/github/goreleaser.md)
 - [Cocogitto, le couteau suisse du versioning multi-langages](ci-cd/github/cocogitto.md)
