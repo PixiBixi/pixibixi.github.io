@@ -57,6 +57,12 @@ wiki. One line per term, sorted:
 *[NUMA]: Non-Uniform Memory Access, une machine multi-socket où la latence mémoire dépend du CPU
 ```
 
+Code blocks over 30 lines start folded (`theme.code.fold`). Per block, `data-fold` sets another threshold or `0` keeps it open:
+
+````markdown
+``` yaml { data-fold="0" }
+````
+
 The theme UI strings live in `overrides/i18n/<language>.yml` (English is the fallback).
 
 Tag icons are mapped in `extra.tag_icons` in `mkdocs.yml` (tag name to a Material `.icons` path, e.g. `Kubernetes: simple/kubernetes`). Unmapped tags show no icon.
