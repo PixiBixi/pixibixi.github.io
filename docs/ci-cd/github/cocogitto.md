@@ -343,4 +343,4 @@ Le réglage `bump_patch` convient mieux que `bump_minor`. Un bot qui vérifie le
 - [GoReleaser](goreleaser.md) - publier binaires et images dans le même job que le bump
 - [CI GitHub Actions pour un projet Go](go-ci.md) - les jobs qui doivent passer avant qu'un bump ait un sens
 - [Durcir une CI GitHub Actions](hardening.md) - protéger le token qui pousse le tag et la release
-- [Renovate : valider la config et son silence sur les forks](renovate-config.md) - garder les commits automerge conformes à la convention
+- [Renovate : valider la config, managers et forks](renovate-config.md) - garder les commits automerge conformes à la convention

@@ -183,7 +183,7 @@ Les autres `postUpdateOptions` du manager ont chacune un cas d'usage précis, et
 | `goGenerate` | Code généré à régénérer après un bump | Réservé au self-hosted |
 | `gomodTidy1.17` / `gomodTidyE` | `-compat=1.17`, `-e` pour tolérer les erreurs | Ni l'un ni l'autre demandé |
 
-`goGenerate` mérite sa précision, parce que c'est celle qui coûte le plus de temps avant de comprendre : elle ne tourne que si l'option globale `allowedUnsafeExecutions` contient `goGenerate`. Or les options `self-hosted` ne se mettent pas dans une `renovate.json` de dépôt, Renovate les ignore et peut ouvrir une issue de config par-dessus. Sur l'app Mend, `goGenerate` est donc hors de portée quoi qu'on écrive.
+`goGenerate` mérite sa précision, parce que c'est celle qui coûte le plus de temps avant de comprendre : elle ne tourne que si l'option globale `allowedUnsafeExecutions` contient `goGenerate`. Or les options `self-hosted` ne se mettent pas dans un `renovate.json` de dépôt, Renovate les ignore et peut ouvrir une issue de config par-dessus. Sur l'app Mend, `goGenerate` est donc hors de portée quoi qu'on écrive.
 
 Dernier défaut à connaître, les mises à jour d'**indirects** sont désactivées sauf si des directives `tool` existent. C'est un défaut sain, `go mod tidy` les recalcule depuis les directs, mais il faut savoir que le silence sur une indirect vulnérable vient de là et pas d'un raté de détection.
 
