@@ -332,6 +332,8 @@ markdown_extensions:
   - pymdownx.superfences
   - admonition
   - pymdownx.details
+  - pymdownx.tabbed:
+      alternate_style: true
   - attr_list
   - abbr
   # Wiki-wide glossary tooltips: includes/abbreviations.md is appended to every page
