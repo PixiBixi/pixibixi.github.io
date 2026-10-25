@@ -8,8 +8,8 @@
       "automerge": true
     },
     {
-      "description": "Theme overrides in overrides/partials/ track Material's HTML: review every update visually",
-      "matchPackageNames": ["mkdocs-material"],
+      "description": "Theme overrides in overrides/partials/ and stylesheets/materialx.css track MaterialX: review every update visually",
+      "matchPackageNames": ["mkdocs-materialx"],
       "automerge": false
     }
   ]
