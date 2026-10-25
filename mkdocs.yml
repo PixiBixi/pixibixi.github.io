@@ -302,6 +302,7 @@ extra_javascript:
   - javascripts/jd-ui.js
   - javascripts/category.js
   - javascripts/jd-vars.js
+  - javascripts/jd-codefold.js
   - javascripts/jd-palette.js
   - javascripts/jd-abbr.js
   - javascripts/pages.js
@@ -313,6 +314,7 @@ extra_css:
   - stylesheets/article-meta.css
   - stylesheets/category.css
   - stylesheets/jd-vars.css
+  - stylesheets/jd-codefold.css
   - stylesheets/jd-palette.css
   - stylesheets/jd-abbr.css
   - stylesheets/jd-highlight.css

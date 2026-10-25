@@ -114,6 +114,8 @@ jd.vars.label: "Variables de la page"
 jd.vars.title: "Variables"
 jd.vars.reset: "Réinitialiser"
 jd.vars.note: "Les variables s'appliquent à tous les blocs de la page et sont mémorisées dans le navigateur pour tout le wiki."
+jd.codefold.expand: "Afficher les {n} lignes"
+jd.codefold.collapse: "Replier"
 
 jd.hl.terms: "Termes surlignés :"
 jd.hl.occurrence_one: "{n} occurrence"
