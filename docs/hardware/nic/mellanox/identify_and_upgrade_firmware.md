@@ -47,7 +47,6 @@ Après une petite recherche Google, nous pouvons en déduire qu'il s'agit du mod
 
 Via un autre utilitaire fournit par Mellanox, disponible [ici](https://network.nvidia.com/products/adapter-software/firmware-tools/), nous devons trouver le nom "interne" de la NIC.
 
-<!-- markdownlint-disable MD046 -->
 ```bash
 root@hostname:/home/user# mst start
 root@hostname:/home/user# mst status
@@ -65,7 +64,6 @@ MST devices:
                                    domain:bus:dev.fn=0000:af:00.0 addr.reg=88 data.reg=92 cr_bar.gw_offset=-1
                                    Chip revision is: 00
 ```
-<!-- markdownlint-enable MD046 -->
 
 Imaginons que nous voulons upgrade notre NIC ayant comme ligne PCI 18:00.0, son nom est donc `/dev/mst/mt4119_pciconf0`. Nous n'avons plus qu'à appliquer le firmware avec flint :
 

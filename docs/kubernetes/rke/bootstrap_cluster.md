@@ -19,7 +19,6 @@ RKE c'est un binaire et un fichier `cluster.yaml`. Il peut être exécuté depui
 
 Voici un exemple de fichier `cluster.yaml` :
 
-<!-- markdownlint-disable MD046 -->
 ```yaml
 ####################################
 ## CLUBIC Rancher master cluster ##
@@ -107,7 +106,6 @@ ingress:
   options:
     use-forwarded-headers: "true"
 ```
-<!-- markdownlint-enable MD046 -->
 
 Une fois l'infrastructure décrite, une simple commande suffit : `rke up`
 
@@ -115,7 +113,6 @@ On spécifie l'user **mgmt-rancher** pour le déploiement et on distingue les n�
 
 Voici un fichier hosts adapté :
 
-<!-- markdownlint-disable MD046 -->
 ```ini
 # K8S
 192.168.1.220   master01.vlan master01.rancher.k8s    master01.rancher.k8s.local
@@ -126,6 +123,5 @@ Voici un fichier hosts adapté :
 192.168.1.211   node02.vlan node02.rancher.k8s    node02.rancher.k8s.local
 192.168.1.212   node03.vlan node03.rancher.k8s    node03.rancher.k8s.local
 ```
-<!-- markdownlint-enable MD046 -->
 
 On active également quelques options supplémentaires comme le snapshot automatique d'etcd toutes les 6h. Des [exemples](https://rancher.com/docs/rke/latest/en/example-yamls/) sont disponibles sur le site officiel de Rancher - il est possible par exemple d'envoyer les snapshots automatiquement dans un S3.

@@ -66,7 +66,6 @@ node1$ galera_new_cluster
 
 On vérifie que le cluster est bien démarré :
 
-<!-- markdownlint-disable MD046 -->
 ```sql
 SHOW STATUS LIKE 'wsrep_cluster_size';
 
@@ -76,7 +75,6 @@ SHOW STATUS LIKE 'wsrep_cluster_size';
 | wsrep_cluster_size | 1     |
 +--------------------+-------+
 ```
-<!-- markdownlint-enable MD046 -->
 
 Puis on démarre les autres nœuds :
 
