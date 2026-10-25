@@ -5,13 +5,13 @@ requires-python = ">=3.11"
 dependencies = [
     "mkdocs-git-revision-date-localized-plugin==1.6.0",
     "mkdocs-glightbox==0.5.2",
-    "mkdocs-material==9.7.7",
     "mkdocs-minify-plugin==0.8.0",
     "mkdocs-redirects==1.2.3",
     "pillow",
     "cairosvg",
     "mkdocs-rss-plugin==1.19.0",
     "properdocs==1.6.7",
+    "mkdocs-materialx==10.2.2",
 ]
 
 [tool.uv]

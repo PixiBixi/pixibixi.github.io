@@ -12,5 +12,9 @@ plugins:
   - meta
   - glightbox
   - search:
-      lang: fr
+      # jd-palette.js reads search/search_index.json, only the Lunr provider writes it.
+      provider: lunr
+      lunr:
+        lang:
+          - fr
   - tags

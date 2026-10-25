@@ -1,0 +1,151 @@
+/* MaterialX restyles Material 9 defaults the theme was designed on: undo them here, first in the cascade. */
+
+/* Header icons: MaterialX's `.md-header .md-icon svg` (1rem) outranks the theme sizes, restate them */
+.md-header .jd-github svg {
+  width: 20px;
+  height: 20px;
+}
+
+.md-header .jd-seg svg,
+.md-header .md-search__icon svg {
+  width: 17px;
+  height: 17px;
+}
+
+.md-header .jd-cycle svg {
+  width: 19px;
+  height: 19px;
+}
+
+/* Search icon: MaterialX centers it with flex and a -50% translate, the theme positions it itself */
+.md-header .md-search__form .md-search__icon {
+  display: block;
+  transform: none;
+}
+
+/* Nav and TOC rows: no extra 4px between items nor around nested lists, the theme spaces them with the list gap */
+.md-nav__list > li + li {
+  margin-top: 0;
+}
+
+.md-nav__item--nested .md-nav__list::before,
+.md-nav__item--nested .md-nav__list::after {
+  margin: 0;
+}
+
+/* Nav links: no rounded rows, keep Material's icon gap */
+.md-nav__link {
+  gap: 0.4rem;
+  border-radius: 0;
+}
+
+/* Material 9 desktop sidebars: sticky opaque titles, list inset, link right margin */
+@media screen and (min-width: 76.25em) {
+  .md-nav--primary .md-nav__title,
+  .md-nav--secondary .md-nav__title {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    padding: 0 0.6rem;
+    overflow: hidden;
+    font-weight: 700;
+    color: var(--md-default-fg-color--light);
+    background: var(--md-default-bg-color);
+    box-shadow: 0 0 0.4rem 0.4rem var(--md-default-bg-color);
+  }
+
+  .md-nav--primary .md-nav__list,
+  .md-nav--secondary .md-nav__list {
+    padding-inline-start: 0.6rem;
+    padding-bottom: 0.4rem;
+  }
+
+  .md-nav--primary .md-nav__item > .md-nav__link,
+  .md-nav--secondary .md-nav__item > .md-nav__link {
+    margin-inline-end: 0.4rem;
+  }
+}
+
+/* Active row: plain link color, no primary-tinted background */
+.md-nav--primary .md-nav__item .md-nav__link--active {
+  color: var(--jd-link);
+  background-color: transparent;
+}
+
+/* Lifted section title ("LINUX"): MaterialX hides it */
+@media screen and (min-width: 76.25em) {
+  .md-nav--primary.md-nav--lifted > .md-nav__list > .md-nav__item--active > .md-nav__link {
+    display: flex;
+  }
+}
+
+/* Lifted section title: sticky like Material 9, child list pulled back under it */
+@media screen and (min-width: 76.25em) {
+  .md-nav--lifted > .md-nav__list > .md-nav__item--active > .md-nav__link {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    margin-top: 0;
+    background: var(--md-default-bg-color);
+    box-shadow: 0 0 0.4rem 0.4rem var(--md-default-bg-color);
+  }
+
+  .md-nav--lifted > .md-nav__list > .md-nav__item--active > .md-nav:not(.md-nav--secondary) {
+    margin-top: 0;
+    margin-inline-start: -0.6rem;
+  }
+
+  .md-nav {
+    margin-bottom: -0.4rem;
+  }
+}
+
+/* TOC: no indent guide lines nor extra inset (MaterialX writes them with [dir]) */
+[dir] .md-nav--secondary .md-nav__list .md-nav__list {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+[dir] .md-nav--secondary .md-nav__item .md-nav__list {
+  border-left: 0;
+  border-right: 0;
+}
+
+[dir=ltr] .md-nav--secondary > .md-nav__list {
+  padding-left: 0.6rem;
+}
+
+.md-nav--secondary > .md-nav__list {
+  padding-top: 0;
+}
+
+.md-nav--secondary .md-nav {
+  margin-top: 0;
+}
+
+/* Tabs bar: no extra 1px inset line under it, nor a 1px underline and bold on the active tab */
+.md-tabs {
+  box-shadow: none;
+}
+
+.md-tabs__item--active,
+.md-tabs[hidden] .md-tabs__item--active {
+  border-bottom: 0;
+  font-weight: inherit;
+}
+
+/* Body text: MaterialX tightens it by -0.01em, which rewraps the category cards */
+.md-typeset {
+  letter-spacing: normal;
+}
+
+/* Inline code: text line height and baseline, MaterialX forces 1.4 and a 0.02em nudge */
+.md-typeset code {
+  line-height: inherit;
+  vertical-align: baseline;
+}
+
+/* Back-to-top: MaterialX renders it without the navigation.top feature */
+.md-top {
+  display: none;
+}

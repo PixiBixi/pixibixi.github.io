@@ -19,9 +19,9 @@
     {% if not config.theme.palette is mapping %}
       {% include "partials/javascripts/palette.html" %}
     {% endif %}
-    {% if "material/search" in config.plugins %}
-      {% set search = config.plugins["material/search"] | attr("config") %}
-      {% if search.enabled %}
+    {% if "materialx/search" in config.plugins %}
+      {% set search = config.plugins["materialx/search"] | attr("config") %}
+      {% if search %}
         <label class="md-header__button md-icon jd-search-toggle" for="__search">
           {% include ".icons/material/magnify.svg" %}
           <span class="jd-sr">{{ lang.t("jd.header.search") }}</span>

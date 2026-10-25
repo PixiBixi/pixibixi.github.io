@@ -19,7 +19,7 @@ theme:
     - content.code.copy
     - search.suggest
     - search.highlight
-  name: material
+  name: materialx
   custom_dir: overrides
   language: fr
   font: false
@@ -67,7 +67,11 @@ plugins:
       enable_creation_date: true
   - glightbox
   - search:
-      lang: fr
+      # jd-palette.js reads search/search_index.json, only the Lunr provider writes it.
+      provider: lunr
+      lunr:
+        lang:
+          - fr
   - tags
   # Articles only: index pages (hand-written and generated), tags and about stay out of the feeds
   - rss:
@@ -310,6 +314,7 @@ extra_javascript:
   - javascripts/jd-svg.js
 
 extra_css:
+  - stylesheets/materialx.css
   - stylesheets/jdelgado.css
   - stylesheets/article-meta.css
   - stylesheets/category.css
