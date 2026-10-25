@@ -961,6 +961,7 @@ dependencies = [
     { name = "mkdocs-redirects" },
     { name = "mkdocs-rss-plugin" },
     { name = "pillow" },
+    { name = "properdocs" },
 ]
 
 [package.metadata]
@@ -973,6 +974,7 @@ requires-dist = [
     { name = "mkdocs-redirects", specifier = "==1.2.3" },
     { name = "mkdocs-rss-plugin", specifier = "==1.19.0" },
     { name = "pillow" },
+    { name = "properdocs", specifier = "==1.6.7" },
 ]
 
 [[package]]
