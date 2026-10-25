@@ -19,7 +19,7 @@ Une CI lente ou mal configurée, ça coûte du temps et de l'argent. Une CI mal 
 - [CI pour un projet Go](github/go-ci.md) - `go test -race`, build multi-plateforme, golangci-lint, gocritic, govulncheck, release calculée par svu
 - [GoReleaser](github/goreleaser.md) - binaires multi-arch, images Docker, Helm OCI, UPX, signature cosign et provenance SLSA
 - [Cocogitto](github/cocogitto.md) - versioning sémantique automatique, CHANGELOG, GitHub Releases - comparaison avec release-please
-- [Valider une config Renovate](github/renovate-config.md) - `renovate-config-validator`, clés inconnues, `github-runners` qui n'est pas un manager et `forkProcessing` sur un fork
+- [Renovate : valider la config, managers et forks](github/renovate-config.md) - `renovate-config-validator`, clés inconnues, `github-runners` qui n'est pas un manager et `forkProcessing` sur un fork
 - [Renovate et les modules Go](github/renovate-gomod.md) - majeures qui ne migrent rien, `gomodUpdateImportPaths`, `constraintsFiltering` et la directive `go`
 
 ### GitLab
