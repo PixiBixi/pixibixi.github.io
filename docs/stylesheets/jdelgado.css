@@ -985,7 +985,8 @@ body {
   margin-block: -10px;
 }
 
-.jd-meta .md-tags {
+/* :not([hidden]) to outrank Material's margins, which lift the chips off the text baseline. */
+.md-typeset .jd-meta .md-tags:not([hidden]) {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
@@ -2244,7 +2245,7 @@ body {
     display: none;
   }
 
-  .md-typeset .jd-meta nav.md-tags {
+  .md-typeset .jd-meta nav.md-tags:not([hidden]) {
     flex: 1 1 60%;
     flex-wrap: nowrap;
     order: 1;
