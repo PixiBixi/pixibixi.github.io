@@ -70,6 +70,13 @@ jobs:
           path: .cache/plugin/privacy
       - run: uv sync
       - run: uv run mkdocs build --strict
+      # The claude-skills wiki plugin cites anchors of this site: a renamed heading must fail here, not there.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          repository: PixiBixi/claude-skills
+          path: claude-skills
+          persist-credentials: false
+      - run: python3 claude-skills/plugins/wiki/check-anchors.py --site site
 
   deploy:
     if: github.event_name != 'pull_request'
