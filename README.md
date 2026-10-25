@@ -81,6 +81,8 @@ It reports `file:line` for anything a reader could not copy-paste. To keep a del
 broken counter-example, put `<!-- check-code-blocks: skip -->` on the line before the
 fence.
 
+`scripts/wiki_compare.py` shows each changed article twice in one page, the live site next to the local dev server (`mkdocs serve -f mkdocs.dev.yml` must run on port 8000), with linked scroll and the changed blocks outlined (`j`/`k` to jump between them, `r` to reload). Pass article paths to limit it, `--base <ref>` to pick the changed articles against another ref, `--port` if 8001 is taken.
+
 ## Deploy
 
 Push to `master` runs GitHub Actions: lint → build (`mkdocs build --strict`) → deploy
