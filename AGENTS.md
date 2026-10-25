@@ -4,7 +4,7 @@ Guidance for coding agents working in this repository.
 
 ## Project
 
-Personal knowledge base / wiki built with **MkDocs Material**, hosted at <https://wiki.jdelgado.fr/> via GitHub Pages. Content is 240+ Markdown files organized by SRE/infra topics.
+Personal knowledge base / wiki built with **MkDocs Material** on **ProperDocs** (the maintained MkDocs 1.6 fork, `properdocs` CLI; it aliases `mkdocs.*` imports so plugins run unchanged), hosted at <https://wiki.jdelgado.fr/> via GitHub Pages. Content is 240+ Markdown files organized by SRE/infra topics.
 
 Config lives in `mkdocs.yml` (no `nav:` - sidebar is auto-generated). Active plugins that matter at build time:
 
@@ -44,10 +44,10 @@ uv sync
 pre-commit install   # install git hook for markdown linting
 
 # Live preview (hot reload at http://127.0.0.1:8000, ~6s rebuild)
-DISABLE_MKDOCS_2_WARNING=true uv run mkdocs serve -f mkdocs.dev.yml --livereload
+uv run properdocs serve -f mkdocs.dev.yml --livereload
 
 # Static build (validates without serving)
-uv run mkdocs build --strict
+uv run properdocs build --strict
 ```
 
 ## Linting
@@ -83,8 +83,8 @@ markdownlint-cli2 "docs/**/*.md"
 GitHub Actions (`.github/workflows/main.yml`) runs three chained jobs - `lint` → `build` → `deploy`:
 
 1. `lint` - markdownlint-cli2 on `.md` files changed in the push/PR (step skipped when none changed)
-2. `build` - `uv sync` + `uv run mkdocs build --strict`; warnings are fatal
-3. `deploy` - `uv run mkdocs gh-deploy --force -d site/` → pushes the built site to the `docs` branch → GitHub Pages
+2. `build` - `uv sync` + `uv run properdocs build --strict`; warnings are fatal
+3. `deploy` - `uv run properdocs gh-deploy --force -d site/` → pushes the built site to the `docs` branch → GitHub Pages
 
 Pull requests run `lint` + `build` only (`deploy` is gated on `github.event_name != 'pull_request'`). A push or PR touching only repo tooling (`AGENTS.md`, `README.md`, `LICENSE`, `renovate.json`, lint and pre-commit config, `.claude/`) skips `build` and `deploy`: the list is `files_ignore` in the `lint` job, and a skipped `build` still satisfies the required check. Every job checks out with `fetch-depth: 0` because `git-revision-date-localized` needs the full history. No manual deploy needed.
 
@@ -178,10 +178,10 @@ All article content is written in **French**. Code, commands, and commit message
 
 ## Before committing
 
-Always run `mkdocs build --strict` before committing file renames or new articles:
+Always run `properdocs build --strict` before committing file renames or new articles:
 
 ```bash
-uv run mkdocs build --strict 2>&1 | grep -E "WARNING|ERROR"
+uv run properdocs build --strict 2>&1 | grep -E "WARNING|ERROR"
 ```
 
 `docs/index.md` contains hardcoded links - renames break the build silently until CI catches it.
@@ -281,24 +281,23 @@ When writing or rewriting an article, apply these whenever the condition holds (
 
 - **Hooks and i18n**: `on_page_content` runs before `on_env`, so `jd_t` does not exist yet in a page content hook. Read `overrides/i18n/<language>.yml` in `on_config` instead (see `hooks/a11y.py`).
 
-- **Shallow clones**: the full `mkdocs build` requires full git history due to `git-revision-date-localized`.
+- **Shallow clones**: the full `properdocs build` requires full git history due to `git-revision-date-localized`.
   Shallow clones (`--depth 1`) will cause errors. Use `git fetch --unshallow` if needed.
   Its `WARNING:root:` lines are non-blocking, even under `--strict`.
 
-- **Preview: `mkdocs serve` only with `mkdocs.dev.yml`**. With the full config the first build hangs for minutes (`social`, `privacy`, `git-revision-date-localized`); the dev config drops the production-only plugins and rebuilds in ~6s. `search` must stay in it: `hooks/article_meta.py` writes into its output dir. Hooks are not reloaded: restart the server after editing `hooks/`.
+- **Preview: `properdocs serve` only with `mkdocs.dev.yml`**. With the full config the first build hangs for minutes (`social`, `privacy`, `git-revision-date-localized`); the dev config drops the production-only plugins and rebuilds in ~6s. `search` must stay in it: `hooks/article_meta.py` writes into its output dir. Hooks are not reloaded: restart the server after editing `hooks/`.
 
   ```bash
-  # background; stop it with: pkill -f "mkdocs serve"
-  DISABLE_MKDOCS_2_WARNING=true uv run mkdocs serve -f mkdocs.dev.yml --livereload
+  # background; stop it with: pkill -f "properdocs serve"
+  uv run properdocs serve -f mkdocs.dev.yml --livereload
   ```
 
   Social cards, git dates, feeds and redirects only exist in the full build. Check them, and run `--strict`, before committing:
 
   ```bash
   SITE="$TMPDIR/wiki-site"
-  DISABLE_MKDOCS_2_WARNING=true \
-    DYLD_FALLBACK_LIBRARY_PATH="/opt/homebrew/lib:$HOME/lib:/usr/local/lib:/usr/lib" \
-    uv run mkdocs build --strict -d "$SITE"
+  DYLD_FALLBACK_LIBRARY_PATH="/opt/homebrew/lib:$HOME/lib:/usr/local/lib:/usr/lib" \
+    uv run properdocs build --strict -d "$SITE"
   # background, once; stop it with: pkill -f "http.server 8000"
   python3 -m http.server 8000 --bind 127.0.0.1 -d "$SITE"
   ```

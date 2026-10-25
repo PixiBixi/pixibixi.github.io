@@ -15,12 +15,12 @@ and JSON, it just skips the Prometheus rule files.
 ```sh
 uv sync
 pre-commit install     # without this, no hook runs on commit
-uv run mkdocs serve -f mkdocs.dev.yml --livereload   # http://127.0.0.1:8000, ~6s rebuild
+uv run properdocs serve -f mkdocs.dev.yml --livereload   # http://127.0.0.1:8000, ~6s rebuild
 ```
 
 `mkdocs.dev.yml` inherits `mkdocs.yml` without the production-only plugins (`social`,
 `git-revision-date-localized`, `rss`, `privacy`, `redirects`). Validate with the full
-config before pushing (`uv run mkdocs build --strict`).
+config before pushing (`uv run properdocs build --strict`).
 
 The full git history is required: `git-revision-date-localized` errors out on a shallow
 clone (`git fetch --unshallow`).
@@ -69,7 +69,7 @@ The sidebar and the section pages are generated from the directory tree (a secti
 
 ```sh
 pre-commit run --all-files
-uv run mkdocs build --strict     # warnings are fatal, same as CI
+uv run properdocs build --strict     # warnings are fatal, same as CI
 ```
 
 The WebP hook converts any staged JPG/PNG under `docs/`, then exits 1 on purpose - re-run
@@ -81,12 +81,12 @@ It reports `file:line` for anything a reader could not copy-paste. To keep a del
 broken counter-example, put `<!-- check-code-blocks: skip -->` on the line before the
 fence.
 
-`scripts/wiki_compare.py` shows each changed article twice in one page, the live site next to the local dev server (`mkdocs serve -f mkdocs.dev.yml` must run on port 8000), with linked scroll, the changed blocks outlined and the local side following mkdocs' live reload (`j`/`k` to jump between them, `r` to reload). Pass article paths to limit it, `--base <ref>` to pick the changed articles against another ref, `--port` if 8001 is taken.
+`scripts/wiki_compare.py` shows each changed article twice in one page, the live site next to the local dev server (`properdocs serve -f mkdocs.dev.yml` must run on port 8000), with linked scroll, the changed blocks outlined and the local side following mkdocs' live reload (`j`/`k` to jump between them, `r` to reload). Pass article paths to limit it, `--base <ref>` to pick the changed articles against another ref, `--port` if 8001 is taken.
 
 ## Deploy
 
-Push to `master` runs GitHub Actions: lint → build (`mkdocs build --strict`) → deploy
-(`mkdocs gh-deploy` onto the `docs` branch, served by GitHub Pages).
+Push to `master` runs GitHub Actions: lint → build (`properdocs build --strict`) → deploy
+(`properdocs gh-deploy` onto the `docs` branch, served by GitHub Pages).
 Pull requests run lint + build only (no deploy).
 Changes limited to repo tooling (`AGENTS.md`, `README.md`, lint and pre-commit config...) skip build and deploy.
 
