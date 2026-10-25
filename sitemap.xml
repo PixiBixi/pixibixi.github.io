@@ -78,7 +78,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/ci-cd/gitlab/cli/</loc>
-    <lastmod>2026-10-13</lastmod>
+    <lastmod>2026-10-25</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/ci-cd/gitlab/ci/optimize/</loc>
@@ -178,7 +178,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/databases/mysql/galera_gluster/</loc>
-    <lastmod>2026-08-22</lastmod>
+    <lastmod>2026-10-25</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/databases/mysql/users/</loc>
@@ -222,7 +222,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/hardware/nic/mellanox/identify_and_upgrade_firmware/</loc>
-    <lastmod>2026-08-23</lastmod>
+    <lastmod>2026-10-25</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/hardware/san/netapp/blink_led_hdd/</loc>
@@ -326,7 +326,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/kubernetes/deployment/local_image_cache/</loc>
-    <lastmod>2026-08-23</lastmod>
+    <lastmod>2026-10-25</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/kubernetes/deployment/pdb_topology_spread/</loc>
@@ -350,7 +350,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/kubernetes/rke/bootstrap_cluster/</loc>
-    <lastmod>2026-08-22</lastmod>
+    <lastmod>2026-10-25</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/kubernetes/rke/recover_rkestate/</loc>
@@ -674,7 +674,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/monitoring/lgtm/alloy/</loc>
-    <lastmod>2026-10-13</lastmod>
+    <lastmod>2026-10-25</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/monitoring/lgtm/custom_metrics_nodeexporter/</loc>
