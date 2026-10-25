@@ -132,7 +132,7 @@ Non-Markdown files under `docs/` are copied verbatim into the build:
   (`ai-train=no, search=yes, ai-input=yes`) sits inside the `*` and search groups:
   a line after the last group binds to that group only
 - `docs/llms.txt` - hand-maintained section map for LLM consumption; update it when a whole section appears or disappears
-- `docs/javascripts/copy-llm.js` - "Copy for LLM" button, converts the rendered article back to Markdown client-side
+- `docs/javascripts/copy-llm.js` - "Copy for LLM" button, converts the rendered article back to Markdown client-side. It stays next to `content.action.agents` (a `<link rel="alternate" type="text/markdown">` to the raw source on GitHub, for agents): the source holds unresolved `<variables>` and no glossary, the button copies what the reader sees
 - `docs/stylesheets/jdelgado.css`, `docs/img/`, `docs/CNAME`
 
 `docs/about.md` is the author page - the Schema.org `Person` node in `overrides/main.html` is anchored on its URL (`about/#author`), so don't rename or move it.
