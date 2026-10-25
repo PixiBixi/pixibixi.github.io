@@ -63,6 +63,24 @@ Code blocks over 30 lines start folded (`theme.code.fold`). Per block, `data-fol
 ``` yaml { data-fold="0" }
 ````
 
+Steps (MaterialX, `md_in_html`) render an ordered procedure as a numbered vertical timeline. Wrap a numbered list, or a run of same-level headings, in a `div`. Indent what belongs to an item (code blocks, admonitions) by 4 spaces, and write headings without a number: the circle is the number.
+
+````markdown
+<div class="steps" markdown>
+
+1. Clone the repository:
+
+    ```bash
+    git clone https://example.com/repo.git
+    ```
+
+2. Restart the service
+
+</div>
+````
+
+Heading mode is the same wrapper around `###` headings (`### Install`, `### Configure`). Only the top heading level is numbered, deeper headings and lists stay plain.
+
 The theme UI strings live in `overrides/i18n/<language>.yml` (English is the fallback).
 
 Tag icons are mapped in `extra.tag_icons` in `mkdocs.yml` (tag name to a Material `.icons` path, e.g. `Kubernetes: simple/kubernetes`). Unmapped tags show no icon.
