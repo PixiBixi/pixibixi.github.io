@@ -331,7 +331,9 @@ spec:
 
 Ne jamais passer directement en `Deny` en production. Les 3 étapes :
 
-### 1. Audit
+<div class="steps" markdown>
+
+### Audit
 
 Log les violations sans bloquer.
 
@@ -341,7 +343,7 @@ validationActions: [Audit]
 
 Les violations apparaissent dans les audit logs du kube-apiserver sous l'annotation `validation.policy.admission.k8s.io/validation_failure`.
 
-### 2. Warn
+### Warn
 
 Retourne un warning HTTP au client, visible dans `kubectl`.
 
@@ -354,7 +356,7 @@ Warning: require-resource-limits: Tous les containers doivent avoir des limits C
 deployment.apps/my-app created
 ```
 
-### 3. Deny
+### Deny
 
 Bloque effectivement la requête.
 
@@ -364,6 +366,8 @@ validationActions: [Deny]
 
 !!! warning "Deny + Warn sont incompatibles"
     `[Deny, Warn]` est invalide. On combine `[Warn, Audit]` ou `[Deny]` seul.
+
+</div>
 
 ## `failurePolicy` : Fail vs Ignore
 
