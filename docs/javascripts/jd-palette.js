@@ -1,4 +1,4 @@
-/* Cmd+K command palette over Material's search index. Material search stays as keyboard fallback (s / f). */
+/* Cmd+K command palette over the Pagefind index. Material search stays as keyboard fallback (s / f). */
 (function () {
   "use strict";
 
@@ -8,8 +8,14 @@
   var IS_MAC = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
   var MOD = IS_MAC ? "⌘" : "Ctrl+";
   var MAX_PAGES = 3;
+  // Pagefind ranks on body text: fetch a few more than shown so title hits can move up.
+  var FETCH_PAGES = 10;
+  var DEBOUNCE_MS = 90;
 
-  var state = { index: null, loading: null, open: false, rows: [], sel: 0, lastFocus: null };
+  var state = {
+    index: null, loading: null, open: false, rows: [], sel: 0, lastFocus: null,
+    found: {}, timer: null, enterQueued: null
+  };
   var ui = null;
 
   /* ---------- helpers ---------- */
@@ -17,12 +23,7 @@
   function norm(s) {
     return (s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
   }
-  // The index stores sections as HTML fragments: keep the text only.
-  function plain(html) {
-    return (html || "").replace(/<[^>]*>/g, " ").replace(/&(lt|gt|amp|quot|#39);/g, function (m, c) {
-      return { lt: "<", gt: ">", amp: "&", quot: '"', "#39": "'" }[c];
-    }).replace(/\s+/g, " ").trim();
-  }
+  function tokensOf(q) { return norm(q).split(/\s+/).filter(Boolean); }
   function pretty(seg) {
     var s = decodeURIComponent(seg).replace(/[-_]+/g, " ").trim();
     return s.charAt(0).toUpperCase() + s.slice(1);
@@ -66,69 +67,72 @@
   var ICON_FOLDER = "M3 6h7l2 2h9v11H3z";
   var ICON_TAG = "M3 12V4h8l10 10-8 8z";
 
-  /* ---------- index ---------- */
+  /* ---------- Pagefind ---------- */
+
+  var pf = null;
+  // One module per page life: Pagefind loads its wasm and index chunks lazily, on the first query.
+  function pagefind() {
+    if (!pf) {
+      pf = import(url("search/pagefind.js")).then(function (m) {
+        return m.options({ baseUrl: scope().pathname, excerptLength: 22 }).then(function () { return m.init(); })
+          .then(function () { return m; });
+      });
+      pf.catch(function () { pf = null; });
+    }
+    return pf;
+  }
+  // Site path of a Pagefind result URL, the key of jd-pages.json ("linux/cli/sed/").
+  function locOf(u) {
+    var path = new URL(u, scope()).pathname, base = scope().pathname;
+    return path.indexOf(base) === 0 ? path.slice(base.length) : path.replace(/^\//, "");
+  }
+  // Pagefind excerpts are escaped text with <mark>: rebuild them as nodes, never through innerHTML.
+  function excerptNodes(html) {
+    var t = document.createElement("template");
+    t.innerHTML = html || "";
+    var frag = document.createDocumentFragment();
+    Array.prototype.forEach.call(t.content.childNodes, function (n) {
+      frag.appendChild(n.nodeName === "MARK" ? el("mark", null, n.textContent) : document.createTextNode(n.textContent));
+    });
+    return frag;
+  }
+
+  /* ---------- page kinds, sections and tags ---------- */
 
   function loadIndex() {
     if (state.index) return Promise.resolve(state.index);
     if (state.loading) return state.loading;
-    // jd-pages.json (hooks/article_meta.py) lists the real articles; without it a prefix heuristic is used.
-    var kinds = fetch(url("search/jd-pages.json")).then(function (r) { return r.json(); })
-      .then(function (j) { return j.articles || null; }).catch(function () { return null; });
-    state.loading = fetch(url("search/search_index.json"))
+    // jd-pages.json (hooks/article_meta.py) holds titles, tags and the article list: Pagefind only answers queries.
+    state.loading = fetch(url("search/jd-pages.json"))
       .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
-      .then(function (data) { return kinds.then(function (a) { state.index = build(data.docs || [], a); return state.index; }); })
-      .catch(function () { state.loading = null; state.index = { pages: [], sections: [], tags: [], failed: true }; return state.index; });
+      .then(function (j) { state.index = build(j); return state.index; })
+      .catch(function () { state.loading = null; state.index = build({}); return state.index; });
     return state.loading;
   }
 
-  function build(docs, articleLocs) {
-    var pages = {}, order = [];
-    function page(base) {
-      if (!pages[base]) { pages[base] = { loc: base, title: "", text: "", heads: [], tags: [] }; order.push(base); }
-      return pages[base];
-    }
-    docs.forEach(function (d) {
-      var i = d.location.indexOf("#"), base = i < 0 ? d.location : d.location.slice(0, i);
-      var p = page(base);
-      if (i < 0) {
-        p.title = plain(d.title); p.text = plain(d.text); p.tags = d.tags || [];
-      } else {
-        p.heads.push({ anchor: d.location.slice(i), title: plain(d.title), text: plain(d.text) });
-      }
-    });
-    var list = order.map(function (b) { return pages[b]; }).filter(function (p) {
-      return p.title && p.loc.indexOf("tags/") !== 0;
-    });
+  function build(meta) {
+    var pages = meta.pages || {};
     var titles = {};
-    list.forEach(function (p) { titles[p.loc] = p.title; });
-    list.forEach(function (p) {
-      var segs = p.loc.split("/").filter(Boolean);
-      var crumb = [];
-      for (var k = 1; k < segs.length; k++) {
-        var anc = segs.slice(0, k).join("/") + "/";
-        crumb.push(titles[anc] || pretty(segs[k - 1]));
-      }
-      p.path = crumb.join(" › ");
-      p.nTitle = norm(p.title);
-      p.nText = norm(p.text);
-      p.heads.forEach(function (h) { h.nTitle = norm(h.title); h.nText = norm(h.text); });
-    });
+    Object.keys(pages).forEach(function (loc) { titles[loc] = pages[loc].title; });
+    var locs = Object.keys(pages).filter(function (l) { return titles[l] && l.indexOf("tags/") !== 0; });
+    function crumb(loc) {
+      var segs = loc.split("/").filter(Boolean), out = [];
+      for (var k = 1; k < segs.length; k++) out.push(titles[segs.slice(0, k).join("/") + "/"] || pretty(segs[k - 1]));
+      return out.join(" › ");
+    }
 
-    // Articles only, like hooks/home.py: no home, about, tags, nor folder indexes (a loc that prefixes another).
-    var locs = list.map(function (p) { return p.loc; });
-    var known = articleLocs && articleLocs.reduce(function (m, l) { m[l] = 1; return m; }, {});
-    var articles = list.filter(function (p) {
-      if (known) return !!known[p.loc];
-      return p.loc && p.loc !== "about/" && !locs.some(function (o) { return o !== p.loc && o.indexOf(p.loc) === 0; });
+    // Articles only, like hooks/home.py: no home, about, tags, nor folder indexes.
+    var articles = meta.articles || locs.filter(function (l) {
+      return l && l !== "about/" && !locs.some(function (o) { return o !== l && o.indexOf(l) === 0; });
     });
     var secs = {}, tags = {};
-    list.forEach(function (p) {
-      var seg = p.loc.split("/")[0];
-      if (seg && p.loc.indexOf("/") > 0) secs[seg] = secs[seg] || { seg: seg, count: 0 };
-      (p.tags || []).forEach(function (t) { tags[t] = (tags[t] || 0) + 1; });
+    locs.forEach(function (l) {
+      var seg = l.split("/")[0];
+      if (seg && l.indexOf("/") > 0) secs[seg] = secs[seg] || { seg: seg, count: 0 };
+      (pages[l].tags || []).forEach(function (t) { tags[t] = (tags[t] || 0) + 1; });
     });
-    articles.forEach(function (p) {
-      var seg = p.loc.split("/")[0];
+    articles.forEach(function (l) {
+      var seg = l.split("/")[0];
       if (secs[seg]) secs[seg].count++;
     });
     var sections = Object.keys(secs).map(function (s) {
@@ -136,50 +140,56 @@
       return { seg: s, title: t, nTitle: norm(t), nSeg: norm(s), count: secs[s].count };
     }).sort(function (a, b) { return b.count - a.count; });
     var tagList = Object.keys(tags).map(function (t) { return { tag: t, nTag: norm(t), count: tags[t] }; });
-    return { pages: list, sections: sections, tags: tagList, count: articles.length };
+    return { titles: titles, crumb: crumb, sections: sections, tags: tagList, count: articles.length };
   }
 
   /* ---------- search ---------- */
 
-  function snippet(text, nText, tokens) {
-    var at = -1, tk = "";
-    tokens.forEach(function (t) {
-      var i = nText.indexOf(t);
-      if (i >= 0 && (at < 0 || i < at)) { at = i; tk = t; }
-    });
-    if (at < 0) return null;
-    var from = Math.max(0, at - 50), to = Math.min(text.length, at + tk.length + 90);
-    return { pre: (from > 0 ? "… " : "") + text.slice(from, at), hit: text.slice(at, at + tk.length), post: text.slice(at + tk.length, to) + (to < text.length ? " …" : "") };
+  function shape(d, idx, tokens) {
+    var loc = locOf(d.url);
+    var title = idx.titles[loc] || (d.meta && d.meta.title) || loc;
+    // Deep link only to a heading that matches (old palette rule); the H1 section is the page itself.
+    var h1 = norm((d.meta && d.meta.title) || title);
+    var head = (d.sub_results || []).filter(function (x) {
+      var t = norm(x.title);
+      return t !== h1 && x.url.indexOf("#") > 0 && tokens.some(function (k) { return t.indexOf(k) >= 0; });
+    })[0];
+    var hash = head ? head.url.slice(head.url.indexOf("#")) : "";
+    return { loc: loc, title: title, path: idx.crumb(loc), anchor: hash, ex: (head && head.excerpt) || d.excerpt, nTitle: norm(title) };
   }
 
-  function searchPages(idx, tokens) {
-    var out = [];
-    idx.pages.forEach(function (p) {
-      var score = 0, anchor = null, ex = null, ok = true;
-      tokens.forEach(function (t) {
-        var s = 0;
-        if (p.nTitle.indexOf(t) >= 0) s = p.nTitle.indexOf(t) === 0 ? 120 : 100;
-        else if (p.heads.some(function (h) { return h.nTitle.indexOf(t) >= 0; })) s = 40;
-        else if (p.nText.indexOf(t) >= 0 || p.heads.some(function (h) { return h.nText.indexOf(t) >= 0; })) s = 10;
-        if (!s) ok = false;
-        score += s;
+  function searchPages(q, tokens) {
+    return Promise.all([pagefind(), loadIndex()]).then(function (r) {
+      var idx = r[1];
+      return r[0].search(q).then(function (res) {
+        return Promise.all(res.results.slice(0, FETCH_PAGES).map(function (x) { return x.data(); }));
+      }).then(function (datas) {
+        var out = datas.map(function (d) { return shape(d, idx, tokens); }).filter(function (p) {
+          return p.loc.indexOf("tags/") !== 0 && p.loc !== "404.html";
+        });
+        // Old palette rule kept: a page whose title holds every word beats a body-only hit.
+        var inTitle = out.filter(function (p) { return tokens.every(function (t) { return p.nTitle.indexOf(t) >= 0; }); });
+        var rest = out.filter(function (p) { return inTitle.indexOf(p) < 0; });
+        return inTitle.concat(rest).slice(0, MAX_PAGES);
       });
-      if (!ok) return;
-      if (tokens.every(function (t) { return p.nTitle.indexOf(t) >= 0; })) score += 30;
-      // Excerpt and deep link: prefer a heading that matches, then any text hit.
-      var h = p.heads.filter(function (x) { return tokens.some(function (t) { return x.nTitle.indexOf(t) >= 0; }); })[0];
-      if (h) anchor = h.anchor;
-      ex = snippet(p.text, p.nText, tokens);
-      if (!ex) {
-        for (var i = 0; i < p.heads.length && !ex; i++) {
-          ex = snippet(p.heads[i].text, p.heads[i].nText, tokens);
-          if (ex && !anchor) anchor = p.heads[i].anchor;
-        }
-      }
-      out.push({ page: p, score: score, anchor: anchor, ex: ex });
     });
-    out.sort(function (a, b) { return b.score - a.score; });
-    return out.slice(0, MAX_PAGES);
+  }
+
+  function schedule(q, key, tokens) {
+    clearTimeout(state.timer);
+    state.timer = setTimeout(function () {
+      searchPages(q, tokens).then(function (list) {
+        state.found[key] = list;
+      }, function () {
+        state.found[key] = { failed: true };
+      }).then(function () {
+        if (!state.open || tokensOf(ui.input.value).join(" ") !== key) return;
+        render();
+        var queued = state.enterQueued;
+        state.enterQueued = null;
+        if (queued) activate(state.rows[state.sel], queued.newTab);
+      });
+    }, DEBOUNCE_MS);
   }
 
   /* ---------- actions ---------- */
@@ -267,7 +277,7 @@
 
     scrim.addEventListener("click", close);
     cancel.addEventListener("click", close);
-    input.addEventListener("input", render);
+    input.addEventListener("input", function () { state.enterQueued = null; render(); });
     list.addEventListener("mousemove", function (e) {
       var r = e.target.closest(".jd-pal__row");
       if (r) select(state.rows.indexOf(r), false);
@@ -306,7 +316,7 @@
 
   function render() {
     var q = ui.input.value.trim();
-    var tokens = norm(q).split(/\s+/).filter(Boolean);
+    var tokens = tokensOf(q);
     ui.list.textContent = "";
     state.rows = [];
     var idx = state.index;
@@ -316,24 +326,26 @@
     }
     ui.count.textContent = idx.count ? tr("jd.pal.indexed").replace("{n}", idx.count) : "";
 
-    var any = false;
+    var any = false, pending = false, failed = false;
     if (tokens.length) {
-      var found = searchPages(idx, tokens);
+      var key = tokens.join(" ");
+      var found = state.found[key];
+      if (!found) { pending = true; schedule(q, key, tokens); found = []; }
+      else if (found.failed) { failed = true; found = []; }
       if (found.length) {
         any = true;
         group(tr("jd.pal.group_pages"));
         found.forEach(function (r) {
           var a = el("a");
-          a.href = url(r.page.loc + (r.anchor || ""));
+          // ?h= hands the words to search.highlight on the target page (jd-highlight.js shows the count).
+          a.href = url(r.loc) + "?h=" + encodeURIComponent(q) + r.anchor;
           a.appendChild(svg(ICON_PAGE));
           var body = el("span", "jd-pal__body");
-          body.appendChild(el("span", "jd-pal__title", r.page.title));
-          if (r.page.path) body.appendChild(el("span", "jd-pal__path", r.page.path));
+          body.appendChild(el("span", "jd-pal__title", r.title));
+          if (r.path) body.appendChild(el("span", "jd-pal__path", r.path));
           if (r.ex) {
             var ex = el("span", "jd-pal__ex");
-            ex.appendChild(document.createTextNode(r.ex.pre));
-            ex.appendChild(el("mark", null, r.ex.hit));
-            ex.appendChild(document.createTextNode(r.ex.post));
+            ex.appendChild(excerptNodes(r.ex));
             body.appendChild(ex);
           }
           a.appendChild(body);
@@ -390,8 +402,12 @@
         addRow(b, a);
       });
     }
-    if (!any) {
-      ui.list.appendChild(el("p", "jd-pal__empty", idx.failed ? tr("jd.pal.no_index") : tr("jd.pal.no_result").replace("{q}", q)));
+    if (pending && !state.rows.length) {
+      ui.list.appendChild(el("p", "jd-pal__empty", tr("jd.pal.loading")));
+    } else if (failed && !any) {
+      ui.list.appendChild(el("p", "jd-pal__empty", tr("jd.pal.no_index")));
+    } else if (!any) {
+      ui.list.appendChild(el("p", "jd-pal__empty", tr("jd.pal.no_result").replace("{q}", q)));
     }
     select(0, true);
   }
@@ -430,6 +446,9 @@
     if (e.key === "Tab") { e.preventDefault(); select(state.sel + (e.shiftKey ? -1 : 1), true); return; }
     if (e.key === "Enter") {
       e.preventDefault();
+      // Results still on their way: open the first row once they land, not a stale action.
+      var key = tokensOf(ui.input.value).join(" ");
+      if (key && !state.found[key]) { state.enterQueued = { newTab: e.metaKey || e.ctrlKey }; return; }
       activate(state.rows[state.sel], e.metaKey || e.ctrlKey);
       return;
     }
@@ -497,6 +516,10 @@
   }
   document.addEventListener("mousedown", hijack, true);
   document.addEventListener("click", hijack, true);
+
+  // pages.js opens the palette prefilled (home hero, 404) and reuses the Pagefind module for its suggestions.
+  window.jdPalette = { open: open };
+  window.jdSearch = { pagefind: pagefind, pages: loadIndex, locOf: locOf };
 
   function init() {
     if (state.open) close(true);
