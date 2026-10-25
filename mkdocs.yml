@@ -55,16 +55,18 @@ hooks:
   - hooks/page_vars.py
   - hooks/i18n.py
   - hooks/home.py
+  - hooks/dates.py
   - hooks/bundle.py
   - hooks/a11y.py
 
 plugins:
   - social
   - meta
-  - git-revision-date-localized:
-      type: date
-      fallback_to_build_date: true
-      enable_creation_date: true
+  # Dates only: the partials print them (hooks/dates.py), the plugin's own block stays off.
+  - document-dates:
+      show_created: false
+      show_updated: false
+      show_author: false
   - glightbox
   - search:
       # jd-palette.js reads search/search_index.json, only the Lunr provider writes it.

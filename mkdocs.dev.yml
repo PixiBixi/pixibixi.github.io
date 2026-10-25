@@ -1,5 +1,5 @@
 # Local preview only: same theme and hooks, without the plugins that only matter in
-# production (social cards, git dates, feeds, privacy downloads, redirects).
+# production (social cards, feeds, privacy downloads, redirects).
 # search stays: hooks/article_meta.py writes into its output directory.
 INHERIT: mkdocs.yml
 
@@ -10,6 +10,10 @@ watch:
 
 plugins:
   - meta
+  - document-dates:
+      show_created: false
+      show_updated: false
+      show_author: false
   - glightbox
   - search:
       # jd-palette.js reads search/search_index.json, only the Lunr provider writes it.
