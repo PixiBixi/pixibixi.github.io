@@ -69,7 +69,7 @@ jobs:
           key: mkdocs-privacy-${{ hashFiles('docs/**/*.md') }}
           path: .cache/plugin/privacy
       - run: uv sync
-      - run: uv run mkdocs build --strict
+      - run: uv run properdocs build --strict
       # The claude-skills wiki plugin cites anchors of this site: a renamed heading must fail here, not there.
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
@@ -98,4 +98,4 @@ jobs:
           key: mkdocs-privacy-${{ hashFiles('docs/**/*.md') }}
           path: .cache/plugin/privacy
       - run: uv sync
-      - run: uv run mkdocs gh-deploy --force -d site/
+      - run: uv run properdocs gh-deploy --force -d site/
