@@ -82,10 +82,18 @@ document.getElementById('reload').onclick = load;
 
 function load() {
   stat.textContent = 'chargement...';
-  let n = 0; const done = () => { if (++n === 2) analyse(); };
+  // after the first pair, a load of the local frame is mkdocs' live reload: diff again in place
+  let n = 0; const done = () => { if (++n === 2) { analyse(); R.onload = reloaded; } };
   L.onload = R.onload = done;
   L.src = '/live/' + art.value + '?t=' + Date.now();
   R.src = '/local/' + art.value;
+}
+
+let lastY = 0;
+function reloaded() {
+  R.contentWindow.scrollTo({top: lastY, behavior: 'instant'});
+  analyse();
+  stat.textContent += ', local rechargé à ' + new Date().toLocaleTimeString();
 }
 
 function blocks(doc) {
@@ -139,7 +147,10 @@ function analyse() {
     // only the frame under the user's hand drives the other, so the 2 never chase each other
     for (const ev of ['wheel', 'pointerdown', 'touchstart', 'keydown', 'mouseenter'])
       d.addEventListener(ev, () => { active = f; }, {passive: true, capture: true});
-    w.addEventListener('scroll', () => { if (active === f) requestAnimationFrame(() => sync(f, other)); }, {passive: true});
+    w.addEventListener('scroll', () => {
+      if (f === R) lastY = w.scrollY;
+      if (active === f) requestAnimationFrame(() => sync(f, other));
+    }, {passive: true});
     d.addEventListener('keydown', keys);
   }
 }
@@ -200,15 +211,18 @@ def make_handler(page):
         def do_GET(self):
             if self.path in ('/', '/index.html'):
                 return self.reply(200, 'text/html; charset=utf-8', page.encode())
+            # mkdocs' live reload script long-polls /livereload/ from the local frame
+            if self.path.startswith('/livereload/'):
+                return self.proxy(LOCAL + self.path.lstrip('/'), timeout=90)
             for prefix, upstream in (('/live/', LIVE), ('/local/', LOCAL)):
                 if self.path.startswith(prefix):
                     return self.proxy(upstream + self.path[len(prefix):])
             self.reply(404, 'text/plain', b'not found')
 
-        def proxy(self, url):
+        def proxy(self, url, timeout=15):
             req = urllib.request.Request(url, headers={'Accept-Encoding': 'identity', 'User-Agent': 'wiki-compare'})
             try:
-                with urllib.request.urlopen(req, timeout=15) as r:
+                with urllib.request.urlopen(req, timeout=timeout) as r:
                     self.reply(r.status, r.headers.get('Content-Type', 'application/octet-stream'), r.read())
             except urllib.error.HTTPError as e:
                 self.reply(e.code, e.headers.get('Content-Type', 'text/plain'), e.read())
