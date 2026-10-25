@@ -32,14 +32,14 @@ Spegel requiert certains paramètres spécifiques, donc il n'est pas compatible 
 
 ## Installation
 
+Spegel s'installe avec son chart Helm, ou par Kustomize quand le déploiement passe par ArgoCD ou FluxCD :
+
 === "Helm chart"
-    La méthode la plus simple est via le helm chart fourni :
     ```bash
     helm upgrade --create-namespace --namespace spegel --install spegel oci://ghcr.io/spegel-org/helm-charts/spegel
     ```
 
 === "Kustomize"
-    Si l'outil de déploiement utilise Kustomize (ArgoCD/FluxCD) :
     ```yaml
     helmCharts:
       - name: spegel

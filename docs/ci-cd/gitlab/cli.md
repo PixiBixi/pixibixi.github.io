@@ -51,7 +51,7 @@ Comme toute CLI en 2023, GitLab vient avec sa propre auto completion disponible 
     Pour ma part, je n'ai pas activé cette autocompletion, je trouve mon shell (zsh) lent à charger après ajout de cette completion
 
 === "Fish"
-    ```bash
+    ```fish
     glab completion -s fish > ~/.config/fish/completions/glab.fish
     ```
 

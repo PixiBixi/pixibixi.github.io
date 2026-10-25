@@ -1321,6 +1321,11 @@ body {
   border-radius: 0;
 }
 
+/* Tabs are styled for code; anything else (screenshots) needs its own inset. */
+.md-typeset .tabbed-block > :not(.highlight) {
+  margin: 12px 16px;
+}
+
 /* ==========================================================================
    Admonitions + details
    ========================================================================== */
