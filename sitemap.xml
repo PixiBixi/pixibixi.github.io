@@ -22,7 +22,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/automation/ansible/ansible_reuse_variable/</loc>
-    <lastmod>2026-08-22</lastmod>
+    <lastmod>2026-10-25</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/automation/ansible/ansible_tips/</loc>
@@ -114,7 +114,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/cloud/azure/misc_commands/</loc>
-    <lastmod>2026-08-22</lastmod>
+    <lastmod>2026-10-25</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/cloud/gcloud/gcloud_commands/</loc>
@@ -206,7 +206,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/databases/redis/cluster_ha/</loc>
-    <lastmod>2026-10-13</lastmod>
+    <lastmod>2026-10-25</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/databases/redis/decode_function/</loc>
@@ -318,7 +318,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/kubernetes/cli/useful_commands/</loc>
-    <lastmod>2026-10-13</lastmod>
+    <lastmod>2026-10-25</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/kubernetes/deployment/gomaxprocs_gomemlimit_kubernetes/</loc>
@@ -386,7 +386,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/linux/advanced/understand_sysfs_procfs/</loc>
-    <lastmod>2026-08-23</lastmod>
+    <lastmod>2026-10-25</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/linux/bsd/wheel_group/</loc>
@@ -422,7 +422,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/linux/cli/motd/</loc>
-    <lastmod>2026-08-22</lastmod>
+    <lastmod>2026-10-25</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/linux/cli/replace_base_commands/</loc>
@@ -618,7 +618,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/linux/systemd/create_unit/</loc>
-    <lastmod>2026-08-23</lastmod>
+    <lastmod>2026-10-25</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/misc/</loc>
@@ -686,11 +686,11 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/monitoring/lgtm/loki_alerting/</loc>
-    <lastmod>2026-10-13</lastmod>
+    <lastmod>2026-10-25</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/monitoring/lgtm/simple_monitoring_stack/</loc>
-    <lastmod>2026-10-13</lastmod>
+    <lastmod>2026-10-25</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/monitoring/lgtm/thanos-cache/</loc>
@@ -958,7 +958,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/web/haproxy/overview/</loc>
-    <lastmod>2026-10-13</lastmod>
+    <lastmod>2026-10-25</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/web/haproxy/performance_tuning/</loc>
@@ -978,7 +978,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/web/nginx/installation/</loc>
-    <lastmod>2026-10-13</lastmod>
+    <lastmod>2026-10-25</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/web/nginx/ipv6_nginx/</loc>
@@ -994,7 +994,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/web/varnish/config/</loc>
-    <lastmod>2026-08-22</lastmod>
+    <lastmod>2026-10-25</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/web/wordpress/migrate_wordpress_sql/</loc>
