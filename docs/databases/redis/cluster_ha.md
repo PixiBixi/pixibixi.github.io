@@ -153,65 +153,59 @@ Pour rappel, nous utilisons une configuration spliited par fichier.
 
 #### Backend
 
-<!-- markdownlint-disable MD046 -->
-??? example "/etc/haproxy/30-backend.cfg"
-    ```bash
-    backend redis_read
-        mode tcp
-        option tcp-check
-        tcp-check connect
-        tcp-check send PING\r\n
-        tcp-check expect string +PONG
-        tcp-check send QUIT\r\n
-        tcp-check expect string +OK
+```bash title="/etc/haproxy/30-backend.cfg"
+backend redis_read
+    mode tcp
+    option tcp-check
+    tcp-check connect
+    tcp-check send PING\r\n
+    tcp-check expect string +PONG
+    tcp-check send QUIT\r\n
+    tcp-check expect string +OK
 
-        server redis1 redis1.internal:6379 check inter 1s fall 1 rise 1
-        server redis2 redis2.internal:6379 check inter 1s fall 1 rise 1
-        server redis3 redis3.internal:6379 check inter 1s fall 1 rise 1
+    server redis1 redis1.internal:6379 check inter 1s fall 1 rise 1
+    server redis2 redis2.internal:6379 check inter 1s fall 1 rise 1
+    server redis3 redis3.internal:6379 check inter 1s fall 1 rise 1
 
-    backend redis_write
-        mode tcp
-        option tcp-check
-        tcp-check connect
-        tcp-check send PING\r\n
-        tcp-check expect string +PONG
-        tcp-check send info\ replication\r\n
-        tcp-check expect string role:master
-        tcp-check send QUIT\r\n
-        tcp-check expect string +OK
+backend redis_write
+    mode tcp
+    option tcp-check
+    tcp-check connect
+    tcp-check send PING\r\n
+    tcp-check expect string +PONG
+    tcp-check send info\ replication\r\n
+    tcp-check expect string role:master
+    tcp-check send QUIT\r\n
+    tcp-check expect string +OK
 
-        server redis1 redis1.internal:6379 check inter 1s fall 1 rise 1
-        server redis2 redis2.internal:6379 check inter 1s fall 1 rise 1
-        server redis3 redis3.internal:6379 check inter 1s fall 1 rise 1
-    ```
-<!-- markdownlint-enable MD046 -->
+    server redis1 redis1.internal:6379 check inter 1s fall 1 rise 1
+    server redis2 redis2.internal:6379 check inter 1s fall 1 rise 1
+    server redis3 redis3.internal:6379 check inter 1s fall 1 rise 1
+```
 
 #### Frontend
 
-<!-- markdownlint-disable MD046 -->
-??? example "/etc/haproxy/40-backend.cfg"
-    ```bash
-    frontend redis-write
-        bind *:6380
-        mode tcp
+```bash title="/etc/haproxy/40-backend.cfg"
+frontend redis-write
+    bind *:6380
+    mode tcp
 
-        option  tcpka
-        option  tcplog
-        option  logasap
+    option  tcpka
+    option  tcplog
+    option  logasap
 
-        default_backend redis_write
+    default_backend redis_write
 
-    frontend redis-read
-        bind *:6381
-        mode tcp
+frontend redis-read
+    bind *:6381
+    mode tcp
 
-        option  tcpka
-        option  tcplog
-        option  logasap
+    option  tcpka
+    option  tcplog
+    option  logasap
 
-        default_backend redis_read
-    ```
-<!-- markdownlint-enable MD046 -->
+    default_backend redis_read
+```
 
 Côté backend, nous voyons que la différence est uniquement côté
 détection du master. Nous avons également réduit le fall et le rise à 1

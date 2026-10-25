@@ -54,23 +54,22 @@ La variable CONFIG est utilisée pour le paramètre `-F $CONFIG` de
 l'unit systemd.
 Voici ce que dit la [documentation haproxy](https://docs.haproxy.org/3.3/management.html) :
 
-??? note "HAProxy : Official Documentation"
-    ```bash
-      -f <cfgfile|cfgdir> : adds <cfgfile> to the list of configuration files to be
-        loaded. If <cfgdir> is a directory, all the files (and only files) it
-        contains are added in lexical order (using LC_COLLATE=C) to the list of
-        configuration files to be loaded ; only files with ".cfg" extension are
-        added, only non hidden files (not prefixed with ".") are added.
-        Configuration files are loaded and processed in their declaration order.
-        This option may be specified multiple times to load multiple files. See
-        also "--". The difference between "--" and "-f" is that one "-f" must be
-        placed before each file name, while a single "--" is needed before all file
-        names. Both options can be used together, the command line ordering still
-        applies. When more than one file is specified, each file must start on a
-        section boundary, so the first keyword of each file must be one of
-        "global", "defaults", "peers", "listen", "frontend", "backend", and so on.
-        A file cannot contain just a server list for example.
-    ```
+```bash title="HAProxy : Official Documentation"
+  -f <cfgfile|cfgdir> : adds <cfgfile> to the list of configuration files to be
+    loaded. If <cfgdir> is a directory, all the files (and only files) it
+    contains are added in lexical order (using LC_COLLATE=C) to the list of
+    configuration files to be loaded ; only files with ".cfg" extension are
+    added, only non hidden files (not prefixed with ".") are added.
+    Configuration files are loaded and processed in their declaration order.
+    This option may be specified multiple times to load multiple files. See
+    also "--". The difference between "--" and "-f" is that one "-f" must be
+    placed before each file name, while a single "--" is needed before all file
+    names. Both options can be used together, the command line ordering still
+    applies. When more than one file is specified, each file must start on a
+    section boundary, so the first keyword of each file must be one of
+    "global", "defaults", "peers", "listen", "frontend", "backend", and so on.
+    A file cannot contain just a server list for example.
+```
 
 Tous les fichiers se terminant par .cfg seront chargés par HAProxy par
 ordre alphabétique.
@@ -95,21 +94,20 @@ Comme son nom l'indique, toute la partie globale concerne les
 directives propres au fonctionnement interne de HAProxy. Voici un
 exemple simple qu'on retrouve dans un grand nombre de configurations HAProxy :
 
-??? example "HAProxy: Global section"
-    ```haproxy
-    global
-        maxconn 50000
-        log /dev/log local0
-        user haproxy
-        group haproxy
-        stats socket /run/haproxy/admin.sock user haproxy group haproxy mode 660 level admin
-        nbthread 4
-        cpu-map auto:1-4 0-3
-        daemon
-        ssl-default-bind-ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305
-        ssl-default-bind-ciphersuites TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256
-        ssl-default-bind-options ssl-min-ver TLSv1.2 no-tls-tickets
-    ```
+```haproxy title="HAProxy: Global section"
+global
+    maxconn 50000
+    log /dev/log local0
+    user haproxy
+    group haproxy
+    stats socket /run/haproxy/admin.sock user haproxy group haproxy mode 660 level admin
+    nbthread 4
+    cpu-map auto:1-4 0-3
+    daemon
+    ssl-default-bind-ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305
+    ssl-default-bind-ciphersuites TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256
+    ssl-default-bind-options ssl-min-ver TLSv1.2 no-tls-tickets
+```
 
 * `maxconn` permet de limiter le nombre de connexions acceptées
 par HAProxy pour prémunir un manque de mémoire. Attention à ne pas
@@ -140,29 +138,26 @@ La configuration est évolutive, c'est pour ça que la catégorie
 frontend mais également pour les backends. On peut overwrite les
 paramètres pour un frontend/backend spécifique par la suite.
 
-<!-- markdownlint-disable MD046 -->
-??? example "HAProxy: Default section"
-    ```haproxy
-    defaults
-        mode http
-        log global
+```haproxy title="HAProxy: Default section"
+defaults
+    mode http
+    log global
 
-        option httplog
-        option dontlognull
+    option httplog
+    option dontlognull
 
-        timeout connect 10s
-        timeout client 30s
-        timeout server 30s
+    timeout connect 10s
+    timeout client 30s
+    timeout server 30s
 
-        timeout http-request 5s
-        timeout http-keep-alive 125s
+    timeout http-request 5s
+    timeout http-keep-alive 125s
 
-        timeout client-fin 30s
-        timeout tunnel 1h
+    timeout client-fin 30s
+    timeout tunnel 1h
 
-        http-reuse safe
-    ```
-<!-- markdownlint-enable MD046 -->
+    http-reuse safe
+```
 
 * `mode http` indique à HAProxy de fonctionner en tant que balancer
 HTTP et non simplement TCP. Légèrement plus lent que le TCP mais
@@ -205,34 +200,30 @@ L'exemple suivant est le plus simple qu'on puisse faire
 sur HAProxy. HAProxy va écouter sur le port 80 et tout renvoyer le
 traffic vers le backend *servers*. Aucune ACL ici.
 
-??? example "HAProxy : Simple frontend"
-    ```vcl
-    frontend http-in
-        bind *:80
-        default_backend servers
-    ```
+```vcl title="HAProxy : Simple frontend"
+frontend http-in
+    bind *:80
+    default_backend servers
+```
 
 #### Exemple avancé : ACL
 
 Un exemple avancé est l'utilisation d'une ACL. Il existe beaucoup de
 types d'ACL, que ce soit sur l'URI, les paramètres... Voici un exemple simple avec l'utilisation d'une ACL sur le nom de domaine.
 
-<!-- markdownlint-disable MD046 MD037 -->
-??? example "HAProxy : Simple frontend w/ ACL"
-    ```vcl
-    frontend http
-       bind *:80
+```vcl title="HAProxy : Simple frontend w/ ACL"
+frontend http
+   bind *:80
 
-       # On définit des ACL qui associe un Host: HTTP à un backend
-       acl wiki hdr(host) -i wiki.jdelgado.fr
-       acl site hdr(host) -i jdelgado.fr
+   # On définit des ACL qui associe un Host: HTTP à un backend
+   acl wiki hdr(host) -i wiki.jdelgado.fr
+   acl site hdr(host) -i jdelgado.fr
 
-       use_backend wiki if wiki
-       use_backend site if site
+   use_backend wiki if wiki
+   use_backend site if site
 
-       default_backend undefined
-    ```
-<!-- markdownlint-enable MD046 -->
+   default_backend undefined
+```
 
 On définit ici un backend par défaut. Il est possible de ne pas en
 définir et HAProxy renverra une erreur 421 de lui même.
@@ -253,25 +244,22 @@ cat /etc/letsencrypt/live/wiki.jdelgado.fr/fullchain.pem \
 chmod 600 /etc/haproxy/certs/wiki.jdelgado.fr.pem
 ```
 
-<!-- markdownlint-disable MD046 MD037 -->
-??? example "HAProxy : Frontend avec terminaison TLS"
-    ```haproxy
-    frontend https
-        bind *:80
-        bind *:443 ssl crt /etc/haproxy/certs/ alpn h2,http/1.1
+```haproxy title="HAProxy : Frontend avec terminaison TLS"
+frontend https
+    bind *:80
+    bind *:443 ssl crt /etc/haproxy/certs/ alpn h2,http/1.1
 
-        # Redirection HTTP → HTTPS
-        http-request redirect scheme https code 301 unless { ssl_fc }
+    # Redirection HTTP → HTTPS
+    http-request redirect scheme https code 301 unless { ssl_fc }
 
-        acl wiki hdr(host) -i wiki.jdelgado.fr
-        acl site hdr(host) -i jdelgado.fr
+    acl wiki hdr(host) -i wiki.jdelgado.fr
+    acl site hdr(host) -i jdelgado.fr
 
-        use_backend wiki if wiki
-        use_backend site if site
+    use_backend wiki if wiki
+    use_backend site if site
 
-        default_backend undefined
-    ```
-<!-- markdownlint-enable MD046 -->
+    default_backend undefined
+```
 
 La négociation TLS étant terminée avant l'évaluation des ACLs, `hdr(host)` suffit.
 Pas besoin de filtrer sur `ssl_fc_sni`. L'option `alpn h2,http/1.1` active
@@ -283,12 +271,11 @@ Les backends sont la force de HAProxy, entièrement modulables. Voici quelques e
 
 #### Multiples servers
 
-??? example "HAProxy : Multiple backends"
-    ```vcl
-    backend web_servers
-        server server1 10.0.1.3:80
-        server server2 10.0.1.4:80
-    ```
+```vcl title="HAProxy : Multiple backends"
+backend web_servers
+    server server1 10.0.1.3:80
+    server server2 10.0.1.4:80
+```
 
 2 serveurs dénommés respectivement server1 et server2 sur
 les IPs 10.0.1.3 et 10.0.1.4 écoutant sur le port 80. Aucun paramètre
@@ -299,15 +286,14 @@ spécifique sur un éventuel check de disponibilité - chacun recevra 50% du tra
 On peut demander à HAProxy de déposer un cookie sur le client pour
 effectuer un équilibrage de charge :
 
-??? example "HAProxy : Multiple backends with persistance"
-    ```vcl
-    backend web_servers
-        balance roundrobin
-        cookie srvid insert indirect nocache
-        option httpchk HEAD /
-        server server1 10.0.1.3:80 cookie server1
-        server server2 10.0.1.4:80 cookie server2
-    ```
+```vcl title="HAProxy : Multiple backends with persistance"
+backend web_servers
+    balance roundrobin
+    cookie srvid insert indirect nocache
+    option httpchk HEAD /
+    server server1 10.0.1.3:80 cookie server1
+    server server2 10.0.1.4:80 cookie server2
+```
 
 Le client recevra un cookie dénommé srvid qui sera utilisé par haproxy
 pour balancer le traffic en round-robin.
@@ -318,22 +304,20 @@ Il est possible d'avoir plusieurs servers sur le même backend mais
 n'en utiliser qu'un primaire. Il suffit d'ajouter le mot clef
 `backup` au serveur secondaire :
 
-??? example "HAProxy : Multiple backends with backup"
-    ```vcl
-    backend web_servers
-        server server1 10.0.1.3:80
-        server server2 10.0.1.4:80 backup
-    ```
+```vcl title="HAProxy : Multiple backends with backup"
+backend web_servers
+    server server1 10.0.1.3:80
+    server server2 10.0.1.4:80 backup
+```
 
 #### Check HTTP
 
-??? example "HAProxy : Multiple backends with HTTP check"
-    ```vcl
-    backend web_servers
-        option httpchk HEAD /
-        server server1 10.0.1.3:80
-        server server2 10.0.1.4:80
-    ```
+```vcl title="HAProxy : Multiple backends with HTTP check"
+backend web_servers
+    option httpchk HEAD /
+    server server1 10.0.1.3:80
+    server server2 10.0.1.4:80
+```
 
 Il s'agit du même backend qu'au préalable mais avec une différence
 importante, la présence de `httpchk`. On a ici un véritable check L7 au lieu d'un check TCP L4. HAProxy est capable
@@ -387,18 +371,15 @@ très intéressant de spécifier le type de balance. **balance uri whole**
 indique à haproxy de toujours envoyer le traffic pour une URI spécifique
 vers le même backend, ce qui maximise le hitrate.
 
-??? example "HAProxy : Backend Varnish"
-<!-- markdownlint-disable MD046 -->
-    ```vcl
-    backend varnish
-        timeout     check 3000
-        balance uri whole
-        hash-type consistent
+```vcl title="HAProxy : Backend Varnish"
+backend varnish
+    timeout     check 3000
+    balance uri whole
+    hash-type consistent
 
-        server      varnish01  varnish01.vlan:82  check
-        server      varnish02  varnish02.vlan:82  check
-    ```
-<!-- markdownlint-enable MD046 -->
+    server      varnish01  varnish01.vlan:82  check
+    server      varnish02  varnish02.vlan:82  check
+```
 
 ### HTTP to HTTPS
 
@@ -421,12 +402,11 @@ http-request redirect scheme https code 301 unless { ssl_fc }
 Si pour quelconque raison on veut retourner des URLs custom selon
 des URI précises, la manière la plus facile :
 
-??? example "HAProxy : Using map"
-    ```vcl
-    acl     acl           hdr_beg(host) -i monsite.fr
-    acl     acl           hdr_beg(host) -i www.monsite.fr
-    http-request redirect location %[capture.req.uri,map(/etc/haproxy/redirect.map)] code 301 if { capture.req.uri,map(/etc/haproxy/redirect.map) -i -m found } acl
-    ```
+```vcl title="HAProxy : Using map"
+acl     acl           hdr_beg(host) -i monsite.fr
+acl     acl           hdr_beg(host) -i www.monsite.fr
+http-request redirect location %[capture.req.uri,map(/etc/haproxy/redirect.map)] code 301 if { capture.req.uri,map(/etc/haproxy/redirect.map) -i -m found } acl
+```
 
 Et le contenu du fichier redirect.map :
 
