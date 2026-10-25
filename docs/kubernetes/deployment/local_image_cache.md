@@ -32,26 +32,22 @@ Spegel requiert certains paramètres spécifiques, donc il n'est pas compatible 
 
 ## Installation
 
-### Helm chart
+=== "Helm chart"
+    La méthode la plus simple est via le helm chart fourni :
+    ```bash
+    helm upgrade --create-namespace --namespace spegel --install spegel oci://ghcr.io/spegel-org/helm-charts/spegel
+    ```
 
-La méthode la plus simple est via le helm chart fourni :
-
-```bash
-helm upgrade --create-namespace --namespace spegel --install spegel oci://ghcr.io/spegel-org/helm-charts/spegel
-```
-
-### Kustomize
-
-Si l'outil de déploiement utilise Kustomize (ArgoCD/FluxCD) :
-
-```yaml
-helmCharts:
-  - name: spegel
-    repo: oci://ghcr.io/spegel-org/helm-charts
-    releaseName: spegel
-    namespace: spegel
-    valuesFile: values.yaml
-```
+=== "Kustomize"
+    Si l'outil de déploiement utilise Kustomize (ArgoCD/FluxCD) :
+    ```yaml
+    helmCharts:
+      - name: spegel
+        repo: oci://ghcr.io/spegel-org/helm-charts
+        releaseName: spegel
+        namespace: spegel
+        valuesFile: values.yaml
+    ```
 
 Par défaut, le `values.yaml` ne nécessite quasiment aucune modification hormis l'activation du serviceMonitor si on dispose de la CRD.
 

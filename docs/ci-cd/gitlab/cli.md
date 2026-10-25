@@ -50,22 +50,19 @@ Comme toute CLI en 2023, GitLab vient avec sa propre auto completion disponible 
 !!! warning "Lenteurs"
     Pour ma part, je n'ai pas activé cette autocompletion, je trouve mon shell (zsh) lent à charger après ajout de cette completion
 
-### Fish
+=== "Fish"
+    ```bash
+    glab completion -s fish > ~/.config/fish/completions/glab.fish
+    ```
 
-```bash
-glab completion -s fish > ~/.config/fish/completions/glab.fish
-```
+=== "Zsh"
+    ```bash
+    echo "source <(glab completion -s zsh); compdef _glab glab" >> ~/.zshrc
+    ```
 
-### Zsh
-
-```bash
-echo "source <(glab completion -s zsh); compdef _glab glab" >> ~/.zshrc
-```
-
-### Bash
-
-```bash
-echo 'source <(glab completion -s bash)' >> ~/.bashrc
-```
+=== "Bash"
+    ```bash
+    echo 'source <(glab completion -s bash)' >> ~/.bashrc
+    ```
 
 Pour une documentation beaucoup plus exhaustive, je vous invite à aller voir [l'excellent article de blog](https://blog.stephane-robert.info/docs/pipeline-cicd/gitlab/cli/) de Stephane Robert

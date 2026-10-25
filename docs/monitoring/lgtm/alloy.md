@@ -30,34 +30,31 @@ L'UI de debug est dispo sur `http://localhost:12345` - elle affiche le graphe de
 
 ## Installation
 
-### Debian / Ubuntu
+=== "Debian / Ubuntu"
+    ```bash
+    # Import GPG + repo
+    wget -q -O - https://apt.grafana.com/gpg.key | gpg --dearmor > /etc/apt/keyrings/grafana.gpg
+    echo "deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com stable main" \
+      > /etc/apt/sources.list.d/grafana.list
+    apt-get update && apt-get install -y alloy
+    ```
 
-```bash
-# Import GPG + repo
-wget -q -O - https://apt.grafana.com/gpg.key | gpg --dearmor > /etc/apt/keyrings/grafana.gpg
-echo "deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com stable main" \
-  > /etc/apt/sources.list.d/grafana.list
-apt-get update && apt-get install -y alloy
-```
+=== "Docker"
+    ```bash
+    docker run -d \
+      -v /etc/alloy/config.alloy:/etc/alloy/config.alloy \
+      -p 12345:12345 \
+      grafana/alloy:latest \
+      run /etc/alloy/config.alloy
+    ```
 
-### Docker
-
-```bash
-docker run -d \
-  -v /etc/alloy/config.alloy:/etc/alloy/config.alloy \
-  -p 12345:12345 \
-  grafana/alloy:latest \
-  run /etc/alloy/config.alloy
-```
-
-### Kubernetes (Helm)
-
-```bash
-helm repo add grafana https://grafana.github.io/helm-charts
-helm upgrade --install alloy grafana/alloy \
-  --namespace monitoring \
-  -f values.yaml
-```
+=== "Kubernetes (Helm)"
+    ```bash
+    helm repo add grafana https://grafana.github.io/helm-charts
+    helm upgrade --install alloy grafana/alloy \
+      --namespace monitoring \
+      -f values.yaml
+    ```
 
 Le fichier de config par défaut : `/etc/alloy/config.alloy`
 
