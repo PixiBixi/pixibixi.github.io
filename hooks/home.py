@@ -1,8 +1,8 @@
 """Data for the home page and the tags index (templates: home.html, tags.html)."""
 
 import re
-import subprocess
 from collections import defaultdict
+from datetime import datetime, timezone
 
 from pymdownx.slugs import slugify
 
@@ -16,29 +16,13 @@ _CASE = {
 }
 _TAG_MIN = 4
 _slug = slugify(case="lower")
-_created = {}
+_EPOCH = datetime.min.replace(tzinfo=timezone.utc)
 
 
-def _creation_dates():
-    """Docs-relative path -> ISO date of the first commit, one git call, renames followed."""
-    if _created:
-        return _created
-    out = subprocess.run(
-        ["git", "log", "--reverse", "-M", "--name-status", "--format=@@%aI", "--", "docs"],
-        capture_output=True, text=True, check=False,
-    ).stdout
-    date = ""
-    for line in out.splitlines():
-        if line.startswith("@@"):
-            date = line[2:12]
-            continue
-        parts = line.split("\t")
-        if len(parts) == 2 and parts[0] == "A":
-            _created[parts[1].removeprefix("docs/")] = date
-        elif len(parts) == 3 and parts[0].startswith("R"):
-            old, new = parts[1].removeprefix("docs/"), parts[2].removeprefix("docs/")
-            _created[new] = _created.get(old, date)
-    return _created
+def _created(page):
+    """UTC creation datetime, from document-dates (hooks/dates.py follows renames)."""
+    value = ((page.meta.get("document_dates") or {}).get("dates") or {}).get("created")
+    return datetime.fromisoformat(value).astimezone(timezone.utc) if value else _EPOCH
 
 
 def _walk(items):
@@ -91,8 +75,7 @@ def on_page_context(context, page, config, nav):
     if src not in ("index.md", "tags.md"):
         return context
     articles = _articles(nav)
-    dates = _creation_dates()
-    newest = sorted(articles, key=lambda p: dates.get(p.file.src_uri, ""), reverse=True)
+    newest = sorted(articles, key=_created, reverse=True)
 
     if src == "index.md":
         sections = [_section(s) for s in nav.items if s.is_section]
@@ -101,7 +84,7 @@ def on_page_context(context, page, config, nav):
             "sections": sorted(sections, key=lambda s: -s["count"]),
             "recent": [
                 {
-                    "date": dates.get(p.file.src_uri, ""),
+                    "date": _created(p).date().isoformat(),
                     "section": _label(_top(p).title) if _top(p) else "",
                     "title": p.title,
                     "url": p.url,
