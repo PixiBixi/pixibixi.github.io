@@ -187,6 +187,8 @@ uv run properdocs build --strict 2>&1 | grep -E "WARNING|ERROR"
 
 `docs/index.md` contains hardcoded links - renames break the build silently until CI catches it.
 
+`validation:` in `mkdocs.yml` makes a link to a missing heading anchor, an absolute link (`/linux/`) or a folder link (`linux/cli/`) fatal under `--strict`: renaming a heading breaks every link to it. Link to the `.md` file, with the anchor of the current heading.
+
 A green `--strict` build does not mean the page renders correctly (broken front matter, an
 oversized SVG). Preview locally before committing a new or rewritten article.
 
