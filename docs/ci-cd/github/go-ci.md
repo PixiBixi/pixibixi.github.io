@@ -319,7 +319,7 @@ Le `go install ... @latest` qu'on écrit par réflexe est le même problème qu'
 
 ## Releases pilotées par les commits
 
-Une CI fiable débloque un cran d'automatisation de plus : faire du type de commit le déclencheur d'une release et laisser Renovate merger ses PR tout seul. La partie automerge (et le cooldown qui la rend sûre) est dans [l'article durcissement](hardening.md#automerger-sans-avaler-une-release-compromise) ; ce qui suit est le maillon d'après, propre au repo Go. Pour la même mécanique sans Go ni GoReleaser, avec CHANGELOG généré et comparaison à release-please, voir [Cocogitto](cocogitto.md).
+Une CI fiable débloque un cran d'automatisation de plus : faire du type de commit le déclencheur d'une release et laisser Renovate merger ses PR tout seul. La partie automerge (et le cooldown qui la rend sûre) est dans [l'article durcissement](hardening.md#automerger-derriere-un-cooldown) ; ce qui suit est le maillon d'après, propre au repo Go. Pour la même mécanique sans Go ni GoReleaser, avec CHANGELOG généré et comparaison à release-please, voir [Cocogitto](cocogitto.md).
 
 ### Faire du commit le déclencheur de version
 
