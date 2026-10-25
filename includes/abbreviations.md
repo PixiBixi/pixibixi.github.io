@@ -1,7 +1,9 @@
 <!-- markdownlint-disable-file MD041 -->
+*[autodiscover]: Mode où Renovate traite tous les repos auxquels il a accès, au lieu d'une liste explicite
 *[bump]: Incrément du numéro de version (patch, minor ou major) déduit des commits depuis le dernier tag
 *[CGO]: Mécanisme qui permet à du code Go d'appeler du C, au prix d'une dépendance à la libc et d'un binaire non statique
 *[CVE]: Common Vulnerabilities and Exposures, l'identifiant public d'une vulnérabilité connue
+*[dependency dashboard]: Issue que Renovate tient à jour dans le repo, avec les mises à jour en attente et des cases pour les déclencher
 *[distroless]: Image de conteneur sans shell ni gestionnaire de paquets, qui ne contient que ce dont le binaire a besoin
 *[DWARF]: Format des informations de debug (types, variables, lignes source) que lisent delve et gdb
 *[eBPF]: Programmes chargés dans le kernel Linux et exécutés sur des événements (paquet réseau, appel système), sans module ni recompilation
