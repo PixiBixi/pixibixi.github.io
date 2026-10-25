@@ -17,72 +17,76 @@ d'avoir au minimum la version 5.5 de PHP.
 
 ## Installation
 
-Tout d'abord, nous devons faire un lien symbolique vers notre www et
-le folder que nous souhaitons rendre accessible publiquement.
+<div class="steps" markdown>
 
-Pour moi, je souhaite rendre `/home/jeremy/files/` accessible publiquement
+1. Tout d'abord, nous devons faire un lien symbolique vers notre www et
+    le folder que nous souhaitons rendre accessible publiquement.
 
-```bash
-ln -s /home/jeremy/files/ /var/www/downloads
-```
+    Pour moi, je souhaite rendre `/home/jeremy/files/` accessible publiquement
 
-Il convient comme nom d'usage d'utiliser downloads en folder de
-destination
+    ```bash
+    ln -s /home/jeremy/files/ /var/www/downloads
+    ```
 
-Puis dans ce dossier, nous allons télécharger h5ai
+    Il convient comme nom d'usage d'utiliser downloads en folder de
+    destination
 
-```bash
-cd /var/www/downloads/
-wget https://release.larsjung.de/h5ai/h5ai-0.28.1.zip
-```
+2. Puis dans ce dossier, nous allons télécharger h5ai
 
-N'oublier pas de vous rendre [ici](https://release.larsjung.de/h5ai/)
-afin de consulter les dernières versions de h5ai disponibles
+    ```bash
+    cd /var/www/downloads/
+    wget https://release.larsjung.de/h5ai/h5ai-0.28.1.zip
+    ```
 
-Enfin, nous extrayons l'archive, puis nous renommons `_h5ai` en
-**.h5ai** afin de ne pas le voir dans l'explorateur.
+    N'oublier pas de vous rendre [ici](https://release.larsjung.de/h5ai/)
+    afin de consulter les dernières versions de h5ai disponibles
 
-```bash
-unzip h5ai-0.28.1.zip
-mv _h5ai .h5ai
-```
+3. Enfin, nous extrayons l'archive, puis nous renommons `_h5ai` en
+    **.h5ai** afin de ne pas le voir dans l'explorateur.
 
-On n'oublie pas de donner les droits adéquats
+    ```bash
+    unzip h5ai-0.28.1.zip
+    mv _h5ai .h5ai
+    ```
 
-```bash
-chown -R www-data:www-data .h5ai
-```
+4. On n'oublie pas de donner les droits adéquats
 
-Et enfin, on créer le server-block nginx adéquat, sans oublier de faire le bon CNAME
+    ```bash
+    chown -R www-data:www-data .h5ai
+    ```
 
-```nginx
-server {
-    server_name downloads.titi.ovh;
-    listen 80;
-    listen [::]:80;
-    return 301 https://$host$request_uri;
-}
-server {
-    listen 443 ssl http2;
-    listen [::]:443 ssl http2;
-    server_name downloads.titi.ovh;
+5. Et enfin, on créer le server-block nginx adéquat, sans oublier de faire le bon CNAME
 
-    error_log /var/log/nginx/downloads.error.log;
-    access_log /var/log/nginx/downloads.access.log;
+    ```nginx
+    server {
+        server_name downloads.titi.ovh;
+        listen 80;
+        listen [::]:80;
+        return 301 https://$host$request_uri;
+    }
+    server {
+        listen 443 ssl http2;
+        listen [::]:443 ssl http2;
+        server_name downloads.titi.ovh;
 
-    include /etc/nginx/conf.d/cache.conf;
-    include /etc/nginx/conf.d/php.conf;
-    include /etc/nginx/conf.d/ssl.conf;
-    include /etc/nginx/conf.d/file_protect.conf;
+        error_log /var/log/nginx/downloads.error.log;
+        access_log /var/log/nginx/downloads.access.log;
 
-    auth_basic "Downloads";
-    auth_basic_user_file "/etc/nginx/passwd/rutorrent_passwd";
+        include /etc/nginx/conf.d/cache.conf;
+        include /etc/nginx/conf.d/php.conf;
+        include /etc/nginx/conf.d/ssl.conf;
+        include /etc/nginx/conf.d/file_protect.conf;
 
-    root /var/www/downloads;
-    index  index.html  index.php /.h5ai/public/index.php;
+        auth_basic "Downloads";
+        auth_basic_user_file "/etc/nginx/passwd/rutorrent_passwd";
 
-    autoindex on;
-}
-```
+        root /var/www/downloads;
+        index  index.html  index.php /.h5ai/public/index.php;
 
-La dernière ligne **autoindex on** est cruciale, car c'est elle qui va permettre de lister le contenu.
+        autoindex on;
+    }
+    ```
+
+    La dernière ligne **autoindex on** est cruciale, car c'est elle qui va permettre de lister le contenu.
+
+</div>

@@ -80,6 +80,8 @@ L'interface est accessible sur `http://localhost`. Identifiants par défaut : `a
 
 ## Installation manuelle
 
+<div class="steps" markdown>
+
 ### Prérequis
 
 - PHP 8.2+ avec les extensions : `BCMath`, `Ctype`, `Fileinfo`, `GD`, `JSON`, `Mbstring`, `OpenSSL`, `PDO`, `Tokenizer`, `XML`, `zip`, `curl`
@@ -186,6 +188,8 @@ server {
     }
 }
 ```
+
+</div>
 
 ## Synchronisation de la bibliothèque
 
