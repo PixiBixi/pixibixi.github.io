@@ -10,7 +10,7 @@ tags:
 
 # CI GitHub Actions pour Go : tests, lint, sécurité et release
 
-Une CI Go demande plus que `go test`. Il faut tester sur plusieurs plateformes, linter, scanner les vulnérabilités et laisser le type de commit déclencher la release. Les workflows viennent d'un repo public, [gopen](https://github.com/PixiBixi/gopen), et les mesures de lint de [klens](https://github.com/PixiBixi/kubectl-klens), un plugin kubectl qui manipule des objets Kubernetes.
+Une CI Go demande plus que `go test`. Il faut tester sur plusieurs plateformes, linter, scanner les vulnérabilités et laisser le type de commit déclencher la release. Les workflows viennent du repo public [gopen](https://github.com/PixiBixi/gopen) et les mesures de lint de [klens](https://github.com/PixiBixi/kubectl-klens), un plugin kubectl qui manipule des objets Kubernetes.
 
 !!! tip "Le socle de durcissement est traité à part"
     Épinglage par SHA, `permissions:`, `persist-credentials`, injection de template, zizmor et actionlint ne dépendent pas du langage et vivent dans [Durcir une CI GitHub Actions](hardening.md). Tous les workflows ci-dessous les appliquent.
@@ -82,7 +82,7 @@ jobs:
 
 ## Lint
 
-golangci-lint agrège des dizaines de linters en un seul binaire, un seul passage. On épingle sa version pour que la CI soit reproductible : un nouveau linter activé par une mise à jour ne doit pas casser une PR sans qu'on l'ait décidé.
+golangci-lint fait tourner des dizaines de linters en un seul passage, avec un seul binaire à installer et une seule config à maintenir. On épingle sa version pour que la CI soit reproductible : un nouveau linter activé par une mise à jour ne doit pas casser une PR sans qu'on l'ait décidé.
 
 ```yaml title=".github/workflows/lint.yml"
 - uses: golangci/golangci-lint-action@ba0d7d2ec06a0ea1cb5fa41b2e4a3ab91d21278a # v9.3.0
@@ -121,7 +121,7 @@ linters:
 !!! warning "Ne pas désactiver un linter pour faire passer la CI"
     Une exclusion sans commentaire, c'est de la dette. Soit le linter a raison et on corrige, soit il a tort dans ce contexte précis et on écrit pourquoi. `G204` ci-dessus est un cas légitime : le binaire n'invoque jamais de shell.
 
-### Gocritic signale des copies qui ne coûtent rien ici
+### Repérer les copies de gros structs avec gocritic
 
 Le set standard ne dit rien des copies de structs. Sur un projet qui manipule des objets Kubernetes, ça compte : un `corev1.Pod` pèse 1192 octets, un `Node` 768, un `Container` 408, mesuré au `unsafe.Sizeof`. Un `for _, p := range pods` copie donc 1,2 ko par tour et un helper qui prend un `corev1.Pod` en paramètre le recopie à chaque appel.
 
@@ -163,7 +163,7 @@ Ce que le check apporte quand même : il empêche de réintroduire le motif là 
 
 Celui-là vaut pour tous les linters, pas seulement gocritic. Par défaut, golangci-lint **cache une partie de ce qu'il trouve** : 50 findings par linter et surtout 3 occurrences par message identique.
 
-Chaque copie d'un `Pod` produit le même message, avec les mêmes `1192 bytes`, et golangci-lint n'en affiche que 3. On corrige les 3, on relance, 3 nouveaux apparaissent. Sur `klens`, le premier passage annonçait 25 problèmes pour 30 sites réels : des fichiers entiers n'étaient jamais sortis et la correction paraissait finie alors qu'il en restait.
+Chaque copie d'un `Pod` produit le même message avec les mêmes `1192 bytes`, mais golangci-lint n'en affiche que 3. On corrige les 3, on relance, 3 nouveaux apparaissent. Sur `klens`, le premier passage annonçait 25 problèmes pour 30 sites réels : des fichiers entiers n'étaient jamais sortis et la correction paraissait finie alors qu'il en restait.
 
 ```yaml title=".golangci.yml"
 issues:
@@ -177,7 +177,7 @@ Sur un repo de taille raisonnable, il n'y a aucune raison de plafonner. Un linte
 
 ### La variante reviewdog
 
-Il existe une seconde action, [reviewdog/action-golangci-lint](https://github.com/reviewdog/action-golangci-lint), qui poste les findings en commentaires de PR au lieu d'annotations. Tentant quand on utilise déjà [reviewdog](#des-suggestions-directement-dans-la-pr) pour goimports. Ses défauts vont pourtant à l'envers de tout ce qui précède :
+Il existe une seconde action, [reviewdog/action-golangci-lint](https://github.com/reviewdog/action-golangci-lint), qui poste les findings en commentaires de PR au lieu d'annotations. Tentant quand on utilise déjà [reviewdog](#du-feedback-directement-dans-la-pr) pour goimports. Ses défauts vont pourtant à l'envers de tout ce qui précède :
 
 - `golangci_lint_version` et `reviewdog_version` valent `latest`, donc la version qui tourne change sans commit.
 - `fail_level` vaut `none` et [le code de sortie de golangci-lint est ignoré](https://github.com/reviewdog/action-golangci-lint/blob/master/src/main.ts) dans le code de l'action : les sorties 0, 1 et 2 passent toutes. Le job reste donc **vert quels que soient les findings**.
@@ -206,7 +206,7 @@ Il couvre aussi les vulnérabilités de la toolchain Go elle-même, pas seulemen
 
 ## Analyser son propre code avec CodeQL
 
-govulncheck regarde les dépendances, CodeQL regarde le code du repo. Les 2 ne se recouvrent pas : un `log.Printf` qui recrache une valeur venue d'une requête HTTP n'est la CVE de personne, et govulncheck n'a rien à en dire.
+govulncheck regarde les dépendances, CodeQL regarde le code du repo. Les 2 ne se recouvrent pas : un `log.Printf` qui recrache une valeur venue d'une requête HTTP n'est la CVE de personne et govulncheck n'a rien à en dire.
 
 ```yaml title=".github/workflows/codeql.yml"
 on:
@@ -234,7 +234,7 @@ jobs:
         with:
           languages: go
           build-mode: autobuild
-          # Plus large que la suite par défaut, et la même qu'en local
+          # Plus large que la suite par défaut et la même qu'en local
           queries: security-and-quality
       - uses: github/codeql-action/analyze@4e94bd11f71e507f7f87df81788dff88d1dacbfb # v4.32.4
 ```
@@ -258,9 +258,9 @@ Le bundle fait dans le gigaoctet au premier appel. Le SARIF se lit mal à l'œil
 jq -r '.runs[0].results[] | "\(.ruleId) \(.locations[0].physicalLocation.artifactLocation.uri):\(.locations[0].physicalLocation.region.startLine)"' /tmp/out.sarif
 ```
 
-### Un chemin rapide qui renvoie l'entrée fait rester l'alerte
+### Écrire un sanitizer que CodeQL reconnaît
 
-Le piège coûte plusieurs itérations si on le découvre en CI. `go/log-injection` signale une valeur attaquable qui atteint un log, ici, sur un service qui gère des enregistrements DNS, un nom venu du corps d'une requête : un saut de ligne dedans forge une seconde entrée de log. La correction naturelle ressemble à ça, et ne fait tomber aucune alerte.
+Le piège coûte plusieurs itérations si on le découvre en CI. `go/log-injection` signale une valeur attaquable qui atteint un log, ici, sur un service qui gère des enregistrements DNS, un nom venu du corps d'une requête : un saut de ligne dedans forge une seconde entrée de log. La correction naturelle ressemble à ça et ne fait tomber aucune alerte.
 
 ```go
 func String(s string) string {
@@ -271,7 +271,7 @@ func String(s string) string {
 }
 ```
 
-Le raccourci se lit comme une optimisation gratuite, et le code est correct : une entrée sans `\r` ni `\n` ressort sans. Le dataflow de CodeQL ne sait pas prouver que ce garde suffit. Il voit un chemin où la valeur ressort telle quelle et garde l'alerte. C'est un faux positif de l'analyse, pas un défaut du code. Sans le `if`, les mêmes alertes tombent à 0 :
+Le raccourci se lit comme une optimisation gratuite et le code est correct : une entrée sans `\r` ni `\n` ressort sans. Le dataflow de CodeQL ne sait pas prouver que ce garde suffit. Il voit un chemin où la valeur ressort telle quelle et garde l'alerte. C'est un faux positif de l'analyse, pas un défaut du code. Sans le `if`, les mêmes alertes tombent à 0 :
 
 ```go
 func String(s string) string {
@@ -281,7 +281,7 @@ func String(s string) string {
 
 On perd le chemin rapide, ce qui pèse peu sur une chaîne aussi courte qu'un hostname. Pour que l'analyse reconnaisse un sanitizer, toutes ses branches doivent transformer la valeur, même quand la version avec raccourci est correcte.
 
-## Des suggestions directement dans la PR
+## Du feedback directement dans la PR
 
 Faire échouer un job, c'est bien. Dire quoi corriger et où, c'est mieux. [reviewdog](https://github.com/reviewdog/reviewdog) poste les problèmes en suggestions inline sur la PR, applicables en un clic. Rien de spécifique à Go là-dedans, il avale la sortie de n'importe quel linter et l'exemple ici est le workflow de formatage.
 
@@ -311,6 +311,9 @@ jobs:
 ```
 
 Le job reformate le code, puis reviewdog compare avec ce qui a été poussé et propose le diff en commentaire. Même mécanique pour le Markdown avec `reviewdog/action-markdownlint` et `reporter: github-pr-review`. Sur une PR venant d'un fork, le `GITHUB_TOKEN` est en lecture seule : reviewdog ne peut pas poster les suggestions et retombe sur de simples annotations, sans diff applicable.
+
+!!! warning "La résolution des conversations transforme un linter en gate"
+    Activer `required_conversation_resolution` sur une branche protégée, alors que la CI fait tourner reviewdog en `reporter: github-pr-review`, veut dire que chaque remarque de linter ouvre un fil non résolu qui bloque le merge. Le check reste vert et la PR reste rouge, ce qui se diagnostique mal. C'est le comportement voulu, mais il faut le décider plutôt que le découvrir.
 
 Le `go install ... @latest` qu'on écrit par réflexe est le même problème qu'un tag d'action : la version installée change sans commit et un compte upstream compromis livre directement dans le job. Le proxy Go vérifie bien le checksum, mais d'une version qu'on n'a pas choisie, d'où le pin en variable d'env que Renovate suit via le commentaire `# renovate:`.
 
@@ -343,7 +346,7 @@ Le chaînon manquant : relier le contenu d'une PR mergée à un numéro de versi
 | `major` / `minor` / `patch` / `digest` | gomod | `fix(deps):` | version patch |
 | tout | github-actions | `chore(deps):` | aucune |
 
-Un bump de dépendance n'est pas une feature du binaire : en `feat(deps)`, chaque minor upstream mergé par Renovate produirait une version mineure et remplirait la section Features du CHANGELOG de « update dependency X ». En `fix(deps)` il sort quand même dans une release, en patch. L'exception, c'est une librairie importée par d'autres repos : remonter le minimum d'une dépendance dans leur `go.mod` justifie un minor, et `minor` → `feat` s'y défend.
+Un bump de dépendance n'est pas une feature du binaire : en `feat(deps)`, chaque minor upstream mergé par Renovate produirait une version mineure et remplirait la section Features du CHANGELOG de « update dependency X ». En `fix(deps)` il sort quand même dans une release, en patch. L'exception, c'est une librairie importée par d'autres repos : remonter le minimum d'une dépendance dans leur `go.mod` justifie un minor et `minor` → `feat` s'y défend.
 
 !!! note "Pourquoi les actions ne déclenchent pas de release"
     Un bump d'action CI ne change pas le binaire livré, il n'a donc aucune raison de produire une nouvelle version. On le garde en `chore` : mergé automatiquement, mais invisible pour le versioning. Un bump de module Go, lui, est en principe compilé dans l'artefact et justifie une release, à part les dépendances qui ne servent qu'aux tests.
@@ -352,7 +355,7 @@ Un bump de dépendance n'est pas une feature du binaire : en `feat(deps)`, chaqu
 
 [`svu`](https://github.com/caarlos0/svu) lit les commits depuis le dernier tag et calcule le prochain `vX.Y.Z` ; un appel API pose le tag, GoReleaser enchaîne dans le même job. Le garde-fou est dans la comparaison : `svu next` renvoie **la version courante** quand rien ne justifie de release, donc `next == current` signifie « ne rien faire », sans release parasite sur un simple `docs:` ou `chore:`.
 
-Le revers de cet ordre, c'est qu'un échec de GoReleaser laisse le tag derrière lui : il est déjà posé quand la release casse. Le run suivant voit alors ce tag comme version courante, `next == current`, et ne republie rien : le correctif est mergé et il ne se passe plus rien, sans erreur nulle part. Il faut supprimer le tag orphelin avant de relancer :
+Le revers de cet ordre, c'est qu'un échec de GoReleaser laisse le tag derrière lui : il est déjà posé quand la release casse. Le run suivant voit alors ce tag comme version courante (`next == current`) et ne republie rien : le correctif est mergé et il ne se passe plus rien, sans erreur nulle part. Il faut supprimer le tag orphelin avant de relancer :
 
 ```sh
 gh api -X DELETE repos/OWNER/REPO/git/refs/tags/vX.Y.Z
@@ -420,7 +423,7 @@ Le réflexe est d'utiliser `mathieudutour/github-tag-action`, la plus répandue 
 
 Les remplaçantes évidentes ne tiennent pas l'examen :
 
-- `anothrNick/github-tag-action` ne fait pas de conventional commits : elle cherche des hashtags `#major`/`#minor`/`#patch`, et détourner ses tokens donne un match de sous-chaîne où « prefix » déclenche un patch
+- `anothrNick/github-tag-action` ne fait pas de conventional commits : elle cherche des hashtags `#major`/`#minor`/`#patch`. Détourner ses tokens donne un match de sous-chaîne où « prefix » déclenche un patch
 - `TriPSs/conventional-changelog-action` fonctionne mais écrit un `CHANGELOG.md` par défaut, ce qui salit l'arbre que GoReleaser va lire
 - `release-please` et consorts imposent un modèle de release PR, soit exactement le clic humain que l'automerge cherche à supprimer
 
