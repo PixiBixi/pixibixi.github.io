@@ -18,6 +18,7 @@
 *[OCI]: Open Container Initiative, le standard des images et des registries de conteneurs
 *[OCSP]: Online Certificate Status Protocol, la vérification de révocation d'un certificat
 *[OIDC]: OpenID Connect, le protocole qui délivre un token d'identité signé, ici celui du run GitHub Actions
+*[PAT]: Personal Access Token, un token GitHub lié à un compte, à utiliser à la place du GITHUB_TOKEN quand celui-ci n'a pas les droits
 *[PDB]: PodDisruptionBudget, le nombre de pods qu'une éviction volontaire peut retirer à la fois
 *[Release PR]: PR que release-please maintient ouverte, qui accumule les changements et publie la release à son merge
 *[RSA]: Algorithme de signature historique des certificats TLS, plus coûteux en CPU qu'ECDSA à chaque handshake
