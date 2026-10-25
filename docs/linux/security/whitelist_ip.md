@@ -65,28 +65,32 @@ iptables -A INPUT -p tcp -m multiport --destination-ports 9000:9005,9006,9021,90
 
 ## Configuration persistante
 
-Pour rendre notre configuration permanente, nous utilisons le logiciel
-**netfilter-persistent** ainsi qu'un plugin ipset disponible
-[ici](https://github.com/freeyoung/netfilter-persistent-plugin-ipset)
+<div class="steps" markdown>
 
-```bash
-cd ~ 
-git clone https://github.com/freeyoung/netfilter-persistent-plugin-ipset
-chmod +x netfilter-persistent-plugin-ipset/10-ipset
-mv netfilter-persistent-plugin-ipset/10-ipset /usr/share/netfilter-persistent/plugins.d
-```
+1. Pour rendre notre configuration permanente, nous utilisons le logiciel
+    **netfilter-persistent** ainsi qu'un plugin ipset disponible
+    [ici](https://github.com/freeyoung/netfilter-persistent-plugin-ipset)
 
-Une fois le plugin installé, il faut activer le service au démarrage
+    ```bash
+    cd ~ 
+    git clone https://github.com/freeyoung/netfilter-persistent-plugin-ipset
+    chmod +x netfilter-persistent-plugin-ipset/10-ipset
+    mv netfilter-persistent-plugin-ipset/10-ipset /usr/share/netfilter-persistent/plugins.d
+    ```
 
-```bash
-systemctl enable netfilter-persistent
-```
+2. Une fois le plugin installé, il faut activer le service au démarrage
 
-Et sauvegarder la configuration actuelle
+    ```bash
+    systemctl enable netfilter-persistent
+    ```
 
-```bash
-/etc/init.d/netfilter-persistent save
-```
+3. Et sauvegarder la configuration actuelle
+
+    ```bash
+    /etc/init.d/netfilter-persistent save
+    ```
+
+</div>
 
 Votre configuration est désormais persistent, penser à sauvegarder vos
 modifications à chaque modification d'ipset/iptables
