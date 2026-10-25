@@ -18,7 +18,7 @@ pertinentes. Je suis passé par beaucoup de systèmes de monitoring
 (Check_MK, Sensu, LibreNMS, Shinken...) sans avoir été satisfait. Soit
 les métriques n'étaient pas pertinentes ; soit l'installation était
 trop complexe... Bref, il y avait toujours quelque chose qui ne me
-convenait pas, c'est là que j'ai découvert Netdata, puis peu de temps
+convenait pas. J'ai alors découvert Netdata, puis peu de temps
 après, Prometheus et Grafana.
 
 ## Lexique
@@ -558,20 +558,20 @@ existant et l'adapter.
 
 #### 3 dashboards Netdata à importer
 
-Les 3 dashboards ci-dessous lisent les métriques Netdata scrapées plus
-haut. Ils filtrent tous par variables en haut de page (instance, CPU,
-disque, filesystem, interface réseau, container Docker), un seul
-dashboard sert donc pour tous les serveurs.
+Les 3 dashboards ci-dessous lisent les métriques Netdata scrapées plus haut. Ils filtrent tous par variables en haut de page (instance, CPU, disque, filesystem, interface réseau, container Docker), un seul dashboard sert donc pour tous les serveurs.
 
 * **Simple Netdata** ([JSON](https://files.jdelgado.fr/r/7JCI5fpv#nprlBuA4F3Dnt9qbXbrFBjMtQNuoQNPixGDr8SCjvcc=)) : l'essentiel d'un serveur sur une page, uptime, CPU, load, I/O disque, RAM, swap, bande passante et processus
 * **Docker Dashboard** ([JSON](https://files.jdelgado.fr/r/UEeLrP_8#9BJttU2EqJZa9aNXrrHzGTKi4UPooRnvu6VuzzsDQA0=)) : le nombre de containers et la RAM/CPU consommée par chacun, avec les jauges disque, RAM et swap de l'hôte
 * **Netdata** ([JSON](https://files.jdelgado.fr/r/U4KCGryY#JDkX10832wvNJvRMOh/C3nPJ+dwDT/pD67XwbofHSuc=)) : la reprise de toutes les sections de l'UI Netdata, une row repliable par section (CPUs, mémoire, disques, TCP/UDP, sensors...)
 
-![Dashboard Simple Netdata : CPU, load, disque, RAM et réseau d'un serveur](./_img/simple_netdata.webp)
+=== "Simple Netdata"
+    ![Dashboard Simple Netdata : CPU, load, disque, RAM et réseau d'un serveur](./_img/simple_netdata.webp)
 
-![Docker Dashboard : RAM et CPU par container](./_img/docker_dashboard.webp)
+=== "Docker Dashboard"
+    ![Docker Dashboard : RAM et CPU par container](./_img/docker_dashboard.webp)
 
-![Dashboard Netdata complet, une row par section](./_img/full_dashboard.webp)
+=== "Netdata"
+    ![Dashboard Netdata complet, une row par section](./_img/full_dashboard.webp)
 
 Pour les charger, on passe par **Dashboards** > **New** > **Import**,
 on colle le JSON et on choisit la datasource Prometheus créée plus
