@@ -58,32 +58,36 @@ Adapter `bind-address` et `wsrep_node_address` sur chaque nœud.
 
 ## Bootstrap
 
-On initialise le cluster depuis node1 :
+<div class="steps" markdown>
 
-```bash
-node1$ galera_new_cluster
-```
+1. On initialise le cluster depuis node1 :
 
-On vérifie que le cluster est bien démarré :
+    ```bash
+    node1$ galera_new_cluster
+    ```
 
-```sql
-SHOW STATUS LIKE 'wsrep_cluster_size';
+2. On vérifie que le cluster est bien démarré :
 
-+--------------------+-------+
-| Variable_name      | Value |
-+--------------------+-------+
-| wsrep_cluster_size | 1     |
-+--------------------+-------+
-```
+    ```sql
+    SHOW STATUS LIKE 'wsrep_cluster_size';
 
-Puis on démarre les autres nœuds :
+    +--------------------+-------+
+    | Variable_name      | Value |
+    +--------------------+-------+
+    | wsrep_cluster_size | 1     |
+    +--------------------+-------+
+    ```
 
-```bash
-node2$ systemctl start mariadb
-node3$ systemctl start mariadb
-```
+3. Puis on démarre les autres nœuds :
 
-`wsrep_cluster_size` doit passer à 3.
+    ```bash
+    node2$ systemctl start mariadb
+    node3$ systemctl start mariadb
+    ```
+
+    `wsrep_cluster_size` doit passer à 3.
+
+</div>
 
 !!! warning "InnoDB uniquement"
     Galera fonctionne **uniquement** en InnoDB. MyISAM est encore expérimental - à éviter en production.
