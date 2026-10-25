@@ -13,7 +13,7 @@ Un `renovate.json` invalide ne se signale pas toujours. Certaines erreurs font o
 
 ## Valider avant de pousser
 
-Renovate publie son validateur dans le paquet npm, donc pas besoin d'attendre un cycle sur la plateforme :
+Renovate publie son validateur dans son paquet npm, on n'a pas besoin d'attendre son prochain passage sur le repo pour savoir si la config tient :
 
 ```bash
 cd /le/repo
@@ -27,11 +27,11 @@ Sortie sur une config saine :
  INFO: Config validated successfully against 1 file(s)
 ```
 
-2 détails de l'invocation valent le détour.
+2 détails de l'invocation changent le résultat.
 
 ### Fixer la version de Renovate dans l'appel npx
 
-`--package renovate` sans tag, qui est la forme de la [doc officielle](https://docs.renovatebot.com/config-validation/), laisse npx servir ce qu'il a en cache. Le cache local datait de plusieurs majeures et refusait une config que la 44 accepte, ce qui suffit à conclure l'inverse de la réalité sur le point qu'on cherchait à vérifier. `@latest` règle le cache mais pas la reproductibilité : une nouvelle version de Renovate peut faire échouer une PR qui ne touche pas à la config. On épingle donc une version précise, que Renovate met à jour comme le reste.
+Sans tag, la forme `--package renovate` de la [doc officielle](https://docs.renovatebot.com/config-validation/) laisse npx utiliser la version qu'il a en cache. Le cache local datait de plusieurs majeures et refusait une config que Renovate 44 accepte : le validateur donnait tort à une config juste. `@latest` règle le cache mais pas la reproductibilité : une nouvelle version de Renovate peut faire échouer une PR qui ne touche pas à la config. On épingle donc une version précise, que Renovate met à jour comme le reste.
 
 ### Valider en mode repo, pas en mode global
 
@@ -44,7 +44,7 @@ Passer un chemin en argument fait valider le fichier comme config **globale**, c
 
 Le suffixe `as <mode> config` n'apparaît que quand on passe un fichier en argument. Sans argument, le validateur découvre les emplacements par défaut, valide en mode repo et se contente de `INFO: Validating renovate.json`, comme dans [la sortie d'une config saine](#valider-avant-de-pousser).
 
-Le mode n'est pas cosmétique, contrairement à ce qu'on croit en voyant qu'une clé inconnue est refusée dans les 2. En mode global, les options réservées à la config globale passent en silence ; en mode repo elles sont rejetées. Testé sur `{"autodiscover": true, "binarySource": "install"}` avec la 44 :
+Une clé inconnue est refusée dans les 2 modes, et on en conclut vite que le mode ne change rien. En mode global pourtant, les options réservées à la config globale passent en silence, alors qu'en mode repo elles sont rejetées. Testé avec Renovate 44 sur `{"autodiscover": true, "binarySource": "install"}` :
 
 ```text
 $ renovate-config-validator c.json
@@ -55,13 +55,13 @@ $ renovate-config-validator --no-global c.json
                     global configuration and cannot be configured within a repository's config file"
 ```
 
-Valider une config de repo en mode global laisse donc passer exactement ce que le vrai run refusera. C'est la raison d'être de `--no-global`, pas une préférence.
+Valider une config de repo en mode global laisse donc passer ce que le run réel de Renovate refusera, et `--no-global` n'a rien d'une préférence.
 
-`--strict` fait en plus échouer la validation quand une migration de config est nécessaire, ce que Renovate propose sinon via une case à cocher dans le dependency dashboard. On le passe partout, en local comme en CI : une config à migrer finit toujours par casser, autant le savoir dans la PR qui l'introduit.
+Avec `--strict`, la validation échoue aussi quand une migration de config est nécessaire. Sans lui, Renovate se contente de la proposer par une case à cocher dans le dependency dashboard. On le passe partout, en local comme en CI : une config à migrer finit toujours par casser, autant le savoir dans la PR qui l'introduit.
 
 ## Épingler la version avec le hook pre-commit
 
-Renovate publie [ses hooks](https://github.com/renovatebot/pre-commit-hooks) et leur `rev` **est** la version de Renovate. Le problème de cache npx disparaît, puisque le hook installe `renovate@<rev>` en dépendance :
+Renovate publie [ses hooks](https://github.com/renovatebot/pre-commit-hooks) et leur `rev` **est** la version de Renovate. Le hook installe `renovate@<rev>` en dépendance et le problème de cache npx disparaît :
 
 ```yaml title=".pre-commit-config.yaml"
 repos:
@@ -72,9 +72,9 @@ repos:
         args: [--no-global, --strict]
 ```
 
-Le hook matche `renovate.json`, `.renovaterc`, `renovate.json5` et leurs variantes et demande pre-commit 3.6.0 au minimum. Comme pre-commit passe les fichiers matchés en arguments, le hook valide par défaut en mode global, d'où le `--no-global` dans `args`.
+Le hook cible `renovate.json`, `.renovaterc`, `renovate.json5` et leurs variantes. Il demande pre-commit 3.6.0 au minimum. Comme pre-commit passe les fichiers matchés en arguments, le hook valide par défaut en mode global, d'où le `--no-global` dans `args`.
 
-Renovate ne met pas ce `rev` à jour tout seul : son manager `pre-commit` est livré avec `enabled: false`. Sans opt-in explicite le `rev` reste figé indéfiniment, ce qui vide de son sens l'argument « le validateur suit la version qui tourne ». Il faut l'activer :
+Renovate ne met pas ce `rev` à jour de lui-même, parce que son manager `pre-commit` est livré avec `enabled: false`. Sans opt-in explicite, le `rev` reste sur sa version de départ et le validateur du hook décroche de la version de Renovate qui tourne vraiment. On active le manager avec un preset :
 
 ```json title="renovate.json"
 {
@@ -82,11 +82,11 @@ Renovate ne met pas ce `rev` à jour tout seul : son manager `pre-commit` est li
 }
 ```
 
-Ou l'équivalent `{"pre-commit": {"enabled": true}}`. À noter que ce manager n'est pas supporté par les mainteneurs de pre-commit, Renovate le rappelle dans le corps de ses PR.
+Le même réglage s'écrit `{"pre-commit": {"enabled": true}}`. Les mainteneurs de pre-commit ne supportent pas ce manager, et Renovate le rappelle dans le corps de ses PR.
 
 ## Documenter une config sans la casser
 
-La convention `"// commentaire"` marche dans plusieurs outils qui manipulent du JSON. Renovate valide strictement et refuse toute clé qu'il ne connaît pas :
+La convention `"// commentaire"` passe dans plusieurs outils qui manipulent du JSON. Renovate, lui, refuse toute clé qu'il ne connaît pas :
 
 ```json title="renovate.json, ce qui casse"
 {
@@ -106,14 +106,16 @@ Renovate ouvre alors une issue `Action Required: Fix Renovate Configuration` et 
 
 ## Cibler les labels de runner par leur datasource
 
-[`github-runners`](https://docs.renovatebot.com/modules/datasource/github-runners/) suit les labels de runner (`ubuntu-24.04`, `macos-15`). C'est une **datasource**, il n'existe pas de page de manager pour elle et les labels sont détectés par le manager `github-actions` qui lit les workflows. Donc une règle sur `github-actions` seul les couvre déjà.
+Renovate sépare 2 rôles. Un manager lit un type de fichier du repo et en extrait les dépendances, une datasource est la source où il va chercher les versions disponibles de ces dépendances.
+
+[`github-runners`](https://docs.renovatebot.com/modules/datasource/github-runners/) suit les labels de runner (`ubuntu-24.04`, `macos-26`). C'est une **datasource** et pas un manager : les labels sont détectés par le manager `github-actions`, qui lit les workflows. Une règle sur `github-actions` seul les couvre donc déjà.
 
 | Ce qu'on veut | La clé |
 |---|---|
 | Tout ce que le manager github-actions détecte, actions et labels de runner | `"matchManagers": ["github-actions"]` |
 | Seulement les labels de runner | `"matchDatasources": ["github-runners"]` |
 
-Sur ce point, le validateur ne sert à rien. Renovate 44 accepte n'importe quelle chaîne dans `matchManagers`, y compris `ceci-nexiste-absolument-pas` et sort en succès. Une version plus ancienne refusait, avec la liste des managers valides dans le message :
+Sur ce point, le validateur ne voit rien. Renovate 44 accepte n'importe quelle chaîne dans `matchManagers`, y compris `ceci-nexiste-absolument-pas` et sort en succès. Une version plus ancienne refusait, avec la liste des managers valides dans le message :
 
 ```text
 ERROR: Found errors in configuration
@@ -122,7 +124,7 @@ ERROR: Found errors in configuration
   Supported managers are: (ansible, ..., github-actions, gitlabci, ...)"
 ```
 
-Ce contrôle a disparu, donc sur ce point c'est la doc qui tranche, pas l'outil. Une règle qui cible un manager inexistant ne matche rien et ne le dit pas : elle a l'air de fonctionner et le `semanticCommitType` ou le `groupName` qu'elle porte ne s'applique jamais.
+Ce contrôle a disparu et seule la doc permet de savoir si un manager existe. Une règle qui cible un manager inexistant ne correspond à rien, sans erreur ni avertissement. Elle semble fonctionner alors que son `semanticCommitType` ou son `groupName` ne s'applique jamais.
 
 ## Le silence de Renovate sur les forks
 
@@ -132,7 +134,7 @@ C'est le cas de l'app Mend installée sur « All repositories », et d'une insta
 
 Renovate n'ouvre alors sur un fork ni PR d'onboarding, ni dependency dashboard, ni issue de config. C'est le défaut le plus coûteux à diagnostiquer, parce qu'il ne produit aucun signal.
 
-En dehors de l'autodiscover, quand les repos sont listés explicitement, les forks sont traités normalement. Le comportement dépend donc du mode d'exécution, ce qui explique qu'on lise des retours contradictoires dessus.
+En dehors de l'autodiscover, quand les repos sont listés explicitement, les forks sont traités comme les autres repos. Le comportement dépend du mode d'exécution, d'où les retours contradictoires qu'on lit à ce sujet.
 
 Sur un repo créé par fork, sans savoir que l'option existe, on regarde une config correcte en se demandant pourquoi rien ne bouge. La correction tient en une clé, documentée par `description` comme [plus haut](#documenter-une-config-sans-la-casser) :
 
@@ -149,11 +151,11 @@ Vérifier si un repo est un fork tient en une commande :
 gh api repos/OWNER/REPO --jq '{fork: .fork, parent: .parent.full_name}'
 ```
 
-Un fork naît aussi avec ses **issues désactivées**, quel que soit l'état du parent : GitHub les désactive sur tout nouveau fork, rien ne vient du parent. Renovate y met son dependency dashboard, donc tant qu'elles sont fermées il n'a nulle part où lister ce qu'il retient. Ça n'empêche pas les PR, mais on perd la vue d'ensemble et la case « lancer maintenant ». L'issue qui signale une config invalide ne peut pas s'ouvrir non plus : sur un fork, une config cassée arrête les PR sans qu'aucun message n'apparaisse.
+GitHub crée aussi chaque fork avec les **issues désactivées**, quel que soit l'état du parent. Renovate publie son dependency dashboard dans une issue : tant qu'elles restent fermées, il n'a aucun endroit où lister les mises à jour qu'il retient. Les PR continuent d'arriver, mais on perd la vue d'ensemble et la case qui relance Renovate depuis le dashboard. L'issue qui signale une config invalide ne peut pas s'ouvrir non plus : sur un fork, une config cassée arrête les PR sans qu'aucun message n'apparaisse.
 
 ## Valider la config en CI avant que Renovate la lise
 
-Le validateur tient dans un job, ce qui évite de découvrir l'erreur par une issue que Renovate ouvre 6 heures plus tard :
+Le validateur tourne dans un job de CI. L'erreur apparaît dans la PR qui l'introduit, au lieu d'une issue que Renovate ouvre à son passage suivant :
 
 ```yaml title=".github/workflows/renovate-config.yml"
 name: renovate-config
@@ -181,4 +183,4 @@ jobs:
 Le commentaire `# renovate:` n'est lu que par un `customManager` regex qui cible les workflows, comme celui du [`renovate.json` de gopen](https://github.com/PixiBixi/gopen/blob/main/renovate.json).
 
 !!! tip "Durcissement et pièges propres à gomod"
-    Le durcissement de la CI et les presets Renovate qui vont avec, `helpers:pinGitHubActionDigests`, `minimumReleaseAge` et l'automerge, sont détaillés dans [Durcir une CI GitHub Actions](hardening.md). Les pièges propres au manager `gomod`, qu'aucun validateur ne voit puisque la config est valide, sont dans [Renovate et les modules Go](renovate-gomod.md).
+    Le durcissement de la CI et les presets Renovate associés (`helpers:pinGitHubActionDigests`, `minimumReleaseAge`, l'automerge) sont détaillés dans [Durcir une CI GitHub Actions](hardening.md). Les pièges propres au manager `gomod` sont dans [Renovate et les modules Go](renovate-gomod.md) : la config y est valide et aucun validateur ne les voit.
