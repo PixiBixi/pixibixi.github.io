@@ -65,7 +65,7 @@ echo "source <(glab completion -s zsh); compdef _glab glab" >> ~/.zshrc
 ### Bash
 
 ```bash
-echo "source <(glab completion bash) >> ~/.bashrc"
+echo 'source <(glab completion -s bash)' >> ~/.bashrc
 ```
 
 Pour une documentation beaucoup plus exhaustive, je vous invite à aller voir [l'excellent article de blog](https://blog.stephane-robert.info/docs/pipeline-cicd/gitlab/cli/) de Stephane Robert
