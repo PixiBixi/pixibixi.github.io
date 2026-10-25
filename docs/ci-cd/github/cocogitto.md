@@ -1,5 +1,8 @@
 ---
 description: "Automatiser le versioning sémantique avec cocogitto : cog check, cog bump, CHANGELOG, GitHub Actions. Comparaison avec release-please."
+variables:
+  - name: cog_version
+    default: 7.0.0
 tags:
   - GitHub Actions
   - CI/CD
@@ -8,13 +11,13 @@ tags:
   - Semver
 ---
 
-# Releases automatiques avec cocogitto
+# Cocogitto : versioning sémantique, CHANGELOG et releases au push
 
-Cocogitto valide les conventional commits, bumpe le semver automatiquement et génère un CHANGELOG. Tout se déclenche sur `git push` vers `main`, sans PR intermédiaire.
+Versionner à la main oblige à relire les commits depuis le dernier tag, à choisir entre patch, minor et major, puis à recopier les changements dans le CHANGELOG. Cocogitto déduit ces 3 décisions des Conventional Commits. Il valide les messages, calcule le bump semver, écrit le CHANGELOG et pose le tag à chaque push sur `main`, sans PR intermédiaire.
 
-## Cocogitto vs release-please
+## Publier au push ou au merge d'une PR
 
-Les 2 outils s'appuient sur les [Conventional Commits](https://www.conventionalcommits.org/) et automatisent le versioning. Ils ont des philosophies opposées.
+Les 2 outils s'appuient sur les [Conventional Commits](https://www.conventionalcommits.org/) et automatisent le versioning, mais cocogitto publie au push alors que release-please publie au merge d'une PR.
 
 | | cocogitto | release-please |
 |---|---|---|
@@ -30,7 +33,7 @@ En pratique, les 2 flows divergent dès le premier push :
 
 ![Comparaison cocogitto vs release-please](./cocogitto-comparison.svg)
 
-Release-please accumule les commits dans une PR et ne publie qu'au merge de celle-ci, avec une approbation humaine avant chaque release. Cocogitto bumpe dès le push, sans approbation, et la discipline sur les branches remplace cette étape.
+Release-please accumule les commits dans une PR et ne publie qu'au merge de celle-ci, avec une approbation humaine avant chaque release. Cocogitto bumpe dès le push sans approbation. La discipline sur les branches remplace cette étape.
 
 Cocogitto convient à un projet solo ou à une petite équipe qui merge directement sur `main`, valide ses commits en local et veut publier sans étape manuelle. Release-please convient à une équipe qui impose une review avant chaque release et travaille déjà avec la PR comme unité de travail.
 
@@ -39,17 +42,18 @@ Cocogitto convient à un projet solo ou à une petite équipe qui merge directem
 
 ## Installation
 
+Les versions disponibles sont listées sur la [page des releases](https://github.com/cocogitto/cocogitto/releases) de cocogitto.
+
 ```bash
 # macOS
 brew install cocogitto
 
 # Linux (binaire direct) : le nom de l'archive porte la version
-COG_VERSION=7.0.0
-curl -sSfL "https://github.com/cocogitto/cocogitto/releases/download/${COG_VERSION}/cocogitto-${COG_VERSION}-x86_64-unknown-linux-musl.tar.gz" \
+curl -sSfL "https://github.com/cocogitto/cocogitto/releases/download/<cog_version>/cocogitto-<cog_version>-x86_64-unknown-linux-musl.tar.gz" \
   | tar xz --strip-components=1 -C ~/.local/bin x86_64-unknown-linux-musl/cog
 ```
 
-## Configuration
+## Configuration de base
 
 ```toml title="cog.toml"
 ignore_merge_commits = true
@@ -64,14 +68,14 @@ owner = "mon-org"
 authors = []
 ```
 
-Les types de commit qui déclenchent un bump se règlent dans `[commit_types]`, décrit dans [Logique de bump](#logique-de-bump).
+Les types de commit qui déclenchent un bump se règlent dans `[commit_types]`, décrit dans [la section sur le bump](#choisir-les-commits-qui-publient-une-release).
 
 !!! note "tag_prefix"
     Sans `tag_prefix = "v"`, cocogitto cherche des tags `1.2.3` sans `v`. Quand les tags existants sont en `v1.2.3`, comme ceux de release-please, ce champ est obligatoire.
 
-## CHANGELOG.md
+## Préparer le CHANGELOG pour cog
 
-Cocogitto requiert un séparateur `- - -` pour savoir où insérer chaque nouvelle section. Le fichier minimal :
+Cocogitto a besoin d'un séparateur `- - -` pour savoir où insérer chaque nouvelle section. Le fichier minimal tient en 3 lignes :
 
 ```markdown
 # Changelog
@@ -79,7 +83,7 @@ Cocogitto requiert un séparateur `- - -` pour savoir où insérer chaque nouvel
 - - -
 ```
 
-À chaque bump, cog insère le nouveau bloc entre le header et le `- - -` précédent :
+À chaque bump, cog insère le nouveau bloc sous l'en-tête, juste après le premier `- - -` :
 
 ```markdown
 # Changelog
@@ -97,7 +101,7 @@ Cocogitto requiert un séparateur `- - -` pour savoir où insérer chaque nouvel
 !!! warning "Migration depuis release-please"
     Le CHANGELOG généré par release-please n'a pas de `- - -`. Il faut en ajouter un à la main avant le premier `cog bump`, faute de quoi l'erreur `cannot find default separator` fait échouer le job de release.
 
-## Validation locale
+## Valider les commits avant le push
 
 ```bash
 # Valider tout l'historique
@@ -115,7 +119,7 @@ cog bump --minor   # 1.2.3 → 1.3.0
 cog bump --major   # 1.2.3 → 2.0.0
 ```
 
-## Hook pre-commit
+## Refuser un message de commit non conforme
 
 Cog peut valider le message de commit avant son enregistrement, par un hook `commit-msg` :
 
@@ -130,9 +134,9 @@ repos:
         stages: [commit-msg]
 ```
 
-pre-commit ajoute lui-même le chemin du message à la fin de la commande, d'où le `--file` sans valeur. Un `args: ["--file", ".git/COMMIT_EDITMSG"]` en plus fait passer le chemin 2 fois et cog refuse la commande, puisque `--file` et le message positionnel s'excluent. Le hook ne s'active qu'après `pre-commit install --hook-type commit-msg`.
+Le framework pre-commit ajoute lui-même le chemin du message à la fin de la commande, d'où le `--file` sans valeur. Un `args: ["--file", ".git/COMMIT_EDITMSG"]` en plus fait passer le chemin 2 fois et cog refuse la commande, puisque `--file` et le message positionnel s'excluent. Le hook ne s'active qu'après `pre-commit install --hook-type commit-msg`.
 
-## GitHub Actions
+## Publier à chaque push sur `main`
 
 ```yaml title=".github/workflows/release.yml"
 name: Release
@@ -247,11 +251,11 @@ jobs:
 Les actions sont épinglées par SHA, les permissions sont posées job par job et le checkout ne garde pas le token, pour les raisons détaillées dans [l'article sur le durcissement](hardening.md). Le step de bump pousse alors le commit et le tag avec le `GITHUB_TOKEN` passé explicitement, en un seul push atomique.
 
 !!! note "tag latest non automatique"
-    `docker/metadata-action` ne génère `latest` automatiquement que sur un push de tag GitHub (`on: push: tags: ['v*']`). Ici le trigger est un push de branche, donc il faut `type=raw,value=latest` explicitement.
+    L'action `docker/metadata-action` ne génère `latest` automatiquement que sur un push de tag Git (`on: push: tags: ['v*']`). Ce workflow se déclenche sur un push de branche et doit donc écrire `type=raw,value=latest`.
 
 ### Enchaîner GoReleaser dans le même job
 
-Un tag poussé avec le `GITHUB_TOKEN` ne déclenche aucun autre workflow, GitHub bloque ces événements pour éviter les boucles. Un workflow GoReleaser sur `on: push: tags` ne démarre donc pas après le bump. GoReleaser tourne alors dans le job `release`, à la place du step `Create GitHub release`, et reprend la section du CHANGELOG avec `--release-notes` :
+Un tag poussé avec le `GITHUB_TOKEN` ne déclenche aucun autre workflow, car GitHub bloque ces événements pour éviter les boucles. Un workflow GoReleaser sur `on: push: tags` ne démarre donc pas après le bump. GoReleaser tourne alors dans le job `release` à la place du step `Create GitHub release`. Il reprend la section du CHANGELOG avec `--release-notes` :
 
 ```yaml title=".github/workflows/release.yml"
       - name: Extract release notes
@@ -288,7 +292,7 @@ Un input inconnu ne produit qu'un warning dans GitHub Actions, mais l'absence de
 
 La version de cog dépend aussi du tag de l'action : v3.11.0 installe cog 6.3.0, v4.0.0 installe 6.4.0 et v4.2.0 installe 7.0.0. À la date du 2026-10-23, le tag flottant `v4` pointe encore sur un commit qui installe 6.4.0. Épingler le SHA d'une version précise fixe aussi la version de cog qui calcule le bump.
 
-## Logique de bump
+## Choisir les commits qui publient une release
 
 | Commit | Bump |
 |--------|------|
@@ -319,20 +323,20 @@ Un type que cocogitto connaît déjà garde son titre de section sans qu'on le r
 
 ### Faire bumper `chore:`
 
-Le type qu'on finit par vouloir bumper n'est d'ailleurs pas `perf:` mais `chore:`. Renovate et Dependabot rangent sous ce type tout ce qui n'est pas une dépendance de production. Le piège est exactement celui de l'optimisation : le bump atterrit sur `main`, aucun tag ne sort et la dépendance corrigée n'est jamais reconstruite si l'image est conditionnée à `bumped == 'true'`. Elle est à jour dans le lockfile et absente de ce qui tourne.
+En pratique, le type qu'on veut faire bumper est plutôt `chore:` que `perf:`. Renovate et Dependabot rangent sous ce type tout ce qui n'est pas une dépendance de production. Un tel commit arrive sur `main` sans produire de tag, comme l'optimisation plus haut. La dépendance corrigée n'est alors pas reconstruite quand l'image est conditionnée à `bumped == 'true'`. Elle est à jour dans le lockfile mais absente de ce qui tourne.
 
 ```toml title="cog.toml"
 [commit_types]
 chore = { bump_patch = true }
 ```
 
-`bump_patch` plutôt que `bump_minor`. Ce n'est pas une question de goût. Un bot qui vérifie tous les jours produit plusieurs merges par semaine : en minor le numéro atteint la v1.15.0 en un mois sans qu'une seule fonctionnalité soit sortie et le minor ne veut plus rien dire le jour où une vraie feature arrive. En patch la version reste lisible et dit ce qu'elle est, du contenu qui bouge sans surface nouvelle.
+Le réglage `bump_patch` convient mieux que `bump_minor`. Un bot qui vérifie les dépendances tous les jours produit plusieurs merges par semaine. En minor, le numéro augmente de plusieurs unités chaque mois sans qu'aucune fonctionnalité soit livrée et le minor perd son sens le jour où une fonctionnalité arrive. En patch, le numéro reste cohérent avec le contenu, qui évolue sans surface nouvelle.
 
 !!! warning "La règle vaut pour tous les `chore:`"
-    `[commit_types]` est indexé par type, pas par scope : le réglage s'applique à `chore(docs)` comme à `chore(deps)`. Un simple rangement de documentation coupera lui aussi une release, avec son image.
+    La table `[commit_types]` est indexée par type et non par scope. Le réglage s'applique donc à `chore(docs)` comme à `chore(deps)` et un rangement de documentation déclenche lui aussi une release, avec son image.
 
 !!! tip "Vérifier avant de pousser"
-    `cog bump --auto --dry-run` répond `No conventional commits...` ou la version calculée. C'est la façon la plus rapide de confirmer qu'un changement de `[commit_types]` produit bien l'effet attendu. Attention, `cog bump` refuse de tourner sur un arbre de travail sale : il affiche un `git status` au lieu du résultat. Committer d'abord.
+    Avant de pousser, `cog bump --auto --dry-run` affiche la version calculée ou `No conventional commits...` et confirme qu'un changement de `[commit_types]` produit l'effet attendu. La commande refuse de tourner sur un arbre de travail sale et affiche un `git status` à la place du résultat. Il faut committer le changement avant de la lancer.
 
 ## Voir aussi
 
