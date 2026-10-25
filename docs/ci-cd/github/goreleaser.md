@@ -533,7 +533,7 @@ jobs:
 
 Les actions sont épinglées par SHA et le checkout ne garde pas le token, pour les raisons détaillées dans [l'article sur le durcissement](hardening.md). Un workflow de release détient `contents: write` et c'est le dernier endroit où accepter un tag mutable.
 
-Chaque step de release porte la même condition `if:`, celle du pipeline piloté par svu décrit dans [l'article sur la CI](go-ci.md#le-workflow-taguer-puis-publier-en-un-seul-job). Un push sur `main` sans commit releasable s'arrête donc après le calcul de version, sans rien installer.
+Chaque step de release porte la même condition `if:`, celle du pipeline piloté par svu décrit dans [l'article sur la CI](go-ci.md#taguer-puis-publier-en-un-seul-job). Un push sur `main` sans commit releasable s'arrête donc après le calcul de version, sans rien installer.
 
 ### Garder cosign même sans rien signer
 

@@ -307,7 +307,7 @@ Le cran d'après, c'est de réserver l'automerge à une allow-list d'orgs de con
 
 - **[OpenSSF Scorecard](https://securityscorecards.dev/)** note le repo sur une vingtaine de checks et publie le résultat dans l'onglet Security. Son intérêt est de regarder ce qui n'est pas dans les workflows : protection de branche, présence d'une politique de sécurité, signature des releases, activité de maintenance. Un audit qui tourne tout seul plutôt qu'une relecture annuelle.
 
-- **[CodeQL](https://codeql.github.com/)** analyse le code du repo lui-même, là où govulncheck et dependency-review ne regardent que les dépendances. Sur du Go, la mise en place tient en un workflow et il se fait tourner en local avant d'être poussé, ce qui évite de découvrir ses alertes une par une en CI : voir [CI GitHub Actions pour un projet Go](go-ci.md#codeql-analyser-son-propre-code).
+- **[CodeQL](https://codeql.github.com/)** analyse le code du repo lui-même, là où govulncheck et dependency-review ne regardent que les dépendances. Sur du Go, la mise en place tient en un workflow et il se fait tourner en local avant d'être poussé, ce qui évite de découvrir ses alertes une par une en CI : voir [CI GitHub Actions pour Go](go-ci.md#analyser-son-propre-code-avec-codeql).
 
 - **[harden-runner](https://github.com/step-security/harden-runner)** enregistre le trafic sortant du runner. C'est ce mécanisme qui a permis de repérer la compromission de `tj-actions/changed-files` en 2025 : les runners exfiltraient vers un endpoint qui n'avait rien à faire là et l'anomalie est sortie dans les rapports d'egress avant que qui que ce soit lise le diff de l'action. Il se pose en premier step de chaque job, avant le checkout, sinon il ne voit pas ce que le checkout fait.
 
