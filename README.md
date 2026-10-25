@@ -2,7 +2,7 @@
 
 [![ci](https://github.com/PixiBixi/pixibixi.github.io/actions/workflows/main.yml/badge.svg)](https://github.com/PixiBixi/pixibixi.github.io/actions/workflows/main.yml)
 
-Personal knowledge base built with [MkDocs Material](https://squidfunk.github.io/mkdocs-material/), hosted at <https://wiki.jdelgado.fr/>.
+Personal knowledge base built with [MaterialX](https://github.com/jaywhj/mkdocs-materialx) on [ProperDocs](https://properdocs.org/), hosted at <https://wiki.jdelgado.fr/>.
 240+ French articles on Linux, Kubernetes, cloud, networking, databases and monitoring.
 
 ## Setup

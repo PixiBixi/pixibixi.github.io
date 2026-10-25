@@ -4,7 +4,7 @@ Guidance for coding agents working in this repository.
 
 ## Project
 
-Personal knowledge base / wiki built with **MkDocs Material** on **ProperDocs** (the maintained MkDocs 1.6 fork, `properdocs` CLI; it aliases `mkdocs.*` imports so plugins run unchanged), hosted at <https://wiki.jdelgado.fr/> via GitHub Pages. Content is 240+ Markdown files organized by SRE/infra topics.
+Personal knowledge base / wiki built with **MaterialX** (the maintained fork of MkDocs Material, `theme.name: materialx`) on **ProperDocs** (the maintained MkDocs 1.6 fork, `properdocs` CLI; it aliases `mkdocs.*` imports so plugins run unchanged), hosted at <https://wiki.jdelgado.fr/> via GitHub Pages. Content is 240+ Markdown files organized by SRE/infra topics.
 
 Config lives in `mkdocs.yml` (no `nav:` - sidebar is auto-generated). Active plugins that matter at build time:
 
@@ -20,8 +20,8 @@ Theme overrides live in `overrides/` (`custom_dir`):
 - `main.html` (`fonts` block) - Google Fonts linked from the HTML with the latin woff2 preloaded (self-hosted by `privacy`); the preload URLs pin the font version, update them on a bump.
 - `main.html` (`extrahead` block) - Google Search Console meta tag, `og:locale`, and the Schema.org JSON-LD graph: `WebSite` + `Person` (anchored on `about/#author`) + `TechArticle` per page (`ProfilePage` on `about.md`, `image` = the social card) + a `BreadcrumbList` built from the nav sections that own an `index.md` (subfolders without one have no page, linking them gave 404 crumbs). A page's front matter `description` lands in the `TechArticle`, so a missing description degrades structured data silently.
 - `sitemap.xml` - custom template emitting `<lastmod>` from the git revision date.
-- `home.html`, `category.html`, `tags.html`, `404.html` and `partials/` - the redesigned theme (pinned to Material's HTML: Renovate never automerges `mkdocs-material`, review every bump visually).
-- `partials/integrations/analytics/google.html` - Material's GA partial, but `gtag.js` loads on the first interaction or 10 s after load. Re-check it on a `mkdocs-material` bump.
+- `home.html`, `category.html`, `tags.html`, `404.html` and `partials/` - the redesigned theme (pinned to MaterialX's HTML: Renovate never automerges `mkdocs-materialx`, review every bump visually).
+- `partials/integrations/analytics/google.html` - Material's GA partial, but `gtag.js` loads on the first interaction or 10 s after load. Re-check it on a `mkdocs-materialx` bump.
 - `i18n/<language>.yml` - every theme UI string, read through `lang.t("jd.*")` in templates and `window.jdI18n` in scripts. Add new UI text there, never hardcoded.
 
 Build hooks (`hooks:` in `mkdocs.yml`):
@@ -262,6 +262,8 @@ When writing or rewriting an article, apply these whenever the condition holds (
 - **Glossary `*[TERM]: ...`**: an acronym or a jargon term the target reader may not know and that the prose does not explain (NUMA, IRQ, TTFB, fan-out) → add it to `includes/abbreviations.md` (wiki-wide, sorted), never at the bottom of the article. Check it is not already there. Not every acronym: K8s nouns, HTTP, CPU, DNS and the like are left alone. One sentence in French, no em dash.
 
 ## Gotchas
+
+- **MaterialX**: its plugins register as `materialx/<name>`, so a template testing `config.plugins["material/search"]` silently drops the feature. `docs/stylesheets/materialx.css`, first in `extra_css`, undoes the MaterialX restyles the theme was not designed on (nav spacing, header icon sizes, TOC guides, letter spacing). Search must stay on `provider: lunr`: `jd-palette.js` reads `search/search_index.json`, Pagefind does not write it.
 
 - **SVG diagrams - taille rendue**: un SVG scale à la largeur du contenu (~750px). La hauteur
   rendue = viewBox_height × (750 / viewBox_width). Préférer un layout horizontal pour les
