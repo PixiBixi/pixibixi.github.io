@@ -7,6 +7,12 @@ repo_url: https://github.com/PixiBixi/pixibixi.github.io
 edit_uri: edit/master/docs/
 remote_branch: docs
 
+# Broken anchors and unresolved links fail the --strict build (default: info, never shown).
+validation:
+  absolute_links: warn
+  unrecognized_links: warn
+  anchors: warn
+
 theme:
   features:
     - toc.follow
