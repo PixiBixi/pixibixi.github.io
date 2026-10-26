@@ -264,6 +264,10 @@ Le plan complet est ci-dessous, sinon la recherche fait le job.
 - [Intégrer un scan d'image à sa CI](ci-cd/gitlab/ci/scan_image.md)
 - [Utilisation de la CLI officielle](ci-cd/gitlab/cli.md)
 
+### Git hooks
+
+- [Lefthook : migrer de pre-commit, config partagée, remote épinglé et CI](ci-cd/hooks/lefthook.md)
+
 ## Containers
 
 ### Docker
