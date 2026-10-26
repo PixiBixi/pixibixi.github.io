@@ -144,6 +144,7 @@ Le plan complet est ci-dessous, sinon la recherche fait le job.
 ### Troubleshooting
 
 - [Resize les PVC de son StatefulSet : cascade orphan et pièges](kubernetes/troubleshooting/resize_pvc_statefulset.md)
+- [Cilium conntrack plein : diagnostic, dimensionnement et alerting](kubernetes/troubleshooting/cilium_conntrack.md)
 - [Debug son ServiceAccount Kubernetes](kubernetes/troubleshooting/troubleshooting_sa.md)
 
 ### Rancher & RKE
