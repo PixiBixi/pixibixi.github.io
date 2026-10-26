@@ -2116,9 +2116,11 @@ body {
     font-size: 19px;
   }
 
+  /* The checked segment needs .md-option:checked: the theme's ".md-option:checked + label" rule would show it beside the cycle button. */
   .jd-brand__sub,
   .jd-github,
-  .jd-seg {
+  .jd-seg,
+  .md-option:checked + .jd-seg:not([hidden]) {
     display: none;
   }
 
