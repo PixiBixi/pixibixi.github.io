@@ -85,9 +85,9 @@ Chaque pause pod reprend `cpu_request`, `memory_request`, `node_selector` et les
 
 `periods` prend des expressions cron, la dernière policy active l'emporte et en dehors de toute période le runner retombe sur 0 pause pod. La capacité chaude ne coûte donc rien la nuit et le week-end, ce qu'un balloon fixe ne sait pas faire.
 
-`idle_time` retarde seulement la baisse du nombre de pause pods, la hausse est immédiate. `scale_factor` peut garder `scale_factor × jobs actifs` pods d'avance aux heures de pointe.
+`idle_time` retarde seulement la baisse du nombre de pause pods, la hausse est immédiate. Aux heures de pointe, `scale_factor` garde `ceil(scale_factor × jobs actifs)` pods d'avance quand ce nombre dépasse `idle_count`, plafonné par `scale_factor_limit` puis par `max_pause_pods`.
 
-Les labels et annotations des job pods ne sont pas recopiés sur les pause pods (`pause_pod_labels` et `pause_pod_annotations` existent pour ça). La PriorityClass est un objet cluster-wide : le runner a besoin d'un `ClusterRole` pour la créer.
+Les labels et annotations des job pods ne sont pas recopiés sur les pause pods (`pause_pod_labels` et `pause_pod_annotations` existent pour ça). La PriorityClass est un objet cluster-wide : le runner a besoin d'un `ClusterRole` pour la créer. Sans lui, il se contente d'un warning et crée quand même le Deployment, dont les pods sont rejetés faute de PriorityClass. L'alternative est de créer la classe soi-même et de la passer dans `pause_pod_priority_class_name`.
 
 ### Avant 18.11 : des pods balloon à la main
 
@@ -189,7 +189,7 @@ unit-tests:
 
 Un job Spot accepte un `retry` sur `runner_system_failure`. Qu'une éviction de node tombe dans cette catégorie dépend de la façon dont le runner constate la perte du pod, ce qui se vérifie en provoquant l'éviction d'un node de test avant de compter dessus.
 
-Depuis 18.11, `pod_disruption_budget = true` dans `[runners.kubernetes]` crée une PodDisruptionBudget `minAvailable: 1` par job pod. Elle protège le job d'un drain ou d'un upgrade de node pool, pas d'une préemption Spot que la doc range dans les disruptions involontaires. En contrepartie, un drain attend la fin des jobs en cours.
+Depuis 18.11, `pod_disruption_budget = true` dans `[runners.kubernetes]` crée une PodDisruptionBudget `minAvailable: 1` par job pod. Son selector vise le projet et pas le pod : quand plusieurs jobs d'un même projet tournent en parallèle, un drain peut en évincer tous sauf un. Elle ne protège pas non plus d'une préemption Spot, que la doc range dans les disruptions involontaires. En contrepartie, un drain bloque tant que le dernier job du projet tourne.
 
 ## Dimensionner les job pods et l'ephemeral storage
 
