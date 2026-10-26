@@ -22,7 +22,7 @@ Avec un `dnsPolicy: ClusterFirst`, un pod envoie ses requêtes à l'IP du Servic
 NodeLocal DNSCache fait tourner un CoreDNS en mode cache sur chaque node, en DaemonSet. Les pods parlent à ce cache local, sans DNAT ni conntrack sur ce segment. Le cache interroge `kube-dns` en TCP pour ses misses. Une connexion TCP libère son entrée conntrack à la fermeture au lieu d'attendre un timeout.
 
 !!! warning "Un cache DNS ne corrige pas un conntrack saturé"
-    Seul le trafic DNS des pods vers leur cache local échappe au conntrack. Le reste du trafic du node continue de le remplir : `node-local-dns` tournait déjà sur chaque node pendant un incident de table conntrack pleine sous Cilium.
+    Seul le trafic DNS des pods vers leur cache local échappe au conntrack. Le reste du trafic du node continue de le remplir : `node-local-dns` tournait déjà sur chaque node pendant l'incident décrit dans [Cilium conntrack plein](../troubleshooting/cilium_conntrack.md).
 
 ## L'amplification ndots:5
 
@@ -101,7 +101,7 @@ La latence côté cache se compare à celle des pods `kube-dns` en amont, dont l
 
 ### Conntrack côté node
 
-L'effet attendu est la disparition des entrées UDP 53 vers `kube-dns`. On les compte sur un node, avant et après l'activation (avec Cilium, les entrées vivent dans une map eBPF).
+L'effet attendu est la disparition des entrées UDP 53 vers `kube-dns`. On les compte sur un node, avant et après l'activation (avec Cilium, les entrées vivent dans une map eBPF, voir l'[article dédié](../troubleshooting/cilium_conntrack.md)).
 
 ```bash
 conntrack -L -p udp --dport 53 2>/dev/null | wc -l
@@ -237,4 +237,5 @@ Quelques remarques sur ces règles :
 
 ## Voir aussi
 
+- [Cilium conntrack plein](../troubleshooting/cilium_conntrack.md) pour la table conntrack qui sature malgré un cache DNS local
 - [Mémoire du cache local](https://kubernetes.io/docs/tasks/administer-cluster/nodelocaldns/#setting-memory-limits) : la doc recommande de mesurer le pic avant de poser une limite, le cache par défaut de 10 000 entrées pouvant occuper environ 30 Mo par server block
