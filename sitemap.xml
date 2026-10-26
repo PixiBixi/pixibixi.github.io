@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://wiki.jdelgado.fr/</loc>
-    <lastmod>2026-10-25</lastmod>
+    <lastmod>2026-10-26</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/about/</loc>
@@ -87,6 +87,10 @@
   <url>
     <loc>https://wiki.jdelgado.fr/ci-cd/gitlab/ci/scan_image/</loc>
     <lastmod>2026-10-13</lastmod>
+  </url>
+  <url>
+    <loc>https://wiki.jdelgado.fr/ci-cd/hooks/lefthook/</loc>
+    <lastmod>2026-10-26</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/cloud/</loc>
