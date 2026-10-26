@@ -17,6 +17,8 @@ theme:
     - navigation.prune
     - navigation.footer
     - content.code.copy
+    # <link rel="alternate" type="text/markdown"> to the raw source on GitHub
+    - content.action.agents
     - search.suggest
     - search.highlight
   name: materialx
