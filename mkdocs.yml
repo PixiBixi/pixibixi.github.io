@@ -20,6 +20,11 @@ theme:
     - search.suggest
     - search.highlight
   name: materialx
+  # Blocks over 30 lines start folded; data-fold="0" on a fence keeps it open.
+  code:
+    fold:
+      enabled: true
+      lines: 30
   custom_dir: overrides
   language: fr
   font: false
@@ -327,7 +332,6 @@ extra_css:
   - stylesheets/article-meta.css
   - stylesheets/category.css
   - stylesheets/jd-vars.css
-  - stylesheets/jd-codefold.css
   - stylesheets/jd-palette.css
   - stylesheets/jd-abbr.css
   - stylesheets/jd-highlight.css
