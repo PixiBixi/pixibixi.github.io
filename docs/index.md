@@ -264,6 +264,7 @@ Le plan complet est ci-dessous, sinon la recherche fait le job.
 
 - [Optimiser sa CI GitLab](ci-cd/gitlab/ci/optimize.md)
 - [Intégrer un scan d'image à sa CI](ci-cd/gitlab/ci/scan_image.md)
+- [GitLab Runner sur GKE Spot : cold start, tags, ephemeral storage et migration](ci-cd/gitlab/runners_kubernetes.md)
 - [Utilisation de la CLI officielle](ci-cd/gitlab/cli.md)
 
 ### Git hooks
