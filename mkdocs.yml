@@ -82,11 +82,27 @@ plugins:
       show_author: false
   - glightbox
   - search:
-      # jd-palette.js reads search/search_index.json, only the Lunr provider writes it.
-      provider: lunr
-      lunr:
-        lang:
-          - fr
+      provider: pagefind
+      pagefind:
+        # Pretty URLs in jd-palette.js and the 404 suggestions, like every other link on the site.
+        keep_index_url: false
+        # Theme chrome rendered inside the article: Lunr never saw it, and backlinks or prev/next titles would match other pages.
+        exclude_selectors:
+          - nav
+          - footer
+          - .jd-toc-bar
+          - .jd-meta
+          - .jd-pn
+          - .jd-backlinks
+          - .jd-outdated
+          - .jd-series
+          - .jd-skill
+          - .jd-tested
+          - .jd-cat__meta
+          - .jd-cat__toolbar
+          - .jd-cat__list
+          - .jd-cat__groups
+          - .jd-cat__empty
   - tags
   # Articles only: index pages (hand-written and generated), tags and about stay out of the feeds
   - rss:

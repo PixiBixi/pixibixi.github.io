@@ -94,34 +94,45 @@
     wordsEl.innerHTML = tr("jd.404.words").replace("{words}", words.map(function (w) { return "<code>" + esc(w) + "</code>"; }).join(", "));
     wordsEl.hidden = false;
 
+    // Same scoring as before Pagefind: a word in the path or the title weighs 3, in the body 1.
+    var search = window.jdSearch;
+    if (!search) return;
     var descsReq = fetch(root.dataset.descs).then(function (r) { return r.json(); }).then(function (j) { return j.descriptions || {}; }).catch(function () { return {}; });
-    fetch(root.dataset.index).then(function (r) { return r.json(); }).then(function (idx) {
-      return descsReq.then(function (descs) { return [idx, descs]; });
-    }).then(function (res) {
-      var idx = res[0], descs = res[1];
-      var scored = [];
-      idx.docs.forEach(function (d) {
-        if (d.location.indexOf("#") >= 0 || !d.location) return;
-        var loc = fold(d.location), t = fold(d.title), tx = fold(d.text || "");
-        var score = 0;
-        words.forEach(function (w) {
-          if (loc.indexOf(w) >= 0) score += 3;
-          if (t.indexOf(w) >= 0) score += 3;
-          if (tx.indexOf(w) >= 0) score += 1;
-        });
-        if (score) scored.push({ d: d, score: score });
+    var hitsReq = search.pagefind().then(function (pf) {
+      return Promise.all(words.map(function (w) { return pf.search(w); }));
+    }).catch(function () { return []; });
+    Promise.all([search.pages(), descsReq, hitsReq]).then(function (res) {
+      var idx = res[0], descs = res[1], hits = {};
+      res[2].forEach(function (r) {
+        r.results.forEach(function (x) { hits[x.id] = hits[x.id] || { x: x, n: 0 }; hits[x.id].n++; });
       });
-      scored.sort(function (a, b) { return b.score - a.score; });
-      var top = scored.slice(0, 3);
-      if (!top.length) return;
+      return Promise.all(Object.keys(hits).map(function (id) {
+        return hits[id].x.data().then(function (d) { return { loc: search.locOf(d.url), n: hits[id].n, d: d }; });
+      })).then(function (body) {
+        var byLoc = {};
+        body.forEach(function (b) { byLoc[b.loc] = b; });
+        var scored = [];
+        Object.keys(idx.titles).forEach(function (l) {
+          if (!l || l.indexOf("tags/") === 0) return;
+          var loc = fold(l), t = fold(idx.titles[l]), score = byLoc[l] ? byLoc[l].n : 0;
+          words.forEach(function (w) {
+            if (loc.indexOf(w) >= 0) score += 3;
+            if (t.indexOf(w) >= 0) score += 3;
+          });
+          if (score) scored.push({ loc: l, title: idx.titles[l], score: score, d: byLoc[l] && byLoc[l].d });
+        });
+        scored.sort(function (a, b) { return b.score - a.score; });
+        return { top: scored.slice(0, 3), descs: descs };
+      });
+    }).then(function (r) {
+      if (!r.top.length) return;
       var list = root.querySelector("[data-jd-near-list]");
-      list.innerHTML = top.map(function (s) {
-        var d = s.d;
-        var crumbs = d.location.split("/").filter(Boolean).slice(0, -1).map(pretty).join(" / ");
-        var text = descs[d.location] || (d.text || "").replace(/\s+/g, " ").trim();
+      list.innerHTML = r.top.map(function (s) {
+        var crumbs = s.loc.split("/").filter(Boolean).slice(0, -1).map(pretty).join(" / ");
+        var text = r.descs[s.loc] || (s.d && s.d.content || "").replace(/\s+/g, " ").trim();
         if (text.length > 200) text = text.slice(0, 200).replace(/\s+\S*$/, "") + "...";
         return "<li><p class=\"jd-404__crumb\">" + mark(crumbs, words) + "</p>" +
-          "<a href=\"" + root.dataset.home + esc(d.location) + "\">" + mark(d.title, words) + "</a>" +
+          "<a href=\"" + root.dataset.home + esc(s.loc) + "\">" + mark(s.title, words) + "</a>" +
           (text ? "<p class=\"jd-404__excerpt\">" + mark(text, words) + "</p>" : "") + "</li>";
       }).join("");
       root.querySelector("[data-jd-near]").hidden = false;

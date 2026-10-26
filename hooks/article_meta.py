@@ -25,6 +25,7 @@ ATTR = re.compile(r"\s*\{[^}]*\}\s*$")
 _data = {"reading": {}, "series": {}, "backlinks": {}}
 _descriptions = {}
 _articles = []
+_pages = {}
 # A commit touching more articles than this is a style or rename sweep, not a content update.
 SWEEP_FILES = 10
 _content: dict = {"dates": None}
@@ -73,6 +74,7 @@ def _best(cites):
 def on_files(files, config):
     _descriptions.clear()
     _articles.clear()
+    _pages.clear()
     docs = {}
     for f in files.documentation_pages():
         # Folder indexes from hooks/indexes.py have no source file and are never backlink sources.
@@ -207,6 +209,9 @@ def _content_dates(docs_dir):
 
 
 def on_page_context(context, page, config, nav):
+    # Titles and tags for the palette breadcrumbs, sections and tags: Pagefind only answers queries.
+    if not (page.meta.get("search") or {}).get("exclude") and page.url != "404.html":
+        _pages[page.url] = {"title": page.title or "", "tags": list(dict.fromkeys(str(t) for t in page.meta.get("tags") or []))}
     if page.file.name == "index" or page.file.src_uri in ("about.md", "tags.md") or page.file.abs_src_path is None:
         return context
     if _content["dates"] is None:
@@ -219,7 +224,8 @@ def on_page_context(context, page, config, nav):
 
 
 def on_post_build(config):
-    # Read by the 404 suggestions and the palette counts: the search index has no front matter nor page kind.
+    # Read by the palette and the 404 suggestions: Pagefind has no front matter, page list nor page kind.
     out = os.path.join(config["site_dir"], "search", "jd-pages.json")
+    os.makedirs(os.path.dirname(out), exist_ok=True)
     with open(out, "w", encoding="utf-8") as fh:
-        json.dump({"descriptions": _descriptions, "articles": sorted(set(_articles))}, fh, ensure_ascii=False, separators=(",", ":"))
+        json.dump({"descriptions": _descriptions, "articles": sorted(set(_articles)), "pages": _pages}, fh, ensure_ascii=False, separators=(",", ":"))

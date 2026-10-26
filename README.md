@@ -105,6 +105,14 @@ It reports `file:line` for anything a reader could not copy-paste. To keep a del
 broken counter-example, put `<!-- check-code-blocks: skip -->` on the line before the
 fence.
 
+`tests/search_e2e.py` drives the search UI in Chrome against a served build (Cmd+K palette, ranking, accents, keyboard navigation and `?h=` highlight, header search, home hero, 404 suggestions, light and dark). `--compare <url>` ranks the same queries on a second build and prints both top 3:
+
+```sh
+uv run properdocs build --strict -d $TMPDIR/wiki-site
+python3 -m http.server 8020 --bind 127.0.0.1 -d $TMPDIR/wiki-site &
+uv run -q --no-project --with playwright python -I tests/search_e2e.py --url http://127.0.0.1:8020/
+```
+
 `scripts/wiki_compare.py` shows each changed article twice in one page, the live site next to the local dev server (`properdocs serve -f mkdocs.dev.yml` must run on port 8000), with linked scroll, the changed blocks outlined and the local side following mkdocs' live reload (`j`/`k` to jump between them, `r` to reload). Pass article paths to limit it, `--base <ref>` to pick the changed articles against another ref, `--port` if 8001 is taken.
 
 ## Deploy

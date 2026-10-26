@@ -1,4 +1,4 @@
-/* Search highlight bar: when Material's search.highlight marks the terms of `?h=`, show a count with next/clear. */
+/* Search highlight bar: when MaterialX's search.highlight marks the terms of `?h=`, show a count with next/clear. */
 (function () {
   "use strict";
 
@@ -8,8 +8,8 @@
   function tn(k, n) { return tr(k + (n === 1 ? "_one" : "_other")).replace("{n}", n); }
 
   function marks(root) {
-    // data-md-highlight is set by Material, so authored <mark> elements are left alone.
-    return Array.prototype.filter.call(root.querySelectorAll("mark[data-md-highlight]"), function (m) {
+    // Only the search highlighter's marks (Pagefind class, Lunr attribute): authored <mark> elements are left alone.
+    return Array.prototype.filter.call(root.querySelectorAll("mark.pagefind-highlight, mark[data-md-highlight]"), function (m) {
       return !m.closest(".jd-hl") && !m.closest(".jd-pal");
     });
   }

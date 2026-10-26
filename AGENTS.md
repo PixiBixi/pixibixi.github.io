@@ -13,7 +13,8 @@ Config lives in `mkdocs.yml` (no `nav:` - sidebar is auto-generated). Active plu
 - `document-dates` (bundled with MaterialX) - page dates from git, data only: its own block, author email and assets are off (`hooks/dates.py`). Feeds the article header, `datePublished`/`dateModified` in the JSON-LD and `<lastmod>` in the sitemap. Needs full git history
 - `meta` - applies `.meta.yml` directory defaults (mostly `tags:`) to every page below
 - `tags` - builds the tag index from front matter + `.meta.yml`
-- `glightbox`, `redirects`, `minify`, `search` (French)
+- `search` - Pagefind provider: indexes the built HTML into `site/search/` (`pagefind.js`, index chunks, fragments); `exclude_selectors` keeps the theme chrome rendered inside the article (meta bar, prev/next, backlinks, category lists) out of it. Mirrored in `mkdocs.dev.yml`
+- `glightbox`, `redirects`, `minify`
 
 Theme overrides live in `overrides/` (`custom_dir`):
 
@@ -268,7 +269,7 @@ When writing or rewriting an article, apply these whenever the condition holds (
 
 ## Gotchas
 
-- **MaterialX**: its plugins register as `materialx/<name>`, so a template testing `config.plugins["material/search"]` silently drops the feature. `docs/stylesheets/materialx.css`, first in `extra_css`, undoes the MaterialX restyles the theme was not designed on (nav spacing, header icon sizes, TOC guides, letter spacing). Search must stay on `provider: lunr`: `jd-palette.js` reads `search/search_index.json`, Pagefind does not write it.
+- **MaterialX**: its plugins register as `materialx/<name>`, so a template testing `config.plugins["material/search"]` silently drops the feature. `docs/stylesheets/materialx.css`, first in `extra_css`, undoes the MaterialX restyles the theme was not designed on (nav spacing, header icon sizes, TOC guides, letter spacing). Search runs on `provider: pagefind`: there is no `search/search_index.json` anymore. `jd-palette.js` (Cmd+K) and the 404 suggestions in `pages.js` query `search/pagefind.js` through `window.jdSearch`, and read titles, tags and the article list from `search/jd-pages.json` (`hooks/article_meta.py`). Pagefind marks `?h=` terms with `mark.pagefind-highlight`, which `jd-highlight.js` counts. A new theme block inside the article that is not content goes in `exclude_selectors` in both configs. `tests/search_e2e.py` checks the whole search UI on a served full build.
 
 - **SVG diagrams - taille rendue**: un SVG scale à la largeur du contenu (~750px). La hauteur
   rendue = viewBox_height × (750 / viewBox_width). Préférer un layout horizontal pour les
@@ -290,7 +291,7 @@ When writing or rewriting an article, apply these whenever the condition holds (
 
 - **Shallow clones**: page dates need the full git history. On a shallow clone (`--depth 1`) the build stays green but the dates are wrong, nothing warns. Use `git fetch --unshallow`.
 
-- **Preview: `properdocs serve` only with `mkdocs.dev.yml`**. With the full config the first build hangs for minutes (`social`, `privacy`); the dev config drops the production-only plugins and rebuilds in ~6s. `search` must stay in it: `hooks/article_meta.py` writes into its output dir. Hooks are not reloaded: restart the server after editing `hooks/`.
+- **Preview: `properdocs serve` only with `mkdocs.dev.yml`**. With the full config the first build hangs for minutes (`social`, `privacy`); the dev config drops the production-only plugins and rebuilds in ~6s. `search` must stay in it: the palette and the 404 suggestions query its Pagefind index. Hooks are not reloaded: restart the server after editing `hooks/`.
 
   ```bash
   # background; stop it with: pkill -f "properdocs serve"
