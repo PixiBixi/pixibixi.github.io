@@ -365,6 +365,10 @@
     <lastmod>2026-10-13</lastmod>
   </url>
   <url>
+    <loc>https://wiki.jdelgado.fr/kubernetes/troubleshooting/cilium_conntrack/</loc>
+    <lastmod>2026-10-26</lastmod>
+  </url>
+  <url>
     <loc>https://wiki.jdelgado.fr/kubernetes/troubleshooting/resize_pvc_statefulset/</loc>
     <lastmod>2026-10-13</lastmod>
   </url>
