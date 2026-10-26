@@ -79,6 +79,12 @@ plugins:
   - rss:
       match_path: '^(?!(.*/)?index\.md$|tags\.md$|about\.md$).+\.md$'
       json_feed_enabled: false
+      # Dates from document-dates (hooks/dates.py follows renames): no git call per page.
+      use_git: false
+      date_from_meta:
+        as_creation: document_dates.dates.created
+        as_update: document_dates.dates.updated
+        datetime_format: "%Y-%m-%dT%H:%M:%S%z"
       categories:
         - tags
   - privacy
