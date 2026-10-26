@@ -15,10 +15,10 @@ and JSON, it just skips the Prometheus rule files.
 ```sh
 uv sync
 pre-commit install     # without this, no hook runs on commit
-uv run properdocs serve -f mkdocs.dev.yml --livereload   # http://127.0.0.1:8000, ~6s rebuild
+uv run properdocs serve -f properdocs.dev.yml --livereload   # http://127.0.0.1:8000, ~6s rebuild
 ```
 
-`mkdocs.dev.yml` inherits `mkdocs.yml` without the production-only plugins (`social`,
+`properdocs.dev.yml` inherits `properdocs.yml` without the production-only plugins (`social`,
 `rss`, `privacy`, `redirects`). Validate with the full
 config before pushing (`uv run properdocs build --strict`).
 
@@ -47,7 +47,7 @@ Optional front matter, all rendered by the theme:
 | `series` + `series_order` | `series: "Thanos at scale"`, `series_order: 2` | Series box with numbering and a "next" link, grouped by exact series name |
 | `tested_with` | `["Thanos 0.35+", "Redis Sentinel 6.2+"]` | "Testé avec" badge, `TechArticle.dependencies` in the JSON-LD |
 | `variables` | `[{name: namespace, default: monitoring}]` | Editable bar above the article; `<namespace>` in code blocks is substituted on display and on copy |
-| `skill` | `reviewing-thanos-deployments` | "Utiliser cet article avec Claude Code" callout with the install command; plugin coordinates in `extra.skills` (`mkdocs.yml`), skills live in the `wiki` plugin of [PixiBixi/claude-skills](https://github.com/PixiBixi/claude-skills) |
+| `skill` | `reviewing-thanos-deployments` | "Utiliser cet article avec Claude Code" callout with the install command; plugin coordinates in `extra.skills` (`properdocs.yml`), skills live in the `wiki` plugin of [PixiBixi/claude-skills](https://github.com/PixiBixi/claude-skills) |
 
 Glossary tooltips (hover, tap on mobile) use the `abbr` extension. Definitions live in
 `includes/abbreviations.md`, appended to every page, so a term is defined once for the whole
@@ -83,7 +83,7 @@ Heading mode is the same wrapper around `###` headings (`### Install`, `### Conf
 
 The theme UI strings live in `overrides/i18n/<language>.yml` (English is the fallback).
 
-Tag icons are mapped in `extra.tag_icons` in `mkdocs.yml` (tag name to a Material `.icons` path, e.g. `Kubernetes: simple/kubernetes`). Unmapped tags show no icon.
+Tag icons are mapped in `extra.tag_icons` in `properdocs.yml` (tag name to a Material `.icons` path, e.g. `Kubernetes: simple/kubernetes`). Unmapped tags show no icon.
 
 RSS feeds (`feed_rss_created.xml`, `feed_rss_updated.xml`) come from `mkdocs-rss-plugin`; index pages, `tags.md` and `about.md` are excluded by `match_path`.
 
@@ -113,7 +113,7 @@ python3 -m http.server 8020 --bind 127.0.0.1 -d $TMPDIR/wiki-site &
 uv run -q --no-project --with playwright python -I tests/search_e2e.py --url http://127.0.0.1:8020/
 ```
 
-`scripts/wiki_compare.py` shows each changed article twice in one page, the live site next to the local dev server (`properdocs serve -f mkdocs.dev.yml` must run on port 8000), with linked scroll, the changed blocks outlined and the local side following mkdocs' live reload (`j`/`k` to jump between them, `r` to reload). Pass article paths to limit it, `--base <ref>` to pick the changed articles against another ref, `--port` if 8001 is taken.
+`scripts/wiki_compare.py` shows each changed article twice in one page, the live site next to the local dev server (`properdocs serve -f properdocs.dev.yml` must run on port 8000), with linked scroll, the changed blocks outlined and the local side following mkdocs' live reload (`j`/`k` to jump between them, `r` to reload). Pass article paths to limit it, `--base <ref>` to pick the changed articles against another ref, `--port` if 8001 is taken.
 
 ## Deploy
 

@@ -6,14 +6,14 @@ Guidance for coding agents working in this repository.
 
 Personal knowledge base / wiki built with **MaterialX** (the maintained fork of MkDocs Material, `theme.name: materialx`) on **ProperDocs** (the maintained MkDocs 1.6 fork, `properdocs` CLI; it aliases `mkdocs.*` imports so plugins run unchanged), hosted at <https://wiki.jdelgado.fr/> via GitHub Pages. Content is 240+ Markdown files organized by SRE/infra topics.
 
-Config lives in `mkdocs.yml` (no `nav:` - sidebar is auto-generated). Active plugins that matter at build time:
+Config lives in `properdocs.yml` (no `nav:` - sidebar is auto-generated). Active plugins that matter at build time:
 
 - `social` - OG cards, needs `pillow`+`cairosvg`
 - `privacy` - self-hosts external assets (see Gotchas); its cache is keyed on `docs/**/*.md` in CI
 - `document-dates` (bundled with MaterialX) - page dates from git, data only: its own block, author email and assets are off (`hooks/dates.py`). Feeds the article header, `datePublished`/`dateModified` in the JSON-LD and `<lastmod>` in the sitemap. Needs full git history
 - `meta` - applies `.meta.yml` directory defaults (mostly `tags:`) to every page below
 - `tags` - builds the tag index from front matter + `.meta.yml`
-- `search` - Pagefind provider: indexes the built HTML into `site/search/` (`pagefind.js`, index chunks, fragments); `exclude_selectors` keeps the theme chrome rendered inside the article (meta bar, prev/next, backlinks, category lists) out of it. Mirrored in `mkdocs.dev.yml`
+- `search` - Pagefind provider: indexes the built HTML into `site/search/` (`pagefind.js`, index chunks, fragments); `exclude_selectors` keeps the theme chrome rendered inside the article (meta bar, prev/next, backlinks, category lists) out of it. Mirrored in `properdocs.dev.yml`
 - `glightbox`, `redirects`, `minify`
 
 Theme overrides live in `overrides/` (`custom_dir`):
@@ -25,18 +25,18 @@ Theme overrides live in `overrides/` (`custom_dir`):
 - `partials/integrations/analytics/google.html` - Material's GA partial, but `gtag.js` loads on the first interaction or 10 s after load. Re-check it on a `mkdocs-materialx` bump.
 - `i18n/<language>.yml` - every theme UI string, read through `lang.t("jd.*")` in templates and `window.jdI18n` in scripts. Add new UI text there, never hardcoded.
 
-Build hooks (`hooks:` in `mkdocs.yml`):
+Build hooks (`hooks:` in `properdocs.yml`):
 
 - `indexes.py` - virtual `index.md` for every folder without one (rendered by `category.html`), nav section titles and order
 - `article_meta.py` - reading time, series, backlinks ("Cité dans"), outdated banner (> 2 years without a content commit; commits touching more than 10 articles are sweeps and ignored)
 - `page_vars.py` - front matter `variables:` handed to `jd-vars.js`
 - `home.py` - recent articles and section counts for the home and tags pages
 - `i18n.py` - loads `overrides/i18n/`
-- `bundle.py` - concatenates, minifies and content-hashes `extra_css` and `extra_javascript` into `stylesheets/bundle.<hash>.css` and a deferred `javascripts/bundle.<hash>.js`. The lists in `mkdocs.yml` stay the source, in cascade order; a new stylesheet or script is added there as before. Template CSS stays in the bundle: `navigation.instant` keeps the `<head>`.
+- `bundle.py` - concatenates, minifies and content-hashes `extra_css` and `extra_javascript` into `stylesheets/bundle.<hash>.css` and a deferred `javascripts/bundle.<hash>.js`. The lists in `properdocs.yml` stay the source, in cascade order; a new stylesheet or script is added there as before. Template CSS stays in the bundle: `navigation.instant` keeps the `<head>`.
 - `a11y.py` - `aria-label` (`jd.code.line`) on the line-number links of code blocks
 - `dates.py` - hands document-dates the rename-followed creation date (it only sees the current path) as front matter `created`, drops its assets, and adds the `jd_date` filter (`long` French date or `iso`, in UTC)
 
-`remote_branch: docs` in `mkdocs.yml` is why `gh-deploy` pushes to a `docs` branch rather than `gh-pages`.
+`remote_branch: docs` in `properdocs.yml` is why `gh-deploy` pushes to a `docs` branch rather than `gh-pages`.
 
 ## Local Development
 
@@ -46,7 +46,7 @@ uv sync
 pre-commit install   # install git hook for markdown linting
 
 # Live preview (hot reload at http://127.0.0.1:8000, ~6s rebuild)
-uv run properdocs serve -f mkdocs.dev.yml --livereload
+uv run properdocs serve -f properdocs.dev.yml --livereload
 
 # Static build (validates without serving)
 uv run properdocs build --strict
@@ -115,7 +115,7 @@ All content lives under `docs/`. Organized by technology domain:
 | `hypervisor/` | ESXi, Proxmox |
 | `misc/` | Perf, optimization, fibre optique, links, sources |
 
-Sidebar navigation is **auto-generated** from the `docs/` directory structure (no `nav:` in `mkdocs.yml`).
+Sidebar navigation is **auto-generated** from the `docs/` directory structure (no `nav:` in `properdocs.yml`).
 
 One hand-maintained TOC must be updated when adding a file - it is not generated, and a stale link only surfaces as a `--strict` build failure:
 
@@ -159,7 +159,7 @@ change(cloud/gcloud): add billing export commands
 - **Superfences**: nested code blocks inside admonitions work
 - **Line number anchors**: `anchor_linenums: true` is active
 - **Glightbox**: all images get a lightbox automatically (no extra syntax needed)
-- **Redirects**: when moving/renaming a `.md` file, add an entry in `mkdocs.yml`
+- **Redirects**: when moving/renaming a `.md` file, add an entry in `properdocs.yml`
 
   ```yaml
   plugins:
@@ -189,7 +189,7 @@ uv run properdocs build --strict 2>&1 | grep -E "WARNING|ERROR"
 
 `docs/index.md` contains hardcoded links - renames break the build silently until CI catches it.
 
-`validation:` in `mkdocs.yml` makes a link to a missing heading anchor, an absolute link (`/linux/`) or a folder link (`linux/cli/`) fatal under `--strict`: renaming a heading breaks every link to it. Link to the `.md` file, with the anchor of the current heading.
+`validation:` in `properdocs.yml` makes a link to a missing heading anchor, an absolute link (`/linux/`) or a folder link (`linux/cli/`) fatal under `--strict`: renaming a heading breaks every link to it. Link to the `.md` file, with the anchor of the current heading.
 
 A green `--strict` build does not mean the page renders correctly (broken front matter, an
 oversized SVG). Preview locally before committing a new or rewritten article.
@@ -234,7 +234,7 @@ When rewriting an article:
 3. Write: practical examples, real-world use cases - commands copy-pasteable on the spot
 4. **Wire the landing page** if it's a new file - `docs/index.md`, hardcoded link, always (section pages list their articles on their own)
 5. Lint: `markdownlint-cli2 "path/to/file.md"`
-6. Preview: serve with `mkdocs.dev.yml` (see "Preview" below), then open the article
+6. Preview: serve with `properdocs.dev.yml` (see "Preview" below), then open the article
    - URL pattern: `http://127.0.0.1:8000/<path-without-docs-prefix-and-md>/`
    - Example: `docs/linux/cli/sed.md` → `open http://127.0.0.1:8000/linux/cli/sed/`
 7. Commit + push - CI validates automatically
@@ -291,11 +291,11 @@ When writing or rewriting an article, apply these whenever the condition holds (
 
 - **Shallow clones**: page dates need the full git history. On a shallow clone (`--depth 1`) the build stays green but the dates are wrong, nothing warns. Use `git fetch --unshallow`.
 
-- **Preview: `properdocs serve` only with `mkdocs.dev.yml`**. With the full config the first build hangs for minutes (`social`, `privacy`); the dev config drops the production-only plugins and rebuilds in ~6s. `search` must stay in it: the palette and the 404 suggestions query its Pagefind index. Hooks are not reloaded: restart the server after editing `hooks/`.
+- **Preview: `properdocs serve` only with `properdocs.dev.yml`**. With the full config the first build hangs for minutes (`social`, `privacy`); the dev config drops the production-only plugins and rebuilds in ~6s. `search` must stay in it: the palette and the 404 suggestions query its Pagefind index. Hooks are not reloaded: restart the server after editing `hooks/`.
 
   ```bash
   # background; stop it with: pkill -f "properdocs serve"
-  uv run properdocs serve -f mkdocs.dev.yml --livereload
+  uv run properdocs serve -f properdocs.dev.yml --livereload
   ```
 
   Social cards, feeds and redirects only exist in the full build. Check them, and run `--strict`, before committing:
