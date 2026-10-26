@@ -7,7 +7,7 @@ tags:
 # Reverse proxy: HAProxy
 
 !!! warning "Version HAProxy"
-    Les directives et options évoluent entre les versions majeures. Vérifiez toujours la version installée (`haproxy -v`) et consultez la [documentation officielle](https://docs.haproxy.org/3.3/management.html) correspondante. La version actuelle stable est la **3.3**.
+    Les directives et options évoluent entre les versions majeures. Vérifiez toujours la version installée (`haproxy -v`) et consultez la [documentation officielle](https://docs.haproxy.org/3.4/management.html) correspondante. La dernière version stable est la **3.4**, la LTS en cours est la **3.2**.
 
 HAProxy est un reverse proxy optimisé pour les fortes charges créé en
 2000 par Willy Tarreau, un contributeur kernel. Ce dernier propose
@@ -50,9 +50,7 @@ Heureusement, il est facile de split la configuration. Dans le fichier
 CONFIG="/etc/haproxy"
 ```
 
-La variable CONFIG est utilisée pour le paramètre `-F $CONFIG` de
-l'unit systemd.
-Voici ce que dit la [documentation haproxy](https://docs.haproxy.org/3.3/management.html) :
+La variable CONFIG est utilisée pour le paramètre `-f $CONFIG` de l'unit systemd. Voici ce que dit la [documentation haproxy](https://docs.haproxy.org/3.4/management.html) :
 
 ```bash title="HAProxy : Official Documentation"
   -f <cfgfile|cfgdir> : adds <cfgfile> to the list of configuration files to be
@@ -74,12 +72,16 @@ Voici ce que dit la [documentation haproxy](https://docs.haproxy.org/3.3/managem
 Tous les fichiers se terminant par .cfg seront chargés par HAProxy par
 ordre alphabétique.
 
-Voici la configuration lancée par défaut via l'unit systemd :
+Voici l'unit systemd fournie par HAProxy (`admin/systemd/haproxy.service.in`), en mode master-worker (`-Ws`). Le `haproxy-systemd-wrapper` des vieux tutos n'existe plus depuis la 1.8 :
 
-```bash
-ExecStartPre=/usr/sbin/haproxy -f ${CONFIG} -c -q
-ExecStart=/usr/sbin/haproxy-systemd-wrapper -f ${CONFIG} -p /run/haproxy.pid $EXTRAOPTS
+```ini
+Environment="CONFIG=/etc/haproxy/haproxy.cfg" "PIDFILE=/run/haproxy.pid" "CFGDIR=/etc/haproxy/conf.d" "EXTRAOPTS=-S /run/haproxy-master.sock"
+ExecStart=/usr/sbin/haproxy -Ws -f $CONFIG -f $CFGDIR -p $PIDFILE $EXTRAOPTS
+ExecReload=/usr/sbin/haproxy -Ws -f $CONFIG -f $CFGDIR -c $EXTRAOPTS
+ExecReload=/bin/kill -USR2 $MAINPID
 ```
+
+Avec cette unit, on n'a même pas besoin de toucher à `CONFIG` : il suffit de déposer les fichiers `.cfg` dans `/etc/haproxy/conf.d`. L'unit d'une distribution peut différer (celle de Debian ne passe pas `$CFGDIR`), on vérifie avec `systemctl cat haproxy`.
 
 ## Configuration HAProxy
 
@@ -101,8 +103,6 @@ global
     user haproxy
     group haproxy
     stats socket /run/haproxy/admin.sock user haproxy group haproxy mode 660 level admin
-    nbthread 4
-    cpu-map auto:1-4 0-3
     daemon
     ssl-default-bind-ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305
     ssl-default-bind-ciphersuites TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256
@@ -119,17 +119,14 @@ local0. rsyslog s'occupe de traiter les logs. (par défaut,
 écriture dans /var/log/syslog).
 * `user/group` indique à haproxy qu'il ne faut pas lancer les fork
 en tant que root, mais en tant qu'haproxy.
-* `stats socket` permet de définir un socket afin d'y extraire les stats ou autre. Il est également possible d'écrire la configuration de HAProxy via ce moyen. Attention à bien restreindre les privilèges.
+* `stats socket` permet de définir un socket afin d'y extraire les stats ou autre. Il permet aussi de modifier l'état au runtime (servers, maps, certificats) sans reload, mais n'écrit jamais dans `haproxy.cfg` : un changement non reporté dans la config est perdu au prochain restart. Attention à bien restreindre les privilèges.
     <!-- markdownlint-disable-next-line -->
     * SleepLessBeastie a écrit [un excellent article](https://sleeplessbeastie.eu/2020/01/29/how-to-use-haproxy-stats-socket/) sur la définition des privilèges et comment interagir avec l'API. Voir aussi [HAProxy : exploitation au quotidien](operations.md).
-* `nbthread` permet à HAProxy de scaler sur plusieurs threads. Utiliser `auto` pour détecter automatiquement le nombre de threads disponibles, ou spécifier un entier.
-    <!-- markdownlint-disable-next-line -->
-    * `nbproc` (multi-processus) est **déprécié depuis HAProxy 2.5** et **supprimé en 2.9**. Ne plus utiliser cette directive.
-* `cpu-map` permet de binder chaque thread sur un core CPU dédié. La syntaxe avec `nbthread` : `cpu-map auto:<thread-range> <cpu-range>`
-* `daemon` permet de lancer HAProxy en tant que daemon. Indépendant de `nbthread` - les deux directives n'ont aucune dépendance l'une envers l'autre.
+* `daemon` permet de lancer HAProxy en tant que daemon.
+* Pas de `nbthread` ici : sans la directive, HAProxy démarre autant de threads que de CPU auxquels le process est bindé, ce qui suffit dans la plupart des cas. `nbthread`, `cpu-map` et `cpu-policy` sont détaillés dans [le guide de tuning](performance_tuning.md).
 * `ssl-default-bind-ciphers` configure les ciphers **TLS 1.2**. `ssl-default-bind-ciphersuites` configure les ciphers **TLS 1.3** (directive distincte, obligatoire pour couvrir les deux versions). `ssl-default-bind-options` configure les versions autorisées et options associées.
     <!-- markdownlint-disable-next-line -->
-    * La fondation Mozilla propose un [configurateur](https://ssl-config.mozilla.org/#server=haproxy&version=3.3&config=intermediate) pour HAProxy 3.x. Le profil Intermediate est adapté pour une utilisation en production.
+    * La fondation Mozilla propose un [configurateur](https://ssl-config.mozilla.org/#server=haproxy&version=3.4&config=intermediate) pour HAProxy 3.x. Le profil Intermediate est adapté pour une utilisation en production.
 
 ### Defaults
 
@@ -181,7 +178,7 @@ donné aucun échange de donnée (requête ou réponse).
 server)...
     <!-- markdownlint-disable-next-line -->
     * Il peut être intéressant de spécifier différentes valeurs de timeout afin de faciliter le debug.
-* `http-reuse safe` est l'option par défaut. On s'assure via le paramètre `safe` que le serveur ferme la connexion lorsque la requête a été envoyée.
+* `http-reuse safe` est l'option par défaut. La première requête d'une session part toujours sur sa propre connexion, seules les suivantes peuvent réutiliser une connexion déjà ouverte vers le serveur. Si le serveur ferme une connexion réutilisée, le client peut ainsi rejouer sa requête sans risque.
 
 ### Frontend
 
@@ -225,14 +222,12 @@ frontend http
    default_backend undefined
 ```
 
-On définit ici un backend par défaut. Il est possible de ne pas en
-définir et HAProxy renverra une erreur 421 de lui même.
+On définit ici un backend par défaut. Sans `default_backend`, une requête qui ne matche aucun `use_backend` reste sur le frontend, qui n'a pas de serveur : HAProxy répond une 503.
 
 #### Terminaison TLS
 
 HAProxy peut terminer le TLS directement sur le `bind`. La méthode recommandée est
-le répertoire de certificats : HAProxy charge automatiquement tous les fichiers `.pem`
-qu'il contient et sélectionne le bon certificat via SNI. Pour l'optimisation des handshakes TLS en charge, voir [Performance tuning](performance_tuning.md).
+le répertoire de certificats : HAProxy charge tous les fichiers qu'il contient (sauf les fichiers cachés et les extensions réservées `.key`, `.issuer`, `.ocsp`, `.sctl`) et sélectionne le bon certificat via SNI. Pour l'optimisation des handshakes TLS en charge, voir [Performance tuning](performance_tuning.md).
 
 Chaque fichier `.pem` doit contenir le certificat (fullchain) **et** la clé privée
 concaténés :
@@ -291,8 +286,8 @@ backend web_servers
     balance roundrobin
     cookie srvid insert indirect nocache
     option httpchk HEAD /
-    server server1 10.0.1.3:80 cookie server1
-    server server2 10.0.1.4:80 cookie server2
+    server server1 10.0.1.3:80 cookie server1 check
+    server server2 10.0.1.4:80 cookie server2 check
 ```
 
 Le client recevra un cookie dénommé srvid qui sera utilisé par haproxy
@@ -315,31 +310,31 @@ backend web_servers
 ```vcl title="HAProxy : Multiple backends with HTTP check"
 backend web_servers
     option httpchk HEAD /
-    server server1 10.0.1.3:80
-    server server2 10.0.1.4:80
+    server server1 10.0.1.3:80 check
+    server server2 10.0.1.4:80 check
 ```
 
-Il s'agit du même backend qu'au préalable mais avec une différence
-importante, la présence de `httpchk`. On a ici un véritable check L7 au lieu d'un check TCP L4. HAProxy est capable
-de distinguer un serveur HTTP down au niveau L7 (tel qu'une erreur
-50x). Il est possible d'affiner le check, on a ici une simple
-requête HEAD sur /.
+Il s'agit du même backend qu'au préalable mais avec 2 différences importantes : le mot-clé `check` sur chaque server, qui active le health check, et `option httpchk`, qui en fait un check L7 au lieu d'un simple check TCP L4. Sans `check`, `option httpchk` ne fait rien : aucun check ne tourne et un serveur down continue de recevoir du trafic. HAProxy est ainsi capable de distinguer un serveur HTTP down au niveau L7 (tel qu'une erreur 50x). Il est possible d'affiner le check, on a ici une simple requête HEAD sur /.
 
 ```vcl
-option httpchk GET / HTTP/1.1\r\nHost:\ www.jdelgado.fr\r\nUser-Agent:\ haproxy_check
+option httpchk
+http-check send meth GET uri / ver HTTP/1.1 hdr Host www.jdelgado.fr hdr User-Agent haproxy_check
 http-check expect status 200
 ```
 
-Ce test est légèrement plus détaillé. On spécifie ici un Host à utiliser (`www.jdelgado.fr`) ainsi que l'user-agent et on attend un retour 200 (OK).
+Ce test est légèrement plus détaillé. On spécifie ici un Host à utiliser (`www.jdelgado.fr`) ainsi que l'user-agent et on attend un retour 200 (OK). L'ancienne forme avec les `\r\n` échappés dans `option httpchk` fonctionne encore, mais `http-check send` est plus lisible.
 
 #### Check spécifiques
 
-HAProxy intègre différents checks pour différents protocoles. Voici les checks disponibles :
+HAProxy intègre différents checks pour différents protocoles, entre autres :
 
 * option mysql-check
 * option pgsql-check
 * option redis-check
 * option smtpchk
+* option ldap-check
+* option ssl-hello-chk
+* option tcp-check, pour écrire un check TCP sur mesure
 
 ## Divers
 
@@ -355,10 +350,9 @@ compression type text/html text/plain text/xml text/css text/javascript applicat
 
 ### Désactiver tous les logs
 
-Par défaut, HAProxy log des évènements. Il ne suffit pas d'enlever
-l'option tcplog ou autre.
+Par défaut, HAProxy log des évènements. Il ne suffit pas d'enlever l'option tcplog ou autre : c'est la directive `log` qui envoie les logs. On retire `log global` de la section defaults, ou on ajoute `no log` dans le frontend concerné.
 
-Dans la section defaults, il faut ajouter ceci :
+`option dontlog-normal` ne coupe pas tout : elle supprime seulement les logs des connexions sans erreur, les erreurs, timeouts, retries et 5xx restent loggés. C'est souvent ce qu'on veut sur un frontend très chargé :
 
 ```vcl
 option dontlog-normal
@@ -405,14 +399,14 @@ des URI précises, la manière la plus facile :
 ```vcl title="HAProxy : Using map"
 acl     acl           hdr_beg(host) -i monsite.fr
 acl     acl           hdr_beg(host) -i www.monsite.fr
-http-request redirect location %[capture.req.uri,map(/etc/haproxy/redirect.map)] code 301 if { capture.req.uri,map(/etc/haproxy/redirect.map) -i -m found } acl
+http-request redirect location %[path,map_str(/etc/haproxy/redirect.map)] code 301 if { path,map_str(/etc/haproxy/redirect.map) -m found } acl
 ```
 
-Et le contenu du fichier redirect.map :
+Les clés du map sont comparées au `path`, qui commence par `/` et exclut la query string. Voici le contenu du fichier redirect.map :
 
-```bash
+```console
 $ cat redirect.map
-uri1.html https://monsite.fr/coucou
+/uri1.html https://monsite.fr/coucou
 ```
 
 ## Voir aussi
