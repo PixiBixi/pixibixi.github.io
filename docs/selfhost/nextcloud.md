@@ -23,42 +23,46 @@ adéquate](https://wiki.jdelgado.fr/doku.php?id=linux:hosting:lemp:installation)
 
 ## Installation de Nextcloud
 
-Il faut dans un premier temps télécharger nextcloud
+<div class="steps" markdown>
 
-```bash
-cd /var/www ; wget https://github.com/nextcloud/server/archive/refs/tags/v23.0.3.zip
-```
+1. Il faut dans un premier temps télécharger nextcloud
 
-Et on unzip !
+    ```bash
+    cd /var/www ; wget https://github.com/nextcloud/server/archive/refs/tags/v23.0.3.zip
+    ```
 
-```bash
-unzip v23.0.3.zip
-```
+2. Et on unzip !
 
-Et on fix les privilèges
+    ```bash
+    unzip v23.0.3.zip
+    ```
 
-```bash
-sudo chown www-data:www-data /var/www/nextcloud/ -R
-```
+3. Et on fix les privilèges
 
-On créé la database associée à nextcloud
+    ```bash
+    sudo chown www-data:www-data /var/www/nextcloud/ -R
+    ```
 
-```sql
-mysql -u root <<-EOF
-CREATE DATABASE nextcloud;
-CREATE USER nextcloud@localhost IDENTIFIED BY mae8WiapaefohLaeb1am;
-GRANT ALL PRIVILEGES ON nextcloud.* TO "nextcloud"@"localhost";
-FLUSH PRIVILEGES;
-EOF
-```
+4. On créé la database associée à nextcloud
 
-(Pensez à modifier le password évidemment)
+    ```sql
+    mysql -u root <<-EOF
+    CREATE DATABASE nextcloud;
+    CREATE USER nextcloud@localhost IDENTIFIED BY mae8WiapaefohLaeb1am;
+    GRANT ALL PRIVILEGES ON nextcloud.* TO "nextcloud"@"localhost";
+    FLUSH PRIVILEGES;
+    EOF
+    ```
 
-Enfin, le vhost nginx adéquate à Nextcloud, disponible
-[ici](https://paste.jdelgado.fr/?3660056e57032240#d0OxuhjFWsyISwO83uoAjpe8935L/M9Q13STRFvCzzA=)
+    (Pensez à modifier le password évidemment)
 
-Une fois tout ceci fait, on se rend sur notre server_name et on remplit
-les infos comme il demande, vous avez désormais un Nextcloud utilisable
+5. Enfin, le vhost nginx adéquate à Nextcloud, disponible
+    [ici](https://paste.jdelgado.fr/?3660056e57032240#d0OxuhjFWsyISwO83uoAjpe8935L/M9Q13STRFvCzzA=)
+
+6. Une fois tout ceci fait, on se rend sur notre server_name et on remplit
+    les infos comme il demande, vous avez désormais un Nextcloud utilisable
+
+</div>
 
 ## Configuration de Nextcloud
 

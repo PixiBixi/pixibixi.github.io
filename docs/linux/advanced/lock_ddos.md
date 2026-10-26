@@ -17,7 +17,9 @@ workers PHP-FPM, connexions HAProxy, pool de threads nginx.
 
 ---
 
-## Étape 1 : identifier l'attaque
+<div class="steps" markdown>
+
+## Identifier l'attaque
 
 Avant de bloquer quoi que ce soit, caractériser le trafic malveillant.
 
@@ -47,7 +49,7 @@ awk '{print $1}' /var/log/nginx/access.log | \
 
 ---
 
-## Étape 2 : blocage réseau rapide
+## Blocage réseau rapide
 
 ### Bloquer une IP ou un range
 
@@ -80,7 +82,7 @@ Voir [ipset](../security/ipset.md) pour la gestion persistante des sets.
 
 ---
 
-## Étape 3 : filtrage HAProxy
+## Filtrage HAProxy
 
 HAProxy est la première couche applicative - c'est là qu'on filtre le plus
 efficacement avec le moins d'impact sur les workers backend.
@@ -137,7 +139,7 @@ frontend http_front
 
 ---
 
-## Étape 4 : filtrage nginx
+## Filtrage nginx
 
 ### Rate limiting
 
@@ -199,7 +201,7 @@ ssl_prefer_server_ciphers off;
 
 ---
 
-## Étape 5 : tuning PHP-FPM
+## Tuning PHP-FPM
 
 ```ini
 ; Réduire le nombre de workers disponibles pour forcer le rejet rapide
@@ -210,6 +212,8 @@ pm.max_requests = 500       ; recycler les workers régulièrement
 ; Timeout court pour libérer les workers bloqués
 request_terminate_timeout = 10s
 ```
+
+</div>
 
 ---
 

@@ -13,22 +13,26 @@ Gateway quelque soit son IP : 62.210.0.1). Cependant, lors de la
 première initialisation de pfSense en ligne de commande, celui-ci refuse
 une gateway en dehors de son réseau.
 
-Si vous n'avez pas d'interface graphique, ne renseignez pas de gateway
-dans un premier temps.
+<div class="steps" markdown>
 
-Lorsque vous aurez accès au shell, rentrez les commandes suivantes
+1. Si vous n'avez pas d'interface graphique, ne renseignez pas de gateway
+    dans un premier temps.
 
-```bash
-route add -net 62.210.0.1/32 -iface vmx0
-route add default 62.210.0.1
-```
+2. Lorsque vous aurez accès au shell, rentrez les commandes suivantes
 
-Il faut bien évidemment penser à changer l'adresse et l'interface à
-votre convenance. Une fois ceci fait, tapez **pfctl -d** pour désactiver
-le pare-feu temporairement.
+    ```bash
+    route add -net 62.210.0.1/32 -iface vmx0
+    route add default 62.210.0.1
+    ```
 
-Une fois ceci fait, nous passons sur l'interface graphique : **System /
-Routing / Gateways / '[+ Add']**
+    Il faut bien évidemment penser à changer l'adresse et l'interface à
+    votre convenance. Une fois ceci fait, tapez **pfctl -d** pour désactiver
+    le pare-feu temporairement.
 
-Il y a un bouton **« Display Advanced »** en bas de la page et vers la
-fin de ces options, nous avons **« Use non-local gateway »** à cocher
+3. Une fois ceci fait, nous passons sur l'interface graphique : **System /
+    Routing / Gateways / '[+ Add']**
+
+    Il y a un bouton **« Display Advanced »** en bas de la page et vers la
+    fin de ces options, nous avons **« Use non-local gateway »** à cocher
+
+</div>

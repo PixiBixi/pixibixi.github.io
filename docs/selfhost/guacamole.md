@@ -111,57 +111,61 @@ Les paramètres qui comptent au moment de créer une connexion dans l'interface.
 
 ## Installation depuis les sources sous Debian
 
-Utile quand on ne veut pas de Docker sur le bastion, ou pour compiler avec des options particulières. Les dépendances varient légèrement entre Debian et Ubuntu, la [documentation officielle](https://guacamole.apache.org/doc/gug/installing-guacamole.html) fait foi.
+<div class="steps" markdown>
 
-```bash
-sudo apt install build-essential tomcat10 libjpeg62-turbo-dev libjpeg62-dev libpng-dev \
-  libtool-bin uuid-dev libossp-uuid-dev libpulse-dev libcairo2-dev libssl-dev \
-  libvncserver-dev libvorbis-dev libtelnet-dev libssh2-1-dev libpango1.0-dev \
-  freerdp2-dev libwebsockets-dev libwebp-dev
-```
+1. Utile quand on ne veut pas de Docker sur le bastion, ou pour compiler avec des options particulières. Les dépendances varient légèrement entre Debian et Ubuntu, la [documentation officielle](https://guacamole.apache.org/doc/gug/installing-guacamole.html) fait foi.
 
-Les archives des versions courantes sont sur les miroirs Apache, les anciennes basculent sur `archive.apache.org` où les liens `closer.cgi` ne fonctionnent plus :
+    ```bash
+    sudo apt install build-essential tomcat10 libjpeg62-turbo-dev libjpeg62-dev libpng-dev \
+      libtool-bin uuid-dev libossp-uuid-dev libpulse-dev libcairo2-dev libssl-dev \
+      libvncserver-dev libvorbis-dev libtelnet-dev libssh2-1-dev libpango1.0-dev \
+      freerdp2-dev libwebsockets-dev libwebp-dev
+    ```
 
-```bash
-VERSION=1.6.0
-wget -O - "https://apache.org/dyn/closer.cgi?action=download&filename=guacamole/${VERSION}/source/guacamole-server-${VERSION}.tar.gz" | tar xzf -
-wget -O "guacamole-${VERSION}.war" "https://apache.org/dyn/closer.cgi?action=download&filename=guacamole/${VERSION}/binary/guacamole-${VERSION}.war"
-```
+2. Les archives des versions courantes sont sur les miroirs Apache, les anciennes basculent sur `archive.apache.org` où les liens `closer.cgi` ne fonctionnent plus :
 
-La compilation du serveur, avec le lien symbolique FreeRDP sans lequel les connexions RDP échouent au chargement des greffons :
+    ```bash
+    VERSION=1.6.0
+    wget -O - "https://apache.org/dyn/closer.cgi?action=download&filename=guacamole/${VERSION}/source/guacamole-server-${VERSION}.tar.gz" | tar xzf -
+    wget -O "guacamole-${VERSION}.war" "https://apache.org/dyn/closer.cgi?action=download&filename=guacamole/${VERSION}/binary/guacamole-${VERSION}.war"
+    ```
 
-```bash
-cd guacamole-server-${VERSION}
-./configure --with-systemd-dir=/etc/systemd/system
-make -j"$(nproc)"
-sudo make install
-sudo mkdir -p /usr/lib/x86_64-linux-gnu/freerdp/
-sudo ln -s /usr/local/lib/freerdp/*.so /usr/lib/x86_64-linux-gnu/freerdp/
-sudo ldconfig
-```
+3. La compilation du serveur, avec le lien symbolique FreeRDP sans lequel les connexions RDP échouent au chargement des greffons :
 
-Puis le déploiement du client dans Tomcat et la configuration :
+    ```bash
+    cd guacamole-server-${VERSION}
+    ./configure --with-systemd-dir=/etc/systemd/system
+    make -j"$(nproc)"
+    sudo make install
+    sudo mkdir -p /usr/lib/x86_64-linux-gnu/freerdp/
+    sudo ln -s /usr/local/lib/freerdp/*.so /usr/lib/x86_64-linux-gnu/freerdp/
+    sudo ldconfig
+    ```
 
-```bash
-sudo cp "guacamole-${VERSION}.war" /var/lib/tomcat10/webapps/guacamole.war
-sudo mkdir -p /etc/guacamole /usr/share/tomcat10/.guacamole
-sudo cp guacamole-client-${VERSION}/guacamole/doc/example/{guacamole.properties,user-mapping.xml} /etc/guacamole/
-sudo ln -s /etc/guacamole/guacamole.properties /usr/share/tomcat10/.guacamole/guacamole.properties
-sudo chown tomcat10 /etc/guacamole/user-mapping.xml
-sudo chmod 600 /etc/guacamole/user-mapping.xml
-```
+4. Puis le déploiement du client dans Tomcat et la configuration :
 
-```ini title="/etc/guacamole/guacamole.properties"
-guacd-hostname: localhost
-guacd-port: 4822
-# Le chemin vers user-mapping.xml doit être absolu.
-auth-provider: net.sourceforge.guacamole.net.basic.BasicFileAuthenticationProvider
-basic-user-mapping: /etc/guacamole/user-mapping.xml
-```
+    ```bash
+    sudo cp "guacamole-${VERSION}.war" /var/lib/tomcat10/webapps/guacamole.war
+    sudo mkdir -p /etc/guacamole /usr/share/tomcat10/.guacamole
+    sudo cp guacamole-client-${VERSION}/guacamole/doc/example/{guacamole.properties,user-mapping.xml} /etc/guacamole/
+    sudo ln -s /etc/guacamole/guacamole.properties /usr/share/tomcat10/.guacamole/guacamole.properties
+    sudo chown tomcat10 /etc/guacamole/user-mapping.xml
+    sudo chmod 600 /etc/guacamole/user-mapping.xml
+    ```
 
-```bash
-sudo systemctl restart tomcat10 guacd
-```
+    ```ini title="/etc/guacamole/guacamole.properties"
+    guacd-hostname: localhost
+    guacd-port: 4822
+    # Le chemin vers user-mapping.xml doit être absolu.
+    auth-provider: net.sourceforge.guacamole.net.basic.BasicFileAuthenticationProvider
+    basic-user-mapping: /etc/guacamole/user-mapping.xml
+    ```
+
+    ```bash
+    sudo systemctl restart tomcat10 guacd
+    ```
+
+</div>
 
 `user-mapping.xml` convient pour une poignée de connexions statiques, mais il ne permet ni gestion des droits ni changement de mot de passe par l'utilisateur. Dès qu'il y a plus de 2 personnes, la base PostgreSQL est le bon choix et c'est celui de la version Docker plus haut.
 

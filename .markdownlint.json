@@ -7,5 +7,8 @@
     "MD055": {
         "style": "leading_and_trailing"
     },
+    "MD033": {
+        "allowed_elements": ["div"]
+    },
     "MD046": "consistent"
 }

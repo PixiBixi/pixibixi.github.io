@@ -149,3 +149,39 @@
 .md-top {
   display: none;
 }
+
+/* Steps in heading mode: only the top heading level is a step, deeper headings stay plain headings */
+.md-typeset .steps:has(> h2) > :is(h3, h4, h5, h6),
+.md-typeset .steps:has(> h3) > :is(h4, h5, h6) {
+  counter-increment: none;
+}
+
+.md-typeset .steps:has(> h2) > :is(h3, h4, h5, h6)::before,
+.md-typeset .steps:has(> h3) > :is(h4, h5, h6)::before {
+  display: none;
+}
+
+/* Steps: a rule between sections would cut the timeline line */
+.md-typeset .steps > hr {
+  display: none;
+}
+
+/* Steps in heading mode: a list under a step heading is a plain list, not a nested timeline */
+.md-typeset .steps:has(> :is(h2, h3, h4, h5, h6)) > ul {
+  margin: 1em 0 1em 0.625em;
+  list-style: disc;
+}
+
+.md-typeset .steps:has(> :is(h2, h3, h4, h5, h6)) > ol {
+  margin: 1em 0 1em 0.625em;
+  list-style: decimal;
+}
+
+.md-typeset .steps:has(> :is(h2, h3, h4, h5, h6)) > :is(ul, ol) > li {
+  margin: 0 0 0.5em 1.25em;
+  counter-increment: none;
+}
+
+.md-typeset .steps:has(> :is(h2, h3, h4, h5, h6)) > :is(ul, ol) > li::before {
+  display: none;
+}

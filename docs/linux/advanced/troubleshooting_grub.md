@@ -27,11 +27,13 @@ cat /boot/grub/grub.cfg | grep -E "menuentry|linux|initrd"
 
 ## Récupérer un système qui ne boote plus
 
-### 1. Booter sur un live CD / USB
+<div class="steps" markdown>
+
+### Booter sur un live CD / USB
 
 Utiliser une ISO Ubuntu, Debian, ou un rescue disk.
 
-### 2. Identifier les partitions
+### Identifier les partitions
 
 ```bash
 lsblk
@@ -43,7 +45,7 @@ fdisk -l
 # /dev/sda2 → /
 ```
 
-### 3. Monter le système cible
+### Monter le système cible
 
 ```bash
 # Système simple (sans LVM)
@@ -57,7 +59,7 @@ mount /dev/vg0/root /mnt
 mount /dev/sda1 /mnt/boot
 ```
 
-### 4. Monter les pseudo-filesystems (obligatoire)
+### Monter les pseudo-filesystems (obligatoire)
 
 ```bash
 mount --bind /dev  /mnt/dev
@@ -68,7 +70,7 @@ mount --bind /sys  /mnt/sys
 mount --bind /run  /mnt/run
 ```
 
-### 5. Chroot et réinstaller GRUB
+### Chroot et réinstaller GRUB
 
 ```bash
 chroot /mnt /bin/bash
@@ -83,6 +85,8 @@ mount /dev/sda1 /boot/efi
 grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=grub
 update-grub
 ```
+
+</div>
 
 ---
 

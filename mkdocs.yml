@@ -360,6 +360,7 @@ markdown_extensions:
   - pymdownx.tabbed:
       alternate_style: true
   - attr_list
+  - md_in_html
   - abbr
   # Wiki-wide glossary tooltips: includes/abbreviations.md is appended to every page
   - pymdownx.snippets:

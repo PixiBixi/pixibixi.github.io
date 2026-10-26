@@ -10,26 +10,30 @@ tags:
 Un serveur SSH est désormais indispensable, voici donc comment en
 installer
 
-Nous devons tout d'abord définir un hostname et un domain-name (Utile
-afin de générer les keys)
+<div class="steps" markdown>
 
-```cisco
-    Router(config)# hostname wiki
-    Router(config)# ip domain-name jdelgado.fr
-```
+1. Nous devons tout d'abord définir un hostname et un domain-name (Utile
+    afin de générer les keys)
 
-Maintenant, on génère les clés (Je recommande une taille de 1024b et
-non 512)
+    ```cisco
+        Router(config)# hostname wiki
+        Router(config)# ip domain-name jdelgado.fr
+    ```
 
-```cisco
-    Router(config)# crypto key generate rsa
-```
+2. Maintenant, on génère les clés (Je recommande une taille de 1024b et
+    non 512)
 
-Puis on génère des identifiants
+    ```cisco
+        Router(config)# crypto key generate rsa
+    ```
 
-```cisco
-    Router(config)# username xxxx secret xxxx
-```
+3. Puis on génère des identifiants
+
+    ```cisco
+        Router(config)# username xxxx secret xxxx
+    ```
+
+</div>
 
 Et voilà, nous disposons d'un serveur SSH fonctionnel
 

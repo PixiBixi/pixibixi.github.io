@@ -43,66 +43,70 @@ PHP7 (Passage à CakePHP 2.8)
 
 ## Installation
 
-Avant toute chose, nous devrons préparer la BDD à recevoir notre
-Sonerezh :
+<div class="steps" markdown>
 
-```mysql
-mysql> CREATE DATABASE sonerezh;
-mysql> GRANT ALL PRIVILEGES ON sonerezh.* TO sonerezh@localhost IDENTIFIED BY password;
-mysql> FLUSH PRIVILEGES;
-mysql> exit;
-```
+1. Avant toute chose, nous devrons préparer la BDD à recevoir notre
+    Sonerezh :
 
-N'oubliez pas de remplacer password par son mot de passe
+    ```mysql
+    mysql> CREATE DATABASE sonerezh;
+    mysql> GRANT ALL PRIVILEGES ON sonerezh.* TO sonerezh@localhost IDENTIFIED BY password;
+    mysql> FLUSH PRIVILEGES;
+    mysql> exit;
+    ```
 
-Une fois cela fait, nous pourrons cloner le repo de Sonerezh sur notre
-serveur web :
+    N'oubliez pas de remplacer password par son mot de passe
 
-```bash
-cd /var/www
-sudo git clone https://github.com/Sonerezh/sonerezh.git music
-```
+2. Une fois cela fait, nous pourrons cloner le repo de Sonerezh sur notre
+    serveur web :
 
-Et nous n'oublions pas de lui appliquer les droits et propriétaires
-appropriés
+    ```bash
+    cd /var/www
+    sudo git clone https://github.com/Sonerezh/sonerezh.git music
+    ```
 
-```bash
-sudo chown -R www-data: music/ && sudo chmod -R 775 music/
-```
+3. Et nous n'oublions pas de lui appliquer les droits et propriétaires
+    appropriés
 
-Une fois cela, nous passons au server-block de notre nginx
+    ```bash
+    sudo chown -R www-data: music/ && sudo chmod -R 775 music/
+    ```
 
-```nginx
-server {
-    listen 80;
-    listen [::]:80;
-    return 301 https://$host$request_uri;
-    server_name music.ndd.tld;
-}
-server {
-    listen 443 ssl http2;
-    listen [::]:443 ssl http2;
-    server_name music.ndd.tld;
-    root /var/www/music/app/webroot;
+4. Une fois cela, nous passons au server-block de notre nginx
 
-    access_log /var/log/nginx/music.access.log;
-    error_log /var/log/nginx/music.error.log;
-
-    location / {
-        try_files $uri $uri/ /index.php?$args;
-        expires 14d;
-        add_header Cache-Control public;
+    ```nginx
+    server {
+        listen 80;
+        listen [::]:80;
+        return 301 https://$host$request_uri;
+        server_name music.ndd.tld;
     }
+    server {
+        listen 443 ssl http2;
+        listen [::]:443 ssl http2;
+        server_name music.ndd.tld;
+        root /var/www/music/app/webroot;
 
-    # Serve static images from resized folder
-    location ~* '/([^'/]+_[0-9]+x[0-9]+'.[a-z]+) {
-        try_files /img/resized/$1 /index.php?$args;
-        expires 14d;
-        add_header Cache-Control public;
+        access_log /var/log/nginx/music.access.log;
+        error_log /var/log/nginx/music.error.log;
+
+        location / {
+            try_files $uri $uri/ /index.php?$args;
+            expires 14d;
+            add_header Cache-Control public;
+        }
+
+        # Serve static images from resized folder
+        location ~* '/([^'/]+_[0-9]+x[0-9]+'.[a-z]+) {
+            try_files /img/resized/$1 /index.php?$args;
+            expires 14d;
+            add_header Cache-Control public;
+        }
+
+        include /etc/nginx/conf.d/file_protect;
+        include /etc/nginx/conf.d/cache;
+        include /etc/nginx/conf.d/php;
     }
+    ```
 
-    include /etc/nginx/conf.d/file_protect;
-    include /etc/nginx/conf.d/cache;
-    include /etc/nginx/conf.d/php;
-}
-```
+</div>

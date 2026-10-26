@@ -39,81 +39,85 @@ stack LAMP ou autre correctement configuré (Voir
 [ici](http://wiki.domain.tld/doku.php?id=nginxphpsql) pour plus
 d'informations.
 
-Une fois ceci fait, nous devons cloner notre repository GitHub
+<div class="steps" markdown>
 
-```bash
-cd /var/www
-git clone https://github.com/SSilence/selfoss rss
-```
+1. Une fois ceci fait, nous devons cloner notre repository GitHub
 
-Puis l'on créé le server-block sur nginx
+    ```bash
+    cd /var/www
+    git clone https://github.com/SSilence/selfoss rss
+    ```
 
-```nginx
-server {
-    server_name rss.domain.tld;
-    listen 80;
-    listen [::]:80;
-    return 301 https://$host$request_uri;
+2. Puis l'on créé le server-block sur nginx
 
-    location /.well-known/acme-challenge/ {
-        alias /var/www/challenges/;
-        try_files $uri =404;
+    ```nginx
+    server {
+        server_name rss.domain.tld;
+        listen 80;
+        listen [::]:80;
+        return 301 https://$host$request_uri;
+
+        location /.well-known/acme-challenge/ {
+            alias /var/www/challenges/;
+            try_files $uri =404;
+        }
+
     }
 
-}
-
-upstream backend {
-    server unix:/run/php/php7.0-fpm.sock;
-}
-
-server {
-    server_name rss.domain.tld;
-
-    listen 443 ssl http2;
-    listen [::]:443 ssl http2;
-
-    include /etc/nginx/conf.d/static/ssl.conf;
-    root /var/www/rss/;
-
-    access_log /var/log/nginx/rss.access.log;
-    error_log /var/log/nginx/rss.error.log;
-
-    location ~* ' (gif|jpg|png) {
-        expires 30d;
-    }
-    location ~ ^/favicons/.*$ {
-        try_files $uri /data/$uri;
-    }
-    location ~ ^/thumbnails/.*$ {
-        try_files $uri /data/$uri;
-    }
-    location ~* ^/(data'/logs|data'/sqlite|config'.ini|'.ht) {
-        deny all;
-    }
-    location / {
-        index index.php index.html index.htm;
-        try_files $uri /public/$uri /index.php$is_args$args;
+    upstream backend {
+        server unix:/run/php/php7.0-fpm.sock;
     }
 
-    #include /etc/nginx/conf.d/file_protect;
-    include /etc/nginx/conf.d/cache;
+    server {
+        server_name rss.domain.tld;
 
-    location ~ '.php$ {
-        fastcgi_pass backend;
-        fastcgi_index index.php;
-        fastcgi_param SCRIPT_FILENAME $document_root/$fastcgi_script_name;
-        include fastcgi_params;
+        listen 443 ssl http2;
+        listen [::]:443 ssl http2;
+
+        include /etc/nginx/conf.d/static/ssl.conf;
+        root /var/www/rss/;
+
+        access_log /var/log/nginx/rss.access.log;
+        error_log /var/log/nginx/rss.error.log;
+
+        location ~* ' (gif|jpg|png) {
+            expires 30d;
+        }
+        location ~ ^/favicons/.*$ {
+            try_files $uri /data/$uri;
+        }
+        location ~ ^/thumbnails/.*$ {
+            try_files $uri /data/$uri;
+        }
+        location ~* ^/(data'/logs|data'/sqlite|config'.ini|'.ht) {
+            deny all;
+        }
+        location / {
+            index index.php index.html index.htm;
+            try_files $uri /public/$uri /index.php$is_args$args;
+        }
+
+        #include /etc/nginx/conf.d/file_protect;
+        include /etc/nginx/conf.d/cache;
+
+        location ~ '.php$ {
+            fastcgi_pass backend;
+            fastcgi_index index.php;
+            fastcgi_param SCRIPT_FILENAME $document_root/$fastcgi_script_name;
+            include fastcgi_params;
+        }
     }
-}
-```
+    ```
 
-Une fois ceci fait, nous n'oublions pas d'appliquer les bons droits à
-selfoss, ainsi que de redémarrer nginx
+3. Une fois ceci fait, nous n'oublions pas d'appliquer les bons droits à
+    selfoss, ainsi que de redémarrer nginx
 
-```bash
-chown -R www-data:www-data rss
-systemctl restart nginx
-```
+    ```bash
+    chown -R www-data:www-data rss
+    systemctl restart nginx
+    ```
+
+</div>
 
 Vous avez désormais un selfoss installé, mais sans rien de configuré,
 nous allons maintenant voir comment le configurer
