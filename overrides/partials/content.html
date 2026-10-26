@@ -31,13 +31,14 @@
   <h1>{{ page.title | d(config.site_name, true) }}</h1>
 {% endif %}
 {% if page.meta %}
-  {% set updated = page.meta.git_revision_date_localized or page.meta.revision_date %}
-  {% set created = page.meta.git_creation_date_localized %}
+  {% set dates = page.meta.document_dates.dates if page.meta.document_dates else {} %}
+  {% set updated = dates.updated %}
+  {% set created = dates.created %}
 {% endif %}
 <div class="jd-meta">
   <div class="jd-meta__info">
-  {% if updated %}<span>{{ lang.t("jd.meta.updated") }} <time>{{ updated }}</time></span>{% endif %}
-  {% if created %}<span class="jd-meta__created">{{ lang.t("jd.meta.created") }} <time>{{ created }}</time></span>{% endif %}
+  {% if updated %}<span>{{ lang.t("jd.meta.updated") }} <time datetime="{{ updated | jd_date('iso') }}">{{ updated | jd_date }}</time></span>{% endif %}
+  {% if created %}<span class="jd-meta__created">{{ lang.t("jd.meta.created") }} <time datetime="{{ created | jd_date('iso') }}">{{ created | jd_date }}</time></span>{% endif %}
   {% if page.meta.reading_time %}<span>{{ page.meta.reading_time }} {{ lang.t("jd.meta.reading") }}</span>{% endif %}
   {% include "partials/tags.html" %}
   </div>

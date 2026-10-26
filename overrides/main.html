@@ -130,11 +130,12 @@
         {%- if page.meta.tested_with %},
         "dependencies": {{ (page.meta.tested_with | join(', ') if page.meta.tested_with is not string else page.meta.tested_with) | tojson }}
         {%- endif %}
-        {%- if page.meta.git_creation_date_localized_raw_iso_date %},
-        "datePublished": "{{ page.meta.git_creation_date_localized_raw_iso_date }}"
+        {%- set dates = page.meta.document_dates.dates if page.meta.document_dates else {} %}
+        {%- if dates.created %},
+        "datePublished": "{{ dates.created | jd_date('iso') }}"
         {%- endif %}
-        {%- if page.meta.git_revision_date_localized_raw_iso_date %},
-        "dateModified": "{{ page.meta.git_revision_date_localized_raw_iso_date }}"
+        {%- if dates.updated %},
+        "dateModified": "{{ dates.updated | jd_date('iso') }}"
         {%- endif %}
       }
       {%- endif %}

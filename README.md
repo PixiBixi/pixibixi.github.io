@@ -19,11 +19,11 @@ uv run properdocs serve -f mkdocs.dev.yml --livereload   # http://127.0.0.1:8000
 ```
 
 `mkdocs.dev.yml` inherits `mkdocs.yml` without the production-only plugins (`social`,
-`git-revision-date-localized`, `rss`, `privacy`, `redirects`). Validate with the full
+`rss`, `privacy`, `redirects`). Validate with the full
 config before pushing (`uv run properdocs build --strict`).
 
-The full git history is required: `git-revision-date-localized` errors out on a shallow
-clone (`git fetch --unshallow`).
+The full git history is required: on a shallow clone the page dates are silently wrong
+(`git fetch --unshallow`).
 
 ## Add an article
 

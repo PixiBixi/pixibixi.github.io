@@ -10,7 +10,7 @@ Config lives in `mkdocs.yml` (no `nav:` - sidebar is auto-generated). Active plu
 
 - `social` - OG cards, needs `pillow`+`cairosvg`
 - `privacy` - self-hosts external assets (see Gotchas); its cache is keyed on `docs/**/*.md` in CI
-- `git-revision-date-localized` - needs full git history; feeds `datePublished`/`dateModified` in the JSON-LD and `<lastmod>` in the sitemap
+- `document-dates` (bundled with MaterialX) - page dates from git, data only: its own block, author email and assets are off (`hooks/dates.py`). Feeds the article header, `datePublished`/`dateModified` in the JSON-LD and `<lastmod>` in the sitemap. Needs full git history
 - `meta` - applies `.meta.yml` directory defaults (mostly `tags:`) to every page below
 - `tags` - builds the tag index from front matter + `.meta.yml`
 - `glightbox`, `redirects`, `minify`, `search` (French)
@@ -19,7 +19,7 @@ Theme overrides live in `overrides/` (`custom_dir`):
 
 - `main.html` (`fonts` block) - Google Fonts linked from the HTML with the latin woff2 preloaded (self-hosted by `privacy`); the preload URLs pin the font version, update them on a bump.
 - `main.html` (`extrahead` block) - Google Search Console meta tag, `og:locale`, and the Schema.org JSON-LD graph: `WebSite` + `Person` (anchored on `about/#author`) + `TechArticle` per page (`ProfilePage` on `about.md`, `image` = the social card) + a `BreadcrumbList` built from the nav sections that own an `index.md` (subfolders without one have no page, linking them gave 404 crumbs). A page's front matter `description` lands in the `TechArticle`, so a missing description degrades structured data silently.
-- `sitemap.xml` - custom template emitting `<lastmod>` from the git revision date.
+- `sitemap.xml` - custom template emitting `<lastmod>` from the document-dates update date.
 - `home.html`, `category.html`, `tags.html`, `404.html` and `partials/` - the redesigned theme (pinned to MaterialX's HTML: Renovate never automerges `mkdocs-materialx`, review every bump visually).
 - `partials/integrations/analytics/google.html` - Material's GA partial, but `gtag.js` loads on the first interaction or 10 s after load. Re-check it on a `mkdocs-materialx` bump.
 - `i18n/<language>.yml` - every theme UI string, read through `lang.t("jd.*")` in templates and `window.jdI18n` in scripts. Add new UI text there, never hardcoded.
@@ -33,6 +33,7 @@ Build hooks (`hooks:` in `mkdocs.yml`):
 - `i18n.py` - loads `overrides/i18n/`
 - `bundle.py` - concatenates, minifies and content-hashes `extra_css` and `extra_javascript` into `stylesheets/bundle.<hash>.css` and a deferred `javascripts/bundle.<hash>.js`. The lists in `mkdocs.yml` stay the source, in cascade order; a new stylesheet or script is added there as before. Template CSS stays in the bundle: `navigation.instant` keeps the `<head>`.
 - `a11y.py` - `aria-label` (`jd.code.line`) on the line-number links of code blocks
+- `dates.py` - hands document-dates the rename-followed creation date (it only sees the current path) as front matter `created`, drops its assets, and adds the `jd_date` filter (`long` French date or `iso`, in UTC)
 
 `remote_branch: docs` in `mkdocs.yml` is why `gh-deploy` pushes to a `docs` branch rather than `gh-pages`.
 
@@ -86,7 +87,7 @@ GitHub Actions (`.github/workflows/main.yml`) runs three chained jobs - `lint` �
 2. `build` - `uv sync` + `uv run properdocs build --strict`; warnings are fatal
 3. `deploy` - `uv run properdocs gh-deploy --force -d site/` → pushes the built site to the `docs` branch → GitHub Pages
 
-Pull requests run `lint` + `build` only (`deploy` is gated on `github.event_name != 'pull_request'`). A push or PR touching only repo tooling (`AGENTS.md`, `README.md`, `LICENSE`, `renovate.json`, lint and pre-commit config, `.claude/`) skips `build` and `deploy`: the list is `files_ignore` in the `lint` job, and a skipped `build` still satisfies the required check. Every job checks out with `fetch-depth: 0` because `git-revision-date-localized` needs the full history. No manual deploy needed.
+Pull requests run `lint` + `build` only (`deploy` is gated on `github.event_name != 'pull_request'`). A push or PR touching only repo tooling (`AGENTS.md`, `README.md`, `LICENSE`, `renovate.json`, lint and pre-commit config, `.claude/`) skips `build` and `deploy`: the list is `files_ignore` in the `lint` job, and a skipped `build` still satisfies the required check. Every job checks out with `fetch-depth: 0` because `document-dates` and `hooks/dates.py` need the full history. No manual deploy needed.
 
 Dependencies are managed by Renovate (`renovate.json`): minor, patch and digest updates automerge once `build` is green; majors wait for manual review.
 
@@ -283,18 +284,16 @@ When writing or rewriting an article, apply these whenever the condition holds (
 
 - **Hooks and i18n**: `on_page_content` runs before `on_env`, so `jd_t` does not exist yet in a page content hook. Read `overrides/i18n/<language>.yml` in `on_config` instead (see `hooks/a11y.py`).
 
-- **Shallow clones**: the full `properdocs build` requires full git history due to `git-revision-date-localized`.
-  Shallow clones (`--depth 1`) will cause errors. Use `git fetch --unshallow` if needed.
-  Its `WARNING:root:` lines are non-blocking, even under `--strict`.
+- **Shallow clones**: page dates need the full git history. On a shallow clone (`--depth 1`) the build stays green but the dates are wrong, nothing warns. Use `git fetch --unshallow`.
 
-- **Preview: `properdocs serve` only with `mkdocs.dev.yml`**. With the full config the first build hangs for minutes (`social`, `privacy`, `git-revision-date-localized`); the dev config drops the production-only plugins and rebuilds in ~6s. `search` must stay in it: `hooks/article_meta.py` writes into its output dir. Hooks are not reloaded: restart the server after editing `hooks/`.
+- **Preview: `properdocs serve` only with `mkdocs.dev.yml`**. With the full config the first build hangs for minutes (`social`, `privacy`); the dev config drops the production-only plugins and rebuilds in ~6s. `search` must stay in it: `hooks/article_meta.py` writes into its output dir. Hooks are not reloaded: restart the server after editing `hooks/`.
 
   ```bash
   # background; stop it with: pkill -f "properdocs serve"
   uv run properdocs serve -f mkdocs.dev.yml --livereload
   ```
 
-  Social cards, git dates, feeds and redirects only exist in the full build. Check them, and run `--strict`, before committing:
+  Social cards, feeds and redirects only exist in the full build. Check them, and run `--strict`, before committing:
 
   ```bash
   SITE="$TMPDIR/wiki-site"
