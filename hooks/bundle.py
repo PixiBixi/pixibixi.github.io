@@ -1,6 +1,6 @@
 """Own CSS and JS shipped as one minified, fingerprinted file each.
 
-extra_css / extra_javascript in mkdocs.yml stay the source list, in cascade order.
+extra_css / extra_javascript in properdocs.yml stay the source list, in cascade order.
 The hook concatenates them, minifies, names the result by content hash and points
 the config at it: a page loads 2 own files instead of 20, the JS one deferred.
 The template CSS (home, category, tags, 404) stays in the bundle on purpose:

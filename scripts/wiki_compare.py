@@ -3,7 +3,7 @@
 
 usage: scripts/wiki_compare.py [docs/path.md ...] [--base origin/master] [--port 8001] [--no-open]
 
-Needs `properdocs serve -f mkdocs.dev.yml` on 127.0.0.1:8000. Without paths, lists
+Needs `properdocs serve -f properdocs.dev.yml` on 127.0.0.1:8000. Without paths, lists
 every docs/**/*.md that differs from the base (committed or not). Both sites are
 proxied on one local port so the page can sync their scroll and outline the
 blocks that changed. Ctrl-C to stop.
@@ -252,7 +252,7 @@ def main():
     args = ap.parse_args()
 
     if not port_busy(8000):
-        sys.exit('no dev server on 127.0.0.1:8000, start: properdocs serve -f mkdocs.dev.yml')
+        sys.exit('no dev server on 127.0.0.1:8000, start: properdocs serve -f properdocs.dev.yml')
     if port_busy(args.port):
         sys.exit(f'port {args.port} already taken, pass --port')
     git('fetch', '-q', 'origin')

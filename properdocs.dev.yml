@@ -1,7 +1,7 @@
 # Local preview only: same theme and hooks, without the plugins that only matter in
 # production (social cards, feeds, privacy downloads, redirects).
 # search stays: the Cmd+K palette and the 404 suggestions query its Pagefind index.
-INHERIT: mkdocs.yml
+INHERIT: properdocs.yml
 
 # Glossary and theme overrides live outside docs/, so serve would not rebuild on them
 watch:
