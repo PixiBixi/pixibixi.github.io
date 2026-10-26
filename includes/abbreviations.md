@@ -15,6 +15,7 @@
 *[LRU]: Least Recently Used, on évicte d'abord l'entrée lue le moins récemment
 *[MTU]: Maximum Transmission Unit, la taille maximale d'un paquet sur le lien
 *[NUMA]: Non-Uniform Memory Access, une machine multi-socket où la latence mémoire dépend du CPU
+*[NXDOMAIN]: Réponse DNS qui indique que le nom demandé n'existe pas
 *[OCI]: Open Container Initiative, le standard des images et des registries de conteneurs
 *[OCSP]: Online Certificate Status Protocol, la vérification de révocation d'un certificat
 *[OIDC]: OpenID Connect, le protocole qui délivre un token d'identité signé, ici celui du run GitHub Actions
@@ -26,6 +27,7 @@
 *[SBOM]: Software Bill of Materials, l'inventaire des dépendances embarquées dans un artefact
 *[semver]: Semantic Versioning, une version MAJOR.MINOR.PATCH où chaque position indique la nature du changement
 *[skew]: Écart entre le nombre de pods d'un domaine et celui du domaine le moins chargé, borné par maxSkew
+*[SLI]: Service Level Indicator, la mesure qui sert de base à un objectif de service
 *[SLSA]: Supply-chain Levels for Software Artifacts, le framework qui décrit la provenance d'un build
 *[TSDB]: Time Series Database, une base de séries temporelles, comme le stockage local de Prometheus
 *[TTFB]: Time To First Byte, le délai avant de recevoir le premier octet de la réponse

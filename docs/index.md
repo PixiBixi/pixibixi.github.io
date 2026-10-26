@@ -128,6 +128,7 @@ Le plan complet est ci-dessous, sinon la recherche fait le job.
 - [ValidatingAdmissionPolicy : admission control sans webhook](kubernetes/deployment/validating_admission_policy.md)
 - [StatefulSet - podManagementPolicy : OrderedReady vs Parallel](kubernetes/deployment/statefulset_pod_management_policy.md)
 - [PDB et topology spread : ne pas bloquer un upgrade de node pool](kubernetes/deployment/pdb_topology_spread.md)
+- [NodeLocal DNSCache : conntrack, ndots, mesure et alerting SLI](kubernetes/deployment/node_local_dns.md)
 
 ### ArgoCD
 
