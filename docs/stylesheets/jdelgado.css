@@ -230,11 +230,19 @@ body {
    Header (desktop)
    ========================================================================== */
 
+/* Sticky with header.autohide: always one scroll-up away from search and the menu on long articles */
 .md-header {
-  position: relative;
+  position: sticky;
+  top: 0;
+  z-index: 4;
   background: var(--jd-bg);
   color: var(--jd-ink);
   box-shadow: none;
+}
+
+/* Hairline once the page scrolls under the header (Material sets --shadow past the top) */
+.md-header--shadow {
+  box-shadow: 0 1px 0 var(--jd-border);
 }
 
 .md-header__inner {
