@@ -1,110 +1,75 @@
 ---
-description: Installer une stack LEMP sous Linux - nginx, PHP-FPM et MariaDB en version récente. Configuration et optimisation d'un serveur web performant.
+description: Installer une stack LEMP sous Debian - nginx, PHP-FPM et MariaDB en version récente. Configuration et optimisation d'un serveur web performant.
 tags:
   - nginx
 ---
 
 # Installer son Serveur Web : nginx, PHP-FPM et MariaDB
 
-On va voir comment installer et configurer correctement nginx,
-PHP-FPM et MariaDB en ajoutant des sources pour obtenir des versions à jour.
-Pour les sources de nginx, remplacer *codename* par sa distribution.
+On va voir comment installer et configurer correctement nginx, PHP-FPM et MariaDB sur Debian, en ajoutant le dépôt officiel nginx pour obtenir une version à jour. Les exemples sont donnés pour Debian 13 (trixie).
 
 | **Sites officiels**              | **Liens utiles**                                                   |
 | -------------------------------- | ------------------------------------------------------------------ |
-| [nginx](https://nginx.com/)      | [Doc nginx](http://nginx.org/en/docs/)                             |
-| [PHP](http://php.net/)           | [Manuel PHP](http://php.net/manual/fr/)                            |
+| [nginx](https://nginx.org/)      | [Doc nginx](https://nginx.org/en/docs/)                            |
+| [PHP](https://www.php.net/)      | [Manuel PHP](https://www.php.net/manual/fr/)                       |
 | [MariaDB](https://mariadb.org/)  | [Documentation MariaDB](https://mariadb.com/kb/en/documentation/)  |
 
 ## Installer et configurer nginx
 
-Tout d'abord, avant de vouloir installer le serveur web nginx, il faut
-déjà ajouter une source.
+Debian trixie fournit nginx **1.26**. Le dépôt officiel nginx.org en est à la **1.30** en stable et à la **1.31** en mainline, c'est pour ça qu'on ajoute ce dépôt pour obtenir une version à jour.
+
+On commence par installer les prérequis :
 
 ```bash
-└─# apt-cache policy nginx
-nginx:
-  Installé : 1.14.2-2+deb10u4
-  Candidat : 1.14.2-2+deb10u4
- Table de version :
-     1.14.2-2+deb10u4 500
-        500 http://deb.debian.org/debian buster/main amd64 Packages
-        500 http://security.debian.org/debian-security buster/updates/main amd64 Packages
+sudo apt install curl gnupg2 ca-certificates lsb-release debian-archive-keyring
 ```
 
-Si on utilise les repositories de base de Debian Buster, ceux-ci installent
-la version **1.14.2** de nginx. Actuellement on en est à la **1.21.2**. C'est pour ça
-qu'on ajoute les repositories du site officiel pour obtenir une version à jour.
-
-Tout d'abord, on commence par ajouter le depot nginx à Debian
+Il faut ensuite ajouter la **clé GPG** de nginx, sans quoi apt refusera le dépôt car il ne pourra pas vérifier les paquets :
 
 ```bash
-$ echo "deb [signed-by=/usr/share/keyrings/nginx-archive-keyring.gpg] '
-http://nginx.org/packages/mainline/debian `lsb_release -cs` nginx" '
-    | sudo tee /etc/apt/sources.list.d/nginx.list
-```
-
-Il faut également ajouter la **GPG Key** à son Debian, sans quoi il nous
-affichera que la source n'est pas certifiée
-
-```bash
-$ curl https://nginx.org/keys/nginx_signing.key | gpg --dearmor '
+curl https://nginx.org/keys/nginx_signing.key | gpg --dearmor \
     | sudo tee /usr/share/keyrings/nginx-archive-keyring.gpg >/dev/null
 ```
 
-Afin d'être sûr qu'on va utiliser les repository Debian, on ajoute un Pinning :
+On ajoute le dépôt stable. Pour la mainline, on remplace `packages/debian` par `packages/mainline/debian` :
 
 ```bash
-echo -e "Package: *\nPin: origin nginx.org\nPin: release o=nginx\nPin-Priority: 900\n" | sudo tee /etc/apt/preferences.d/99nginx
+echo "deb [signed-by=/usr/share/keyrings/nginx-archive-keyring.gpg] \
+https://nginx.org/packages/debian `lsb_release -cs` nginx" \
+    | sudo tee /etc/apt/sources.list.d/nginx.list
 ```
 
-Et enfin, on effectue un `apt-get update` pour mettre à jour nos
-packets disponibles.
-
-Si tout marche bien, voici ce qu'on devrait obtenir avec `apt-cache policy nginx` :
+Afin d'être sûr qu'apt préfère les paquets nginx.org à ceux de Debian, on ajoute un pinning :
 
 ```bash
-    └─# apt-cache policy nginx
-    nginx:
-      Installé : (aucun)
-      Candidat : 1.21.1-1~buster
+echo -e "Package: *\nPin: origin nginx.org\nPin: release o=nginx\nPin-Priority: 900\n" \
+    | sudo tee /etc/apt/preferences.d/99nginx
 ```
 
-Si tout se passe comme il faut, on peut lancer l'installation
+Et enfin, on effectue un `apt update` pour mettre à jour nos paquets disponibles. Si tout marche bien, le candidat vient de nginx.org et finit par `~trixie` :
+
+```console
+$ apt-cache policy nginx
+nginx:
+  Installé : (aucun)
+  Candidat : 1.30.6-1~trixie
+```
+
+Si tout se passe comme il faut, on lance l'installation :
 
 ```bash
-└─# apt-get -y install nginx nginx-extras nginx-doc
+sudo apt install nginx
 ```
 
-Voici les options de compilations du paquet **nginx**
+Le dépôt nginx.org ne fournit que `nginx` et des modules dynamiques `nginx-module-*` (acme, geoip, image-filter, njs, otel, perl, xslt). Les paquets `nginx-extras` et `nginx-doc` sont des paquets Debian : ils ne sont pas dans ce dépôt et entrent en conflit avec le nginx de nginx.org.
 
-```bash title="nginx Default Compilation Options"
---prefix=/etc/nginx
---sbin-path=/usr/sbin/nginx
---conf-path=/etc/nginx/nginx.conf
---error-log-path=/var/log/nginx/error.log
---http-log-path=/var/log/nginx/access.log
---pid-path=/var/run/nginx.pid
---lock-path=/var/run/nginx.lock
---http-client-body-temp-path=/var/cache/nginx/client_temp
---http-proxy-temp-path=/var/cache/nginx/proxy_temp
---http-fastcgi-temp-path=/var/cache/nginx/fastcgi_temp
---http-uwsgi-temp-path=/var/cache/nginx/uwsgi_temp
---http-scgi-temp-path=/var/cache/nginx/scgi_temp
---user=nginx
---group=nginx
---with-http_ssl_module --with-http_realip_module --with-http_addition_module --with-http_sub_module
---with-http_dav_module --with-http_flv_module --with-http_mp4_module --with-http_gunzip_module
---with-http_gzip_static_module --with-http_random_index_module --with-http_secure_link_module --with-http_stub_status_module
---with-http_auth_request_module
---with-mail
---with-mail_ssl_module
---with-file-aio
---with-http_v2_module
---with-ipv6
+Les options de compilation du paquet s'affichent avec `nginx -V`. Elles changent d'une version à l'autre, on les lit donc sur sa machine plutôt que dans un article :
+
+```bash
+nginx -V 2>&1 | tr ' ' '\n' | grep -- '--with'
 ```
 
-L'option `--with-ipv6` est nécessaire pour supporter IPv6. Voir [Configurer nginx pour utiliser IPv6](ipv6_nginx.md) pour la configuration détaillée.
+IPv6 est supporté nativement, l'ancienne option `--with-ipv6` est dépréciée et ignorée. Voir [Configurer nginx pour utiliser IPv6](ipv6_nginx.md) pour la configuration détaillée.
 
 Désormais, nginx est quasiment prêt à être utilisé, il reste à le configurer.
 
@@ -116,8 +81,6 @@ worker_processes auto;
 worker_rlimit_nofile 65536;
 #worker_cpu_affinity 00000010 00000100 00001000 00010000;
 pid /run/nginx.pid;
-
-include /etc/nginx/modules-enabled/*.conf;
 
 events {
     worker_connections 16384;
@@ -135,14 +98,13 @@ http {
     tcp_nodelay on;
 
     resolver 127.0.0.1 1.1.1.1;
-    ignore_invalid_headers on;
 
     keepalive_timeout 65;
     types_hash_max_size 2048;
 
     server_tokens off;
-    more_set_headers Server: Jeremy Server;
-    more_set_headers Contact: wiki[at]jdelgado[dot]fr;
+    # Needs the headers-more module, see below
+    # more_set_headers "Server: Jeremy Server";
 
     # server_names_hash_bucket_size 64;
     # server_name_in_redirect off;
@@ -154,8 +116,7 @@ http {
     # SSL Settings
     ##
 
-    ssl_protocols TLSv1 TLSv1.1 TLSv1.2 TLSv1.3; # Dropping SSLv3, ref: POODLE
-    ssl_prefer_server_ciphers on;
+    ssl_protocols TLSv1.2 TLSv1.3;
 
     ##
     # Logging Settings
@@ -165,51 +126,25 @@ http {
     error_log /var/log/nginx/error.log;
 
     ##
-    # Gzip Settings
-    ##
-
-    gzip on;
-
-    gzip_vary on;
-    gzip_proxied any;
-    gzip_comp_level 4;
-    # gzip_buffers 16 8k;
-    # gzip_http_version 1.1;
-    # gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
-    gzip_types text/plain text/css application/json application/ld+json application/x-javascript text/xml application/xml application/xml+rss text/javascript application/xml+xhtml application/javascript application/vnd.ms-fontobject font/ttf font/opentype image/svg+xml image/x-icon;
-
-    ##
     # Virtual Host Configs
     ##
 
     include /etc/nginx/conf.d/*.conf;
-    include /etc/nginx/sites-enabled/*;
 }
 ```
 
-Évidemment, ce fichier n'est pas à recopier tel quel, mais il y a tout
-de même certains points importants à conserver :
+Évidemment, ce fichier n'est pas à recopier tel quel, mais il y a tout de même certains points importants à conserver :
 
-* `user` qui sera l'utilisateur qui exécutera les instances nginx
-* `worker_processes` qui définira combien d'instances seront
-    exécutées en simultanées (ce nombre doit correspondre au nombre de
-    coeurs `logiques` du CPU). La commande *nproc* donne cette info.
-    La valeur `auto` est censée définir le bon nombre de workers automatiquement
-* `include` qui permet d'inclure différents éléments de
-    configuration à `nginx.conf` pour le rendre plus clair. Les sites
-    se trouvent dans *sites-enabled* et certains éléments
-    de configuration dans *conf.d/static/*
-* `server_tokens` une valeur très importante, celle-ci doit être
-    mise à `off`. Cette valeur évite à nginx de montrer des éléments
-    importants tel que son numéro de version. Ces éléments peuvent être
-    utilisés pour exploiter des failles sur nginx. Voir [Être encore plus safe en customisant son header Server nginx](custom_server_header.md) pour plus de détails.
-* `ignore_invalid_headers` est également une directive assez
-    intéréssante. Si des bots tentent de se connecter avec un header
-    incorrect, nginx leur retourne une erreur 404.
-* `resolver` permet de spécifier les DNS utilisés dans les logs pour résoudre les noms de domaines
+* `user` qui sera l'utilisateur qui exécutera les workers nginx. Le paquet nginx.org utilise `nginx` par défaut, on passe ici à `www-data` car c'est le propriétaire du socket PHP-FPM sous Debian.
+* `worker_processes` qui définira combien de workers seront exécutés en simultané (ce nombre doit correspondre au nombre de coeurs `logiques` du CPU). La commande *nproc* donne cette info. La valeur `auto` définit le bon nombre de workers automatiquement
+* `include` qui permet d'inclure différents éléments de configuration à `nginx.conf` pour le rendre plus clair. Avec le paquet nginx.org, tout passe par `conf.d/` : pas de `sites-enabled` ni de `modules-enabled`, qui sont des conventions du paquet Debian. Les modules dynamiques se chargent avec `load_module` en tête de fichier.
+* `server_tokens` une valeur très importante, celle-ci doit être mise à `off`. Cette valeur évite à nginx de montrer des éléments importants tel que son numéro de version. Ces éléments peuvent être utilisés pour exploiter des failles sur nginx. Voir [Être encore plus safe en customisant son header Server nginx](custom_server_header.md) pour plus de détails.
+* `ssl_protocols` limite les versions TLS acceptées. TLS 1.0 et 1.1 sont interdits depuis la RFC 8996. `TLSv1.2 TLSv1.3` est de toute façon la valeur par défaut depuis nginx 1.27.3, on l'écrit quand même pour que ce soit explicite.
+* `resolver` permet de spécifier les DNS utilisés par nginx pour résoudre des noms à l'exécution : un `proxy_pass` avec une variable, l'OCSP stapling... Il ne sert à rien pour les logs.
 
-La directive *more_set_headers* permet de ne pas dévoiler son serveur
-web et n'est disponible que via le package **nginx-extras**. Voir [Être encore plus safe en customisant son header Server nginx](custom_server_header.md).
+La directive `ignore_invalid_headers` n'apparaît plus : elle est à `on` par défaut et ne fait qu'ignorer la ligne de header invalide (avec un log au niveau info), la requête continue normalement. Elle ne renvoie aucune erreur au client.
+
+La directive *more_set_headers* permet de ne pas dévoiler son serveur web, mais elle vient du module headers-more, absent du dépôt nginx.org : avec le nginx installé ici, `nginx -t` échoue sur `unknown directive`. 2 solutions s'offrent à nous : on garde le nginx de Debian (1.26) avec le paquet `libnginx-mod-http-headers-more-filter`, ou on compile le module en dynamique pour la version nginx.org. Voir [Être encore plus safe en customisant son header Server nginx](custom_server_header.md).
 
 On inclut également différents fichiers :
 
@@ -229,80 +164,63 @@ open_file_cache_errors   on;
 ###
 gzip on;
 gzip_buffers 16 8k;
-gzip_comp_level 9;
-gzip_disable "msie6";
-gzip_min_length 20;
+gzip_comp_level 4;
 gzip_proxied any;
 gzip_types text/plain
            text/css
            text/xml
            text/javascript
            application/json
-           application/x-javascript
+           application/ld+json
            application/javascript
            application/xml
            application/xml+rss
+           application/vnd.ms-fontobject
+           font/ttf
+           font/opentype
+           image/svg+xml
+           image/x-icon;
 gzip_vary on;
 ```
 
-Ce fichier est assez important, il permet d'activer la compression
-**gzip**, ce qui signifie concrètement un gain de vitesse sur votre site
-internet.
+Ce fichier est assez important, il permet d'activer la compression **gzip**, ce qui signifie concrètement un gain de vitesse sur son site internet. Les directives gzip ne sont définies qu'ici : les déclarer aussi dans `nginx.conf` fait échouer `nginx -t` sur `directive is duplicate`, puisque `conf.d/` est inclus dans le même bloc `http`.
 
 * `gzip` permet d'activer la compression gzip
-* `gzip_buffers` permet de spécifier le nombre de buffers qui vont
-    être utilisés, ainsi que leur taille
+* `gzip_buffers` permet de spécifier le nombre de buffers qui vont être utilisés, ainsi que leur taille
 * `gzip_comp_level` spécifie l'agressivité de la compression gzip. Plus la valeur est forte (max 9), plus le CPU est sollicité - 4 est un bon compromis.
-* `gzip_disable` permet de désactiver la compression gzip selon
-    l'User-Agent (par exemple, ici on désactive la compression gzip pour `IE4 à IE6`)
-* `gzip_min_length` spécifie la longueur minimale d'un élément qui doit être gzippé. Il dépend du header *Content-Length*
 * `gzip_proxied` spécifie les éléments qui doivent être gzippés lorsque nginx agit comme reverse-proxy
-* `gzip_types` est également une autre ligne importante. C'est ici qu'on spécifie les `MIME-Types` des différents éléments qui vont être gzippés
-* `gzip_vary` indique si un ajout va être effectué dans le header si le fichier a été gzippé
+* `gzip_types` est également une autre ligne importante. C'est ici qu'on spécifie les `MIME-Types` des différents éléments qui vont être gzippés. `text/html` est toujours compressé, inutile de l'ajouter
+* `gzip_vary` ajoute le header `Vary: Accept-Encoding` pour que les caches intermédiaires gardent les 2 versions de la réponse
+* `gzip_min_length` n'est pas défini : il vaut 20 octets par défaut, on le monte si on ne veut pas compresser les toutes petites réponses
 
 ```nginx title="/etc/nginx/snippets/ssl.conf"
 ###
-# SSL Settings
+# SSL Settings (Mozilla Intermediate)
 ###
 
-# Ciphers for OpenSSL 1.1.1d (Bullseye)
-ssl_ciphers ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDH+AESGCM:DH+AESGCM:ECDH+AES256:DH+AES256:ECDH+AES128:DHE-RSA-CHACHA20-POLY1305:DH+AES:RSA+AESGCM:RSA+AES:!aNULL:!MD5:!DSS;
-
+ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305;
 ssl_prefer_server_ciphers off;
-ssl_dhparam /etc/nginx/ssl/dhparam.pem;
 
-ssl_prefer_server_ciphers  on;
-ssl_session_cache    shared:SSL:64m; # a 1mb cache can hold about 4000 sessions, so we can hold 40000 sessions
-ssl_session_timeout  12h;
+ssl_session_cache    shared:SSL:64m; # a 1mb cache can hold about 4000 sessions
+ssl_session_timeout  1d;
 ssl_session_tickets  off;
 
-add_header Strict-Transport-Security "max-age=15768000;";
+add_header Strict-Transport-Security "max-age=63072000" always;
 add_header X-Frame-Options SAMEORIGIN;
 add_header X-Content-Type-Options nosniff;
-add_header X-XSS-Protection "1; mode=block";
 add_header Referrer-Policy "no-referrer";
 
 ssl_certificate /etc/nginx/ssl/server.crt;
 ssl_certificate_key /etc/nginx/ssl/server.key;
 ```
 
-Le fichier **ssl.conf** est à inclure seulement si l'on souhaite du SSL
-sur ses sites web. Voir [Forcer le SSL sous nginx](nginx_ssl.md) pour les directives de redirection.
+Le fichier **ssl.conf** est à inclure seulement si l'on souhaite du TLS sur ses sites web. Voir [Forcer le SSL sous nginx](nginx_ssl.md) pour les directives de redirection.
 
-Certaines lignes sont importantes tels que **ssl_ciphers** qui
-permet de sélectionner quels ciphers seront utilisés pour coder
-l'échange entre son serveur web et son client. Cette ligne est
-extrêmement importante car il y a actuellement de nombreux ciphers
-utilisés mais qui sont totalement dépassés. **ssl_protocols** permet lui
-également de ne pas passés par des protocoles complètement troués.
-Cependant, il faut faire attention avec ces 2 lignes, car en effet,
-elles peuvent provoquer des **erreurs de sécurité côté navigateur**,
-voir carrément entrainer **un refus du navigateur**. Nous activons
-également le protocole **HSTS** (Plus d'informations
-[ici](http://www.bortzmeyer.org/6797.html))
+Certaines lignes sont importantes tels que **ssl_ciphers** qui permet de sélectionner quels ciphers seront utilisés pour chiffrer l'échange entre son serveur web et son client. Cette ligne est extrêmement importante car il y a actuellement de nombreux ciphers encore utilisés mais totalement dépassés. Elle ne concerne que TLS 1.2 : les ciphers TLS 1.3 sont tous sûrs et gérés par OpenSSL. **ssl_protocols**, défini dans `nginx.conf`, évite de son côté les protocoles complètement troués. Il faut faire attention avec ces 2 lignes, car trop restrictives elles entraînent **un refus du navigateur** pour les clients anciens. La liste de ciphers n'utilise que de l'ECDHE, un `ssl_dhparam` n'est donc plus nécessaire. Nous activons également le **HSTS** (plus d'informations [ici](https://www.bortzmeyer.org/6797.html)), on y ajoute `includeSubDomains` si tous les sous-domaines sont en HTTPS.
 
-Pour avoir une bonne cipher list et de bons paramètres SSL, voir le [Wiki
-Mozilla](https://wiki.mozilla.org/Security/Server_Side_TLS).
+Le header `X-XSS-Protection` n'est plus envoyé : les navigateurs ont retiré le filtre XSS qu'il pilotait. L'activer pouvait même introduire des failles.
+
+Pour avoir une bonne cipher list et de bons paramètres TLS, voir le [configurateur Mozilla](https://ssl-config.mozilla.org/#server=nginx&config=intermediate), d'où vient la liste ci-dessus.
 
 La configuration CSP (Content Security Policy) n'est pas couverte ici - c'est un protocole délicat à mettre en place, voir [content-security-policy.com](https://content-security-policy.com/).
 
@@ -314,7 +232,7 @@ Voici désormais des snippets utiles pour ses différents blocks nginx :
 ###
 
 # Disallow download of hidden files
-location ~* (?:^|/)'. {
+location ~ /\. {
     deny all;
 }
 
@@ -324,11 +242,7 @@ location ~* (?:\.(?:bak|conf.*|sql|fla|psd|ini|log|sh|inc|swp|dist)|~)$ {
 }
 ```
 
-Ce fichier nous permet d'éviter que des fichiers de configuration ou
-autres soient accessible par tout le monde. Il s'agit d'un fichier
-générique qui s'adapte au plus grand nombre de services, évidemment, il
-se peut que certains fichiers/dossiers ne soient pas protégés, dans ces
-cas-là, il faut les ajouter manuellement.
+Ce fichier nous permet d'éviter que des fichiers de configuration ou autres soient accessibles par tout le monde. Il s'agit d'un fichier générique qui s'adapte au plus grand nombre de services, évidemment, il se peut que certains fichiers/dossiers ne soient pas protégés, dans ces cas-là, il faut les ajouter manuellement. Le `/.well-known/acme-challenge/` du snippet Let's Encrypt ci-dessous reste accessible : une location `^~` qui matche coupe l'évaluation des regex.
 
 ### Snippets
 
@@ -345,55 +259,47 @@ location ^~ /.well-known/acme-challenge/ {
 }
 ```
 
-## Installer et configurer PHP7-FPM
+## Installer et configurer PHP-FPM
 
-Commande à adapter selon les modules souhaités. Généralement suffisant pour 99% des installations. Pour installer une version spécifique de PHP, voir [Installer une version custom de PHP](php_custom_version.md):
+Debian trixie fournit PHP **8.4**. Les paquets `php-*` sans numéro de version installent la version par défaut de la distribution. Commande à adapter selon les modules souhaités, généralement suffisant pour 99% des installations. Pour installer une version spécifique de PHP, voir [Installer une version custom de PHP](php_custom_version.md) :
 
 ```bash
-apt-get -y install php-common php8.2 php8.2-bz2 php8.2-cli php8.2-common php8.2-curl php8.2-fpm php8.2-gd php8.2-geoip php8.2-gmp php8.2-igbinary php8.2-imagick php8.2-intl php8.2-json php8.2-mbstring php8.2-mcrypt php8.2-memcached php8.2-msgpack php8.2-mysql php8.2-opcache php8.2-readline php8.2-sqlite3 php8.2-xml php8.2-xmlrpc php8.2-zip
+apt-get -y install php-fpm php-cli php-common php-bz2 php-curl php-gd php-gmp php-igbinary php-imagick php-intl php-mbstring php-memcached php-msgpack php-mysql php-readline php-sqlite3 php-xml php-zip
 ```
 
-La configuration de base de **PHP-FPM** se situe dans `/etc/php/8.2/fpm/`
-et ses sous-répertoires (adapter 8.2 à la version installée).
+OPcache est installé avec `php8.4-opcache`, tiré par `php-fpm`. Certains modules des vieux tutos n'existent plus : `json` est intégré au cœur depuis PHP 8.0, `mcrypt` a été retiré en 7.2 et `xmlrpc` en 8.0, `geoip` n'est pas packagé dans Debian trixie. Les demander fait échouer tout l'`apt-get`.
+
+La configuration de base de **PHP-FPM** se situe dans `/etc/php/8.4/fpm/` et ses sous-répertoires (adapter 8.4 à la version installée).
 
 Éditer le fichier `php.ini` :
 
-* `expose_php` : Désactivation afin de ne pas exposer la version de
-    PH
-* `upload_max_filesize` : Modification de la taille maximale des
-    fichiers qu'on peut upload avec PHP
-* `post_max_size` : Va avec la directive *upload_max_filesize* et
-    doit être supérieur à cette dernière
-* `max_file_uploads` : Nombre de fichiers qu'on peut upload en
-    parallèle. Par défaut à 20, peut suffir dans une majorité des cas
+* `expose_php` : Désactivation afin de ne pas exposer la version de PHP
+* `upload_max_filesize` : Modification de la taille maximale des fichiers qu'on peut upload avec PHP
+* `post_max_size` : Va avec la directive *upload_max_filesize* et doit être supérieur à cette dernière
+* `max_file_uploads` : Nombre de fichiers qu'on peut upload en parallèle. Par défaut à 20, peut suffire dans une majorité des cas
 
-Petit customisation de la. configuration afin d'optimiser les
-performances. Il faut pour la plupart des CMS/Framework adapter les
-valeurs de l'OPcache. Pour WordPress, voici des valeurs adéquates :
+Petite customisation de la configuration afin d'optimiser les performances. Il faut pour la plupart des CMS/Framework adapter les valeurs de l'OPcache. Pour WordPress avec beaucoup de plugins, voici des valeurs larges :
 
-```bash
-opcache.memory_consumption = 128M
+```ini
+opcache.memory_consumption=128
 opcache.interned_strings_buffer=16
 opcache.max_accelerated_files=100000
-opcache.fast_shutdown=1
 ```
 
-Symfony fournit ses [propres
-recommandations](https://symfony.com/doc/current/performance.html#configure-opcache-for-maximum-performance)
-pour la configuration de l'OPcache. La variable
-*opcache.max_accelerated_files* peut être facilement calculée :
+`opcache.memory_consumption` s'exprime en mégaoctets. L'ancien `opcache.fast_shutdown=1` des vieux tutos a été supprimé en PHP 7.2, inutile de le garder.
 
-```bash
-└─# find . -name "*.php" |wc -l
+Symfony fournit ses [propres recommandations](https://symfony.com/doc/current/performance.html#configure-opcache-for-maximum-performance) pour la configuration de l'OPcache. La variable *opcache.max_accelerated_files* peut être facilement calculée en comptant les fichiers PHP du projet :
+
+```console
+$ find . -name "*.php" | wc -l
 5165
 ```
 
-Pour cet exemple, 10000 fichiers sont largement suffisants. Aucune
-astuce n'existe pour calculer *opcache.memory_consumption* - il faut surveiller le monitoring.
+Pour ce projet, 10000 suffit largement : la valeur doit dépasser le nombre de fichiers PHP. PHP l'arrondit de toute façon au palier supérieur de sa table interne. Aucune astuce n'existe pour calculer *opcache.memory_consumption* - il faut surveiller le monitoring.
 
 ## Installer et configurer MariaDB
 
-On met à jour les paquets disponibles :
+Debian trixie fournit MariaDB **11.8**, pas besoin de dépôt externe. On met à jour les paquets disponibles :
 
 ```bash
 apt-get update
@@ -401,39 +307,28 @@ apt-get update
 
 Et enfin, on vérifie que la *Candidate Version* est la bonne :
 
-```bash
-apt-cache policy mariadb-server
-```
-
-Voilà le résultat attendu :
-
-```bash
+```console
 $ apt-cache policy mariadb-server
 mariadb-server:
-  Installé : (aucun)
-  Candidat : 1:10.3.29-0+deb10u1
- Table de version :
- *** 1:10.3.29-0+deb10u1 500
-        500 http://apt.daevel.fr/debian buster/main amd64 Packages
-        100 /var/lib/dpkg/status
+  Installé : (aucun)
+  Candidat : 1:11.8.6-0+deb13u1
 ```
 
-Si tout se passe comme il faut, on lance l'installation du serveur SQL
+Si tout se passe comme il faut, on lance l'installation du serveur SQL :
 
 ```bash
 apt-get install mariadb-server
 ```
 
-Pendant l'installation de **mariadb-server**, une fenêtre demande de spécifier un password.
+L'installation ne demande plus de mot de passe root : sous Debian, le compte `root` de MariaDB s'authentifie par `unix_socket`. Seul le root système peut s'y connecter, avec `sudo mariadb`, sans mot de passe. Les applications ne doivent jamais utiliser ce compte, on leur crée un utilisateur dédié par base.
 
-!!! danger
-    Cette fenêtre définit le **root password** MariaDB. Utiliser un mot de passe solide - tous les sites hébergés sont exposés si ce mot de passe est faible ou vide.
-
-Et on finit par le script made in MariaDB pour sécuriser le tout
+Et on finit par le script made in MariaDB pour sécuriser l'installation (suppression des comptes anonymes et de la base de test) :
 
 ```bash
-mysql_secure_installation
+mariadb-secure-installation
 ```
+
+L'ancien nom `mysql_secure_installation` n'existe plus que via le paquet `mariadb-client-compat`.
 
 ## Voir aussi
 
