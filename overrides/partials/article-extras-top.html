@@ -10,7 +10,7 @@
   {% include ".icons/material/check.svg" %}
   <span>{{ lang.t("jd.meta.tested_with") }}</span>
   {% for v in page.meta.tested_with %}<span class="jd-tested__chip">{{ v }}</span>{% endfor %}
-  {% if updated %}<span class="jd-tested__date">{{ lang.t("jd.meta.tested_on") }} <time>{{ updated }}</time></span>{% endif %}
+  {% if updated %}<span class="jd-tested__date">{{ lang.t("jd.meta.tested_on") }} <time datetime="{{ updated | jd_date('iso') }}">{{ updated | jd_date }}</time></span>{% endif %}
 </div>
 {% endif %}
 {#- Claude Code skill callout: front matter `skill:`, plugin coordinates in extra.skills -#}
