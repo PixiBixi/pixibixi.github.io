@@ -32,7 +32,7 @@ Build hooks (`hooks:` in `properdocs.yml`):
 - `page_vars.py` - front matter `variables:` handed to `jd-vars.js`
 - `home.py` - recent articles and section counts for the home and tags pages
 - `i18n.py` - loads `overrides/i18n/`
-- `bundle.py` - concatenates, minifies and content-hashes `extra_css` and `extra_javascript` into `stylesheets/bundle.<hash>.css` and a deferred `javascripts/bundle.<hash>.js`. The lists in `properdocs.yml` stay the source, in cascade order; a new stylesheet or script is added there as before. Template CSS stays in the bundle: `navigation.instant` keeps the `<head>`.
+- `bundle.py` - concatenates, minifies and content-hashes `extra_css` and `extra_javascript` into `stylesheets/bundle.<hash>.css` and a deferred `javascripts/bundle.<hash>.js`. The lists in `properdocs.yml` stay the source, in cascade order; a new stylesheet or script is added there as before. Template CSS stays in the bundle: `navigation.instant` keeps the `<head>`. The theme `palette.css` and `glightbox.min.css` are folded into the CSS bundle and `glightbox.min.js` is deferred (`on_post_page` rewrites the tags): re-check it on a `mkdocs-glightbox` or `mkdocs-materialx` bump.
 - `a11y.py` - `aria-label` (`jd.code.line`) on the line-number links of code blocks
 - `dates.py` - hands document-dates the rename-followed creation date (it only sees the current path) as front matter `created`, drops its assets, and adds the `jd_date` filter (`long` French date or `iso`, in UTC)
 
