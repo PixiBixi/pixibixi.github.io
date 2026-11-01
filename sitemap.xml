@@ -950,7 +950,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/web/</loc>
-    <lastmod>2026-10-13</lastmod>
+    <lastmod>2026-11-01</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/web/dns/</loc>
@@ -969,6 +969,10 @@
     <lastmod>2026-10-13</lastmod>
   </url>
   <url>
+    <loc>https://wiki.jdelgado.fr/web/haproxy/logs_fluentbit/</loc>
+    <lastmod>2026-11-01</lastmod>
+  </url>
+  <url>
     <loc>https://wiki.jdelgado.fr/web/haproxy/memory_limit/</loc>
     <lastmod>2026-10-13</lastmod>
   </url>
@@ -982,7 +986,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/web/haproxy/performance_tuning/</loc>
-    <lastmod>2026-10-22</lastmod>
+    <lastmod>2026-11-01</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/web/mail/exim_manage_dkim/</loc>
