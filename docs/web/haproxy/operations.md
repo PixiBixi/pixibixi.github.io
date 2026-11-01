@@ -96,6 +96,25 @@ echo "show stat" | socat stdio /run/haproxy/admin.sock \
   | awk -F, '$1=="backend_name" && $2=="svc_name" {print "sessions restantes:", $5}'
 ```
 
+## Ajouter un backend sans reload
+
+En 3.4, on peut créer un backend complet depuis le socket, ce qui ne marchait jusque-là que pour les serveurs. La fonctionnalité est encore expérimentale, d'où le `experimental-mode on` en tête de session. Le backend hérite d'une section `defaults` nommée et naît non publié : aucune règle `use_backend` ne lui envoie de trafic avant le `publish`.
+
+```bash
+socat -t10 /run/haproxy/admin.sock - <<< "
+  experimental-mode on
+  add backend be_new from def_http mode http
+  add server be_new/web1 10.0.0.11:8080 check
+  enable health be_new/web1
+  enable server be_new/web1
+  publish backend be_new
+"
+```
+
+`add server` crée le serveur en maintenance et sans health check, d'où les 2 `enable`. Rien de tout ça ne survit à un reload : il faut reporter le backend dans `haproxy.cfg`.
+
+La suppression suit l'ordre inverse. `unpublish backend`, puis les serveurs comme dans [la section précédente](#mettre-un-node-en-maintenance), puis `wait 30s be-removable be_new` et `del backend be_new`. Un backend cité en dur par un `use_backend` ou qui déclare une stick-table ne peut pas être supprimé.
+
 ## Autres commandes du socket
 
 Celles qui servent en incident, plus une pour ajuster un poids à chaud :

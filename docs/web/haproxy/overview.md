@@ -324,6 +324,28 @@ http-check expect status 200
 
 Ce test est légèrement plus détaillé. On spécifie ici un Host à utiliser (`www.jdelgado.fr`) ainsi que l'user-agent et on attend un retour 200 (OK). L'ancienne forme avec les `\r\n` échappés dans `option httpchk` fonctionne encore, mais `http-check send` est plus lisible.
 
+Jusqu'en 3.3, le check se déclare au niveau du backend et tous ses serveurs passent le même. Ça coince pendant une migration, quand l'ancienne version de l'app expose `/health` et la nouvelle `/healthz` derrière le même backend. HAProxy 3.4 ajoute des sections `healthcheck` qu'on attache serveur par serveur, et qui remplacent alors le check du backend :
+
+```vcl
+healthcheck check_v1
+    type httpchk
+    http-check send meth GET uri /health ver HTTP/1.1 hdr Host www.jdelgado.fr
+    http-check expect status 200
+
+healthcheck check_v2
+    type httpchk
+    http-check send meth GET uri /healthz ver HTTP/1.1 hdr Host www.jdelgado.fr
+    http-check expect status 200
+
+backend web_servers
+    option httpchk HEAD /
+    server server1 10.0.1.3:80 check healthcheck check_v1
+    server server2 10.0.1.4:80 check healthcheck check_v2
+    server server3 10.0.1.5:80 check
+```
+
+`server3` n'a pas de `healthcheck` et garde le `option httpchk` du backend.
+
 #### Check spécifiques
 
 HAProxy intègre différents checks pour différents protocoles, entre autres :
