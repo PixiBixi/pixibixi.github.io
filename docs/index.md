@@ -195,6 +195,7 @@ Le plan complet est ci-dessous, sinon la recherche fait le job.
 - [Commandes utiles pour la CLI Gcloud](cloud/gcloud/gcloud_commands.md)
 - [Spot sur GKE : node pools, scheduling et workloads éligibles](cloud/gcloud/spot_nodes.md)
 - [GKE Workload Identity : lier un KSA à un GSA sans clé JSON](cloud/gcloud/workload_identity.md)
+- [GKE ComputeClass : fallback Spot, on-demand, ARM et pods Pending](cloud/gcloud/compute_classes.md)
 - [GKE - Capacité réelle des nodes](cloud/gcloud/gke_node_capacity.md)
 
 ### AWS
