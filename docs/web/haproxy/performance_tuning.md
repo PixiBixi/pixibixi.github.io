@@ -59,6 +59,33 @@ global
 !!! tip
     Sur HAProxy 3.3+, les valeurs par défaut conviennent dans la plupart des cas. On n'y touche que si un benchmark montre un problème. La configuration automatique se vérifie avec `haproxy -c -dc -f /etc/haproxy/haproxy.cfg`. Sans `-c`, `-dc` démarre vraiment un process, qui échoue sur un conflit de port si HAProxy tourne déjà sur la machine.
 
+### cpu-affinity (3.4+)
+
+`cpu-policy` choisit les cœurs et les groupes, `cpu-affinity` décide ensuite sur quels CPUs chaque thread a le droit de tourner. La directive arrive avec HAProxy 3.4 :
+
+| Valeur | Un thread peut tourner sur |
+| ------ | -------------------------- |
+| `auto` | `per-group`, ou `per-core` si `cpu-policy` porte `threads-per-core 1` (défaut) |
+| `per-group` | tous les CPUs de son thread group |
+| `per-core` | les hardware threads (SMT) d'un seul cœur |
+| `per-thread` | un seul hardware thread |
+| `per-ccx` | tous les hardware threads d'un CCX |
+
+`per-group` accepte une option qui compte quand la liste de CPUs est découpée entre plusieurs groupes. Avec `auto`, la valeur par défaut, chaque groupe reçoit sa part de cœurs contigus que les autres ne touchent pas. Avec `loose`, chaque groupe peut tourner sur tous les CPUs de la liste. La contention augmente, mais la doc HAProxy le recommande quand d'autres process chargent les mêmes CPUs par à-coups, typiquement sur une VM partagée ou dans le cloud.
+
+```haproxy
+global
+    cpu-policy performance
+    cpu-affinity per-group loose
+```
+
+Sur un CPU avec SMT, `threads-per-core 1` ne démarre qu'un thread HAProxy par cœur physique et laisse le hardware thread voisin libre pour les IRQ de la NIC et l'OS :
+
+```haproxy
+global
+    cpu-policy performance threads-per-core 1
+```
+
 ### NUMA et gros serveurs
 
 Sur des machines multi-socket ou multi-CCX (AMD EPYC, Intel Xeon Scalable), la latence de synchronisation entre threads dépend de leur distance :
@@ -97,6 +124,10 @@ global
 
 L'idée est d'avoir un thread group par cache L3. Les threads d'un même groupe échangent à bas coût puisqu'ils partagent ce cache. Entre groupes, les échanges restent minimes.
 
+Depuis la 3.4, `max-threads-per-group` fixe la taille maximale d'un groupe quand `thread-groups` n'est pas défini, et HAProxy crée autant de groupes que nécessaire. La valeur par défaut est 16, le maximum 64. Un groupe plus petit réduit la contention sur les opérations atomiques, mais multiplie les sockets d'écoute et les connexions idle vers les backends. La doc HAProxy conseille de l'aligner sur le nombre de cœurs par CCX.
+
+Un script Lua chargé avec `lua-load` ne tourne que sur un thread à la fois. Au-delà de 32 CPUs, on le charge avec `lua-load-per-thread`, qui en initialise une copie indépendante dans chaque thread, à condition qu'il ne dépende pas de variables globales.
+
 En 3.2+, une seule ligne remplace cette configuration :
 
 ```haproxy
@@ -120,6 +151,24 @@ frontend http_front
 ```
 
 `by-group` crée un socket par thread group, si bien que chaque groupe travaille sur son propre socket sans contention avec les autres.
+
+| Valeur | Sockets créés par `bind` |
+| ------ | ------------------------ |
+| `<n>` | n sockets, ramené au nombre de threads s'il le dépasse |
+| `by-group` | un par thread group (défaut depuis la 2.8) |
+| `by-thread` | un par thread |
+
+Avec un seul thread group, `by-group` ne crée qu'un seul socket, comme sans `shards`. Une machine de 32 cœurs dans un seul groupe garde donc tous ses threads sur le même socket d'écoute. Sur ce type de machine, seuls `shards <n>` ou `by-thread` répartissent l'accept des connexions sur plusieurs sockets. Le noyau distribue les connexions à parts égales entre les sockets et le nombre de shards doit diviser le nombre de threads.
+
+La politique se règle aussi pour tous les `bind` d'un coup avec `tune.listener.default-shards`, qui accepte `by-process`, `by-thread` ou `by-group` :
+
+```haproxy
+global
+    tune.listener.default-shards by-thread
+```
+
+!!! warning
+    Chaque shard coûte au moins un file descriptor par port, et `by-thread` en crée autant qu'il y a de threads. On ne combine pas `shards` avec une plage de ports.
 
 ### IRQ NIC et ksoftirqd
 
@@ -147,6 +196,12 @@ Il est aussi possible de dédier les premiers cœurs aux IRQ de la NIC avec `irq
 
 !!! warning
     Ne pas utiliser `irqbalance` en même temps qu'un pinning manuel par `smp_affinity`, car les 2 réécrivent l'affinité des IRQ.
+
+### VMs et cloud
+
+Sur une VM, les vCPUs annoncés ne disent pas toujours comment ils se répartissent sur les cœurs physiques, et d'autres VMs peuvent charger les mêmes CPUs. Un placement de threads qui accélère un serveur bare-metal peut alors ralentir la VM. La doc HAProxy demande de tester chaque changement sous charge avant la production, et propose `cpu-affinity per-group loose` (3.4+) quand la charge des CPUs partagés arrive par à-coups.
+
+Chaque règle `iptables` et chaque VLAN ajoute un traitement par paquet, donc du CPU. Sur un node Kubernetes, kube-proxy en mode iptables ajoute des règles pour chaque Service et chaque endpoint. On les compte (`iptables-save | wc -l`) avant de chercher le coût du côté de HAProxy.
 
 ## Dimensionner maxconn
 
