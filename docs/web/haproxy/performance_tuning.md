@@ -258,6 +258,31 @@ Sur du trafic ad-tech ou des APIs à gros headers (cookies, JWT, query strings l
 
 Chaque connexion consomme 2 × `bufsize` de RAM. Un `bufsize` de 64 KB avec 300k connexions représente ainsi environ 37 GB de buffers, à prévoir dans le dimensionnement de la RAM.
 
+### tune.bufsize.large et tune.bufsize.small (3.4+)
+
+Monter `tune.bufsize` pour quelques gros bodies fait payer toutes les connexions. Depuis la 3.4, 2 tailles annexes évitent ça, et HAProxy ne s'en sert que là où on les active.
+
+`tune.bufsize.large` n'existe que si on le déclare. `wait-for-body` l'utilise avec `use-large-buffer` quand le body ne tient pas dans un buffer normal, ce qui garde le `bufsize` à 16 KB pour tout le reste :
+
+```haproxy
+global
+    tune.bufsize.large 262144
+
+frontend fe_api
+    http-request wait-for-body time 2s use-large-buffer
+```
+
+Déclarer `tune.bufsize.large` alloue 3 large buffers par thread au démarrage, pour l'usage interne d'HAProxy.
+
+`tune.bufsize.small` (1024 octets par défaut) sert aux requêtes en file d'attente, aux L7 retries et aux health checks via `option use-small-buffers`. Si la donnée ne tient pas dedans, HAProxy repasse sur un buffer normal :
+
+```haproxy
+defaults
+    option use-small-buffers queue l7-retries check
+```
+
+Sans argument, l'option active les 3. Le gain se voit sur un backend où des milliers de requêtes attendent en queue derrière un `maxconn` serveur.
+
 ### tune.maxrewrite
 
 `tune.maxrewrite` réserve de la place en fin de buffer pour les réécritures de headers. Les premières lectures ne remplissent pas plus de `bufsize - maxrewrite`, si bien que cette réserve est autant de place en moins pour la requête elle-même.
@@ -715,6 +740,30 @@ backend app_servers
 ```
 
 `pool-max-conn` limite le nombre de connexions idle gardées par serveur, pour ne pas accumuler des milliers de FD. `pool-purge-delay` recycle régulièrement les connexions idle.
+
+Par défaut, les threads d'un même [thread group](#thread-groups) partagent leurs connexions idle, mais pas ceux de 2 groupes différents. En 3.4, `tune.idle-pool.shared full` étend le partage à tous les threads et remplace `tune.takeover-other-tg-connections`, gardé pour compatibilité. Le partage entre groupes a un coût en performance. On ne l'active que si le taux de réutilisation compte plus que ce coût, par exemple face à un backend qui limite ses connexions entrantes.
+
+```haproxy
+global
+    tune.idle-pool.shared full
+```
+
+## Encadrer les clients HTTP/2
+
+Une connexion HTTP/2 porte des centaines de streams, et un seul client peut ainsi peser comme des centaines de clients HTTP/1.1. 3 réglages frontend bornent ce qu'il peut demander :
+
+```haproxy
+global
+    tune.h2.fe.max-rst-at-once 5
+    tune.h2.fe.max-total-streams 1000
+    tune.h2.fe.max-concurrent-streams 100 rq-load auto min 15
+```
+
+- `max-rst-at-once` (3.4+) : passé ce nombre de `RST_STREAM` traités d'un coup, la connexion part dans une file basse priorité. La doc conseille 1 à quelques unités contre les floods de `RST_STREAM` (rapid reset). Un utilisateur qui clique sur Stop ne perd que quelques millisecondes
+- `max-total-streams` (3.0+) : après ce nombre de requêtes, HAProxy envoie un `GOAWAY` et le client rouvre une connexion, peut-être vers un autre node. C'est utile quand les LBs scalent, sinon un client connecté depuis des heures reste collé au même. La doc dit qu'autour de 1000, le renouvellement est fréquent sans latence perceptible. Trop bas, on paye un handshake TLS de plus à chaque reconnexion. Certains outils de load test ne gèrent pas la reconnexion, donc on le coupe pendant un bench
+- `rq-load` (3.4+) : quand la run queue du thread dépasse la cible, HAProxy annonce moins de streams concurrents. `auto` prend `tune.runqueue-depth` comme cible, et `min` garde un plancher pour que le site reste utilisable sous charge (la doc conseille 5 à 15)
+
+Ces anomalies HTTP/2 sont loguées une par stream par défaut. Pendant une attaque, `tune.h2.log-errors connection` (3.4+) ne logue plus que les erreurs qui ferment la connexion.
 
 ## Tuning fin : splice, records TLS et scheduler
 
