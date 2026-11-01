@@ -24,6 +24,7 @@ La couche entre internet et les applications. nginx pour servir, HAProxy pour lo
 - [HAProxy - exploitation au quotidien](haproxy/operations.md) - socket d'admin, mise en maintenance, IP réelle et Cloudflare
 - [HAProxy - Limite mémoire](haproxy/memory_limit.md) - configurer maxconn et buffers
 - [HAProxy - Performance tuning](haproxy/performance_tuning.md) - threads, buffers, SSL, timeouts et tuning noyau
+- [HAProxy - Logs dans Fluent Bit](haproxy/logs_fluentbit.md) - parsing IPv4 et IPv6, erreurs TLS, métriques et alertes
 - [Varnish](varnish/config.md) - configuration VCL et cache HTTP
 - [DNS](dns.md) - zones, enregistrements et outils de diagnostic
 - [Mail](mail.md) - configuration serveur mail

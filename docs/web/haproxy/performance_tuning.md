@@ -1019,5 +1019,6 @@ sudo perf top
 - [HAProxy : Comportement d'une limite mémoire](memory_limit.md)
 - [Reverse proxy: HAProxy](overview.md)
 - [HAProxy : exploitation au quotidien](operations.md)
+- [Logs HAProxy dans Fluent Bit](logs_fluentbit.md) - parser les logs, IPv6 compris, et en tirer des métriques
 - [GOMEMLIMIT/GOMAXPROCS automatiques en Kubernetes](../../kubernetes/deployment/gomaxprocs_gomemlimit_kubernetes.md)
 - [Règles Prometheus HAProxy](https://rules.jdelgado.fr/#alerts/haproxy.rules.yml) - alertes et recording rules pour suivre le tuning

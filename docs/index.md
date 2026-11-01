@@ -300,6 +300,7 @@ Le plan complet est ci-dessous, sinon la recherche fait le job.
 - [HAProxy : exploitation au quotidien](web/haproxy/operations.md)
 - [HAProxy : Comportement d'une limite mémoire](web/haproxy/memory_limit.md)
 - [HAProxy : Performance tuning](web/haproxy/performance_tuning.md)
+- [Logs HAProxy dans Fluent Bit : parsing IPv4 et IPv6, métriques et alertes](web/haproxy/logs_fluentbit.md)
 
 ### Varnish
 
