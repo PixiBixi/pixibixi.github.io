@@ -1,0 +1,24 @@
+{
+    "bannedChars": ["U+2014", "U+2013", "U+2022"],
+    "bannedWords": [
+        "re:\\b(white|black)list(s|ed|ing)?\\b",
+        "re:\\bslave(s|d)?\\b",
+        "re:\\bdummy\\b",
+        "re:(^|[.!?]\\s+)Encore (faut-il|que|une fois)\\b",
+        "re:\\btout seul, parce que\\b",
+        "re:\\bvoie médiane\\b",
+        "re:\\bÇa se lit sans\\b",
+        "re:^(Notre|Le|La|Mon|Leur) (compromis|choix|verdict|règle|idée|réponse|parti pris) : ",
+        "re:\\bC'est là que\\b",
+        "re:\\bLe tout\\b"
+    ],
+    "allowPaths": [
+        "/.venv/",
+        "/node_modules/",
+        "/__pycache__/",
+        "/.git/",
+        "/site/",
+        "*.min.js",
+        "*.lock"
+    ]
+}

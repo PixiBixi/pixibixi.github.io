@@ -2,5 +2,6 @@
 site/
 venv/
 .venv/
-.claude/
+.claude/*
+!.claude/wordlist-guard.json
 __pycache__/
