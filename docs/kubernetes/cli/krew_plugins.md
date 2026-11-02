@@ -36,29 +36,19 @@ kubectl krew index add pixibixi https://github.com/PixiBixi/krew-index.git
 
 Voici en détail à quoi servent-ils :
 
-* `browse-pvc` permet de parcourir un PVC et de voir son contenu
 * `cnpg` permet de gérer ses clusters CloudNativePG : status, backup, promotion, reload, sans écrire un seul YAML
-* `crd-wizard` ouvre une TUI pour explorer les CRDs et les CRs du cluster, pratique quand on débarque sur un cluster bourré d'operators
 * `df-pv` permet de voir tel la commande `df` l'espace dispo sur son PVC & co
-* `foreach` permet de lancer la même commande sur plusieurs contexts en concurrent, avec le nom du context en préfixe de chaque ligne
-* `get-all` permet de lister toutes les ressources dans un NS
-* `iexec` permet de choisir interactivement le pod et le container avant de faire un `kubectl exec`
 * `klock` permet de rafraichir automatiquement une commande, par exemple `kubectl klock pods` va watch toutes les secondes les changements sur les pods
-* `kor` permet de repérer les ressources qui ne servent plus (configmaps, secrets, services, PVCs...) et de les supprimer
-* `lineage` permet d'afficher les dépendances ou les dépendants d'une ressource, en gros l'inverse de `tree`
-* `modify-secret` permet de modifier un secret en plain text
 * `neat` permet de supprimer d'un yaml tous les champs qui sont gérés par K8s
 * `netshoot/netshoot` permet de simplifier l'utilisation du magnifique container netshoot
 * `node-resource` affiche l'allocation (`allocation`) et la consommation réelle (`utilization`) par node, avec le CPU, la RAM, le GPU, le nombre de pods et le free restant
 * `node-shell` permet d'ouvrir un shell sur un node
 * `pixibixi/ice` est mon fork de kubectl-ice : il montre au niveau container les volumes, images, ports, commandes exec et la conso CPU/RAM (metrics-server requis), avec un mode watch en plus
+* `pixibixi/iexec` est mon fork de [kubectl-iexec](https://github.com/PixiBixi/kubectl-iexec), abandonné en amont depuis 2023 : on choisit le pod et le container dans un prompt avant le `kubectl exec`, `--first` prend le premier qui matche sans rien demander, et la sortie reste propre quand on la pipe (`kubectl iexec api printenv | sort > .env`)
 * `pixibixi/klens` est mon plugin qui regroupe les inspections read-only qu'on tape en boucle : node pools, taints, capacité, zones, pods par node, requests/limits, PVC bindings
-* `resource-capacity` permet de voir la capacité d'un node
-* `sniff` permet de dump le traffic d'un pod
 * `tmux-exec` permet d'exécuter en simultané des commandes sur des containers
-* `tree` permet de voir sous formes arbres les différents liens entres les ressources
 * `view-secret` permet de voir les secrets
-* `view-utilization` est plus ou moins redondant avec `resource-capacity` et les 2 sont remplacés par `node-resource`
+* `view-utilization` fait à peu près la même chose que `node-resource`, qui le remplace petit à petit
 
 `node-resource` est celui qui sert le plus au quotidien, voici les 2 commandes qu'on tape :
 
