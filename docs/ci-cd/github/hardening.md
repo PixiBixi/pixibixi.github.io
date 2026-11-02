@@ -37,6 +37,19 @@ Le pinning initial est l'étape qu'on oublie, car une action ajoutée en `@v4` d
 }
 ```
 
+`pinDigests: true` vise toutes les dépendances que Renovate détecte, pas seulement les `uses:`. Le manager `github-actions` lit aussi le `version:` de `golangci-lint-action` comme une dépendance `golangci/golangci-lint` et Renovate tente de l'épingler sur un digest. Ce champ n'accepte qu'un tag : le remplacement échoue avec `Error updating branch: update failure` et le Dependency Dashboard affiche une update `v2.15.0 → v2.15.0` qui ne veut rien dire. Quand les actions sont groupées dans une seule branche (`groupName`), cet échec bloque toutes les autres mises à jour du groupe, harden-runner et codeql compris. On sort cette dépendance du pinning :
+
+```json title="renovate.json"
+{
+  "packageRules": [
+    {
+      "matchDepNames": ["golangci/golangci-lint"],
+      "pinDigests": false
+    }
+  ]
+}
+```
+
 Dependabot n'a pas d'équivalent. Il met à jour un SHA déjà écrit mais n'en ajoute jamais, si bien qu'une action ajoutée en `@v4` reste indéfiniment sur son tag. C'est ainsi que `uno-multiplayer` s'est retrouvé avec 12 actions non épinglées sans que personne l'ait décidé, alors que `gopen` et `external-dns-akamai-webhook` étaient pinnés depuis leur premier commit.
 
 Le pinning ne couvre que le premier niveau. Si `actions/checkout` référence lui-même une autre action par tag dans son `action.yml`, cette référence se résout au runtime et le SHA qu'on a écrit n'y change rien. Un attaquant qui compromet l'action imbriquée atteint quand même le runner. GitHub a annoncé dans sa [roadmap sécurité Actions 2026](https://github.blog/news-insights/product-news/whats-coming-to-our-github-actions-2026-security-roadmap/) un verrouillage par SHA des dépendances directes **et** transitives, sur le modèle de `go.mod` et `go.sum`. Il est arrivé en [public preview le 14 octobre 2026](https://github.blog/changelog/2026-10-14-github-actions-workflow-lockfiles-in-public-preview/) sous la forme d'un fichier `.github/workflows/actions.lock` généré par l'extension `gh actions-lock`, que Dependabot régénère quand il bumpe une action. Sans ce fichier, le levier restant est de réduire le nombre d'actions tierces.

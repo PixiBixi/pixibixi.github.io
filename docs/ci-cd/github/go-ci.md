@@ -90,6 +90,8 @@ golangci-lint fait tourner des dizaines de linters en un seul passage, avec un s
     version: v2.12.2
 ```
 
+Avec `pinDigests: true` dans Renovate, ce `version:` doit être exclu du pinning, sinon il bloque la mise à jour des actions : voir [Durcir une CI GitHub Actions](hardening.md).
+
 La config vit dans `.golangci.yml`. Le principe : partir du set standard, ajouter ce qui apporte de la valeur et **justifier chaque exclusion en commentaire** pour que le prochain qui lit comprenne pourquoi.
 
 ```yaml title=".golangci.yml"
