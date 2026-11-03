@@ -729,19 +729,17 @@ wheels = [
 
 [[package]]
 name = "mkdocs-rss-plugin"
-version = "1.19.0"
+version = "1.20.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "cachecontrol", extra = ["filecache"] },
     { name = "gitpython" },
-    { name = "mkdocs" },
-    { name = "properdocs" },
     { name = "requests" },
     { name = "tzdata", marker = "sys_platform == 'win32'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/22/e8/70055ec6d7105c0f7c84918e0f98180443b5065469b2877aca43067a5709/mkdocs_rss_plugin-1.19.0.tar.gz", hash = "sha256:0b9b7f14688393e5bd7d26a6dc14dfd2b228a8cdfe5b598a6677589b2159d957", size = 573045, upload-time = "2026-04-17T09:35:34.115Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/da/f9/7751ee702888610df548f409ba6f3f98b578e1939ba666ca9677f210cbb2/mkdocs_rss_plugin-1.20.0.tar.gz", hash = "sha256:9e98d4213d7e5d2ae445bed6c95aaf888950f0dd3f268f6ece2ffd49f0ac3ace", size = 580921, upload-time = "2026-11-02T14:52:21.082Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/9f/00/1f2144fad080706c1ebebef83b7b5c0f8d80f9a2a06b33baabb94e33c84e/mkdocs_rss_plugin-1.19.0-py3-none-any.whl", hash = "sha256:5fdaffdee96745011c7c7786ed52b42a2d751f3aad84c188ffbedeb5a6e2994a", size = 33252, upload-time = "2026-04-17T09:35:32.372Z" },
+    { url = "https://files.pythonhosted.org/packages/48/02/caee4772a20d121e216da9a963f3752b01ce9f429f9a40816209fa34e9f3/mkdocs_rss_plugin-1.20.0-py3-none-any.whl", hash = "sha256:05b6dfb6f3c1a9f7d5e1aba2b9645691130fbd2caa10de4e1091e01fb96933b8", size = 33325, upload-time = "2026-11-02T14:52:19.593Z" },
 ]
 
 [[package]]
@@ -998,7 +996,7 @@ requires-dist = [
     { name = "mkdocs-materialx", specifier = "==10.2.2" },
     { name = "mkdocs-minify-plugin", specifier = "==0.8.0" },
     { name = "mkdocs-redirects", specifier = "==1.2.3" },
-    { name = "mkdocs-rss-plugin", specifier = "==1.19.0" },
+    { name = "mkdocs-rss-plugin", specifier = "==1.20.0" },
     { name = "pillow" },
     { name = "properdocs", specifier = "==1.6.7" },
 ]

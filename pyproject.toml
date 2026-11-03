@@ -8,7 +8,7 @@ dependencies = [
     "mkdocs-redirects==1.2.3",
     "pillow",
     "cairosvg",
-    "mkdocs-rss-plugin==1.19.0",
+    "mkdocs-rss-plugin==1.20.0",
     "properdocs==1.6.7",
     "mkdocs-materialx==10.2.2",
 ]
