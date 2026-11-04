@@ -726,7 +726,11 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/monitoring/lgtm/thanos-query-concurrency/</loc>
-    <lastmod>2026-10-21</lastmod>
+    <lastmod>2026-11-04</lastmod>
+  </url>
+  <url>
+    <loc>https://wiki.jdelgado.fr/monitoring/lgtm/thanos-slow-queries/</loc>
+    <lastmod>2026-11-04</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/monitoring/lgtm/thanos/</loc>
