@@ -162,6 +162,7 @@ Le remote de config partagée ne doit pas porter d'exception par repo : un `path
 
 ## Voir aussi
 
+- [prek](prek.md) pour garder le `.pre-commit-config.yaml` et ne changer que le runner
 - [Configuration Lefthook](https://lefthook.dev/configuration/) et son [`remotes`](https://lefthook.dev/configuration/remotes.html)
 - [Configuration gitleaks](https://github.com/gitleaks/gitleaks#configuration)
 - [Renovate : configuration](../github/renovate-config.md) pour automatiser la montée du tag
