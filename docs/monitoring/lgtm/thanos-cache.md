@@ -218,3 +218,4 @@ Côté fraîcheur, aucune donnée n'est ratée à 15 minutes. [Receive](thanos.m
 
 - [Thanos at scale : archi, perf et FinOps](thanos.md) - l'architecture, la rétention, le chemin de lecture et le reste de la facture
 - [GKE Spot Nodes](../../cloud/gcloud/spot_nodes.md) - pourquoi un cache local rend le spot cher
+- [Datasource Grafana sur Thanos](grafana_datasource_perf.md) - l'incremental querying et le cache côté Grafana, en amont du query frontend

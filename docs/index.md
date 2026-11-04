@@ -220,6 +220,7 @@ Le plan complet est ci-dessous, sinon la recherche fait le job.
 - [Les caches Thanos : mutualisation, dimensionnement et facture](monitoring/lgtm/thanos-cache.md)
 - [La concurrence de lecture Thanos : amplification, gates et diagnostic](monitoring/lgtm/thanos-query-concurrency.md)
 - [Migrer Grafana vers Grafana Cloud : datasources, alerting et convergence](monitoring/lgtm/grafana-cloud-migration.md)
+- [Datasource Grafana sur Thanos : incremental querying, cache et provisioning](monitoring/lgtm/grafana_datasource_perf.md)
 - [Générer des alertes depuis Loki](monitoring/lgtm/loki_alerting.md)
 - [Écrire une métrique custom pour node_exporter](monitoring/lgtm/custom_metrics_nodeexporter.md)
 - [Quelques tips pour la stack LGTM](monitoring/lgtm/tips_lgtm.md)
