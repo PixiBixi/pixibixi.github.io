@@ -37,9 +37,9 @@ Le cache local pèse aussi sur le choix du [spot](../../cloud/gcloud/spot_nodes.
 
 Un backend partagé règle les 2 problèmes d'un coup, avec un seul cache chaud pour tous les replicas qui survit aux évictions et une seule enveloppe mémoire au lieu de 100.
 
-Chez nous, le cache n'est pas mutualisé sur toutes les stacks. 6 stacks, celles qui sont réellement interrogées, tournent sur leur propre instance Dragonfly, qui porte à la fois le caching bucket et l'index cache. Les 17 autres ou à peu près restent en `IN-MEMORY`, avec un caching bucket plafonné à `512MB` (soit 512 Mio) et un index cache de `1GB` par pod. Leur working set cumulé tient sous 1 Gio. Une instance dédiée y coûterait plus en surcoût fixe qu'elle ne fait gagner en déduplication et le cache local reste le bon choix pour elles. Le cache de résultats du query frontend global a sa propre instance.
+Chez nous, le cache n'est pas mutualisé sur toutes les stacks. 8 stacks, celles qui sont réellement interrogées, tournent sur leur propre instance Dragonfly, qui porte le caching bucket, plus l'index cache sur 6 d'entre elles. Une quinzaine d'autres restent en `IN-MEMORY`, avec un caching bucket plafonné à `512MB` (soit 512 Mio) et un index cache de `1GB` par pod. Leur working set cumulé tient sous 1 Gio. Une instance dédiée y coûterait plus en surcoût fixe qu'elle ne fait gagner en déduplication et le cache local reste le bon choix pour elles. Le cache de résultats du query frontend global a sa propre instance.
 
-Le querier déclare les 2 replicas de chaque shard comme un seul endpoint `dns+` en groupe pour répartir les requêtes entre eux. Chaque requête n'est servie que par l'un des 2 et ne réchauffe que son cache. La suivante a une chance sur 2 de tomber sur le replica qui n'a jamais vu ces séries. Un cache partagé supprime ce demi-cache froid. Sur les 6 stacks mutualisées le problème a disparu, alors que les 17 autres le gardent, avec un trafic trop faible pour qu'il pèse.
+Le querier déclare les 2 replicas de chaque shard comme un seul endpoint `dns+` en groupe pour répartir les requêtes entre eux. Chaque requête n'est servie que par l'un des 2 et ne réchauffe que son cache. La suivante a une chance sur 2 de tomber sur le replica qui n'a jamais vu ces séries. Un cache partagé supprime ce demi-cache froid. Sur les 8 stacks qui ont leur Dragonfly le problème a disparu, alors que la quinzaine d'autres le garde, avec un trafic trop faible pour qu'il pèse.
 
 !!! warning "Les 3 caches IN-MEMORY n'expirent pas de la même façon"
     Les 3 implémentations diffèrent. `validity` n'existe que dans le cache de résultats du query frontend. Ce n'est pas une éviction mais un contrôle de péremption **à la lecture** : rien ne supprime les entrées, le cache grossit depuis le démarrage du pod jusqu'à buter sur son plafond, en accumulant des entrées trop vieilles pour être servies. On mesure 0 éviction pendant que le nombre d'entrées triple. L'index cache in-memory n'a aucune notion de TTL et évicte en LRU dès le plafond atteint, ce que compte `thanos_store_index_cache_items_evicted_total`. Le caching bucket in-memory prend bien un TTL par entrée et la supprime à la lecture.
@@ -96,15 +96,17 @@ Le `limits.memory` du conteneur, lui, se dimensionne sur le **RSS**, avec une ma
 
 Memcached est plus simple à poser, mais il n'est pas horizontalement scalable en l'état. C'est au client de faire le sharding et la haute dispo demande du travail. Redis coûte un peu plus cher en exploitation mais apporte Sentinel pour le failover et un vrai comportement en cluster.
 
-Dragonfly implémente le protocole Redis et le remplace de façon transparente côté Thanos, mais il est multi-threadé. Là où Redis sature un cœur et impose du sharding pour aller au-delà, Dragonfly scale verticalement. On lui ajoute des `--proactor_threads` et on reste sur une seule instance. Pour un cache, dont la perte est bénigne, une instance unique bien placée s'exploite plus simplement qu'un cluster.
+Dragonfly implémente le protocole Redis et le remplace de façon transparente côté Thanos, mais il est multi-threadé. Là où Redis sature un cœur et impose du sharding pour aller au-delà, Dragonfly scale verticalement. On lui ajoute des `--proactor_threads` et on reste sur un seul primaire, sans sharding. Pour un cache, un primaire et son replica s'exploitent plus simplement qu'un cluster.
 
-3 pièges rencontrés avec son opérateur Kubernetes :
+5 pièges rencontrés avec son opérateur Kubernetes :
 
 - Les métriques Prometheus sortent sur un port `admin` séparé et l'opérateur crée par défaut une NetworkPolicy qui ne l'ouvre qu'à lui-même et aux pods pairs. Prometheus reste muet, silencieusement. Les NetworkPolicies étant purement additives, il suffit d'en **ajouter** une pour le namespace de Prometheus, sans désactiver celle de l'opérateur.
+- Depuis la v1.6.1, la même NetworkPolicy limite aussi le port client `6379` au namespace du cache. Tous les clients des autres namespaces prennent des `i/o timeout` dès que l'opérateur réécrit sa policy, ce qui a laissé 8 stacks sans cache pendant 11 minutes. Avant de monter de version, on liste les namespaces clients dans une NetworkPolicy additive.
+- L'opérateur ne patche jamais les `volumeClaimTemplates` d'un StatefulSet existant, il logge un `ImmutableField` et passe. Activer les snapshots ou changer la taille du disque d'une instance en place demande de supprimer le StatefulSet avec `--cascade=orphan` juste après le sync, les pods continuant de servir pendant que l'opérateur le recrée. Le pod `-0` doit alors être le replica : un StatefulSet recréé au-dessus d'un master `-0` en cours d'exécution n'arrive pas à le mettre à jour et ne recrée jamais `-1`.
 - Il n'y a pas de `/metrics` HTTP sur le port principal, qui ne sert que le protocole RESP. Se tromper de port donne un timeout qu'on met du temps à relier à une NetworkPolicy.
 - Avant la v2.0.0, `dragonfly_evicted_keys_total` et `dragonfly_expired_keys_total` sont **déclarés sans valeur** tant qu'ils valent zéro. Prometheus n'ingère aucune série et un panel affiche « No data » là où on attend 0. « Rien évicté » devient indiscernable de « métrique cassée ». Sur ces versions, le signal d'éviction utilisable est la mémoire utilisée qui rejoint `maxmemory`. La v2.0.0 émet les 2 compteurs même à zéro ([PR #8052](https://github.com/dragonflydb/dragonfly/pull/8052)).
 
-La suite détaille 2 topologies, d'abord Redis derrière Sentinel, puis une instance Dragonfly unique en accès direct, celle qu'on fait tourner aujourd'hui.
+La suite détaille 2 topologies, d'abord Redis derrière Sentinel, puis Dragonfly en primaire et replica derrière un Service, celle qu'on fait tourner aujourd'hui.
 
 ### Redis derrière Sentinel
 
@@ -155,9 +157,15 @@ Sur Sentinel 6.2 et plus, il faut aussi activer `sentinel resolve-hostnames yes`
 !!! warning "Redis devient une dépendance de démarrage"
     Le client Redis se connecte dès sa création. Une store gateway dont le caching bucket ou l'index cache pointe sur un backend injoignable sort en erreur au boot et part en crashloop jusqu'au retour du cache. Redémarrer le cache pendant un rollout des store gateways suffit à le déclencher. Le redimensionnement du cache se livre donc d'abord et le changement de config ensuite.
 
-### Dragonfly en instance unique
+### Dragonfly en primaire et replica
 
-Chez nous il n'y a pas de Sentinel. Chaque stack interrogée a sa propre instance Dragonfly en un seul replica, sur des nœuds on-demand, puisqu'un replica unique sur spot repartirait à froid à chaque préemption. Les composants Thanos parlent directement au port `6379`, sans `master_name` ni `sentinel`. Perdre le cache ne coûte qu'un cache froid et la store gateway se reconnecte toute seule. La haute dispo d'un Redis avec failover n'achète rien ici. Le caching bucket est en `db: 0` et l'index cache en `db: 1` de la même instance :
+Chez nous il n'y a pas de Sentinel. Chaque stack interrogée a sa propre instance Dragonfly en 2 replicas sur spot, sur 2 nœuds distincts par anti-affinité. Le primaire sert toutes les lectures et écritures et pousse chaque écriture au replica en asynchrone. Le Service ne sélectionne que le pod `role=master`, donc Thanos ne voit qu'une IP et ne sait pas qu'un replica existe. À une préemption, l'opérateur promeut le replica et rebascule le label, Thanos se reconnecte après quelques erreurs et le pod recréé revient en replica pour se resynchroniser. On perd au pire les dernières écritures, ce qui est sans importance pour un cache.
+
+Un seul replica sur des nœuds on-demand semblait suffire, puisque perdre le cache ne coûte qu'un cache froid. C'est oublier la dépendance de démarrage vue plus haut. Chaque perte de nœud se transformait en crashloop des store gateways qui redémarraient pendant l'absence du cache. Avec `enableReplicationReadinessGate`, le replica reste NotReady tant qu'il n'est pas synchronisé et la PDB refuse de drainer le primaire avant, ce qui évite qu'un drain emporte la seule copie complète.
+
+Reste le cas où les 2 pods disparaissent ensemble, une double préemption sur spot. Chaque pod écrit un snapshot toutes les 10 minutes sur son propre PVC et le pod qui redémarre recharge son dump au lieu de repartir vide. Par défaut le nom de fichier est `dump-{timestamp}` et rien n'est jamais purgé. Avec `--dbfilename=dump`, chaque sauvegarde réécrit les mêmes fichiers, via un `.tmp` renommé à la fin. Le PVC fait 2 fois `maxmemory` avec un plancher de 6 Gio, parce qu'Hyperdisk Balanced plafonne à 500 IOPS par Gio et qu'un disque de 4 Gio ne peut pas recevoir les 3000 IOPS de la storage class.
+
+Les composants Thanos parlent directement au port `6379` du Service, sans `master_name` ni `sentinel`. Le caching bucket est en `db: 0` et l'index cache en `db: 1` de la même instance :
 
 ```yaml
 # caching bucket
