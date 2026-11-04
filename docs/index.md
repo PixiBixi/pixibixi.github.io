@@ -271,6 +271,7 @@ Le plan complet est ci-dessous, sinon la recherche fait le job.
 ### Git hooks
 
 - [Lefthook : migrer de pre-commit, config partagée, remote épinglé et CI](ci-cd/hooks/lefthook.md)
+- [prek : migrer de pre-commit, gain mesuré et CI vérifiée](ci-cd/hooks/prek.md)
 
 ## Containers
 
