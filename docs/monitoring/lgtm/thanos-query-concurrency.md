@@ -147,3 +147,4 @@ C'est la bonne façon de lire une saturation rare. La question n'est pas de savo
 
 - [Thanos at scale : archi, perf et FinOps](thanos.md) - l'architecture, le sharding par timerange et les limites de lecture et d'ingestion
 - [Les caches Thanos](thanos-cache.md) - ce que le query frontend cache et ce qu'il ne cache pas
+- [Les slow queries Thanos](thanos-slow-queries.md) - retrouver le dashboard derrière une requête lente et la suivre en trace
