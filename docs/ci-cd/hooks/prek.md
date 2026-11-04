@@ -1,5 +1,5 @@
 ---
-description: "Remplacer pre-commit par prek sans toucher au .pre-commit-config.yaml : équivalences des commandes, gain mesuré sur des repos réels, part du fast path, cache des environnements et vérification du binaire dans prek-action."
+description: "Remplacer pre-commit par prek sans toucher au .pre-commit-config.yaml : équivalences des commandes, gain mesuré sur des repos réels, part du fast path, cache des environnements, vérification du binaire dans prek-action et comparaison avec Lefthook."
 tags:
   - prek
   - pre-commit
@@ -12,7 +12,7 @@ tested_with:
 
 # prek : migrer de pre-commit, gain mesuré et CI vérifiée
 
-Sur un repo qui empile une quinzaine de hooks, `pre-commit run --all-files` prend plusieurs secondes à chaque commit et la CI doit installer Python et pre-commit avant de lancer le moindre contrôle. [prek](https://github.com/j178/prek) est un binaire Rust qui lit le même `.pre-commit-config.yaml` et exécute les mêmes hooks. La migration tient en une commande par repo et se défait aussi vite. La suite couvre la bascule, le gain mesuré sur 2 repos, le cache des environnements et le piège de `prek-action` qui télécharge le binaire sans le vérifier.
+Sur un repo qui empile une quinzaine de hooks, `pre-commit run --all-files` prend plusieurs secondes à chaque commit et la CI doit installer Python et pre-commit avant de lancer le moindre contrôle. [prek](https://github.com/j178/prek) est un binaire Rust qui lit le même `.pre-commit-config.yaml` et exécute les mêmes hooks. La migration tient en une commande par repo et se défait aussi vite. La suite couvre la bascule, le gain mesuré sur 2 repos, le cache des environnements, le piège de `prek-action` qui télécharge le binaire sans le vérifier, puis quand préférer Lefthook.
 
 ## Remplacer pre-commit sans toucher à la config
 
@@ -99,7 +99,22 @@ $ shasum -a 256 prek-x86_64-unknown-linux-gnu.tar.gz
 
 Le log du job affiche ensuite `Verifying SHA-256 checksum for prek-x86_64-unknown-linux-gnu.tar.gz (input)`. Le hash ne vaut que pour une version et une archive. Un bump de `prek-version` qui oublie le hash fait échouer le job au lieu de télécharger un binaire non vérifié. Sur un runner self-hosted dont le tool cache contient déjà cette version, l'action reprend le binaire en cache sans rien télécharger ni vérifier, `sha256` compris.
 
+## prek ou Lefthook
+
+[Lefthook](lefthook.md) est l'autre façon de quitter pre-commit, avec un parti pris opposé. prek garde le `.pre-commit-config.yaml` et la gestion des environnements : chaque hook tourne dans un env construit à partir de son `rev`, sans rien installer à côté. Lefthook demande de réécrire la config en `lefthook.yml` et n'exécute que des outils déjà présents sur le poste, installés par Homebrew, mise ou l'image CI.
+
+| Critère | prek | Lefthook |
+|---|---|---|
+| Reprise du `.pre-commit-config.yaml` | ✅ telle quelle | ❌ réécriture en `lefthook.yml` |
+| Installation des outils | ✅ par prek, version épinglée par le `rev` | ❌ à part (Homebrew, mise, image CI) |
+| Premier run sur un poste neuf | ❌ construit les envs (24,6 s sur dotfiles) | ✅ rien à construire |
+| Parallélisme | `priority` par hook, séquentiel sinon | `parallel: true` par hook git, séquentiel sinon |
+| Config partagée entre repos | ❌ chaque repo porte la sienne | ✅ `remotes`, épinglé sur un tag |
+| Retour arrière vers pre-commit | ✅ tant qu'on évite `repo: builtin` | ❌ nouvelle réécriture |
+
+Le choix tient surtout au nombre de repos. Sur quelques repos perso qui ont déjà leur config, prek apporte le gain sans rien réécrire. Sur une flotte de repos qui recopient la même liste de hooks, ce sont les `remotes` de Lefthook qui règlent la dérive des `rev`, ce que prek ne fait pas : sa config globale (`~/.config/prek/prek.toml`) ne porte que des réglages de l'outil et pas de hooks. Le prix est d'installer et de versionner les outils soi-même sur chaque poste et chaque runner.
+
 ## Voir aussi
 
-- [Lefthook](lefthook.md), l'autre sortie de pre-commit : un binaire Go qui exécute les outils déjà installés, mais demande de réécrire la config
+- [Lefthook](lefthook.md), migration, `remotes` et parité CI
 - [Compatibilité avec pre-commit](https://prek.j178.dev/compatibility/), la liste des commandes et des clés propres à prek
