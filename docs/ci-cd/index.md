@@ -9,7 +9,7 @@ tags:
 
 # CI/CD
 
-Une CI lente ou mal configurée, ça coûte du temps et de l'argent. Une CI mal durcie, ça coûte bien plus. 9 articles : durcissement supply-chain des workflows GitHub Actions, releases automatisées et côté GitLab l'optimisation des pipelines, le scan d'images et la CLI `glab`.
+Une CI lente ou mal configurée, ça coûte du temps et de l'argent. Une CI mal durcie, ça coûte bien plus. 12 articles : durcissement supply-chain des workflows GitHub Actions, releases automatisées, git hooks (Lefthook, prek) et côté GitLab l'optimisation des pipelines, le scan d'images et la CLI `glab`.
 
 ## Contenus
 
