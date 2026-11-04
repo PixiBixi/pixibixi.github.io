@@ -43,7 +43,7 @@ Build hooks (`hooks:` in `properdocs.yml`):
 ```bash
 # First-time setup
 uv sync
-pre-commit install   # install git hook for markdown linting
+prek install   # install git hook for markdown linting
 
 # Live preview (hot reload at http://127.0.0.1:8000, ~6s rebuild)
 uv run properdocs serve -f properdocs.dev.yml --livereload
@@ -60,7 +60,7 @@ On macOS, the `social` plugin needs `DYLD_FALLBACK_LIBRARY_PATH=/opt/homebrew/li
   A bare `markdownlint-enable` without rule names re-enables ALL rules,
   overriding `.markdownlint.json` globals (including MD013).
 
-Four pre-commit hooks run (`.pre-commit-config.yaml`):
+Four prek hooks run (`.pre-commit-config.yaml`):
 
 - `uv-lock` - keeps `uv.lock` in sync with `pyproject.toml`
 - `markdownlint-cli2` - on changed `.md` files, config `.markdownlint.json`
@@ -78,7 +78,7 @@ Rules are in `.markdownlint.json`:
 Run manually:
 
 ```bash
-pre-commit run --all-files
+prek run --all-files
 # or on specific files:
 markdownlint-cli2 "docs/**/*.md"
 ```
@@ -283,7 +283,7 @@ When writing or rewriting an article, apply these whenever the condition holds (
 - **External images**: the `privacy` plugin downloads external assets to self-host them.
   A 403/unreachable URL triggers a warning → fatal with `--strict`.
   Always store images locally next to the `.md` file (e.g., `docs/selfhost/koel.webp`);
-  the pre-commit hook converts any JPG/PNG to WebP anyway.
+  the prek hook converts any JPG/PNG to WebP anyway.
 
 - **SVG diagrams**: store in `docs/<section>/_img/<name>.svg` - run `mkdir -p` first as the dir may not exist. Reference with `![](./_img/name.svg)` - Glightbox applies automatically.
 

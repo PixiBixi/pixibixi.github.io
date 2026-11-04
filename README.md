@@ -7,14 +7,14 @@ Personal knowledge base built with [MaterialX](https://github.com/jaywhj/mkdocs-
 
 ## Setup
 
-Needs [uv](https://docs.astral.sh/uv/), plus `pre-commit` and `cwebp` on the `PATH`
-(`brew install pre-commit webp`) - neither is pulled in by `uv sync`. `promtool`
+Needs [uv](https://docs.astral.sh/uv/), plus `prek` and `cwebp` on the `PATH`
+(`brew install prek webp`) - neither is pulled in by `uv sync`. `promtool`
 (`brew install prometheus`) is optional: without it the code block hook still checks YAML
 and JSON, it just skips the Prometheus rule files.
 
 ```sh
 uv sync
-pre-commit install     # without this, no hook runs on commit
+prek install     # without this, no hook runs on commit
 uv run properdocs serve -f properdocs.dev.yml --livereload   # http://127.0.0.1:8000, ~6s rebuild
 ```
 
@@ -92,7 +92,7 @@ The sidebar and the section pages are generated from the directory tree (a secti
 ## Lint & build
 
 ```sh
-pre-commit run --all-files
+prek run --all-files
 uv run properdocs build --strict     # warnings are fatal, same as CI
 ```
 
