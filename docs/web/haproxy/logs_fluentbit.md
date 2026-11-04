@@ -55,7 +55,7 @@ parsers:
     regex: '^(?<client_ip>\S+):(?<client_port>\d+) \[(?<time>[^\]]+)\] (?<frontend>\S+) (?<backend>[^/ ]+)/(?<server>\S+) (?<tr>-?\d+)/(?<tw>-?\d+)/(?<tc>-?\d+)/(?<tr_resp>-?\d+)/(?<ta>\+?\d+) (?<status>-?\d+) (?<bytes>\+?\d+) (?<req_cookie>\S+) (?<res_cookie>\S+) (?<tstate>[A-Za-z-]{2})(?<cstate>[A-Za-z-]{2}) (?<actconn>\d+)/(?<feconn>\d+)/(?<beconn>\d+)/(?<srv_conn>\d+)/(?<retries>\+?\d+) (?<srv_queue>\d+)/(?<be_queue>\d+)(?: \{(?<req_headers>[^}]*)\})?(?: \{(?<res_headers>[^}]*)\})? "(?<request>.*)"$'
     time_key: time
     time_format: '%d/%b/%Y:%H:%M:%S.%L'
-    time_zone: UTC
+    time_zone: Etc/UTC
     types: tr:integer tw:integer tc:integer tr_resp:integer
 ```
 
@@ -64,10 +64,10 @@ Quelques choix qui comptent :
 - `client_ip` vaut `\S+` suivi de `:` et du port : le premier quantificateur est gourmand, il avale tout puis recule jusqu'au dernier `:`, ce qui donne la bonne coupure pour `192.0.2.10:33317` comme pour `2001:db8::1:51234`. Pour une connexion sur socket Unix, HAProxy écrit `unix` à la place de l'IP et l'ID du socket à la place du port, ce que la regex accepte aussi.
 - `ta` et `retries` acceptent un `+` en tête. HAProxy préfixe `Ta` d'un `+` avec `option logasap` et `retries` quand une redispatch a eu lieu après le nombre maximal de tentatives.
 - `tr`, `tw`, `tc` et `tr_resp` acceptent `-1`, qui signale une requête interrompue avant l'événement mesuré.
-- `status` accepte aussi `-1`. HAProxy l'écrit quand le client coupe avant la réponse (termination state `CR--` ou `CH--`). Avec `\d{3}`, ces requêtes abandonnées ne matchent pas et restent du texte brut, en IPv4 comme en IPv6.
-- Le `time` de HAProxy n'a pas de fuseau. `time_zone` s'applique quand la date n'en contient pas, à régler sur le fuseau du conteneur HAProxy (`UTC` dans la plupart des images). Cette clé n'existe dans les parsers Fluent Bit que depuis la 5.0.7.
-- `frontend` reprend `%ft`, qui ajoute un `~` au nom d'un frontend en SSL : `https-in~` dans les logs HTTP, alors que la ligne d'erreur de connexion plus bas écrit `https-in`. Les labels des métriques portent la même différence.
-- `types` ne convertit que les timers. `status` reste une chaîne : le filtre `log_to_metrics` n'applique sa regex qu'à des chaînes, donc un `status` converti en entier ne matcherait jamais et le compteur resterait à 0.
+- `status` accepte aussi `-1`. HAProxy l'écrit quand le client coupe pendant que HAProxy se connecte au serveur ou attend en file (termination state `CC--` ou `CQ--`). Avec `\d{3}`, ces lignes ne matchent pas et restent du texte brut, en IPv4 comme en IPv6. Un client qui coupe avant d'avoir envoyé sa requête (`CR`) ou pendant l'attente de la réponse (`CH`) est logué en 400, pas en `-1`.
+- Le `time` de HAProxy n'a pas de fuseau. `time_zone` s'applique quand la date n'en contient pas, à régler sur le fuseau du conteneur HAProxy (UTC dans la plupart des images). Cette clé n'existe dans les parsers Fluent Bit que depuis la 5.0.7. Elle attend un nom IANA : `Etc/UTC` passe, `UTC` tout court est refusé et Fluent Bit s'arrête au démarrage (`invalid or unavailable time_zone 'UTC'`).
+- `frontend` reprend `%ft`, qui ajoute un `~` au nom d'un frontend en SSL : `https-in~` dans les logs HTTP. La ligne d'erreur de connexion par défaut écrit `https-in` sans `~`. Le `error-log-format` plus bas reprend `%ft` et garde le `~`, ce qui aligne les labels `frontend` des 2 métriques.
+- `types` ne convertit que les timers. `status` reste une chaîne : le filtre `log_to_metrics` n'applique sa regex qu'à des chaînes, donc un `status` converti en entier ne matcherait jamais et la série n'apparaîtrait pas du tout.
 
 ### Les clients IPv6 que la regex courante rate
 
@@ -86,7 +86,7 @@ Pour s'en rendre compte, on compte les records sans champ `status` après le fil
 Quand une connexion échoue avant d'être une requête HTTP (handshake TLS raté, header PROXY protocol invalide), HAProxy écrit une ligne plus courte, au format d'erreur de la section 8.2.5 de la documentation :
 
 ```text
-2001:db8::1:56059 [26/Oct/2026:10:00:00.380] https-in/b1: SSL handshake failure (error:0A000102:SSL routines::unsupported protocol)
+2001:db8::1:56059 [26/Oct/2026:10:00:00.380] https-in/1: SSL handshake failure (error:0A000102:SSL routines::unsupported protocol)
 ```
 
 Cette ligne n'a ni statut ni timers, donc `haproxy_http` ne la matche pas. Le parser `haproxy_conn_error` la prend en charge :
@@ -97,7 +97,7 @@ Cette ligne n'a ni statut ni timers, donc `haproxy_http` ne la matche pas. Le pa
     regex: '^(?<client_ip>\S+):(?<client_port>\d+) \[(?<time>[^\]]+)\] (?<frontend>[^/ ]+)/(?<bind>[^:\s]+): (?<error>[^(]+?)(?: \((?:-|(?<ssl_error>[^)]+))\))?(?: sni="(?<ssl_sni>[^"]*)" proto=(?<ssl_protocol>\S*))?$'
     time_key: time
     time_format: '%d/%b/%Y:%H:%M:%S.%L'
-    time_zone: UTC
+    time_zone: Etc/UTC
 ```
 
 `error` garde le message seul (`SSL handshake failure`) et `ssl_error` reçoit l'erreur OpenSSL entre parenthèses, quand HAProxy en a une. Les alertes se font sur `error`, qui prend peu de valeurs différentes, alors que `ssl_error` sert au diagnostic.
@@ -116,6 +116,10 @@ defaults
 ```
 
 Un fetch sans valeur s'écrit `-` : une erreur sans cause OpenSSL donne `(-)`, que la regex ignore au lieu d'en faire un `ssl_error`. Les 2 groupes de fin sont optionnels, si bien que le même parser lit les lignes avant et après le changement de format pendant un déploiement progressif. Tout autre changement de `error-log-format` demande d'adapter la regex.
+
+Le format par défaut écrit le numéro du `bind` après le `/` (`https-in/1`). `%[so_name]` lit son nom et vaut `-` si le `bind` n'en a pas : on ajoute `name b1` sur la ligne `bind` pour le retrouver dans les logs.
+
+Ce format écrit aussi une ligne pour chaque requête invalide ou connexion coupée sans erreur réseau, du type `http-in/-: Success (-) sni="-" proto=-`. Le format par défaut ne le fait pas. Ces lignes parsent avec `error` à `Success` et gonfleraient le compteur d'erreurs de connexion, d'où l'`exclude` sur le filtre plus bas.
 
 ## Brancher les parsers dans le pipeline
 
@@ -190,8 +194,9 @@ Le champ `tstate` (les 2 premiers caractères du `termination_state`) dit pourqu
 | `sH` | `timeout server` en attendant les headers de réponse, le backend est lent |
 | `SC` | Le serveur a refusé ou coupé la connexion pendant l'établissement |
 | `sQ` | Timeout pendant que la requête attendait en file d'un `maxconn` serveur |
+| `LR` | HAProxy a répondu lui-même (`http-request return`, page de stats, exporter Prometheus) |
 
-La majuscule indique qui a coupé (`C` client, `S` serveur, `P` proxy) et la minuscule un timeout de ce côté (`c`, `s`). Les 2 autres caractères (`cstate`) portent l'état du cookie de persistance, utile seulement si le frontend en pose.
+La majuscule indique qui a coupé (`C` client, `S` serveur, `P` proxy, `L` traitement local) et la minuscule un timeout de ce côté (`c`, `s`). Les 2 autres caractères (`cstate`) portent l'état du cookie de persistance, utile seulement si le frontend en pose.
 
 Un 4xx avec `cR` est un client lent ou un préconnect de navigateur. Un 4xx avec `--` est une vraie réponse applicative. Les 2 ne se traitent pas de la même façon, d'où l'intérêt de garder `tstate` à côté de `status`. `option http-ignore-probes` supprime les connexions sans donnée et allège le bruit de `cR`, au prix de masquer les clients qui n'arrivent pas à envoyer une requête.
 
@@ -223,6 +228,7 @@ Le filtre `log_to_metrics` lit les records, incrémente un compteur par record q
       metric_name: conn_errors_total
       metric_description: Frontend connection errors logged by HAProxy
       regex: error .
+      exclude: error ^Success$
       label_field: frontend
 
   outputs:
@@ -232,12 +238,12 @@ Le filtre `log_to_metrics` lit les records, incrémente un compteur par record q
       port: 2021
 ```
 
-Le nom complet d'une série est `namespace_subsystem_name`, soit ici `haproxy_log_http_requests_total{frontend="https-in~",status="404"}`. Un `curl` sur le port 2021 le confirme avant d'écrire une règle. La regex `^\d{3}$` écarte les requêtes abandonnées en `status` `-1`, qui restent consultables dans les logs.
+Le nom complet d'une série est `namespace_subsystem_name`, soit ici `haproxy_log_http_requests_total{frontend="https-in~",status="404"}`. Un `curl` sur le port 2021 le confirme avant d'écrire une règle. La regex `^\d{3}$` écarte les lignes en `status` `-1` (`CC`, `CQ`), qui restent consultables dans les logs. Les abandons `CR` et `CH` arrivent en 400 et comptent donc parmi les 4xx.
 
 !!! warning "Cardinalité"
     Chaque combinaison de valeurs de labels crée une série pour la vie du processus. `frontend` et `status` sont bornés alors que `client_ip`, `request` ou le texte de `error` ne le sont pas. La documentation du filtre avertit qu'un label non borné peut remplir le buffer de l'émetteur jusqu'à l'arrêt des métriques. Un label `backend` est acceptable quand le nombre de backends reste raisonnable.
 
-Les terminaisons anormales prennent un filtre de plus. Sa `regex` ne garde que les `tstate` qui commencent par une lettre, ce qui écarte la fin normale `--` :
+Les terminaisons anormales prennent un filtre de plus. Sa `regex` garde les `tstate` qui commencent par une lettre et écarte la fin normale `--`. Elle compte aussi les réponses que HAProxy produit lui-même, qui n'ont rien d'anormal : `LR` pour un `http-request return` ou la page de stats, `PR` pour un `deny`. L'alerte plus bas filtre sur la première lettre pour les laisser de côté.
 
 ```yaml title="fluent-bit.yaml"
     - name: log_to_metrics
@@ -247,14 +253,14 @@ Les terminaisons anormales prennent un filtre de plus. Sa `regex` ne garde que l
       metric_namespace: haproxy
       metric_subsystem: log
       metric_name: abnormal_terminations_total
-      metric_description: Streams that did not end normally
+      metric_description: Streams with a termination state other than --
       regex: tstate ^[A-Za-z]
       label_field:
         - frontend
         - tstate
 ```
 
-`tstate` ne prend qu'une poignée de valeurs en pratique (`CD`, `cD`, `sH`, `SC`...), ce qui reste raisonnable comme label.
+`tstate` ne prend qu'une poignée de valeurs en pratique (`LR`, `CD`, `cD`, `sH`, `SC`...), ce qui reste raisonnable comme label.
 
 HAProxy expose aussi ses propres compteurs, par exemple `haproxy_frontend_http_responses_total` avec un label `code` (`4xx`, `5xx`) quand l'exporter Prometheus est activé (`http-request use-service prometheus-exporter`). Cette voie est moins coûteuse que le parsing de logs et ne dépend pas de la regex. Les logs gardent un intérêt quand il faut le détail par requête ou le termination state, ce que les stats n'ont pas.
 
@@ -311,9 +317,11 @@ Le champ `%ci` est l'adresse du pair TCP. Derrière un load balancer, c'est l'IP
 
 ```haproxy
 frontend https-in
-    bind :443 ssl crt /etc/haproxy/certs/ accept-proxy
+    bind :::443 v4v6 ssl crt /etc/haproxy/certs/ accept-proxy
     capture request header X-Forwarded-For len 64
 ```
+
+`bind :443` n'écoute qu'en IPv4 et un client IPv6 se voit refuser la connexion. `:::443 v4v6` prend les 2 familles. Un client IPv4 en connexion directe y apparaît alors sous la forme `::ffff:192.0.2.10`, que la regex lit sans problème mais que les outils de géolocalisation ou de rate limiting doivent savoir traiter.
 
 Avec `accept-proxy`, une connexion qui arrive sans header PROXY valide est refusée et HAProxy la journalise. On la retrouve avec le parser `haproxy_conn_error`, ce qui signale un load balancer mal configuré. Le header capté atterrit dans le champ `req_headers` du parser `haproxy_http`, où on le lit tel quel (`203.0.113.9`).
 
