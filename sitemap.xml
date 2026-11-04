@@ -678,7 +678,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/monitoring/</loc>
-    <lastmod>2026-10-11</lastmod>
+    <lastmod>2026-11-04</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/monitoring/eztools/</loc>
@@ -707,6 +707,10 @@
   <url>
     <loc>https://wiki.jdelgado.fr/monitoring/lgtm/grafana-cloud-migration/</loc>
     <lastmod>2026-10-05</lastmod>
+  </url>
+  <url>
+    <loc>https://wiki.jdelgado.fr/monitoring/lgtm/grafana_datasource_perf/</loc>
+    <lastmod>2026-11-04</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/monitoring/lgtm/loki_alerting/</loc>
