@@ -365,6 +365,10 @@
     <lastmod>2026-11-05</lastmod>
   </url>
   <url>
+    <loc>https://wiki.jdelgado.fr/kubernetes/operator/strimzi/authorization/</loc>
+    <lastmod>2026-11-05</lastmod>
+  </url>
+  <url>
     <loc>https://wiki.jdelgado.fr/kubernetes/operator/strimzi/rollout_strimzi/</loc>
     <lastmod>2026-10-13</lastmod>
   </url>
@@ -1130,6 +1134,10 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/kubernetes/operator/</loc>
+    <lastmod>2026-11-05</lastmod>
+  </url>
+  <url>
+    <loc>https://wiki.jdelgado.fr/kubernetes/operator/strimzi/</loc>
     <lastmod>2026-11-05</lastmod>
   </url>
   <url>
