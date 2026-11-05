@@ -23,6 +23,7 @@
 *[OTLP]: OpenTelemetry Protocol, le protocole d'envoi des traces, métriques et logs OpenTelemetry
 *[PAT]: Personal Access Token, un token GitHub lié à un compte, à utiliser à la place du GITHUB_TOKEN quand celui-ci n'a pas les droits
 *[PDB]: PodDisruptionBudget, le nombre de pods qu'une éviction volontaire peut retirer à la fois
+*[PoP]: Point of Presence, un site où un réseau se connecte aux opérateurs et aux clients
 *[Release PR]: PR que release-please maintient ouverte, qui accumule les changements et publie la release à son merge
 *[RSA]: Algorithme de signature historique des certificats TLS, plus coûteux en CPU qu'ECDSA à chaque handshake
 *[RTT]: Round-Trip Time, le temps d'un aller-retour réseau
@@ -30,6 +31,7 @@
 *[SCRAM]: Salted Challenge Response Authentication Mechanism, une authentification par mot de passe sans l'envoyer en clair
 *[semver]: Semantic Versioning, une version MAJOR.MINOR.PATCH où chaque position indique la nature du changement
 *[skew]: Écart entre le nombre de pods d'un domaine et celui du domaine le moins chargé, borné par maxSkew
+*[SKU]: Stock Keeping Unit, la ligne de facturation d'un service cloud
 *[SLI]: Service Level Indicator, la mesure qui sert de base à un objectif de service
 *[SLSA]: Supply-chain Levels for Software Artifacts, le framework qui décrit la provenance d'un build
 *[TSDB]: Time Series Database, une base de séries temporelles, comme le stockage local de Prometheus

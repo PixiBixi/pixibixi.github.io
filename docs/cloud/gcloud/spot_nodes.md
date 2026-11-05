@@ -157,5 +157,6 @@ kubectl drain <node-name> --ignore-daemonsets --delete-emptydir-data --grace-per
 - [GKE - Capacité réelle des nodes](gke_node_capacity.md) - dimensionner les nodes pour optimiser le ROI
 - [PDB et topology spread](../../kubernetes/deployment/pdb_topology_spread.md) - ce qu'un PDB protège et ce qu'il ne protège pas
 - [GKE Workload Identity](workload_identity.md) - accorder les bonnes permissions aux pods sur des nodes Spot
+- [Network tiers GCP](network_tiers.md) - l'autre levier FinOps sur le trafic sortant des LoadBalancer
 - [GKE ComputeClass](compute_classes.md) - fallback Spot vers on-demand sans node pool à gérer
 - [GitLab Runner sur GKE Spot](../../ci-cd/gitlab/runners_kubernetes.md) - un workload CI qui tolère l'éviction
