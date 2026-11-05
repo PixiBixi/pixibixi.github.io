@@ -11,6 +11,7 @@
 *[fan-out]: Une requête envoyée en parallèle à plusieurs backends, dont on attend toutes les réponses avant de répondre
 *[IRQ]: Interruption matérielle envoyée par une carte réseau ou un disque au CPU
 *[keyless]: Signature sans clé privée à gérer, avec un certificat éphémère délivré pour une identité OIDC
+*[KRaft]: Mode de Kafka sans ZooKeeper, où les controllers gèrent les métadonnées via Raft
 *[lockfile]: Fichier qui fige la version exacte de chaque dépendance installée, comme go.sum ou package-lock.json
 *[LRU]: Least Recently Used, on évicte d'abord l'entrée lue le moins récemment
 *[MTU]: Maximum Transmission Unit, la taille maximale d'un paquet sur le lien
@@ -26,6 +27,7 @@
 *[RSA]: Algorithme de signature historique des certificats TLS, plus coûteux en CPU qu'ECDSA à chaque handshake
 *[RTT]: Round-Trip Time, le temps d'un aller-retour réseau
 *[SBOM]: Software Bill of Materials, l'inventaire des dépendances embarquées dans un artefact
+*[SCRAM]: Salted Challenge Response Authentication Mechanism, une authentification par mot de passe sans l'envoyer en clair
 *[semver]: Semantic Versioning, une version MAJOR.MINOR.PATCH où chaque position indique la nature du changement
 *[skew]: Écart entre le nombre de pods d'un domaine et celui du domaine le moins chargé, borné par maxSkew
 *[SLI]: Service Level Indicator, la mesure qui sert de base à un objectif de service
