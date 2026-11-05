@@ -1,0 +1,84 @@
+<svg class="jd-svg" data-jd-theme="" width="640" height="176" viewBox="0 0 640 176" xmlns="http://www.w3.org/2000/svg" font-family="'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif">
+  <style>
+    .jd-svg text { font-family: var(--jd-sans, 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif); }
+    .jd-svg .box { fill: var(--jd-surface-raised, #161b22); stroke: var(--jd-border-strong, #30363d); }
+    .jd-svg .ink { fill: var(--jd-ink, #e6edf3); }
+    .jd-svg .sub { fill: var(--jd-muted, #8b949e); }
+    .jd-svg .page { fill: var(--jd-muted, #6e7781); font-weight: 600; }
+    .jd-svg .edge { stroke: var(--jd-muted, #8b949e); }
+    .jd-svg .neutral { fill: var(--jd-muted, #8b949e); }
+    .jd-svg .warm { fill: var(--jd-warn-ink, #f78166); }
+    .jd-svg .info { fill: var(--jd-note-ink, #58a6ff); }
+    .jd-svg .ok { fill: var(--jd-ok-ink, #3fb950); }
+  </style>
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon class="neutral" points="0 0, 8 3, 0 6"/>
+    </marker>
+  </defs>
+
+  <!-- ligne 1 : du client au primary -->
+  <g>
+    <rect class="box" x="4" y="24" width="112" height="50" rx="4"/>
+    <rect class="neutral" x="4" y="24" width="4" height="50"/>
+    <text class="ink" x="18" y="45" font-size="12">Client CDC</text>
+    <text class="sub" x="18" y="62" font-size="10">IP de sortie fixe</text>
+  </g>
+  <line class="edge" x1="118" y1="49" x2="132" y2="49" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <g>
+    <rect class="box" x="134" y="24" width="112" height="50" rx="4"/>
+    <rect class="info" x="134" y="24" width="4" height="50"/>
+    <text class="ink" x="148" y="45" font-size="12">Firewall / proxy</text>
+    <text class="info" x="148" y="62" font-size="10">allowlist des IP</text>
+  </g>
+  <line class="edge" x1="248" y1="49" x2="262" y2="49" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <g>
+    <rect class="box" x="264" y="24" width="112" height="50" rx="4"/>
+    <rect class="neutral" x="264" y="24" width="4" height="50"/>
+    <text class="ink" x="278" y="45" font-size="12">NodePort</text>
+    <text class="sub" x="278" y="62" font-size="10">sur chaque nœud</text>
+  </g>
+  <line class="edge" x1="378" y1="49" x2="392" y2="49" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <g>
+    <rect class="box" x="394" y="24" width="112" height="50" rx="4"/>
+    <rect class="neutral" x="394" y="24" width="4" height="50"/>
+    <text class="ink" x="408" y="45" font-size="12">Service rw</text>
+    <text class="sub" x="408" y="62" font-size="10">suit le primary</text>
+  </g>
+  <line class="edge" x1="508" y1="49" x2="522" y2="49" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <g>
+    <rect class="box" x="524" y="24" width="112" height="50" rx="4"/>
+    <rect class="ok" x="524" y="24" width="4" height="50"/>
+    <text class="ink" x="538" y="45" font-size="12">Primary</text>
+    <text class="ok" x="538" y="62" font-size="10">pg_hba : hostssl</text>
+  </g>
+
+  <!-- l'IP source disparaît après le NodePort -->
+  <text class="page" x="385" y="14" font-size="10" text-anchor="middle">IP source masquée à partir d'ici</text>
+  <line class="edge" x1="385" y1="18" x2="385" y2="44" stroke-width="1.5"/>
+
+  <!-- ligne 2 : le slot et le WAL qu'il retient -->
+  <line class="edge" x1="580" y1="76" x2="580" y2="106" stroke-width="1.5" marker-end="url(#arr)"/>
+  <g>
+    <rect class="box" x="524" y="110" width="112" height="50" rx="4"/>
+    <rect class="warm" x="524" y="110" width="4" height="50"/>
+    <text class="ink" x="538" y="131" font-size="12">airbyte_slot</text>
+    <text class="sub" x="538" y="148" font-size="10">pgoutput</text>
+  </g>
+  <line class="edge" x1="522" y1="135" x2="460" y2="135" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text class="page" x="491" y="128" font-size="9" text-anchor="middle">retient</text>
+
+  <g>
+    <rect class="box" x="300" y="110" width="156" height="50" rx="4"/>
+    <rect class="warm" x="300" y="110" width="4" height="50"/>
+    <text class="ink" x="314" y="131" font-size="12">PVC WAL</text>
+    <text class="warm" x="314" y="148" font-size="10">max_slot_wal_keep_size</text>
+  </g>
+
+  <text class="page" x="4" y="131" font-size="10">Le filtrage par IP se fait avant le NodePort,</text>
+  <text class="page" x="4" y="146" font-size="10">pg_hba ne voit qu'une IP de nœud.</text>
+</svg>
