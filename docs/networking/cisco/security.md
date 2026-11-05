@@ -1,5 +1,5 @@
 ---
-description: Renforcer la sécurité d'un switch ou routeur Cisco - désactiver les services inutiles et sécuriser l'accès
+description: Renforcer la sécurité d'un switch ou routeur Cisco - accès VTY par ACL, login block-for, DHCP snooping, port-security et services inutiles
 tags:
   - Cisco
   - Security
@@ -7,162 +7,159 @@ tags:
 
 # Switch Cisco : Accroître la sécurité
 
-Etant donner que le routeur est au coeur d'un réseau, il est très
-important de ne pas négliger la sécurité de celui-ci et voici comment
-le sécurité au maximum
+Étant donné que le switch ou le routeur est au cœur d'un réseau, il est très important de ne pas négliger sa sécurité. Voici comment la renforcer.
 
 ## Désactivation des interfaces inutilisées
 
-N'importe qui ayant un accès physique à votre routeur peut s'y
-connecter si vous ne désactivez pas les interfaces inutilisées
+N'importe qui ayant un accès physique à l'équipement peut s'y brancher si on ne désactive pas les interfaces inutilisées
 
 ```cisco
-    Comm1(config)#interface range fastEthernet 0/12-23
-    Comm1(config-if-range)#shutdown
+Comm1(config)#interface range fastEthernet 0/12-23
+Comm1(config-if-range)#shutdown
 ```
 
 ## ACL
 
-Il est préférable de définir uniquement certaines IP ayant accès au
-routeur via SSH, pour cela, nous utilisons les ACL
+Il est préférable de définir uniquement certaines IP ayant accès au routeur en SSH, pour cela, nous utilisons les ACL
 
 Admettons que notre adresse IP soit *192.168.1.20*
 
 ```cisco
-    Router(config)# access-list 25 permit host 192.168.1.20
-    Router(config)# access-list 25 deny any log
-    Router(config)# line vty 15
-    Router(config-line)# access-class 25 in
+Router(config)# access-list 25 permit host 192.168.1.20
+Router(config)# access-list 25 deny any log
+Router(config)# line vty 0 15
+Router(config-line)# access-class 25 in
+Router(config-line)# transport input ssh
 ```
 
-Comme cela, nous limitons la 15eme ligne VTY (telnet) à se connecter
-uniquement via l'adresse IP 192.168.1.20
+L'ACL s'applique à **toutes** les lignes VTY : une session entrante prend la première ligne libre (0, puis 1...), restreindre une seule ligne laisse les autres ouvertes à tous. Selon le modèle il y a 5 lignes (`0 4`) ou 16 (`0 15`), `show line` les liste.
 
-Nous pouvons également faire ceci pour SSH...
+`access-class` filtre telnet comme SSH. `transport input ssh` coupe telnet au passage, qui fait transiter les mots de passe en clair.
 
-Nous loggons également les tentatives non-autorisées d'accès
+Le `log` de la dernière ligne journalise les tentatives non autorisées.
 
 ## Tentatives Maximale
 
-Pour eviter le bruteforce, nous pouvons définir une politique de
-tentative d'accès sur une plage de temps donné :
+Pour éviter le bruteforce, nous pouvons définir une politique de tentative d'accès sur une plage de temps donnée :
 
 ```cisco
-    Router(config)# login block-for 120 attempts 3 within 60
+Router(config)# login block-for 120 attempts 3 within 60
+Router(config)# login quiet-mode access-class 25
 ```
 
-Cette ligne de commande désactivera pour une durée de 2 minutes (**120**
-secondes) au bout de **3** essaie dans une période d'1 minute (**60**
-secondes)
+La première ligne bloque les connexions pendant 2 minutes (**120** secondes) après **3** échecs en 1 minute (**60** secondes). Ce blocage vaut pour tout le monde, admin légitime compris : sans `login quiet-mode access-class`, n'importe qui peut nous verrouiller dehors en ratant 3 mots de passe. La seconde ligne laisse passer les IP de l'ACL 25 pendant le blocage.
 
 ## Taille de mots de passe minimum
 
-Afin d'éviter le bruteforce et de casser un mot de passe à cause
-d'une complexité trop faible, nous pouvons limiter le nomre de
-caractères minimum d'un passwords (8 étant pas mal)
+Afin d'éviter le bruteforce et de casser un mot de passe à cause d'une complexité trop faible, nous pouvons imposer un nombre de caractères minimum. 8 est un plancher, on vise plutôt 12 ou plus :
 
 ```cisco
-    Router(config)# security passwords min-length 8
+Router(config)# security passwords min-length 12
 ```
+
+La règle ne s'applique qu'aux mots de passe définis après la commande, les existants ne sont pas revérifiés.
 
 ## Timeout
 
-En cas d'oubli de déconnexion, il se peut que votre interface reste
-active, c'est pour cela que nous allons définir une durée de timeout :
+En cas d'oubli de déconnexion, une session peut rester ouverte indéfiniment, c'est pour cela que nous définissons une durée de timeout :
 
 ```cisco
-    Router(config)# line vty 0 4
-    Router(config-vty)# exec-timeout 10
+Router(config)# line vty 0 15
+Router(config-line)# exec-timeout 5 0
 ```
 
-Au bout de **10 minutes** d'inactivité sur l'interface **VTY**,
-celle-ci sera automatiquement desactivée
+Au bout de **5 minutes** d'inactivité sur une ligne **VTY**, la session est déconnectée. La valeur par défaut d'IOS est déjà de 10 minutes : la commande sert à descendre en dessous, et surtout à vérifier qu'aucun `exec-timeout 0 0` (jamais de timeout) ne traîne dans la config.
 
 ## DHCP Snooping
 
-Le DHCP Snooping consiste à une attaque MITM et un serveur DHCP pirate
-va se faire passer pour un serveur legit, afin de fournir des
-informations étonnées (Mauvaise passerelle, mauvais DNS..)
+Le DHCP Snooping protège contre une attaque MITM où un serveur DHCP pirate se fait passer pour le serveur légitime, afin de fournir de mauvaises informations (mauvaise passerelle, mauvais DNS...).
+
+On l'active globalement, puis sur les VLAN à protéger. La commande globale seule ne fait rien : le snooping n'est actif que sur les VLAN listés.
 
 ```cisco
-    switch(config)#ip dhcp snooping
+switch(config)#ip dhcp snooping
+switch(config)#ip dhcp snooping vlan 10,20
 ```
 
-A partir de ce moment, tous les ports seront considérés comme étant
-« untrust » et donc aucun ne sera capable de fournir du DHCP. Il nous
-faut donc placer un port comme étant « trust »
+À partir de ce moment, tous les ports de ces VLAN sont considérés comme « untrust » et donc aucun ne peut fournir du DHCP. Il nous faut donc placer le port qui mène au vrai serveur DHCP (ou à l'uplink) comme « trust »
 
 ```cisco
-    switch(config)#interface fa0/1
-    switch(config-if)#ip dhcp snooping trust
+switch(config)#interface fa0/1
+switch(config-if)#ip dhcp snooping trust
 ```
 
-On peut également limiter le nombre de requête par seconde (limit-rate)
+On peut également limiter le nombre de paquets DHCP par seconde sur les ports untrust (limit rate)
 
 ```cisco
-    switch(config-if)#ip dhcp snooping limit rate 100
+switch(config-if)#ip dhcp snooping limit rate 100
 ```
 
-## Limitation d'adresse MAC
+## Port security
 
-On peut limiter le nombre d'adresse MAC utilisable par port
+Le port security n'est actif sur aucun port par défaut. On l'active par port, en mode access, avec `switchport port-security` seul : sans cette commande, `maximum`, `violation`, `sticky` et les adresses MAC statiques sont acceptés mais n'ont aucun effet.
 
 ```cisco
-    Comm1(config-if)#switchport port-security maximum 1
+Comm1(config)#interface fastEthernet 0/18
+Comm1(config-if)#switchport mode access
+Comm1(config-if)#switchport port-security
 ```
 
-## Sécurité en cas de violation
+### Limitation d'adresse MAC
 
-Il existe différents mode de violation de droits
+On peut limiter le nombre d'adresses MAC utilisables par port. Le défaut est déjà de 1 adresse, on ne le précise que pour en autoriser plus (un téléphone IP avec un PC derrière, par exemple)
+
+```cisco
+Comm1(config-if)#switchport port-security maximum 2
+```
+
+### Sécurité en cas de violation
+
+Il existe différents modes de violation de droits
 
 ![Port Security Violation](./_img/port-security-violations.webp)
 
-Par défaut, les ports sont en protect, pas très utile donc.
+Par défaut, les ports sont en shutdown : à la première violation, le port passe en err-disabled et il faut le réactiver à la main (`shutdown` puis `no shutdown`). C'est déjà le mode le plus strict.
 
-Il conviendrait plus de placer les ports en restrict voir en shutdown en
-fonction de l'importance de celui-ci
+On ne passe en restrict (le trafic des MAC inconnues est jeté et journalisé, le port reste up) que là où couper le port gêne plus que l'intrusion
 
 ```cisco
-    Comm1(config)#interface fastEthernet 0/18
-    Comm1(config-if)#switchport port-security violation shutdown
+Comm1(config)#interface fastEthernet 0/18
+Comm1(config-if)#switchport port-security violation restrict
 ```
 
-## Affectation d'adresse MAC statique
+### Affectation d'adresse MAC statique
 
-Afin d'améliorer au maximum la sécurité, nous pouvons attribuer de
-manière statique, ou bien en mode « apprentissage » une adresse MAC sur
-un port défini.
+Afin d'améliorer au maximum la sécurité, nous pouvons attribuer de manière statique, ou bien en mode « apprentissage » une adresse MAC sur un port défini.
 
-Cela empêche de se connecter à un port, même si celui-ci est activé
+Cela empêche un appareil inconnu de se connecter à un port, même si celui-ci est activé
 
-### En mode apprentissage
+#### En mode apprentissage
 
-En mode apprentissage, le switch mettra en whitelist la première adresse
-MAC qui essaiera de se connecter au port
+En mode apprentissage (sticky), le switch met en allowlist les premières adresses MAC qui se connectent au port, jusqu'au `maximum`
 
 ```cisco
-    Comm1(config)#interface fastEthernet 0/18
-    Comm1(config-if)#switchport port-security mac-address sticky
+Comm1(config)#interface fastEthernet 0/18
+Comm1(config-if)#switchport port-security mac-address sticky
 ```
 
-### En mode statique
+Les adresses apprises sont écrites dans la running-config seulement : sans `copy running-config startup-config`, elles sont perdues au reboot.
 
-En mode statique, seule l'adresse MAC enregistrée pourra se connecter
-au port
+#### En mode statique
+
+En mode statique, seule l'adresse MAC enregistrée peut se connecter au port
 
 ```cisco
-    Comm1(config)#interface fastEthernet 0/18
-    switchport port-security mac-address 0002.16E8.C285
+Comm1(config)#interface fastEthernet 0/18
+Comm1(config-if)#switchport port-security mac-address 0002.16E8.C285
 ```
 
 ## Désactiver les services inutiles
 
-Un service utilisé représente toujours une potentielle faille, ainsi
-qu'une charge CPU inutile.
+Un service actif représente toujours une potentielle faille, ainsi qu'une charge CPU inutile.
 
-Si nous ne nous en servons pas, il est toujours de bonne pratique de les
-désactivés.
+Si nous ne nous en servons pas, il est toujours de bonne pratique de les désactiver. L'interface web existe en HTTP et en HTTPS, on coupe les deux :
 
 ```cisco
-    Comm1(config)# no ip http server
+Comm1(config)# no ip http server
+Comm1(config)# no ip http secure-server
 ```
