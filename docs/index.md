@@ -140,6 +140,7 @@ Le plan complet est ci-dessous, sinon la recherche fait le job.
 ### Operators
 
 - [Comment rollout restart un composant Strimzi](kubernetes/operator/strimzi/rollout_strimzi.md)
+- [External Secrets Operator : alerting sur la sync, refreshInterval et HA du controller](kubernetes/operator/external-secrets/sync_alerting.md)
 
 ### Troubleshooting
 
