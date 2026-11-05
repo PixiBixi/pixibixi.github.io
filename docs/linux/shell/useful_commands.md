@@ -12,16 +12,16 @@ tags:
 tcpdump -vvvv -tttt -i ethX icmp6 and ip6[40] = 134
 ```
 
-* Pour pinguer une adresse du link-local, ne pas oublier le **%ethX**
+* Pour pinguer une adresse du link-local, ne pas oublier le **%ethX**. `ping6` n'est plus installé partout, `ping -6` marche avec iputils
 
 ```bash
-ping6 fe80::2%eth0
+ping -6 fe80::2%eth0
 ```
 
-* Permet de faire un SMART sur un HDD en RAID (DELL)
+* Permet de faire un SMART sur un HDD derrière un contrôleur RAID Dell PERC (MegaRAID) : `N` est l'ID du disque sur le contrôleur, `/dev/sda` n'importe quel volume qu'il expose
 
 ```bash
-smartctl -T permissive -a /dev/sgX
+smartctl -a -d megaraid,N /dev/sda
 ```
 
 * Permet d'enregistrer les trames en format pcap puis de les décoder
@@ -54,22 +54,22 @@ lvrename vg02 lvold lvnew
     (afin qu'elle ralentisse le moins possible les autres programmes)
 
 ```bash
-alias ni=nice -n 19 ionice -c3 >> ~/.zshrc
+echo "alias ni='nice -n 19 ionice -c3'" >> ~/.zshrc
+source ~/.zshrc
 ni tar cvfz monarchive.tgz monrepertoire/
 ```
 
-* Copie les fichiers localement en ignorant les symlink et en
-    précisant un port **(A faire sur le serveur où les données sont
-    situées de base)**
+* Copie les fichiers vers un autre serveur en précisant un port SSH, les symlinks sont copiés tels quels (`-a`) **(A faire sur le serveur où les données sont
+    situées de base)**. Pas de `$PATH` comme destination : c'est la variable du shell
 
 ```bash
-rsync --progress -avhe ssh -p 1998 . jeremy@$IP:$PATH
+rsync --progress -avh -e 'ssh -p 1998' . jeremy@"$IP":"$DEST"
 ```
 
 * Installe tous les packages 7.2 existants par les 7.3
 
 ```bash
-dpkg -l|grep php7.2|awk {print $2}|sed s/7.2/7.3/g|xargs apt install -y
+dpkg -l | awk '/^ii +php7\.2/ {print $2}' | sed 's/^php7\.2/php7.3/' | xargs apt install -y
 ```
 
 * N'utilise pas l'alias de ls
@@ -87,7 +87,7 @@ fallocate -l 10G test.img
 * Récuperer le modèle de serveur
 
 ```bash
-dmidecode | grep -A3 ^System Information
+dmidecode -t system
 ```
 
 * Test le nouveau nom de l'interface
@@ -103,19 +103,23 @@ udevadm test-builtin net_id /sys/class/net/eth0
 mdadm --create /dev/md0 --level=5 --raid-devices=3 /dev/mapper/sdb1 /dev/mapper/sdc1 /dev/mapper/sdd1 --assume-clean
 ```
 
+!!! danger
+    `--create` réécrit les superblocks : ça ne retrouve les données qu'avec exactement le même ordre de disques, chunk, layout et version de metadata que l'array d'origine, et la moindre écriture sur un array mal recréé les détruit. On tente d'abord `mdadm --assemble --force`, et on teste le `--create` sur des overlays.
+
 !!! Warning
     La reconstruction du raid est "bridé" par des paramètres sysctl, `dev.raid.speed_limit_min` et `dev.raid.speed_limit_max`
 
-* Se reendre dans le BIOS directement au reboot
+* Se rendre dans le BIOS directement au reboot
 
 ```bash
 systemctl reboot --firmware-setup
 ```
 
-* Lister les crontabs des utilisateurs
+* Lister les crontabs des utilisateurs (Debian/Ubuntu, c'est `/var/spool/cron/` sur RHEL)
 
 ```bash
-cat /var/spool/cron/crontabs/
+sudo ls /var/spool/cron/crontabs/
+sudo sh -c 'tail -n +1 /var/spool/cron/crontabs/*'
 ```
 
 * Backup & Restore des ACL (Fortement utile pour une modification de
@@ -138,10 +142,10 @@ ssh-keygen -y -f privatekey > pubkey
 iostat -N 10 -kx -h
 ```
 
-* Top 10 des commandes qu'on utilise le plus
+* Top 10 des commandes qu'on utilise le plus (sous zsh, `history 1` pour avoir tout l'historique)
 
 ```bash
-history | awk {CMD[$2]++;count++;}END { for (a in CMD)print CMD[a] " " CMD[a]/count*100 "% " a;} | grep -v "./" | column -c3 -s " " -t | sort -nr | nl |  head -n10
+history | awk '{CMD[$2]++;count++;}END { for (a in CMD)print CMD[a] " " CMD[a]/count*100 "% " a;}' | grep -v "./" | column -c3 -s " " -t | sort -nr | nl |  head -n10
 ```
 
 * Test compression des fichiers selon différents algos
@@ -181,10 +185,10 @@ nmap --script ssl-enum-ciphers -p 443 clubic.com
 crm_node --force -R $node
 ```
 
-* varnishlog des requêtes non cachées
+* varnishlog des requêtes non cachées : `-q` filtre les transactions MISS et PASS, `-i` choisit seulement les tags affichés
 
 ```bash
-varnishlog -i Begin,ReqUrl,Link,BereqURL
+varnishlog -g request -q 'VCL_call eq "MISS" or VCL_call eq "PASS"' -i Begin,ReqURL,Link,BereqURL
 ```
 
 * Remove un LV inexistant (PV ou VG mort)
@@ -198,7 +202,7 @@ dmsetup remove vgname-lvname
 ```bash
 [17:41] ✔ X@hostname.tld:~
 └─$ dpkg-query -S "*/dig"
-dnsutils: /usr/bin/dig
+bind9-dnsutils: /usr/bin/dig
 ```
 
 * Analyser le fichier mysql-slow
