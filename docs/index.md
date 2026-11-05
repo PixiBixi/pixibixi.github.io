@@ -171,6 +171,7 @@ Le plan complet est ci-dessous, sinon la recherche fait le job.
 - [Upgrade sa version de PostgreSQL](databases/postgres/upgrade_version.md)
 - [PostgreSQL Replication](databases/postgres/postgresql_replication.md)
 - [Postgres : les commandes qui servent](databases/postgres/commands.md)
+- [CDC sur CloudNativePG : accès, rétention WAL et monitoring](databases/postgres/cnpg_cdc.md)
 
 ### Redis
 

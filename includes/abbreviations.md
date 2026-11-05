@@ -1,6 +1,7 @@
 <!-- markdownlint-disable-file MD041 -->
 *[autodiscover]: Mode où Renovate traite tous les repos auxquels il a accès, au lieu d'une liste explicite
 *[bump]: Incrément du numéro de version (patch, minor ou major) déduit des commits depuis le dernier tag
+*[CDC]: Change Data Capture, la lecture en continu des modifications d'une base pour les répliquer ailleurs
 *[CGO]: Mécanisme qui permet à du code Go d'appeler du C, au prix d'une dépendance à la libc et d'un binaire non statique
 *[CVE]: Common Vulnerabilities and Exposures, l'identifiant public d'une vulnérabilité connue
 *[dependency dashboard]: Issue que Renovate tient à jour dans le repo, avec les mises à jour en attente et des cases pour les déclencher
@@ -14,6 +15,7 @@
 *[KRaft]: Mode de Kafka sans ZooKeeper, où les controllers gèrent les métadonnées via Raft
 *[lockfile]: Fichier qui fige la version exacte de chaque dépendance installée, comme go.sum ou package-lock.json
 *[LRU]: Least Recently Used, on évicte d'abord l'entrée lue le moins récemment
+*[LSN]: Log Sequence Number, la position d'un enregistrement dans le WAL PostgreSQL
 *[MTU]: Maximum Transmission Unit, la taille maximale d'un paquet sur le lien
 *[NUMA]: Non-Uniform Memory Access, une machine multi-socket où la latence mémoire dépend du CPU
 *[NXDOMAIN]: Réponse DNS qui indique que le nom demandé n'existe pas

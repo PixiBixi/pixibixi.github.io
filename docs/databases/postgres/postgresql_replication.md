@@ -215,4 +215,5 @@ Autres informations utiles
 
 * [Postgres : les commandes qui servent](commands.md)
 * [Upgrade sa version de PostgreSQL](upgrade_version.md)
+* [CDC sur CloudNativePG](cnpg_cdc.md) - réplication logique vers un outil de CDC, slots et rétention WAL
 * [Debug d'une réplication MySQL primaire/réplica](../mysql/troubleshooting/replication_slave.md)
