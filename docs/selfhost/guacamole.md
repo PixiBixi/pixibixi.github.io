@@ -1,8 +1,14 @@
 ---
-description: "Apache Guacamole : bastion RDP, SSH et VNC accessible au navigateur, installation par Docker Compose ou compilation Debian, reverse proxy nginx avec websockets, types de connexion et alternatives."
+description: "Apache Guacamole : bastion RDP, SSH et VNC accessible au navigateur, installation par Docker Compose ou compilation sur Debian 13, reverse proxy nginx avec websockets, types de connexion et alternatives."
 tags:
   - Guacamole
   - Remote Desktop
+variables:
+  - name: guac_version
+    default: 1.6.0
+tested_with:
+  - "Guacamole 1.6.0"
+  - "Debian 13"
 ---
 
 # Apache Guacamole : un bastion RDP, SSH et VNC dans le navigateur
@@ -15,7 +21,7 @@ C'est l'usage qui justifie le mieux la mise en place et il repose sur une propri
 
 - **Un seul point d'entrée exposé**, le serveur Guacamole en HTTPS. Le 3389 et le 22 restent fermés côté Internet.
 - **Aucun agent sur les cibles**, contrairement à la plupart des solutions de PAM. Guacamole parle les protocoles natifs, la machine cible ne sait pas qu'elle est derrière un bastion.
-- **Enregistrement de session** pour RDP et VNC, sous forme de flux rejouable, ce qui répond à une bonne partie des exigences d'audit.
+- **Enregistrement de session** sur tous les protocoles (RDP, VNC, SSH, telnet), sous forme de flux rejouable, plus un typescript des saisies en SSH et telnet. Ça répond à une bonne partie des exigences d'audit.
 - **MFA** via TOTP ou Duo et authentification centralisée par LDAP, SAML ou OpenID Connect avec les extensions officielles.
 - Les identifiants des cibles sont stockés dans Guacamole, donc l'utilisateur peut se connecter à un serveur **sans jamais connaître son mot de passe**.
 
@@ -37,7 +43,7 @@ C'est la voie la plus courte et celle qui évite la compilation de guacd et ses 
 
 ```bash
 mkdir -p ~/guacamole/init
-docker run --rm guacamole/guacamole:1.6.0 \
+docker run --rm guacamole/guacamole:<guac_version> \
   /opt/guacamole/bin/initdb.sh --postgresql > ~/guacamole/init/initdb.sql
 ```
 
@@ -57,11 +63,11 @@ services:
     restart: unless-stopped
 
   guacd:
-    image: guacamole/guacd:1.6.0
+    image: guacamole/guacd:<guac_version>
     restart: unless-stopped
 
   guacamole:
-    image: guacamole/guacamole:1.6.0
+    image: guacamole/guacamole:<guac_version>
     depends_on: [postgres, guacd]
     environment:
       GUACD_HOSTNAME: guacd
@@ -93,13 +99,12 @@ location / {
     proxy_set_header Connection $http_connection;
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     proxy_set_header X-Forwarded-Proto $scheme;
-    proxy_cookie_path /guacamole/ /;   # indispensable pour que la session tienne
     # Une session inactive ne doit pas être coupée par le proxy.
     proxy_read_timeout 3600s;
 }
 ```
 
-Le `proxy_cookie_path` est ce qui manque le plus souvent : sans lui, le cookie de session est posé sur `/guacamole/` alors que l'utilisateur navigue sur `/` et la connexion boucle sur l'écran de login.
+Pas besoin de `proxy_cookie_path` pour servir Guacamole à la racine : l'authentification ne passe pas par un cookie, le token est gardé dans le `localStorage` du navigateur et renvoyé à chaque appel.
 
 ## Les types de connexion
 
@@ -111,58 +116,75 @@ Les paramètres qui comptent au moment de créer une connexion dans l'interface.
 
 ## Installation depuis les sources sous Debian
 
+Utile quand on ne veut pas de Docker sur le bastion. Sur Debian 13 ça demande 2 contournements, d'où la préférence pour Docker plus haut :
+
+- Pas de Tomcat 9, et la webapp 1.6.0 est en `javax.servlet` : elle ne démarre pas telle quelle sur Tomcat 10. On convertit le `.war` avec `javax2jakarta`
+- Pas de FreeRDP 2, seulement FreeRDP 3, dont le support est encore marqué expérimental par Guacamole (RemoteApp notamment). Et guacamole-server 1.6.0 compile avec `-Werror` : les fonctions dépréciées de FreeRDP 3.15 cassent le build, on désactive ce warning-là
+
 <div class="steps" markdown>
 
-1. Utile quand on ne veut pas de Docker sur le bastion, ou pour compiler avec des options particulières. Les dépendances varient légèrement entre Debian et Ubuntu, la [documentation officielle](https://guacamole.apache.org/doc/gug/installing-guacamole.html) fait foi.
+1. Les dépendances, les noms de paquets varient entre Debian et Ubuntu, la [documentation officielle](https://guacamole.apache.org/doc/gug/installing-guacamole.html) fait foi.
 
     ```bash
-    sudo apt install build-essential tomcat10 libjpeg62-turbo-dev libjpeg62-dev libpng-dev \
-      libtool-bin uuid-dev libossp-uuid-dev libpulse-dev libcairo2-dev libssl-dev \
-      libvncserver-dev libvorbis-dev libtelnet-dev libssh2-1-dev libpango1.0-dev \
-      freerdp2-dev libwebsockets-dev libwebp-dev
+    sudo apt install build-essential libcairo2-dev libjpeg62-turbo-dev libpng-dev \
+      libtool-bin uuid-dev libpango1.0-dev libssh2-1-dev libtelnet-dev \
+      libvncserver-dev libwebsockets-dev libpulse-dev libssl-dev libvorbis-dev \
+      libwebp-dev freerdp3-dev tomcat10 tomcat-jakartaee-migration
     ```
 
-2. Les archives des versions courantes sont sur les miroirs Apache, les anciennes basculent sur `archive.apache.org` où les liens `closer.cgi` ne fonctionnent plus :
+2. Les archives des versions courantes sont sur les miroirs Apache, les anciennes basculent sur `archive.apache.org` où les liens `closer.cgi` ne fonctionnent plus. On vérifie le `.war` avec son checksum :
 
     ```bash
-    VERSION=1.6.0
-    wget -O - "https://apache.org/dyn/closer.cgi?action=download&filename=guacamole/${VERSION}/source/guacamole-server-${VERSION}.tar.gz" | tar xzf -
-    wget -O "guacamole-${VERSION}.war" "https://apache.org/dyn/closer.cgi?action=download&filename=guacamole/${VERSION}/binary/guacamole-${VERSION}.war"
+    wget -O - "https://apache.org/dyn/closer.cgi?action=download&filename=guacamole/<guac_version>/source/guacamole-server-<guac_version>.tar.gz" | tar xzf -
+    wget -O "guacamole-<guac_version>.war" "https://apache.org/dyn/closer.cgi?action=download&filename=guacamole/<guac_version>/binary/guacamole-<guac_version>.war"
+    wget "https://downloads.apache.org/guacamole/<guac_version>/binary/guacamole-<guac_version>.war.sha256"
+    sha256sum -c "guacamole-<guac_version>.war.sha256"
     ```
 
-3. La compilation du serveur, avec le lien symbolique FreeRDP sans lequel les connexions RDP échouent au chargement des greffons :
+3. La compilation de guacd. `configure` installe les greffons RDP directement dans le dossier de FreeRDP (`/usr/lib/<arch>/freerdp3`), pas besoin de lien symbolique :
 
     ```bash
-    cd guacamole-server-${VERSION}
-    ./configure --with-systemd-dir=/etc/systemd/system
+    cd guacamole-server-<guac_version>
+    ./configure --with-systemd-dir=/etc/systemd/system CFLAGS="-O2 -Wno-error=deprecated-declarations"
     make -j"$(nproc)"
     sudo make install
-    sudo mkdir -p /usr/lib/x86_64-linux-gnu/freerdp/
-    sudo ln -s /usr/local/lib/freerdp/*.so /usr/lib/x86_64-linux-gnu/freerdp/
     sudo ldconfig
+    cd ..
     ```
 
-4. Puis le déploiement du client dans Tomcat et la configuration :
+4. Le déploiement de la webapp, convertie pour Tomcat 10 :
 
     ```bash
-    sudo cp "guacamole-${VERSION}.war" /var/lib/tomcat10/webapps/guacamole.war
-    sudo mkdir -p /etc/guacamole /usr/share/tomcat10/.guacamole
-    sudo cp guacamole-client-${VERSION}/guacamole/doc/example/{guacamole.properties,user-mapping.xml} /etc/guacamole/
-    sudo ln -s /etc/guacamole/guacamole.properties /usr/share/tomcat10/.guacamole/guacamole.properties
-    sudo chown tomcat10 /etc/guacamole/user-mapping.xml
+    sudo javax2jakarta "guacamole-<guac_version>.war" /var/lib/tomcat10/webapps/guacamole.war
+    ```
+
+5. La configuration. Guacamole lit `/etc/guacamole` par défaut (tant que `~/.guacamole` n'existe pas pour l'utilisateur de Tomcat) et y charge `user-mapping.xml` tout seul, sans option à ajouter :
+
+    ```bash
+    sudo mkdir -p /etc/guacamole
+    printf 'guacd-hostname: localhost\nguacd-port: 4822\n' | sudo tee /etc/guacamole/guacamole.properties
+    ```
+
+    ```xml title="/etc/guacamole/user-mapping.xml"
+    <user-mapping>
+        <authorize username="admin" password="changeme">
+            <connection name="serveur-ssh">
+                <protocol>ssh</protocol>
+                <param name="hostname">10.0.0.10</param>
+                <param name="port">22</param>
+            </connection>
+        </authorize>
+    </user-mapping>
+    ```
+
+    Le fichier contient des mots de passe en clair, seul Tomcat doit pouvoir le lire :
+
+    ```bash
+    sudo chown tomcat /etc/guacamole/user-mapping.xml
     sudo chmod 600 /etc/guacamole/user-mapping.xml
-    ```
-
-    ```ini title="/etc/guacamole/guacamole.properties"
-    guacd-hostname: localhost
-    guacd-port: 4822
-    # Le chemin vers user-mapping.xml doit être absolu.
-    auth-provider: net.sourceforge.guacamole.net.basic.BasicFileAuthenticationProvider
-    basic-user-mapping: /etc/guacamole/user-mapping.xml
-    ```
-
-    ```bash
-    sudo systemctl restart tomcat10 guacd
+    sudo systemctl daemon-reload
+    sudo systemctl enable --now guacd
+    sudo systemctl restart tomcat10
     ```
 
 </div>
