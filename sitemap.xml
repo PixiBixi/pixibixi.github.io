@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://wiki.jdelgado.fr/</loc>
-    <lastmod>2026-11-05</lastmod>
+    <lastmod>2026-11-08</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/about/</loc>
@@ -175,6 +175,10 @@
   <url>
     <loc>https://wiki.jdelgado.fr/databases/</loc>
     <lastmod>2026-08-23</lastmod>
+  </url>
+  <url>
+    <loc>https://wiki.jdelgado.fr/databases/aerospike/monitoring/</loc>
+    <lastmod>2026-11-08</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/databases/elasticsearch/log_slow_queries/</loc>
@@ -1042,7 +1046,11 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/web/nginx/php_custom_version/</loc>
-    <lastmod>2026-10-13</lastmod>
+    <lastmod>2026-11-08</lastmod>
+  </url>
+  <url>
+    <loc>https://wiki.jdelgado.fr/web/php/sury/</loc>
+    <lastmod>2026-11-08</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/web/varnish/config/</loc>
