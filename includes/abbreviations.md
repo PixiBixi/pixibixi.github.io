@@ -1,4 +1,5 @@
 <!-- markdownlint-disable-file MD041 -->
+*[AKO]: Aerospike Kubernetes Operator, l'operator qui déploie et pilote les clusters Aerospike dans Kubernetes
 *[autodiscover]: Mode où Renovate traite tous les repos auxquels il a accès, au lieu d'une liste explicite
 *[bump]: Incrément du numéro de version (patch, minor ou major) déduit des commits depuis le dernier tag
 *[CDC]: Change Data Capture, la lecture en continu des modifications d'une base pour les répliquer ailleurs

@@ -173,6 +173,10 @@ Le plan complet est ci-dessous, sinon la recherche fait le job.
 - [Postgres : les commandes qui servent](databases/postgres/commands.md)
 - [CDC sur CloudNativePG : accès, rétention WAL et monitoring](databases/postgres/cnpg_cdc.md)
 
+### Aerospike
+
+- [Aerospike sur Kubernetes : stop-writes, prédiction, connexions et backups](databases/aerospike/monitoring.md)
+
 ### Redis
 
 - [Déployer un Redis en High Availability](databases/redis/cluster_ha.md)
