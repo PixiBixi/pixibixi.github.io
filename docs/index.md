@@ -302,6 +302,7 @@ Le plan complet est ci-dessous, sinon la recherche fait le job.
 - [Forcer le SSL sous nginx](web/nginx/nginx_ssl.md)
 - [Installer son Serveur Web : nginx, PHP-FPM et MariaDB](web/nginx/installation.md)
 - [Installer une version custom de PHP](web/nginx/php_custom_version.md)
+- [PHP avec Sury sur Debian : EXPKEYSIG, pinning et patch de CVE avec Ansible](web/php/sury.md)
 - [Être encore plus safe en customisant son header Server nginx](web/nginx/custom_server_header.md)
 - [Obtenir les bonnes IP sur apache derrière un reverse proxy](web/nginx/fetch_good_ips.md)
 

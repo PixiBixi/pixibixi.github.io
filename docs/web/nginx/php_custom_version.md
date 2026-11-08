@@ -27,3 +27,4 @@ apt update && apt install -y php8.2-fpm
 ## Voir aussi
 
 * [Installer son Serveur Web : nginx, PHP-FPM et MariaDB](installation.md) - Configuration complète de PHP-FPM avec nginx
+* [PHP avec Sury sur Debian](../php/sury.md) - clé du dépôt, pinning et patch de CVE avec Ansible
