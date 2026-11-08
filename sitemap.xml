@@ -145,6 +145,10 @@
     <lastmod>2026-08-22</lastmod>
   </url>
   <url>
+    <loc>https://wiki.jdelgado.fr/cloud/gcloud/inter_zone_traffic/</loc>
+    <lastmod>2026-11-08</lastmod>
+  </url>
+  <url>
     <loc>https://wiki.jdelgado.fr/cloud/gcloud/network_tiers/</loc>
     <lastmod>2026-11-05</lastmod>
   </url>
@@ -762,7 +766,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/monitoring/lgtm/thanos/</loc>
-    <lastmod>2026-10-21</lastmod>
+    <lastmod>2026-11-08</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/monitoring/lgtm/tips_lgtm/</loc>
