@@ -1,365 +1,204 @@
 ---
-description: Configuration VCL complète de Varnish - caching, compression, purge, cookies et optimisations WordPress
+description: Configuration VCL de Varnish et Vinyl Cache - cache des fichiers statiques, cookies, purge par ACL, en-têtes et config WordPress
 tags:
   - Varnish
+  - WordPress
+  - Vinyl Cache
+tested_with:
+  - "Varnish 8.0"
+  - "Vinyl Cache 9.0"
 ---
 
 # Config varnish
 
-Bonne config trouvée de Git que je reposte ici si jamais : [Gist](https://gist.github.com/davidthingsaker/6b0997b641fdd370a395)
+2 configs VCL, adaptées de 2 gists ([générique](https://gist.github.com/davidthingsaker/6b0997b641fdd370a395), [WordPress](https://gist.github.com/dz0ny/1570859/05fa3a96b45ceb6a78e424be420bafdb9f072a7e)) qui datent de Varnish 3 et 4 : la seconde ne compilait plus du tout, la première mettait en cache les pages avec cookie de session.
 
-```vcl title="Example : /etc/varnish/default.vcl"
-#########################################################################
-# This is an example VCL file for Varnish 4.0.              #
-# From: <https://gist.github.com/davidthingsaker/6b0997b641fdd370a395>    #
-# LICENSE: If this could help you in any way, you are obliged to use it #
-# for free with no limitations.                     #
-#########################################################################
+Depuis la 9.0 (mars 2026), le projet open source s'appelle [Vinyl Cache](https://vinyl-cache.org/) : `varnishd` devient `vinyld` (`vinyllog`, `vinylstat`...), la config passe dans `/etc/vinyl-cache/`, le service s'appelle `vinyl-cache` et l'en-tête `X-Varnish` devient `X-Vinyl`. Le nom Varnish reste à une distribution aval de Varnish Software. Les 2 VCL compilent sur les 2, sans changement.
 
-# Marker to tell the VCL compiler that this VCL has been adapted to the
-# new 4.0 format.
-vcl 4.0;
+Le principe des 2 : on ne termine **pas** `vcl_recv` ni `vcl_backend_response` par un `return`. Varnish enchaîne alors sur son `builtin.vcl`, qui fait déjà le travail dangereux à refaire à la main :
 
-import std;
+- `vcl_recv` : `pass` sur tout ce qui n'est pas GET/HEAD, sur `Authorization` et sur `Cookie`
+- `vcl_backend_response` : rien en cache si le backend envoie `Set-Cookie`, `Cache-Control: private`/`no-store`/`no-cache`, un TTL à 0 ou `Vary: *`
 
-# Default backend definition. Set this to point to your content server.
+Un `return (hash)` ou `return (deliver)` en fin de sub court-circuite tout ça, et une page avec cookie de session finit servie à tout le monde.
+
+On ne touche pas non plus à `Accept-Encoding` : avec `http_gzip_support` (actif par défaut), Varnish demande du gzip au backend, stocke une seule version compressée et la décompresse pour les clients qui ne savent pas la lire. `deflate` n'est pas géré, le normaliser ne fait que multiplier les variantes en cache.
+
+## Config générique
+
+Les fichiers statiques perdent leurs cookies dans les 2 sens et restent 5 jours en cache, `/blog` n'est jamais caché, et le reste suit les en-têtes du backend (1 jour s'il n'en envoie aucun).
+
+```vcl title="/etc/vinyl-cache/default.vcl"
+vcl 4.1;
+
 backend default {
     .host = "127.0.0.1";
     .port = "8080";
 }
 
 sub vcl_recv {
-    # Happens before we check if we have this in cache already.
-    #
-    # Typically you clean up the request here, removing cookies you dont need,
-    # rewriting the request, etc.
-
-    # Properly handle different encoding types
-    if (req.http.Accept-Encoding) {
-        if (req.url ~ "\.(jpg|jpeg|png|gif|gz|tgz|bz2|tbz|mp3|ogg|swf|woff)$") {
-                # No point in compressing these
-                unset req.http.Accept-Encoding;
-        } elsif (req.http.Accept-Encoding ~ "gzip") {
-                set req.http.Accept-Encoding = "gzip";
-        } elsif (req.http.Accept-Encoding ~ "deflate") {
-                set req.http.Accept-Encoding = "deflate";
-        } else {
-                # unknown algorithm (aka crappy browser)
-            unset req.http.Accept-Encoding;
-        }
+    # Static files: drop cookies so the builtin can cache them
+    if (req.url ~ "\.(js|css|jpe?g|png|gif|ico|svg|webp|woff2?|mp3|ogg|gz|tgz|bz2|zip)(\?.*)?$") {
+        unset req.http.Cookie;
     }
 
-    # Cache files with these extensions
-    if (req.url ~ "\.(js|css|jpg|jpeg|png|gif|gz|tgz|bz2|tbz|mp3|ogg|swf|woff)$") {
-        unset req.http.cookie;
-        return (hash);
+    # Never cache the blog
+    if (req.url ~ "^/blog") {
+        return (pass);
     }
 
-    # Dont cache anything thats on the blog page or thats a POST request
-    if (req.url ~ "^/blog" || req.method == "POST") {
-            return (pass);
-    }
-
-    # This is Laravel specific, we have session-monster which sets a no-session header if we dont really need the set session cookie.
-    # Check for this and unset the cookies if not required
-    # Except if its a POST request
+    # Laravel session-monster sets X-No-Session when the session cookie is not needed
     if (req.http.X-No-Session ~ "yeah" && req.method != "POST") {
-            unset req.http.cookie;
+        unset req.http.Cookie;
     }
 
-    return (hash);
+    # No return: the builtin passes POST, Authorization and Cookie
 }
 
 sub vcl_backend_response {
-    # Happens after we have read the response headers from the backend.
-    #
-    # Here you clean the response headers, removing silly Set-Cookie headers
-    # and other mistakes your backend does.
+    if (bereq.url ~ "\.(js|css|jpe?g|png|gif|ico|svg|webp|woff2?|mp3|ogg|gz|tgz|bz2|zip)(\?.*)?$") {
+        unset beresp.http.Set-Cookie;
+        set beresp.ttl = 5d;
+    } elsif (!beresp.http.Cache-Control && !beresp.http.Expires) {
+        set beresp.ttl = 1d;
+    }
 
-    # This is how long Varnish will cache content. Set at top for visibility.
-    set beresp.ttl = 1d;
-
-    if ((bereq.method == "GET" && bereq.url ~ "\.(css|js|xml|gif|jpg|jpeg|swf|png|zip|ico|img|wmf|txt)$") ||
-                bereq.url ~ "\.(minify).*\.(css|js).*" ||
-                bereq.url ~ "\.(css|js|xml|gif|jpg|jpeg|swf|png|zip|ico|img|wmf|txt)\?ver") {
-                unset beresp.http.Set-Cookie;
-                set beresp.ttl = 5d;
-        }
-
-    # Unset all cache control headers bar Age.
-    unset beresp.http.etag;
-    unset beresp.http.Cache-Control;
-        unset beresp.http.Pragma;
-
-    # Unset headers we never want someone to see on the front end
     unset beresp.http.Server;
-        unset beresp.http.X-Powered-By;
+    unset beresp.http.X-Powered-By;
 
-        # Set how long the client should keep the item by default
-        set beresp.http.cache-control = "max-age = 300";
-
-        # Set how long the client should keep the item by default
-        set beresp.http.cache-control = "max-age = 300";
-
-        # Override browsers to keep styling and dynamics for longer
-        if (bereq.url ~ ".minify.*\.(css|js).*") { set beresp.http.cache-control = "max-age = 604800"; }
-        if (bereq.url ~ "\.(css|js).*") { set beresp.http.cache-control = "max-age = 604800"; }
-
-        # Override the browsers to cache longer for images than for main content
-        if (bereq.url ~ ".(xml|gif|jpg|jpeg|swf|css|js|png|zip|ico|img|wmf|txt)$") {
-                set beresp.http.cache-control = "max-age = 604800";
-        }
-
-    # Were done here, send the data to the browser
-    return (deliver);
+    # No return: the builtin refuses Set-Cookie, private and no-store responses
 }
 
-
 sub vcl_deliver {
-    # Happens when we have all the pieces we need, and are about to send the
-    # response to the client.
-    #
-    # You can do accounting or modifying the final object here.
+    # Browsers keep static files for a week
+    if (req.url ~ "\.(js|css|jpe?g|png|gif|ico|svg|webp|woff2?)(\?.*)?$") {
+        set resp.http.Cache-Control = "public, max-age=604800";
+    }
 
-    # Lets not tell the world we are using Varnish in the same principle we set server_tokens off in Nginx
     unset resp.http.Via;
     unset resp.http.X-Varnish;
+    unset resp.http.X-Vinyl;
 }
 ```
 
-Cette autre config orientée pour WordPress est également bien [Gist](https://gist.github.com/dz0ny/1570859/05fa3a96b45ceb6a78e424be420bafdb9f072a7e)
-:
+Le `Cache-Control` envoyé au navigateur est posé dans `vcl_deliver`, pas dans `vcl_backend_response` : écrasé avant le builtin, il masquerait un `private` du backend et la page partirait en cache. Pareil, on garde l'`ETag`, sinon le navigateur ne peut plus revalider et retélécharge tout.
 
-```vcl title="Example 2 : /etc/varnish/default.vcl"
+## Config WordPress
 
-# Set the default backend (Nginx server for me)
+En plus : purge par ACL, pas de cache sur l'admin, le login, les flux et les uploads, nettoyage des cookies de tracking (sinon chaque visiteur qui en a un passe en `pass`), et un cache séparé pour les mobiles. Nginx écoute sur 8080, Varnish devant.
+
+```vcl title="/etc/vinyl-cache/default.vcl"
+vcl 4.1;
+
 backend default {
-  # My Nginx server listen on IP address 127.0.0.1 and TCP port 8080
-  .host = "localhost";
-  .port = "80";
-  .first_byte_timeout = 300s;
+    .host = "127.0.0.1";
+    .port = "8080";
+    .first_byte_timeout = 300s;
 }
 
-# Purge ACL
 acl purge {
-        "127.0.0.1";
+    "127.0.0.1";
 }
 
-# This function is used when a request is send by a HTTP client (Browser)
-# !!! Replace: blog.nicolargo.com by your own URL !!!
 sub vcl_recv {
+    call detect_device;
+    set req.http.Host = regsub(req.http.Host, ":[0-9]+", "");
 
-  call detect_device;
-
-  #nginx&php-fpm fix
-  set req.http.X-Forwarded-For = client.ip;
-  set req.http.Host = regsub(req.http.Host, ":[0-9]+", "");
-
-  # Allow purging from ACL
-  if (req.request == "PURGE") {
-    # If not allowed then a error 405 is returned
-    if (!client.ip ~ purge) {
-      error 405 "This IP is not allowed to send PURGE requests.";
+    if (req.method == "PURGE") {
+        if (client.ip !~ purge) {
+            return (synth(405, "This IP is not allowed to send PURGE requests."));
+        }
+        return (purge);
     }
-    # If allowed, do a cache_lookup -> vlc_hit() or vlc_miss()
-    return (lookup);
-  }
 
-  # Post requests will not be cached
-  if (req.request == "POST") {
-    return (pass);
-  }
-
-  # --- Wordpress specific configuration
-
-  # Did not cache the RSS feed
-  if (req.url ~ "/feed") {
-      return (pass);
-  }
-
-  # Did not cache the admin and login pages
-  if (req.url ~ "/wp-(login|admin)") {
-    return (pass);
-  }
-
-  // server1 must handle file uploads
-  if (req.url ~ "media-upload.php" || req.url ~ "file.php" || req.url ~ "async-upload.php") {
-    return(pass);
-  }
-
-  // do not cache xmlrpc.php
-  if (req.url ~ "xmlrpc.php") {
-    return(pass);
-  }
-
-  // strip cookies from xmlrpc
-  if (req.request == "GET" && req.url ~ "xmlrpc.php"){
-      remove req.http.cookie;return(pass);
-  }
-
-  # Remove the "has_js" cookie
-  set req.http.Cookie = regsuball(req.http.Cookie, "has_js=[^;]+(; )?", "");
-
-  # Remove any Google Analytics based cookies
-  set req.http.Cookie = regsuball(req.http.Cookie, "__utm.=[^;]+(; )?", "");
-
-  # Remove the Quant Capital cookies (added by some plugin, all __qca)
-  set req.http.Cookie = regsuball(req.http.Cookie, "__qc.=[^;]+(; )?", "");
-
-  # Remove the wp-settings-1 cookie
-  set req.http.Cookie = regsuball(req.http.Cookie, "wp-settings-1=[^;]+(; )?", "");
-
-  # Remove the wp-settings-time-1 cookie
-  set req.http.Cookie = regsuball(req.http.Cookie, "wp-settings-time-1=[^;]+(; )?", "");
-
-  # Remove the wp test cookie
-  set req.http.Cookie = regsuball(req.http.Cookie, "wordpress_test_cookie=[^;]+(; )?", "");
-
-  # Are there cookies left with only spaces or that are empty?
-  if (req.http.cookie ~ "^ *$") {
-        unset req.http.cookie;
-  }
-
-  if (req.http.Accept-Encoding) {
-    # Do no compress compressed files...
-    if (req.url ~ "\.(jpg|png|gif|gz|tgz|bz2|tbz|mp3|ogg)$") {
-          remove req.http.Accept-Encoding;
-    } elsif (req.http.Accept-Encoding ~ "gzip") {
-          set req.http.Accept-Encoding = "gzip";
-    } elsif (req.http.Accept-Encoding ~ "deflate") {
-          set req.http.Accept-Encoding = "deflate";
-    } else {
-      remove req.http.Accept-Encoding;
+    # Feeds, admin, login, uploads and xmlrpc
+    if (req.url ~ "/feed" ||
+        req.url ~ "/wp-(login|admin)" ||
+        req.url ~ "(media-upload|async-upload|file|xmlrpc)\.php") {
+        return (pass);
     }
-  }
 
-  # Cache the following files extensions
-  if (req.url ~ "\.(css|js|png|gif|jp(e)?g)") {
-    unset req.http.cookie;
-  }
+    # Tracking cookies: has_js, Google Analytics, Quantcast, wp-settings, test cookie
+    set req.http.Cookie = regsuball(req.http.Cookie, "(has_js|__utm.|_ga[^=]*|_gid|__qc.|wp-settings-1|wp-settings-time-1|wordpress_test_cookie)=[^;]+(; )?", "");
+    if (req.http.Cookie ~ "^ *$") {
+        unset req.http.Cookie;
+    }
 
-  # Check the cookies for wordpress-specific items
-  if (req.http.Cookie ~ "wordpress_" || req.http.Cookie ~ "comment_") {
-    return (pass);
-  }
-  if (!req.http.cookie) {
-    unset req.http.cookie;
-  }
+    # Theme assets
+    if (req.url ~ "\.(css|js|png|gif|jpe?g|webp|svg|woff2?)(\?.*)?$") {
+        unset req.http.Cookie;
+    }
 
-  # --- End of Wordpress specific configuration
+    # Logged-in users and commenters
+    if (req.http.Cookie ~ "wordpress_|comment_") {
+        return (pass);
+    }
 
-  # Did not cache HTTP authentication and HTTP Cookie
-  if (req.http.Authorization || req.http.Cookie) {
-    # Not cacheable by default
-    return (pass);
-  }
-
-  # Cache all others requests
-  return (lookup);
+    # No return: the builtin passes POST, Authorization and remaining cookies
 }
 
-sub vcl_pipe {
-  return (pipe);
-}
-
-sub vcl_pass {
-  return (pass);
-}
-
-# The data on which the hashing will take place
 sub vcl_hash {
-  hash_data(req.url);
-  if (req.http.host) {
-      hash_data(req.http.host);
-  } else {
-      hash_data(server.ip);
-  }
-
-  # ensure separate cache for mobile clients (WPTouch workaround)
-  if (req.http.X-Device ~ "smart" || req.http.X-Device ~ "other") {
-    hash_data(req.http.X-Device);
-  }
-
-  # If the client supports compression, keep that in a different cache
-  if (req.http.Accept-Encoding) {
-    hash_data(req.http.Accept-Encoding);
-  }
-  return (hash);
+    # Separate cache for mobile clients (WPtouch)
+    if (req.http.X-Device ~ "smart|other") {
+        hash_data(req.http.X-Device);
+    }
+    # No return: the builtin adds the URL and the Host
 }
 
 sub detect_device {
-  # Define the desktop device and ipad
-  set req.http.X-Device = "desktop";
+    set req.http.X-Device = "desktop";
 
-  if (req.http.User-Agent ~ "iP(hone|od)" || req.http.User-Agent ~ "Android" ) {
-    # Define smartphones and tablets
-    set req.http.X-Device = "smart";
-  }
-
-  elseif (req.http.User-Agent ~ "SymbianOS" || req.http.User-Agent ~ "^BlackBerry" || req.http.User-Agent ~ "^SonyEricsson" || req.http.User-Agent ~ "^Nokia" || req.http.User-Agent ~ "^SAMSUNG" || req.http.User-Agent ~ "^LG") {
-    # Define every other mobile device
-    set req.http.X-Device = "other";
-  }
+    if (req.http.User-Agent ~ "iP(hone|od)|Android") {
+        set req.http.X-Device = "smart";
+    } elsif (req.http.User-Agent ~ "SymbianOS|^BlackBerry|^SonyEricsson|^Nokia|^SAMSUNG|^LG") {
+        set req.http.X-Device = "other";
+    }
 }
 
-sub vcl_hit {
-  # Allow purges
-  if (req.request == "PURGE") {
-    purge;
-    error 200 "Purged.";
-  }
+sub vcl_backend_response {
+    if (bereq.url ~ "\.(css|js|png|gif|jpe?g|webp|svg|woff2?)(\?.*)?$") {
+        unset beresp.http.Set-Cookie;
+    }
 
-  return (deliver);
+    # 30 minutes when WordPress sends no caching header
+    if (!beresp.http.Cache-Control && !beresp.http.Expires) {
+        set beresp.ttl = 30m;
+    }
 }
 
-sub vcl_miss {
-  # Allow purges
-  if (req.request == "PURGE") {
-    purge;
-    error 200 "Purged.";
-  }
-
-  return (fetch);
-}
-
-# This function is used when a request is sent by our backend (Nginx server)
-sub vcl_fetch {
-  # For static content related to the theme, strip all backend cookies
-  if (req.url ~ "\.(css|js|png|gif|jp(e?)g)") {
-    unset beresp.http.cookie;
-  }
-
-  # A TTL of 30 minutes
-  set beresp.ttl = 1800s;
-
-  return (deliver);
-}
-
-# The routine when we deliver the HTTP request to the user
-# Last chance to modify headers that are sent to the client
 sub vcl_deliver {
+    set resp.http.X-Served-By = server.hostname;
+    if (obj.hits > 0) {
+        set resp.http.X-Cache = "HIT";
+        set resp.http.X-Cache-Hits = obj.hits;
+    } else {
+        set resp.http.X-Cache = "MISS";
+    }
 
-  set resp.http.X-Served-By = server.hostname;
-  if (obj.hits > 0) {
-    set resp.http.X-Cache = "HIT";
-    set resp.http.X-Cache-Hits = obj.hits;
-  } else {
-    set resp.http.X-Cache = "MISS";
-  }
-  unset resp.http.Via;
-  unset resp.http.X-Varnish;
-
-  # Remove some headers: PHP version
-  unset resp.http.X-Powered-By;
-
-  return (deliver);
+    unset resp.http.Via;
+    unset resp.http.X-Varnish;
+    unset resp.http.X-Vinyl;
+    unset resp.http.X-Powered-By;
 }
+```
 
-sub vcl_init {
-  return (ok);
-}
+Quelques différences avec le gist d'origine :
 
-sub vcl_fini {
-  return (ok);
-}
+- Plus de `set req.http.X-Forwarded-For = client.ip` : Varnish ajoute déjà `client.ip` à `X-Forwarded-For`, et l'écraser perd l'IP réelle derrière un load balancer
+- La purge se fait directement dans `vcl_recv` avec `return (purge)`, plus besoin de `vcl_hit`/`vcl_miss`. Sans ce bloc, le builtin répond 501 à toute méthode `PURGE`
+- `vcl_pipe`, `vcl_pass`, `vcl_init` et `vcl_fini` faisaient ce que fait déjà le builtin, on les retire
+
+On teste la purge depuis le serveur :
+
+```bash
+curl -X PURGE -H 'Host: blog.example.com' http://127.0.0.1/mon-article/
+```
+
+Avant de recharger, on vérifie que la VCL compile :
+
+```bash
+# Vinyl Cache 9.0+
+vinyld -C -f /etc/vinyl-cache/default.vcl > /dev/null && systemctl reload vinyl-cache
+# Varnish
+varnishd -C -f /etc/varnish/default.vcl > /dev/null && systemctl reload varnish
 ```
