@@ -1,5 +1,5 @@
 ---
-description: Une CI GitHub Actions pour un projet Go avec go test -race, build multi-plateforme, golangci-lint, gocritic, govulncheck, CodeQL, suggestions reviewdog en PR et release calculée par svu.
+description: Une CI GitHub Actions pour un projet Go avec go test -race, rapport JUnit gotestsum, build multi-plateforme, golangci-lint, gocritic, govulncheck, CodeQL, suggestions reviewdog en PR et release calculée par svu.
 tags:
   - GitHub Actions
   - Go
@@ -25,7 +25,7 @@ Une CI Go demande plus que `go test`. Il faut tester sur plusieurs plateformes, 
 
 | Workflow | Rôle | Déclencheur |
 |----------|------|-------------|
-| `ci.yml` | `go mod verify`, `go test -race`, build matrice ubuntu/macos/windows | push, PR |
+| `ci.yml` | `go mod verify`, `go test -race` avec rapport JUnit et couverture, build matrice ubuntu/macos/windows | push, PR |
 | `lint.yml` | golangci-lint v2 | push, PR |
 | `govulncheck.yml` | CVE sur les dépendances et la toolchain | push, PR |
 | `go-format.yml` | goimports, suggestions inline en PR | push, PR |
@@ -79,6 +79,38 @@ jobs:
 
 !!! note "Pourquoi séparer test et build ?"
     Le job `test` tourne une fois sur Linux (rapide, avec `-race`). Le job `build` vérifie juste la compilation cross-OS. Inutile de rejouer toute la suite de tests trois fois quand seul le build est OS-dépendant.
+
+## Lire un test en échec sans ouvrir les logs
+
+Quand `go test` échoue, la PR n'affiche qu'un job rouge et il faut aller chercher le `--- FAIL` au milieu des logs. GitLab règle ça avec `artifacts:reports:junit`, qui liste les tests en échec dans la merge request. GitHub Actions n'a pas d'équivalent natif. Ici [gotestsum](https://github.com/gotestyourself/gotestsum) produit le rapport JUnit et [action-junit-report](https://github.com/mikepenz/action-junit-report) le lit.
+
+```yaml title=".github/workflows/ci.yml"
+      - name: Tests
+        run: go run gotest.tools/gotestsum@v1.13.0 --junitfile junit.xml -- -race -coverprofile=coverage.out ./...
+      - name: Test report
+        if: ${{ !cancelled() }}
+        uses: mikepenz/action-junit-report@8a133bfa3ecb0ea9024c1e2ae788b4c25f6cdb9d # v6.6.2
+        with:
+          report_paths: junit.xml
+          annotate_only: true
+      - name: Coverage summary
+        run: |
+          {
+            echo '### Coverage'
+            echo '```'
+            go tool cover -func=coverage.out | tail -n 1
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+```
+
+4 choix qui comptent :
+
+- `go run ...@v1.13.0` : gotestsum est épinglé comme une action et tourne sans step d'installation ni `PATH` à régler. Tout ce qui suit `--` part à `go test`, qui ne reçoit alors plus la liste de packages par défaut : le `./...` doit être écrit.
+- `annotate_only: true` : sans lui, l'action crée un check run et demande `checks: write`. Le `GITHUB_TOKEN` d'une PR ouverte depuis un fork reste en lecture seule et le step échouerait. Avec l'option, les échecs arrivent en annotations et dans le résumé du job, et le workflow garde `contents: read`.
+- `if: ${{ !cancelled() }}` : le rapport sert justement quand les tests échouent, alors que par défaut un step ne tourne qu'après un succès.
+- La couverture n'a pas de `if:` : le total d'une suite rouge n'apprend rien.
+
+`$GITHUB_STEP_SUMMARY` affiche le total de couverture dans le résumé du run, sans service tiers ni token. Pour suivre l'évolution de la couverture PR par PR, il faut un service comme Codecov ou SonarCloud.
 
 ## Lint
 
