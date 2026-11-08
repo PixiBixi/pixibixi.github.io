@@ -231,6 +231,7 @@ Le plan complet est ci-dessous, sinon la recherche fait le job.
 - [Les slow queries Thanos : slow log, tracing et tail sampling](monitoring/lgtm/thanos-slow-queries.md)
 - [Migrer Grafana vers Grafana Cloud : datasources, alerting et convergence](monitoring/lgtm/grafana-cloud-migration.md)
 - [Datasource Grafana sur Thanos : incremental querying, cache et provisioning](monitoring/lgtm/grafana_datasource_perf.md)
+- [Recording rules : nommage, joins, federation et tests](monitoring/lgtm/recording_rules.md)
 - [Générer des alertes depuis Loki](monitoring/lgtm/loki_alerting.md)
 - [node_exporter en production : métriques textfile, collectors tcpstat et ethtool, limite CPU](monitoring/lgtm/custom_metrics_nodeexporter.md)
 - [Quelques tips pour la stack LGTM](monitoring/lgtm/tips_lgtm.md)
