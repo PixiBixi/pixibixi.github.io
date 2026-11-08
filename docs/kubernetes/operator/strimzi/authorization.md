@@ -218,7 +218,7 @@ spec:
       groupsPattern: ".*"
 ```
 
-Pour le cluster local géré par Strimzi, on réutilise le Secret généré par le `KafkaUser` (`mirror-target` ici). Pour un cluster distant, personne ne génère le Secret : il doit être créé à côté, sans jamais passer en clair dans le repo. Un chart générique de Secrets alimenté par un External Secrets évite de recopier le mot de passe et le fait tourner avec sa source.
+Pour le cluster local géré par Strimzi, on réutilise le Secret généré par le `KafkaUser` (`mirror-target` ici). Pour un cluster distant, personne ne génère le Secret : il doit être créé à côté, sans jamais passer en clair dans le repo. Un chart générique de Secrets alimenté par un External Secrets (voir [le suivi de la synchronisation des ExternalSecrets](../external-secrets/sync_alerting.md)) évite de recopier le mot de passe et le fait tourner avec sa source.
 
 Chaque côté a besoin de ses propres ACLs. Il faut au minimum de la lecture sur le cluster source, ainsi que de l'écriture et de la création de topics sur le cluster cible, topics internes de MirrorMaker 2 compris. La liste exacte dépend des connectors activés, donc on la tire du même inventaire en `DEBUG` en laissant MirrorMaker 2 tourner.
 
