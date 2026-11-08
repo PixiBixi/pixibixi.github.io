@@ -1,11 +1,16 @@
 ---
-description: Streamer sa musique auto-hébergée avec Koel - installation Docker ou manuelle, configuration et transcodage FLAC
+description: Streamer sa musique auto-hébergée avec Koel - installation Docker ou depuis l'archive de release, APP_KEY, transcodage FLAC vers AAC et scan de la bibliothèque
 tags:
   - Koel
   - Music
   - Docker
   - PHP
   - Selfhost
+variables:
+  - name: koel_version
+    default: 9.15.0
+tested_with:
+  - "Koel 9.15"
 ---
 
 # Streamer sa musique depuis Koel
@@ -13,16 +18,22 @@ tags:
 ![Koel](koel.webp)
 
 [Koel](https://koel.dev/) est un streamer musical self-hosted avec une interface proche de Spotify.
-Support FLAC (transcodage FFmpeg), gestion de comptes, interface mobile. Activement maintenu (v6+).
+Support FLAC (transcodage FFmpeg vers AAC), gestion de comptes, interface mobile. Toujours maintenu, avec une release par mois environ.
 
 ## Docker (recommandé)
 
-La méthode la plus simple. On crée un `docker-compose.yml` :
+L'image officielle est `phanan/koel`, taguée par version. On crée un `.env` vide à côté du compose et on le monte dans le conteneur : `koel:init` y écrit l'`APP_KEY` générée au premier démarrage. Sans ce fichier persistant, une recréation du conteneur génère une nouvelle clé et tout ce qui est chiffré devient illisible.
+
+```bash
+touch .env
+```
+
+Puis le `docker-compose.yml` :
 
 ```yaml
 services:
   koel:
-    image: ghcr.io/koel/koel:latest
+    image: phanan/koel:<koel_version>
     ports:
       - "80:80"
     environment:
@@ -32,18 +43,18 @@ services:
       DB_DATABASE: koel
       DB_USERNAME: koel
       DB_PASSWORD: koelpassword
-      APP_KEY: ""
       FORCE_HTTPS: "false"  # passer à true derrière un reverse proxy HTTPS
     volumes:
+      - ./.env:/var/www/html/.env
       - music:/music
-      - storage:/var/www/html/public/img/storage
+      - images:/var/www/html/storage/app/public/images
       - search_index:/var/www/html/storage/search-indexes
     depends_on:
       db:
         condition: service_healthy
 
   db:
-    image: mysql:8
+    image: mysql:8.4
     environment:
       MYSQL_DATABASE: koel
       MYSQL_USER: koel
@@ -59,10 +70,12 @@ services:
 
 volumes:
   music:
-  storage:
+  images:
   search_index:
   mysql_data:
 ```
+
+Le volume `images` garde les pochettes et les avatars : sans lui, ils disparaissent à chaque recréation du conteneur.
 
 On lance :
 
@@ -70,30 +83,29 @@ On lance :
 docker compose up -d
 ```
 
-Au premier démarrage, Koel génère une `APP_KEY` automatiquement. On la récupère et on la fixe dans le compose :
+À chaque démarrage, le conteneur lance `koel:init` (clé, migrations, compte admin au premier passage). L'interface est accessible sur `http://localhost`. Identifiants par défaut : `admin@koel.dev` / `KoelIsCool`, qu'on change tout de suite :
 
 ```bash
-docker compose logs koel | grep APP_KEY
+docker compose exec koel php artisan koel:admin:change-password
 ```
 
-L'interface est accessible sur `http://localhost`. Identifiants par défaut : `admin@koel.dev` / `KoelIsCool`.
-
 ## Installation manuelle
+
+L'archive de release contient déjà les dépendances PHP (`vendor/`) et le front compilé : pas besoin de Composer ni de Node, qui demanderait une version 22.18+ absente de Debian 13 (20.19).
 
 <div class="steps" markdown>
 
 ### Prérequis
 
-- PHP 8.2+ avec les extensions : `BCMath`, `Ctype`, `Fileinfo`, `GD`, `JSON`, `Mbstring`, `OpenSSL`, `PDO`, `Tokenizer`, `XML`, `zip`, `curl`
-- Node.js 18+ et pnpm
-- Composer
+- PHP 8.3+ avec les extensions `bcmath`, `curl`, `exif`, `gd`, `mbstring`, `mysql`, `xml`, `zip`
 - MySQL 8+ ou MariaDB 10.6+
 - FFmpeg (optionnel, pour le transcodage FLAC)
 
+Debian 13 fournit PHP 8.4 :
+
 ```bash
-apt install php8.2 php8.2-{bcmath,gd,mbstring,xml,zip,curl,mysql} \
-    composer nodejs mysql-server ffmpeg
-npm install -g pnpm
+apt install php8.4-fpm php8.4-{bcmath,curl,gd,mbstring,mysql,xml,zip} \
+    mariadb-server ffmpeg
 ```
 
 ### Base de données
@@ -102,35 +114,30 @@ npm install -g pnpm
 CREATE DATABASE koel DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_unicode_ci;
 CREATE USER 'koel'@'localhost' IDENTIFIED BY 'koelpassword';
 GRANT ALL PRIVILEGES ON koel.* TO 'koel'@'localhost';
-FLUSH PRIVILEGES;
 ```
 
 ### Installation
 
+On récupère l'archive de la release et on la donne à `www-data`, qui doit pouvoir écrire le `.env` et `storage/` :
+
 ```bash
-git clone https://github.com/koel/koel.git /var/www/koel
-cd /var/www/koel
-composer install --no-dev
-pnpm install
+cd /var/www
+curl -fsSL https://github.com/koel/koel/releases/download/v<koel_version>/koel-v<koel_version>.tar.gz | tar xz
+chown -R www-data:www-data /var/www/koel
 ```
 
 ### Initialisation et configuration
 
-`composer koel:init` gère tout en une commande : migrations, génération de clé, création du compte admin et build des assets :
+`koel:init` gère tout en une commande : `.env`, génération de clé, migrations, compte admin, chemin de la musique et scheduler. `--no-assets` saute le build du front, déjà dans l'archive. On le lance en `www-data`, pour que le scheduler s'installe dans sa crontab :
 
 ```bash
-composer koel:init
-```
-
-Pour une install sans build des assets (archive pré-compilée) :
-
-```bash
-composer koel:init -- --no-assets
+cd /var/www/koel
+sudo -u www-data php artisan koel:init --no-assets
 ```
 
 Le compte admin par défaut : `admin@koel.dev` / `KoelIsCool` - à changer immédiatement.
 
-Les variables essentielles à vérifier dans `.env` après init :
+Les variables à vérifier dans `.env` après init. Le `.env.example` d'où il est tiré met `TRANSCODE_FLAC=false` : sans le repasser à `true`, les FLAC sont streamés tels quels.
 
 ```ini
 DB_CONNECTION=mysql
@@ -139,24 +146,17 @@ DB_DATABASE=koel
 DB_USERNAME=koel
 DB_PASSWORD=koelpassword
 
-# Dossier contenant la musique
-MEDIA_PATH=/var/www/koel/music
-
-# Transcodage FLAC → MP3
+# Transcodage FLAC vers AAC
+TRANSCODE_FLAC=true
 FFMPEG_PATH=/usr/bin/ffmpeg
-OUTPUT_BIT_RATE=256
+TRANSCODE_BIT_RATE=256
 
 # Optionnel : Last.fm
 LASTFM_API_KEY=
 LASTFM_API_SECRET=
 ```
 
-### Droits
-
-```bash
-chown -R www-data:www-data /var/www/koel
-chmod -R 755 /var/www/koel/storage
-```
+Le dossier de musique est demandé par `koel:init` et stocké en base, il se change ensuite dans l'interface.
 
 ### nginx
 
@@ -182,7 +182,7 @@ server {
     }
 
     location ~ \.php$ {
-        fastcgi_pass unix:/run/php/php8.2-fpm.sock;
+        fastcgi_pass unix:/run/php/php8.4-fpm.sock;
         fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
         include fastcgi_params;
     }
@@ -193,20 +193,14 @@ server {
 
 ## Synchronisation de la bibliothèque
 
-En manuel ou pour forcer un re-scan :
+Le scheduler installé par `koel:init` scanne la musique tous les jours, pas besoin de cron à la main. Pour forcer un re-scan :
 
 ```bash
-php artisan koel:sync
+sudo -u www-data php artisan koel:scan
 ```
 
-En cron pour une sync automatique :
+En Docker, l'image ne démarre pas de démon cron (seulement Apache) : le scan quotidien ne tourne pas tout seul. On le planifie depuis la crontab de l'hôte, dans le dossier du compose :
 
 ```bash
-0 * * * * www-data cd /var/www/koel && php artisan koel:sync >/dev/null 2>&1
-```
-
-En Docker :
-
-```bash
-docker compose exec koel php artisan koel:sync
+0 4 * * * cd /opt/koel && docker compose exec -T --user www-data koel php artisan koel:scan >/dev/null 2>&1
 ```
