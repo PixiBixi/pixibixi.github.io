@@ -3,6 +3,9 @@ description: Les sync options ArgoCD - CreateNamespace, ServerSideApply, Replace
 tags:
   - ArgoCD
   - GitOps
+variables:
+  - name: app
+    default: my-app
 ---
 
 # ArgoCD : Sync Options
@@ -72,7 +75,7 @@ syncOptions:
   - ServerSideApply=true
 ```
 
-SSA résout les conflits de field managers - chaque outil « possède » ses champs, ArgoCD ne touche que les siens.
+Avec SSA, chaque outil « possède » ses champs (field managers) et ArgoCD n'écrase plus ceux qu'il ne déclare pas. Attention par contre : ArgoCD applique en `kubectl apply --server-side --force-conflicts`, donc sur un champ que son manifest déclare et qu'un autre outil possède, c'est lui qui gagne et il en prend la propriété.
 
 Pour désactiver SSA sur une ressource spécifique quand c'est activé au niveau de l'Application :
 
@@ -83,10 +86,7 @@ metadata:
 ```
 
 !!! warning "Migration client → server side apply"
-    Migrer une ressource déjà gérée en client-side apply vers SSA peut déclencher des conflits.
-    Forcer avec `--server-side --force-conflicts` lors du premier sync manuel. La migration des
-    managed fields est automatique (`ClientSideApplyMigration=true` par défaut) - désactivable
-    avec `ClientSideApplyMigration=false` si ça cause des problèmes.
+    Une ressource déjà gérée en client-side apply garde ses managed fields au nom de `kubectl-client-side-apply`. Sans migration, un champ retiré du manifest ne serait jamais supprimé. ArgoCD transfère ces managed fields à son propre manager au premier sync SSA (`ClientSideApplyMigration=true` par défaut), rien à forcer à la main. On le désactive avec `ClientSideApplyMigration=false` si ça cause des problèmes, et on change le manager repris avec l'annotation `argocd.argoproj.io/client-side-apply-migration-manager` sur l'Application.
 
 ---
 
@@ -96,14 +96,14 @@ Remplace la ressource entière au lieu de la patcher (`kubectl replace`). Utile 
 qui refusent les patches ou quand un champ immuable a changé.
 
 ```yaml
-# En annotation sur la ressource, pas au niveau Application
+# En annotation sur la ressource plutôt qu'au niveau Application
 metadata:
   annotations:
     argocd.argoproj.io/sync-options: Replace=true
 ```
 
 !!! warning
-    À éviter en global sur l'Application - un `Replace` sur un Service supprime et recrée l'objet, ce qui change le ClusterIP et casse les connexions en cours.
+    À éviter en global sur l'Application : `kubectl replace` envoie l'objet entier, donc tout champ absent du manifest (posé par un controller, un webhook ou un autre outil) est effacé. La doc ArgoCD le classe comme potentiellement destructif, certaines ressources pouvant devoir être recréées. Les CRDs et les Namespaces sont épargnés : ArgoCD leur fait un update au lieu d'un replace, un replace pouvant supprimer toutes les instances du CRD ou tout le contenu du namespace.
 
 Si `Replace=true` et `ServerSideApply=true` sont tous les 2 définis, `Replace` a la priorité.
 
@@ -111,7 +111,7 @@ Si `Replace=true` et `ServerSideApply=true` sont tous les 2 définis, `Replace` 
 
 ## Force
 
-Supprime et recrée la ressource à chaque sync.
+Avec `Replace=true`, supprime et recrée la ressource à chaque sync (`kubectl delete/create`). Seul, `Force=true` n'agit qu'en client-side apply (`kubectl apply --force`, qui ne supprime et recrée que si l'apply échoue, sur un champ immuable par exemple). Avec `ServerSideApply=true` et sans `Replace`, il est ignoré.
 
 ```yaml
 metadata:
@@ -126,9 +126,7 @@ metadata:
 
 ## PruneLast
 
-Par défaut, ArgoCD prune les ressources obsolètes pendant le sync, en parallèle des
-créations/mises à jour. Avec `PruneLast`, la suppression se fait après la dernière [sync wave](sync_waves.md),
-une fois que tout le reste est `Healthy`.
+Par défaut, dans chaque [sync wave](sync_waves.md), ArgoCD prune d'abord les ressources obsolètes et n'applique les créations/mises à jour qu'une fois les suppressions réussies. Avec `PruneLast`, la suppression se fait après la dernière wave du sync, une fois que tout le reste est `Healthy`.
 
 ```yaml
 syncOptions:
@@ -136,7 +134,7 @@ syncOptions:
 ```
 
 Cas concret : migration d'un Deployment vers un StatefulSet pour le même composant. Sans
-`PruneLast`, ArgoCD peut supprimer le Deployment avant que le StatefulSet soit prêt.
+`PruneLast` et sans waves, ArgoCD supprime le Deployment avant même d'appliquer le StatefulSet.
 
 Pour un contrôle plus fin de l'ordre de déploiement, voir [Sync Waves & Hooks](sync_waves.md).
 
@@ -157,8 +155,7 @@ metadata:
 
 ## Prune=confirm
 
-Même chose que `Prune=false`, mais ArgoCD peut procéder au prune après confirmation manuelle.
-Utile pour protéger les namespaces ou PVCs critiques contre un prune accidentel.
+ArgoCD ne prune la ressource qu'après une confirmation manuelle. Utile pour protéger les namespaces ou PVCs critiques contre un prune accidentel.
 
 ```yaml
 metadata:
@@ -166,14 +163,15 @@ metadata:
     argocd.argoproj.io/sync-options: Prune=confirm
 ```
 
-Confirmer via annotation (ou via l'UI/CLI) :
+Ce n'est pas un `Prune=false` : le prune n'est pas sauté, il est mis en attente. Le sync reste en `Syncing` tant que personne ne confirme, et rien d'autre de la wave n'est appliqué en attendant. L'option se pose aussi au niveau de l'Application (`syncPolicy.syncOptions`), l'annotation de la ressource gardant la priorité.
 
-```yaml
-metadata:
-  annotations:
-    argocd.argoproj.io/sync-options: Prune=confirm
-    argocd.argoproj.io/deletion-approved: "2024-12-01T10:00:00Z"
+On confirme avec le bouton « Confirm Pruning » de l'UI, ou en CLI :
+
+```bash
+argocd app confirm-deletion <app>
 ```
+
+La CLI pose l'annotation `argocd.argoproj.io/deletion-approved` avec l'heure courante **sur l'Application**, pas sur la ressource à pruner. Un horodatage antérieur au début de l'opération ne confirme rien : une valeur copiée d'un vieux manifest ne débloque pas le sync.
 
 ---
 
@@ -196,38 +194,35 @@ metadata:
     argocd.argoproj.io/sync-options: Delete=confirm
 ```
 
-Typique sur les PVCs - évite de perdre des données si quelqu'un supprime l'Application par erreur.
+Typique sur les PVCs - évite de perdre des données si quelqu'un supprime l'Application par erreur. La confirmation de `Delete=confirm` se fait comme pour `Prune=confirm` (UI ou `argocd app confirm-deletion`), et les 2 options existent aussi au niveau de l'Application.
 
 ---
 
 ## ApplyOutOfSyncOnly
 
-N'applique que les ressources qui ont divergé du state désiré. Accélère les syncs sur des
-Applications avec beaucoup de ressources stables.
+N'applique que les ressources qui ont divergé du state désiré. Par défaut, chaque sync réapplique tous les objets : sur une Application de plusieurs milliers de ressources, c'est long, ça charge l'API server et ça gonfle `status.operationState.syncResult.resources` dans etcd.
 
 ```yaml
 syncOptions:
   - ApplyOutOfSyncOnly=true
 ```
 
-!!! warning
-    À utiliser avec précaution : si une ressource est `Synced` dans ArgoCD mais corrompue en dehors (quelqu'un a édité à la main), elle ne sera pas recorrigée avant le prochain diff complet.
+Une ressource éditée à la main passe `OutOfSync` au diff suivant et reste donc réappliquée. Les hooks de sync tournent toujours.
 
 ---
 
 ## SkipDryRunOnMissingResource
 
-ArgoCD fait un dry-run avant d'appliquer. Si le CRD d'une ressource n'existe pas encore
-(parce qu'il est installé dans la même Application, wave 0), le dry-run échoue.
+ArgoCD fait un dry-run avant d'appliquer. Si le CRD fait partie du même sync (un Helm chart comme cert-manager qui installe ses CRDs), ArgoCD saute déjà le dry-run tout seul : pas besoin de l'option.
+
+Elle sert quand le CRD est créé hors du sync, par un controller. Exemple : Gatekeeper, qui crée un CRD pour chaque `ConstraintTemplate`. ArgoCD ne trouve pas le CRD et le sync échoue sur `the server could not find the requested resource`. On la pose en annotation sur les ressources concernées, ou pour toute l'Application :
 
 ```yaml
 syncOptions:
   - SkipDryRunOnMissingResource=true
 ```
 
-Typique avec des Helm charts qui installent leurs propres CRDs et les utilisent dans le même
-chart. Sans cette option, le premier sync d'une app comme Cert-Manager ou Prometheus Operator
-échoue systématiquement.
+Le dry-run reste exécuté dès que le CRD existe dans le cluster.
 
 ---
 
