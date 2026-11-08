@@ -441,7 +441,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # renovate: datasource=github-releases depName=caarlos0/svu
-          SVU_VERSION: v3.4.1
+          SVU_VERSION: v3.4.4
         run: |
           set -euo pipefail
           GOBIN="${RUNNER_TEMP}/bin" go install "github.com/caarlos0/svu/v3@${SVU_VERSION}"
@@ -533,7 +533,7 @@ jobs:
 
 Les actions sont épinglées par SHA et le checkout ne garde pas le token, pour les raisons détaillées dans [l'article sur le durcissement](hardening.md). Un workflow de release détient `contents: write` et c'est le dernier endroit où accepter un tag mutable.
 
-Chaque step de release porte la même condition `if:`, celle du pipeline piloté par svu décrit dans [l'article sur la CI](go-ci.md#taguer-puis-publier-en-un-seul-job). Un push sur `main` sans commit releasable s'arrête donc après le calcul de version, sans rien installer.
+Chaque step de release porte la même condition `if:`, celle du pipeline piloté par svu décrit dans [l'article sur la CI](go-ci.md#taguer-puis-publier-en-un-seul-job). Un push sur `main` sans commit releasable s'arrête donc après le calcul de version, sans rien installer. Le même article montre comment [installer svu dès la PR](go-ci.md#installer-svu-sur-la-pr), pour qu'un bump de svu qui exige une Go plus récente casse la CI avant le merge plutôt que la release après.
 
 ### Garder cosign même sans rien signer
 

@@ -392,7 +392,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # renovate: datasource=github-releases depName=caarlos0/svu
-          SVU_VERSION: v3.4.1
+          SVU_VERSION: v3.4.4
         run: |
           set -euo pipefail
           GOBIN="${RUNNER_TEMP}/bin" go install "github.com/caarlos0/svu/v3@${SVU_VERSION}"
@@ -411,6 +411,27 @@ jobs:
 ```
 
 `go install` passe par le proxy de modules Go, donc la version de svu est vérifiée contre la base de checksums. Le pin en variable d'env est suivi par Renovate via un `customManager` regex. Créer le tag par l'API plutôt qu'avec `git push` permet de garder `persist-credentials: false` sur le checkout.
+
+### Installer svu sur la PR
+
+svu a sa propre directive `go` et la v3.4.4 exige `go >= 1.27.3`. De son côté, `setup-go` installe la version écrite dans le `go.mod` du projet (`go 1.27.0` donne 1.27.0 pile, `go 1.27` la dernière 1.27.x) et exporte `GOTOOLCHAIN=local` pour les steps suivants. Cette variable interdit à `go install` de télécharger une toolchain plus récente. Un projet resté en `go 1.27.0` voit donc l'installation de svu échouer :
+
+```text
+go: github.com/caarlos0/svu/v3@v3.4.4: github.com/caarlos0/svu/v3@v3.4.4 requires go >= 1.27.3 (running go 1.27.0; GOTOOLCHAIN=local)
+```
+
+La PR Renovate qui monte svu passe pourtant au vert, puisque le workflow de release ne tourne qu'après le merge sur `main`. Elle s'automerge en `chore:` sans rien publier. Le premier `fix:` qui suit ne sort pas, sa release casse sur cette installation. Le job `test` installe donc svu à la version lue dans `release.yml`, avec la toolchain du module :
+
+```yaml title=".github/workflows/ci.yml"
+      - name: Check svu installs with this toolchain
+        run: |
+          set -euo pipefail
+          SVU_VERSION=$(sed -n 's/^ *SVU_VERSION: *//p' .github/workflows/release.yml)
+          test -n "$SVU_VERSION"
+          GOBIN="${RUNNER_TEMP}/bin" go install "github.com/caarlos0/svu/v3@${SVU_VERSION}"
+```
+
+La directive `go` qui a provoqué l'échec n'avait jamais bougé, parce que Renovate ne la met pas à jour sans `rangeStrategy: bump`. La règle qui la débloque est dans l'article sur [Renovate et les modules Go](renovate-gomod.md).
 
 !!! warning "`perf:` ne déclenche pas de release"
     svu applique la spec Conventional Commits à la lettre : seuls `fix` (patch) et `feat` (mineur) sont normatifs. Un `perf:` seul ne sort donc aucune version et sa config ne permet pas d'ajouter des mots-clés. Si un gain de perf doit être livré tout de suite, il se type `fix:`. Le flag `--v0` évite au passage qu'un breaking change fasse sauter un projet en `0.x` directement en `v1.0.0`.
