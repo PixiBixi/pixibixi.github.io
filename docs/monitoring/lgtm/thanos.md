@@ -753,4 +753,5 @@ helm:
 - [Les caches Thanos](thanos-cache.md) - mutualiser les 3 caches sur un backend partagé, et ce que ça change sur la facture
 - [Grafana Alloy](alloy.md) - la collecte en amont, le `remote_write` pointe vers Receive au lieu de Mimir
 - [GKE Spot Nodes](../../cloud/gcloud/spot_nodes.md) - la même ligne de partage entre workloads évictables et critiques
+- [Trafic inter-zone GKE](../../cloud/gcloud/inter_zone_traffic.md) - retrouver et réduire le trafic inter-zone au-delà de Thanos
 - [Netdata, Prometheus et Grafana](simple_monitoring_stack.md) - la stack de départ, avant que la rétention devienne un problème

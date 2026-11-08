@@ -205,6 +205,7 @@ Le plan complet est ci-dessous, sinon la recherche fait le job.
 - [GKE Workload Identity : lier un KSA à un GSA sans clé JSON](cloud/gcloud/workload_identity.md)
 - [Network tiers GCP sur GKE : routage, coût d'egress et bascule](cloud/gcloud/network_tiers.md)
 - [GKE ComputeClass : fallback Spot, on-demand, ARM et pods Pending](cloud/gcloud/compute_classes.md)
+- [Trafic inter-zone GKE : billing, attribution et réduction](cloud/gcloud/inter_zone_traffic.md)
 - [GKE - Capacité réelle des nodes](cloud/gcloud/gke_node_capacity.md)
 
 ### AWS
