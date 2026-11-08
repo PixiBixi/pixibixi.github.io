@@ -15,7 +15,7 @@ Sans monitoring, on debug à l'aveugle. Cette section couvre la stack LGTM (Loki
 ## Contenus
 
 - [LGTM - Stack simple](lgtm/simple_monitoring_stack.md) - déployer Prometheus + Grafana + Loki from scratch
-- [LGTM - Métriques custom Node Exporter](lgtm/custom_metrics_nodeexporter.md) - exposer des métriques personnalisées
+- [node_exporter en production](lgtm/custom_metrics_nodeexporter.md) - métriques textfile, collectors tcpstat et ethtool, limite CPU
 - [LGTM - Alerting Loki](lgtm/loki_alerting.md) - créer des alertes sur les logs
 - [LGTM - Tips](lgtm/tips_lgtm.md) - astuces et patterns pour la stack
 - [LGTM - Grafana Alloy](lgtm/alloy.md) - remplacer Promtail, pipelines logs/métriques/traces
