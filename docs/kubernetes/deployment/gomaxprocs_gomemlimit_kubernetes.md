@@ -206,3 +206,4 @@ Avec **HPA** sur des métriques CPU custom : un `GOMAXPROCS` trop élevé gonfle
 - [GKE - Capacité réelle des nodes](../../cloud/gcloud/gke_node_capacity.md) - la capacité qui reste vraiment pour poser des limits
 - [PDB et topology spread](pdb_topology_spread.md) - ce qui arrive à ces pods pendant un drain
 - [CI Go sur GitHub Actions](../../ci-cd/github/go-ci.md) - tester et linter le binaire avant qu'il tourne en cluster
+- [CPU throttling sur Kubernetes](cpu_throttling.md) - lire le throttling CFS et décider de retirer les limits CPU

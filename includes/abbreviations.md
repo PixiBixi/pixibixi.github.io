@@ -3,6 +3,7 @@
 *[autodiscover]: Mode où Renovate traite tous les repos auxquels il a accès, au lieu d'une liste explicite
 *[bump]: Incrément du numéro de version (patch, minor ou major) déduit des commits depuis le dernier tag
 *[CDC]: Change Data Capture, la lecture en continu des modifications d'une base pour les répliquer ailleurs
+*[CFS]: Completely Fair Scheduler, l'ordonnanceur Linux qui applique les quotas CPU des containers
 *[CGO]: Mécanisme qui permet à du code Go d'appeler du C, au prix d'une dépendance à la libc et d'un binaire non statique
 *[CVE]: Common Vulnerabilities and Exposures, l'identifiant public d'une vulnérabilité connue
 *[dependency dashboard]: Issue que Renovate tient à jour dans le repo, avec les mises à jour en attente et des cases pour les déclencher
@@ -11,6 +12,7 @@
 *[eBPF]: Programmes chargés dans le kernel Linux et exécutés sur des événements (paquet réseau, appel système), sans module ni recompilation
 *[ECDSA]: Signature sur courbes elliptiques, des handshakes TLS bien moins coûteux que RSA
 *[fan-out]: Une requête envoyée en parallèle à plusieurs backends, dont on attend toutes les réponses avant de répondre
+*[HPA]: Horizontal Pod Autoscaler, l'objet Kubernetes qui ajuste le nombre de replicas selon une métrique
 *[IRQ]: Interruption matérielle envoyée par une carte réseau ou un disque au CPU
 *[keyless]: Signature sans clé privée à gérer, avec un certificat éphémère délivré pour une identité OIDC
 *[KRaft]: Mode de Kafka sans ZooKeeper, où les controllers gèrent les métadonnées via Raft

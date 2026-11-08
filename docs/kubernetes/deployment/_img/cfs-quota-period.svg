@@ -1,0 +1,54 @@
+<svg class="jd-svg" data-jd-theme="" width="640" height="156" viewBox="0 0 640 156" xmlns="http://www.w3.org/2000/svg" font-family="'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif">
+  <style>
+    .jd-svg text { font-family: var(--jd-sans, 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif); }
+    .jd-svg .page { fill: var(--jd-muted, #6e7781); font-weight: 600; }
+    .jd-svg .edge { stroke: var(--jd-muted, #8b949e); }
+    .jd-svg .run { fill: var(--jd-ok-border, #4e8f57); }
+    .jd-svg .thr { fill: var(--jd-warn-border, #c9714f); }
+  </style>
+
+  <!-- 2 periods de 100ms, 2.8px par ms, origine x=70 -->
+  <text class="page" x="210" y="14" font-size="10" text-anchor="middle">period 1 : 100ms</text>
+  <text class="page" x="490" y="14" font-size="10" text-anchor="middle">period 2 : 100ms</text>
+  <text class="page" x="4" y="68" font-size="10">8 threads</text>
+
+  <g>
+    <rect class="run" x="70" y="24" width="69" height="8"/><rect class="thr" x="141" y="24" width="208" height="8"/>
+    <rect class="run" x="70" y="34" width="69" height="8"/><rect class="thr" x="141" y="34" width="208" height="8"/>
+    <rect class="run" x="70" y="44" width="69" height="8"/><rect class="thr" x="141" y="44" width="208" height="8"/>
+    <rect class="run" x="70" y="54" width="69" height="8"/><rect class="thr" x="141" y="54" width="208" height="8"/>
+    <rect class="run" x="70" y="64" width="69" height="8"/><rect class="thr" x="141" y="64" width="208" height="8"/>
+    <rect class="run" x="70" y="74" width="69" height="8"/><rect class="thr" x="141" y="74" width="208" height="8"/>
+    <rect class="run" x="70" y="84" width="69" height="8"/><rect class="thr" x="141" y="84" width="208" height="8"/>
+    <rect class="run" x="70" y="94" width="69" height="8"/><rect class="thr" x="141" y="94" width="208" height="8"/>
+  </g>
+  <g>
+    <rect class="run" x="352" y="24" width="68" height="8"/><rect class="thr" x="422" y="24" width="208" height="8"/>
+    <rect class="run" x="352" y="34" width="68" height="8"/><rect class="thr" x="422" y="34" width="208" height="8"/>
+    <rect class="run" x="352" y="44" width="68" height="8"/><rect class="thr" x="422" y="44" width="208" height="8"/>
+    <rect class="run" x="352" y="54" width="68" height="8"/><rect class="thr" x="422" y="54" width="208" height="8"/>
+    <rect class="run" x="352" y="64" width="68" height="8"/><rect class="thr" x="422" y="64" width="208" height="8"/>
+    <rect class="run" x="352" y="74" width="68" height="8"/><rect class="thr" x="422" y="74" width="208" height="8"/>
+    <rect class="run" x="352" y="84" width="68" height="8"/><rect class="thr" x="422" y="84" width="208" height="8"/>
+    <rect class="run" x="352" y="94" width="68" height="8"/><rect class="thr" x="422" y="94" width="208" height="8"/>
+  </g>
+
+  <!-- axe du temps -->
+  <line class="edge" x1="70" y1="110" x2="630" y2="110" stroke-width="1.5"/>
+  <line class="edge" x1="70" y1="106" x2="70" y2="114" stroke-width="1.5"/>
+  <line class="edge" x1="140" y1="106" x2="140" y2="114" stroke-width="1.5"/>
+  <line class="edge" x1="350" y1="18" x2="350" y2="114" stroke-width="1.5" stroke-dasharray="3 3"/>
+  <line class="edge" x1="420" y1="106" x2="420" y2="114" stroke-width="1.5"/>
+  <line class="edge" x1="630" y1="106" x2="630" y2="114" stroke-width="1.5"/>
+  <text class="page" x="70" y="126" font-size="10" text-anchor="middle">0</text>
+  <text class="page" x="140" y="126" font-size="10" text-anchor="middle">25ms</text>
+  <text class="page" x="350" y="126" font-size="10" text-anchor="middle">100ms</text>
+  <text class="page" x="420" y="126" font-size="10" text-anchor="middle">125ms</text>
+  <text class="page" x="626" y="126" font-size="10" text-anchor="end">200ms</text>
+
+  <!-- légende -->
+  <rect class="run" x="70" y="138" width="10" height="10"/>
+  <text class="page" x="86" y="147" font-size="10">exécution : 8 threads x 25ms = les 200ms du quota</text>
+  <rect class="thr" x="380" y="138" width="10" height="10"/>
+  <text class="page" x="396" y="147" font-size="10">throttlés : 75ms sans CPU</text>
+</svg>
