@@ -10,8 +10,15 @@ tags:
 Diverses entrées dans le fichier hosts à mettre pour bloquer des pubs ou
 autre
 
-```bash
-Bloquage des Serveurs Microsoft
+Le fichier est `C:\Windows\System32\drivers\etc\hosts`, on l'édite avec un éditeur lancé en administrateur. Une ligne contient une IP puis un ou plusieurs noms d'hôte, rien d'autre : pas de `http://` ni de chemin, et tout texte libre commence par `#`.
+
+Pour du blocage large et tenu à jour, un DNS filtrant (Pi-hole, AdGuard Home, NextDNS) est plus simple à maintenir qu'une liste figée dans chaque machine.
+
+!!! warning "Domaines Microsoft"
+    Une partie des domaines ci-dessous sert à Windows Update, à l'activation et au cloud de Microsoft Defender (`spynet` est l'ancien nom de MAPS) : les bloquer dégrade les mises à jour et la protection. Depuis 2020, Defender signale aussi un hosts qui redirige des domaines Microsoft comme `SettingsModifier:Win32/HostsFileHijack`.
+
+```text
+# Bloquage des Serveurs Microsoft
 
 127.0.0.1 localhost
 127.0.0.1 genuine.microsoft.com
@@ -27,7 +34,7 @@ Bloquage des Serveurs Microsoft
 127.0.0.1 spynettest.microsoft.com
 ```
 
-```bash
+```text
 0.0.0.0  activate.adobe.com
 0.0.0.0  practivate.adobe.com
 0.0.0.0  ereg.adobe.com
@@ -53,15 +60,12 @@ Bloquage des Serveurs Microsoft
 0.0.0.0 hlrcv.stage.adobe.com
 ```
 
-```bash
+```text
 0.0.0.0 secure.tune-up.com
 0.0.0.0 tune-up.com
-0.0.0.0 http://www.order.tune-up.com
-0.0.0.0 http://www.tune-up.com/order
-0.0.0.0 http://www.registertuneup.co
 ```
 
-```bash
+```text
 0.0.0.0 tonec.com
 0.0.0.0 www.tonec.com
 0.0.0.0 registeridm.com
@@ -75,8 +79,8 @@ Bloquage des Serveurs Microsoft
 0.0.0.0 mirror3.internetdownloadmanager.com
 ```
 
-```bash
-Bloque des MatchWare (MindView..)
+```text
+# Bloque des MatchWare (MindView..)
 0.0.0.0 activate.matchware.com
 0.0.0.0 activate1.matchware.com
 0.0.0.0 activate2.matchware.com
