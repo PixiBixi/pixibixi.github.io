@@ -1,5 +1,5 @@
 ---
-description: Résoudre l'erreur 'VM is locked' dans Proxmox avec qm unlock ou en supprimant le fichier de verrou
+description: Résoudre l'erreur 'VM is locked' dans Proxmox avec qm unlock, après avoir vérifié la tâche qui a posé le lock
 tags:
   - Proxmox
   - Recovery
@@ -7,23 +7,27 @@ tags:
 
 # Résoudre l'erreur « VM is locked »
 
-Sous promxox, de ma faible expérience, il est fréquent d'avoir un
-problème de VM locked. Pour cela, 2 moyens
+Sous Proxmox, de ma faible expérience, il est fréquent d'avoir un problème de VM locked, souvent après un backup ou une migration qui a planté.
 
-!!! warning "Suppression manuelle - dernier recours"
-    Supprimer le fichier de lock à la main. S'assurer que la VM n'est pas en cours de migration ou de snapshot.
-
-Le premier est de supprimer le fichier de lock à la main :
-
-XXX représente la VM ID
+L'erreur `VM is locked (backup)` vient de la ligne `lock:` dans la config de la VM. On commence par regarder quelle opération l'a posée (XXX représente la VM ID) :
 
 ```bash
-rm /var/lock/qemu-server/lock-XXX.conf
+qm config XXX | grep ^lock
 ```
 
-Si cela ne marche pas, il existe également une commande en ligne de
-commande
+!!! warning "Vérifier que la tâche est bien terminée"
+    Un lock `backup`, `snapshot`, `migrate` ou `clone` est posé par une tâche. Si elle tourne encore (onglet Tasks de l'UI, ou `/var/log/pve/tasks/active`), on ne lève pas le lock : on attend ou on stoppe la tâche.
+
+Une fois la tâche morte, on retire le lock :
 
 ```bash
 qm unlock XXX
+```
+
+Supprimer `/var/lock/qemu-server/lock-XXX.conf` à la main ne sert à rien ici : ce fichier n'est que le verrou (`flock`) qui sérialise les modifications de la config, pas le `lock:` de la VM. Le supprimer pendant une opération casse juste l'exclusion entre les tâches.
+
+Si l'erreur est plutôt `can't lock file '/var/lock/qemu-server/lock-XXX.conf' - got timeout`, un process garde ce verrou. On le retrouve avant de le tuer :
+
+```bash
+lsof /var/lock/qemu-server/lock-XXX.conf
 ```
