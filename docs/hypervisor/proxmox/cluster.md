@@ -25,10 +25,10 @@ pvecm create <name> --link0 <ip>
 Il est également possible d'ajouter plusieurs links pour ajouter de la redondance à son cluster, voici un exemple
 
 ```bash
-pvecm create mycluster --link0 10.10.10.101,priority=15 --link1 192.168.1.101,priority=20
+pvecm create mycluster --link0 10.10.10.101,priority=20 --link1 192.168.0.101,priority=15
 ```
 
-Ici, nous utilisons en premier notre lien 2.5Gbps en priorité, suivi de notre lien 1Gbps
+Corosync utilise le lien qui a la priorité la plus **haute** : ici le lien 2.5Gbps (priority=20) passe en premier, le lien 1Gbps (priority=15) ne sert qu'en secours
 
 Si nous ne souhaitons pas avoir plusieur lien, il n'est évidemment pas utile de spécifier la priorité du lien
 
@@ -46,7 +46,7 @@ migration: type=insecure,network=10.10.10.0/24
 
 Comme nous le voyons, nous précisons ici le CIDR à utiliser pour la migration, la documentation complète de ce fichier est [disponible ici](https://pve.proxmox.com/wiki/Manual:_datacenter.cfg)
 
-Nous désactivons également une migration dite "secure" étant donné que nous somme sur un réseau interne isolé
+Nous désactivons également une migration dite "secure" étant donné que nous somme sur un réseau interne isolé : avec `type=insecure`, la RAM de la VM transite en clair. À ne faire que sur un réseau dont on maîtrise vraiment l'accès, sinon on garde `secure` (le défaut)
 
 Il est également possible de migrer une VM en utilisant un réseau spécifique directement dans le `qm migrate`
 
@@ -56,13 +56,21 @@ qm migrate 200 <new_host> --online --migration_network 10.10.10.0/24
 
 ## Détruire son cluster
 
-C'est très simple, on lance la commande suivante sur tous les nodes
+Pour retirer un seul node, la méthode recommandée reste `pvecm delnode <node>` depuis un node restant, après avoir éteint le node à retirer (puis réinstallation de ce dernier s'il doit rejoindre un cluster).
+
+!!! warning "Méthode non recommandée"
+    La procédure ci-dessous sépare un node sans le réinstaller. La doc Proxmox la classe comme *not the recommended method* : un stockage partagé encore accessible par plusieurs clusters casse le locking et peut créer des conflits de VMID. On sépare d'abord les stockages partagés.
+
+Pour casser tout le cluster, on lance la commande suivante sur tous les nodes :
 
 ```bash
 systemctl stop pve-cluster corosync
 pmxcfs -l
-rm /etc/corosync/*
 rm /etc/pve/corosync.conf
+rm -r /etc/corosync/*
 killall pmxcfs
 systemctl start pve-cluster
+rm /var/lib/corosync/*
 ```
+
+Les configs des autres nodes restent dans `/etc/pve/nodes/<autre_node>/` sur chaque node : on les supprime à la main une fois sûr du nom, ainsi que leurs clés dans `/etc/pve/priv/authorized_keys`.
