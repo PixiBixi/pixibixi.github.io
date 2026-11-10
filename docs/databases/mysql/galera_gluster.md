@@ -1,9 +1,11 @@
 ---
-description: Déployer un cluster Galera MySQL haute disponibilité - réplication synchrone multi-maître avec détection de défaillance
+description: Déployer un cluster MariaDB Galera haute disponibilité - réplication synchrone multi-maître avec détection de défaillance
 tags:
-  - MySQL
+  - MariaDB
   - Galera
   - HA
+tested_with:
+  - "MariaDB 11.8.3 (Galera 26.4.23)"
 ---
 
 # Créer son cluster Galera
@@ -11,6 +13,8 @@ tags:
 Réseau high speed (Gbps minimum) non routé, latence minimale, disques SSD - c'est la base.
 Chaque nœud est master : réplication multi-master synchrone. On ne load-balance **pas** les écritures,
 uniquement les lectures.
+
+Tout ce qui suit vise **MariaDB** (paquets Debian, `galera_new_cluster`). MySQL Community n'embarque pas Galera : côté MySQL, il faut passer par Percona XtraDB Cluster, dont la configuration diffère.
 
 ## Résolution de noms
 
@@ -31,7 +35,7 @@ Ouvrir entre tous les nœuds :
 | ---- | ----- | ----- |
 | 3306 | TCP | MySQL client |
 | 4444 | TCP | SST (State Snapshot Transfer) |
-| 4567 | TCP+UDP | Galera replication |
+| 4567 | TCP (+UDP en multicast) | Galera replication |
 | 4568 | TCP | IST (Incremental State Transfer) |
 
 ## Configuration MariaDB
@@ -104,16 +108,24 @@ rm -rf /var/lib/mysql && systemctl start mariadb
 
 Tout est re-importé depuis le nœud primary actuel via SST.
 
-### Cluster arrêté proprement - safe_to_bootstrap
+### Redémarrer tout le cluster - safe_to_bootstrap
 
-Si tous les nœuds sont arrêtés proprement (ex: maintenance), Galera refuse de redémarrer
-sans savoir quel nœud a les données les plus récentes.
+Après un arrêt propre de tout le cluster (ex: maintenance), le dernier nœud arrêté porte `safe_to_bootstrap: 1` dans son `grastate.dat` : on lance `galera_new_cluster` sur lui, directement. Sur les autres, Galera refuse de bootstrapper (`It may not be safe to bootstrap the cluster from this node`).
+
+Après un crash ou un arrêt brutal de tous les nœuds, ils sont tous à `safe_to_bootstrap: 0` avec `seqno: -1` : le fichier ne dit plus qui est le plus avancé. On récupère la position réelle sur **chaque** nœud :
 
 ```bash
-# Identifier le dernier nœud arrêté (seqno le plus élevé)
 node1$ cat /var/lib/mysql/grastate.dat
-# safe_to_bootstrap: 0  ← si tous les nœuds ont 0, en forcer un
+# seqno:   -1
+# safe_to_bootstrap: 0
 
+node1$ sudo -u mysql mariadbd --wsrep-recover 2>&1 | grep 'Recovered position'
+# ... WSREP: Recovered position: 6e66d976-dbcd-11f1-bef0-332dc50e8624:11
+```
+
+On force ensuite `safe_to_bootstrap` uniquement sur le nœud au seqno (le nombre après `:`) le plus élevé. Forcer un nœud en retard fait perdre les transactions qu'il n'a pas reçues :
+
+```bash
 node1$ sed -i 's/safe_to_bootstrap: 0/safe_to_bootstrap: 1/' /var/lib/mysql/grastate.dat
 node1$ galera_new_cluster
 ```
