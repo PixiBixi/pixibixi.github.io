@@ -10,6 +10,6 @@ tags:
 Par défaut, Alt+Arrow est map bizarrement et bug sur zsh, voici comment
 le remap (Merci superuser.com)
 
-* Go to Preferences -> Profile -> Keys
-* Under the list of Key Mappings there is a box to add/remove or load Presets (combo box)
-* Select the Natural Text Editing option in the Presets drop down.
+- On ouvre **Settings** (**Preferences** sur les vieilles versions) > **Profiles** > **Keys** > onglet **Key Bindings**
+- Sous la liste des raccourcis, on clique sur le menu **Presets…**
+- On choisit **Natural Text Editing**
