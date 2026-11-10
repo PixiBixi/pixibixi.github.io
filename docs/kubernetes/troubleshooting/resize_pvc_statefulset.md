@@ -11,13 +11,15 @@ tags:
 
 Les StatefulSet, c'est archaïque.
 
-By-design, la spec ne permet pas de resize les PVC alors qu'on peut totalement resize les PVC des pods associés. Le champ `volumeClaimTemplates` est immuable, donc un `kubectl apply` avec une taille plus grande sort ça :
+By-design, la spec ne permet pas de resize les PVC alors qu'on peut totalement resize les PVC des pods associés. Le champ `volumeClaimTemplates` est immuable, donc un `kubectl apply` avec une taille plus grande sort ça (message de 1.33 à 1.36, sans `'revisionHistoryLimit'` avant 1.33) :
 
 ```text
 The StatefulSet "my-statefulset" is invalid: spec: Forbidden: updates to statefulset spec
-for fields other than 'replicas', 'ordinals', 'template', 'updateStrategy',
+for fields other than 'replicas', 'ordinals', 'template', 'updateStrategy', 'revisionHistoryLimit',
 'persistentVolumeClaimRetentionPolicy' and 'minReadySeconds' are forbidden
 ```
+
+Depuis 1.37, le champ est toujours immuable mais le message change : `spec.volumeClaimTemplates: Invalid value: ...: field is immutable`.
 
 Heureusement, tout est possible eheh. L'idée est de supprimer l'objet StatefulSet en laissant vivre les pods et les PVC, puis de le recréer avec le nouveau template.
 
@@ -134,14 +136,14 @@ Le cas le plus fréquent est un `Resizing` qui ne bouge pas pendant plusieurs mi
 kubectl describe pvc data-my-statefulset-1 -n prod | tail -20
 ```
 
-Les causes réelles, dans l'ordre de fréquence :
+Les causes qu'on rencontre :
 
 - **quota disque du projet ou de la région atteint.** L'événement le dit explicitement, avec le code du provider.
 - **taille non alignée sur le pas du provider.** Certains disques ne s'allouent que par multiples, une demande de `137Gi` peut être refusée là où `140Gi` passe.
 - **limite de taille du type de disque.** Un `pd-balanced` et un `hyperdisk` n'ont pas les mêmes plafonds et le message ne le rappelle pas toujours.
-- **le node n'a plus de slot d'attachement.** Rien à voir avec la taille, mais ça bloque la phase de resize du filesystem.
+- **le node n'a plus de slot d'attachement.** Rien à voir avec la taille : avec un driver en expansion offline, le pod redémarré ne peut pas ré-attacher son volume, il reste `Pending` et le PVC reste en `FileSystemResizePending`.
 
-Si la demande était trop grande et que le provider la refuse définitivement, le PVC reste coincé entre son ancienne capacité et sa nouvelle requête. Kubernetes sait revenir en arrière sur la requête, à condition que le feature gate `RecoverVolumeExpansionFailure` soit actif sur le cluster : on repatche `spec.resources.requests.storage` vers une valeur plus petite que celle demandée, mais jamais plus petite que `status.capacity`.
+Si la demande était trop grande et que le provider la refuse définitivement, le PVC reste coincé entre son ancienne capacité et sa nouvelle requête. Kubernetes sait revenir en arrière sur la requête : on repatche `spec.resources.requests.storage` vers une valeur plus petite que celle demandée, mais strictement plus grande que `status.capacity`. C'est le feature gate `RecoverVolumeExpansionFailure`, GA et toujours actif depuis 1.34, actif par défaut depuis 1.32. Avant 1.32, il faut l'avoir activé à la main.
 
 ## Voir aussi
 
