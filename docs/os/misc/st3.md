@@ -1,5 +1,5 @@
 ---
-description: Configurer Sublime Text 3 - thèmes Material, plugins essentiels et raccourcis pour développeurs
+description: Configurer Sublime Text (écrit pour ST3, valable en grande partie sous ST4) - thèmes, plugins essentiels et raccourcis pour développeurs
 tags:
   - Sublime Text
 ---
@@ -18,10 +18,11 @@ d'utilisation. Malgré le fait que Sublime Text est de base un excellent
 pour encore le rendre encore plus performant, c'est ce que nous allons
 voir dans ce post.
 
+L'article a été écrit pour Sublime Text 3. Sublime Text 4 est la version actuelle depuis 2021 : les raccourcis et les réglages ci-dessous y marchent toujours, mais les captures et une partie des plugins datent de ST3.
+
 ### Pré-requis
 
-Pour fonctionner, la majorité de ces paquets auront besoin de PHP
-(5.6.* minimum), il est donc indispensable de l'avoir !
+Seuls les plugins qui lancent PHP (phpcs, et CodeFormatter pour le formatage PHP) ont besoin d'un PHP installé sur la machine, les autres n'en ont pas besoin.
 
 Pour les composants plus spécifiques aux plugins, nous verrons cela dans
 leur section.
@@ -218,15 +219,12 @@ Nous allons décrire chaque ligne :
     la sidebar lors d'un projet
 * `indent_guide_options` : Permet une indentation plus aisée, en
     affichant une grille d'indentation, indispensable
-* `ignored_packages` : Désactive des packages (Il est impératif de
-    désactiver le package Vintage pour ne pas se retrouver avec un mode
-    vi)
-* `line_padding_bottom` et `line_padding_bottom` : Permet une mise
+* `ignored_packages` : Désactive des packages. Vintage (le mode vi) est ignoré par défaut, mais ce réglage remplace la liste par défaut : il faut donc le remettre dans la liste pour ne pas se retrouver avec un mode vi
+* `line_padding_top` et `line_padding_bottom` : Permet une mise
     en forme plus aisée de Sublime Text, nos yeux nous disent merci. La
     valeur `4` est également agréable, mais le padding est trop
     important
-* `overlay_scroll_bars` : Désactive l'affichage automatique des
-    bars de scroll (Qui ne sont pas utiles)
+* `overlay_scroll_bars` : `enabled` force les barres de scroll en overlay, fines et masquées tant qu'on ne scrolle pas (valeurs possibles : `system`, `enabled`, `disabled`)
 * `save_on_focus_lost` : L'option la plus utile de Sublime Text,
     elle permet de sauvegarder automatiquement les onglets lorsque
     Sublime Text n'est plus la fenêtre active, indispensable
@@ -248,11 +246,11 @@ Nous allons décrire chaque ligne :
 
 Pour correspondre parfaitement au PSR, je vous indique à aller voir le
 post de [ce
-monsieur](http://joshfrankel.me/blog/2014/how%20to/How-to-configure-sublime-text-for-psr-standards/),
+monsieur](https://joshfrankel.me/blog/2014/how%20to/How-to-configure-sublime-text-for-psr-standards/),
 ainsi que les liens officiels des PSR :
 
-* [PSR-2](http://www.php-fig.org/psr/psr-2/)
-* [PSR-1](http://www.php-fig.org/psr/psr-1/)
+* [PSR-12](https://www.php-fig.org/psr/psr-12/), qui remplace PSR-2 (déprécié depuis 2019)
+* [PSR-1](https://www.php-fig.org/psr/psr-1/)
 
 ## Thèmes
 
@@ -261,7 +259,10 @@ c'est pour cela que j'ai sélectionné 2 thèmes que je juge superbes.
 
 ### Material Design
 
-**[Material Theme](https://github.com/equinusocio/material-theme)** est
+!!! warning "Material Theme n'est plus maintenu"
+    L'auteur a abandonné la version Sublime Text, et le dépôt d'origine pointe aujourd'hui vers son successeur payant (Vira). Il ne reste qu'un [miroir](https://github.com/SublimeText/material-theme) marqué deprecated. Sous ST4, le thème par défaut fait très bien l'affaire.
+
+**[Material Theme](https://github.com/SublimeText/material-theme)** est
 un thème se basant sur le Material Design, règles développées par Google
 et très à la vogue en ce moment. Le **Material Theme** se décompose en
 plusieurs teintes :
@@ -307,14 +308,9 @@ Voici les différents paramètres pour les différents thèmes :
 "color_scheme": "Packages/Material Theme/schemes/Material-Theme-Darker.tmTheme",
 ```
 
-En plus du thème « basique », Material Theme dispose d'une Appbar :
-[Material Theme
-Appabar](https://github.com/equinusocio/material-theme-appbar), celle-ci
-completera votre thème avec une couleur originale pour la liste des
-fichiers.
+En plus du thème « basique », Material Theme disposait d'une Appbar (Material Theme Appbar), qui complétait le thème avec une couleur originale pour la liste des fichiers. Son dépôt n'existe plus.
 
-<https://github.com/equinusocio/material-theme-appbar>'
-<https://github.com/jamiewilson/predawn>'
+<https://github.com/jamiewilson/predawn>
 <https://gist.github.com/PixiBixi/e401f57cb05f070d0a96d1859302225a>
 (Predawn Theme Settings)
 <https://gist.github.com/PixiBixi/1cefb66eccd1612a85c4d0e6d1d04ffc>
@@ -322,8 +318,8 @@ fichiers.
 
 ## Snippets
 
-<https://github.com/JasonMortonNZ/bs3-sublime-plugin>'
-<https://github.com/idleberg/sublime-icon-fonts>'
+<https://github.com/JasonMortonNZ/bs3-sublime-plugin>
+<https://github.com/idleberg/sublime-icon-fonts>
 
 ### Plugins
 
@@ -335,7 +331,7 @@ actuellement d'un plugin indispensable pour un usage convenable de
 Sublime Text
 
 !!! warning
-    La plupart des plugins Package Control ne sont plus maintenus - préférer l'installation depuis le dépôt Git officiel du plugin.
+    Beaucoup de plugins listés ici datent de ST2/ST3 et ne sont plus maintenus : on regarde la date du dernier commit avant d'installer, et on teste sous ST4.
 
 ### PHP
 
@@ -399,4 +395,4 @@ Sublime Text
 
 <https://github.com/BoundInCode/AutoFileName>
 
-<https://wbond.net/sublime_packages/sftp>
+[SFTP](https://codexns.io/products/sftp_for_sublime) (payant, licence à 30 $)
