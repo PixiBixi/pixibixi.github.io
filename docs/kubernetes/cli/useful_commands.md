@@ -12,12 +12,18 @@ Pour K8s, les commandes sont assez difficiles de base. De plus, il existe certai
 kubectl delete pods --field-selector=status.phase!=Running -A
 ```
 
+Attention, `status.phase!=Running` ramasse tout ce qui n'est pas `Running` : les evicted et les crashés (phase `Failed`), mais aussi les pods `Pending` et les `Completed` des Jobs (phase `Succeeded`). Pour ne viser que les evicted et les pods en erreur, on filtre sur `Failed` :
+
+```bash title="Delete failed and evicted pods"
+kubectl delete pods --field-selector=status.phase=Failed -A
+```
+
 ---
 
-Permet de supprimer les pods de la liste qui ne sont pas running (Dont les evicted). Si vous en avez beaucoup, on passe par xargs comme des barbares
+Si on en a beaucoup, on passe par xargs comme des barbares. `--no-headers` évite d'envoyer la ligne `NAMESPACE NAME` à `kubectl delete`, et on passe le namespace de chaque pod :
 
 ```bash title="Delete massive pods"
-kubectl get pods |grep -v Running |awk '{print $1}' |xargs -P20 -I{} kubectl delete pod {}
+kubectl get pods -A --field-selector=status.phase=Failed --no-headers | awk '{print $1, $2}' | xargs -P20 -n2 sh -c 'kubectl delete pod -n "$0" "$1"'
 ```
 
 ---
@@ -103,12 +109,10 @@ done < <(kubectl get es -A|grep -i SecretSyncedError|awk {'print $1 " " $2'})
 
 ---
 
-Le Cluster Autoscaler publie son état dans un ConfigMap `cluster-autoscaler-status` dans `kube-system`. On lit ça avec `kubectl describe configmap` (alias `kdcm`) - utile pour savoir si le CA est en bonne santé, s'il y a un scale-up/down en cours, ou s'il est en backoff sur un node group.
+Le Cluster Autoscaler publie son état dans un ConfigMap `cluster-autoscaler-status` dans `kube-system`. On lit ça avec `kubectl describe configmap`, utile pour savoir si le CA est en bonne santé, s'il y a un scale-up/down en cours, ou s'il est en backoff sur un node group.
 
 ```bash title="cluster-autoscaler-status"
 kubectl describe configmap cluster-autoscaler-status -n kube-system
-# ou avec l'alias kdcm :
-kdcm cluster-autoscaler-status -n kube-system
 ```
 
 Output typique :
@@ -148,9 +152,9 @@ NodeGroups:
 
 Les champs clés à surveiller :
 
-- **`Health`** - `Healthy` = tout va bien ; `Unhealthy` = des nodes ne s'enregistrent pas
-- **`ScaleUp`** - `NoActivity` = pas de scale-up en cours ; `InProgress` = scale-up déclenché
-- **`ScaleDown`** - `NoCandidates` = rien à supprimer ; si on voit un candidat et que ça dure, le CA est peut-être en backoff
+- **`Health`** - `Healthy` = tout va bien ; `Unhealthy` = le cluster (ou le node group) est en mauvais état, en général trop de nodes unready ou qui ne s'enregistrent pas
+- **`ScaleUp`** - `NoActivity` = pas de scale-up en cours ; `InProgress` = scale-up déclenché ; `Backoff` = un scale-up récent a échoué sur ce node group, le CA attend avant de réessayer (le code d'erreur du cloud provider est affiché à côté)
+- **`ScaleDown`** - `NoCandidates` = rien à supprimer ; `CandidatesPresent` = des nodes sont candidats à la suppression
 - **`cloudProviderTarget`** = taille cible du node group côté cloud provider
 - **`minSize` / `maxSize`** = bornes configurées sur le node group
 
