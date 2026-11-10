@@ -15,14 +15,16 @@ permet de voir la plupart des éléments intéressants de son système, et
 système via son navigateur web.
 
 Ceux-ci ont été développés par un développeur français au pseudo de
-[@shevabam](https://twitter.com/shevabam). Voici le rendu :
+[@shevabam](https://twitter.com/shevabam).
+
+Les 2 projets ne bougent plus (dernier commit fin 2020 pour la version SH, mi-2023 pour la version Web) : pour une supervision actuelle, on part plutôt sur [Netdata, Prometheus et Grafana](lgtm/simple_monitoring_stack.md).
 
 ## Installation eZ Server Monitor SH
 
 Pour l'installer, rien de plus simple, on télécharge la paquet
 
 ```bash
-wget -O ezservercli.zip https://www.ezservermonitor.com/esm-sh/downloads/version/2.3
+wget -O ezservermonitor-sh_v2.3.zip https://www.ezservermonitor.com/esm-sh/downloads/version/2.3
 ```
 
 Ne pas oublier de se rendre sur [le site du
@@ -47,7 +49,7 @@ dans un répertoire de mon `$PATH` et je le renomme en quelque chose de
 simple comme monitor pour y accéder simplement
 
 ```bash
-mv eZServerMonitor.sh monitor.sh && move monitor.sh /usr/bin
+sudo mv eZServerMonitor.sh /usr/local/bin/monitor
 ```
 
 Voici les options disponibles pour eZ Server Monitor SH
@@ -116,8 +118,12 @@ server {
     server_name monitor.domain.tld;
 }
 server {
-    listen 443 ssl spdy;
+    listen 443 ssl;
+    http2 on;
     server_name monitor.domain.tld;
+
+    ssl_certificate /etc/letsencrypt/live/monitor.domain.tld/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/monitor.domain.tld/privkey.pem;
 
     auth_basic "Monitor Axx";
     auth_basic_user_file "/etc/nginx/passwd/monitor_passwd";
@@ -145,20 +151,18 @@ veut pas de **eZ Server Monitor Web** en sous-domaine :
             include /etc/nginx/conf.d/cache;
             auth_basic "Monitor Axx";
             auth_basic_user_file "/etc/nginx/passwd/monitor_passwd";
-            deny all;
         }
 ```
 
 **eZ Server Monitor Web** est totalement configurable via le fichier
-*esm.config.json* se situant à la racine de l'application. Celui-ci
+*conf/esm.config.json* de l'application. Celui-ci
 contient divers éléments de configuration
 
 ------------------------------------------------------------------------
 
-* **disk** qui permet de montrer la partition *tmpfs* ou pas
-* **hosts** qui permet de configurer les différents sites à ping
-* **last_login** pour paramétrer combien de login seront affichés sur
-    le site
+* **disk** qui permet de montrer la partition *tmpfs* ou pas (`show_tmpfs`)
+* **ping.hosts** qui permet de configurer les différents sites à ping
+* **last_login** pour activer le module (`enable`) et paramétrer combien de login seront affichés sur le site (`max`, 5 par défaut)
 * **services** pour paramétrer différents services à monitorer
 
 ------------------------------------------------------------------------
