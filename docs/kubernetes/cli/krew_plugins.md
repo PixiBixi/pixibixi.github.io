@@ -16,7 +16,7 @@ brew install krew
 kubectl krew install < ./mes_plugins
 ```
 
-Depuis [brew bundle v4.5](https://github.com/Homebrew/brew/pull/21802), les plugins Krew sont gérables directement dans un `Brewfile` - pratique pour centraliser tout son setup dans un seul endroit :
+Depuis [Homebrew 5.1.2](https://github.com/Homebrew/brew/pull/21802), les plugins Krew sont gérables directement dans un `Brewfile` par `brew bundle` - pratique pour centraliser tout son setup dans un seul endroit :
 
 ```ruby
 brew "krew"
@@ -38,7 +38,7 @@ Voici en détail à quoi servent-ils :
 
 * `cnpg` permet de gérer ses clusters CloudNativePG : status, backup, promotion, reload, sans écrire un seul YAML
 * `df-pv` permet de voir tel la commande `df` l'espace dispo sur son PVC & co
-* `klock` permet de rafraichir automatiquement une commande, par exemple `kubectl klock pods` va watch toutes les secondes les changements sur les pods
+* `klock` permet de suivre en direct une commande `get`, par exemple `kubectl klock pods` affiche les changements sur les pods dès qu'ils arrivent (watch de l'API, pas du polling)
 * `neat` permet de supprimer d'un yaml tous les champs qui sont gérés par K8s
 * `netshoot/netshoot` permet de simplifier l'utilisation du magnifique container netshoot
 * `node-resource` affiche l'allocation (`allocation`) et la consommation réelle (`utilization`) par node, avec le CPU, la RAM, le GPU, le nombre de pods et le free restant
@@ -48,7 +48,7 @@ Voici en détail à quoi servent-ils :
 * `pixibixi/klens` est mon plugin qui regroupe les inspections read-only qu'on tape en boucle : node pools, taints, capacité, zones, pods par node, requests/limits, PVC bindings
 * `tmux-exec` permet d'exécuter en simultané des commandes sur des containers
 * `view-secret` permet de voir les secrets
-* `view-utilization` fait à peu près la même chose que `node-resource`, qui le remplace petit à petit
+* `view-utilization` calcule l'utilisation du cluster à partir des requests des pods. `node-resource` le remplace petit à petit : il montre en plus la conso réelle (metrics-server)
 
 `node-resource` est celui qui sert le plus au quotidien, voici les 2 commandes qu'on tape :
 
