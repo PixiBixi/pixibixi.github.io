@@ -24,8 +24,8 @@ sed [options] 'expression' fichier
 
 | Option | Rôle |
 | ------ | ---- |
-| `-i` | Édition en place (modifie le fichier) |
-| `-i.bak` | Édition en place avec backup `.bak` |
+| `-i` | Édition en place (modifie le fichier). GNU uniquement, sur macOS/BSD c'est `-i ''` |
+| `-i.bak` | Édition en place avec backup `.bak` (marche sur GNU et BSD) |
 | `-n` | Supprime l'affichage automatique (print explicite avec `p`) |
 | `-e` | Permet plusieurs expressions |
 | `-E` | Active les regex étendues (ERE) |
@@ -46,7 +46,7 @@ s/pattern/remplacement/flags
 | ---- | ----- |
 | `g` | Remplace toutes les occurrences (global) |
 | `N` (chiffre) | Remplace la N-ième occurrence |
-| `I` | Insensible à la casse |
+| `I` | Insensible à la casse (extension GNU, pas POSIX) |
 | `p` | Affiche la ligne si substitution effectuée |
 
 ```bash
@@ -64,6 +64,9 @@ sed 's/foo/bar/gI' file
 
 # Édition en place
 sed -i 's/old/new/g' file
+
+# Édition en place, sed BSD (macOS)
+sed -i '' 's/old/new/g' file
 
 # Avec backup
 sed -i.bak 's/old/new/g' file
@@ -162,6 +165,8 @@ sed -n '/start/,/end/p' file
 
 ## Insertion, ajout, remplacement de lignes
 
+Ces formes sur une ligne sont une extension GNU :
+
 ```bash
 # Insérer une ligne AVANT la ligne 3
 sed '3i\nouvelle ligne' file
@@ -174,6 +179,13 @@ sed '3c\ligne de remplacement' file
 
 # Ajouter une ligne après chaque ligne contenant "pattern"
 sed '/pattern/a\ligne ajoutée' file
+```
+
+Le sed BSD de macOS les refuse (`extra characters after \ at the end of i command`). La forme portable met un vrai retour à la ligne après le `\` :
+
+```bash
+sed '3i\
+nouvelle ligne' file
 ```
 
 ---
@@ -208,8 +220,10 @@ sed '/./=' file | sed '/./N; s/\n/\t/'
 
 ```bash
 sed -i 's/old/new/g' *.conf
-sed -i 's/old/new/g' $(find /etc -name "*.conf")
+find /etc -name "*.conf" -exec sed -i 's/old/new/g' {} +
 ```
+
+Avec `-exec ... {} +`, un nom de fichier qui contient un espace passe tel quel, là où un `$(find ...)` le coupe en deux.
 
 ### Extraire une valeur de config
 
