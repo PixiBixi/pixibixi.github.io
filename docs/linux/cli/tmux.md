@@ -66,7 +66,7 @@ tmux kill-session -t nom
 | `c` | Créer une nouvelle window |
 | `,` | Renommer la window courante |
 | `n` / `p` | Window suivante / précédente |
-| `0`–`9` | Aller directement à la window N |
+| `0` à `9` | Aller directement à la window N |
 | `w` | Lister toutes les windows |
 | `&` | Fermer la window courante |
 
@@ -89,7 +89,7 @@ tmux kill-session -t nom
 
 ### Redimensionner un pane
 
-Maintenir `Ctrl+B` puis utiliser les flèches, ou :
+`Ctrl+B` puis `Ctrl+flèche` (1 cellule) ou `Alt+flèche` (5 cellules). La touche se répète sans retaper le préfixe pendant un court délai (`repeat-time`). Ou :
 
 ```bash
 # Depuis la ligne de commande tmux (:)
@@ -106,12 +106,12 @@ resize-pane -R 10
 ```text
 Ctrl+B [          → entrer en mode copie
 q                 → quitter le mode copie
-Espace            → commencer la sélection (mode vi)
-Entrée            → copier la sélection
+Espace            → commencer la sélection (mode vi, Ctrl+Espace en mode emacs)
+Entrée            → copier la sélection (mode vi, Alt+W en mode emacs)
 Ctrl+B ]          → coller
 ```
 
-Activer le mode vi dans `~/.tmux.conf` :
+tmux passe tout seul en mode vi si `$VISUAL` ou `$EDITOR` contient `vi` (vim, nvim...), sinon c'est le mode emacs. Pour forcer le mode vi dans `~/.tmux.conf` :
 
 ```bash
 set-window-option -g mode-keys vi
@@ -152,8 +152,8 @@ set -g mouse on
 # Délai après Escape (utile avec vim)
 set -sg escape-time 10
 
-# Activer les couleurs 256
-set -g default-terminal "screen-256color"
+# Activer les couleurs 256 (défaut des builds récents si la terminfo existe)
+set -g default-terminal "tmux-256color"
 ```
 
 !!! tip "Config communautaire"
@@ -193,6 +193,8 @@ brew install tmux-xpanes
 alias csshx='tmux-xpanes --ssh'
 ```
 
+`--ssh` lance `ssh -o StrictHostKeyChecking=no` : toute host key inconnue est acceptée sans question, donc pas de protection contre un MITM à la première connexion. Sur un réseau dont on n'est pas sûr, on préfère `xpanes -c 'ssh {}'`.
+
 ### Ouvrir des sessions SSH en masse
 
 ```bash
@@ -206,11 +208,10 @@ csshx $(grep "kafka-" inventory | sed "s/://g")
 csshx $(awk '/kafka-/{print $2}' /etc/hosts)
 ```
 
-Une fois les panes ouverts, activer la synchronisation pour taper
-la même commande sur tous les serveurs simultanément :
+tmux-xpanes active déjà la synchronisation sur la window qu'il ouvre (sauf avec `-d`). Pour la couper ou la remettre :
 
 ```bash
-Ctrl+B : set-window-option synchronize-panes on
+Ctrl+B : set-window-option synchronize-panes off
 ```
 
 ---
@@ -220,7 +221,7 @@ Ctrl+B : set-window-option synchronize-panes on
 Pour activer la souris dans vim à l'intérieur de tmux :
 
 ```vim
-set ttymouse=xterm2
+set ttymouse=sgr
 set mouse=a
 ```
 
