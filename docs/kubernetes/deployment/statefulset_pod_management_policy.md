@@ -22,10 +22,12 @@ C'est bien pour les workloads où les pods s'initialisent entre eux (Kafka, ZooK
 ### `Parallel`
 
 - Tous les pods démarrent ou s'arrêtent en même temps
-- Rolling update : tous les pods sont recréés simultanément (sauf contrainte `maxUnavailable`)
+- Rolling update : toujours 1 pod à la fois par défaut (`maxUnavailable` vaut 1). `Parallel` ne joue que sur la création, la suppression et le scale
 - Aucune garantie d'ordre
 
 ## Configurer
+
+Le champ se pose au niveau du `spec` du StatefulSet :
 
 ```yaml
 apiVersion: apps/v1
@@ -46,12 +48,19 @@ Dès que les pods n'ont pas besoin de se connaître au démarrage :
 - Workers de queue (chaque pod consomme un shard indépendant)
 - Batch jobs avec PVC dédiés par pod
 
-`Parallel` divise le temps de rollout par N - sur un StatefulSet de 10 replicas, ça peut faire la différence entre 2 min et 20 min.
+`Parallel` divise par N le temps de démarrage initial et de scale : les N pods partent en même temps au lieu d'attendre chacun le Ready du précédent. Pour le rolling update, `Parallel` seul ne change rien, le gain vient de `maxUnavailable` (voir plus bas).
 
 ## Impact sur les rolling updates
 
-Avec `OrderedReady`, même avec `maxUnavailable: 2`, Kubernetes recrée les pods un par un.
-Avec `Parallel`, `maxUnavailable` est pleinement respecté - on peut vraiment updater N pods à la fois.
+Par défaut `maxUnavailable` vaut 1 : sans le fixer, un rolling update recrée 1 pod à la fois, même en `Parallel`.
+
+Avec `OrderedReady`, `maxUnavailable: 2` n'aide pas vraiment : le contrôleur peut supprimer 2 pods, mais il les recrée un par un en attendant le Ready de chacun. La doc du champ dit qu'il "might not be effective" avec cette policy.
+
+Avec `Parallel`, `maxUnavailable` est respecté : on update vraiment N pods à la fois.
+
+`rollingUpdate.maxUnavailable` est derrière le feature gate `MaxUnavailableStatefulSet` : alpha en 1.24, beta mais désactivé en 1.35 et 1.36, activé par défaut depuis 1.37. Sur un cluster plus ancien sans le gate (cas de la plupart des clusters managés), le champ est ignoré et l'update reste à 1 pod à la fois.
+
+On combine donc les 2 :
 
 ```yaml
 spec:
