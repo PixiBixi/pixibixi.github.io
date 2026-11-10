@@ -31,26 +31,34 @@ fi
 
 # Your additional kubeconfig files should be inside ~/.kube/config-files
 ADD_KUBECONFIG_FILES="$HOME/.kube/config-files"
-[ ! -d $ADD_KUBECONFIG_FILES ] && mkdir -p "${ADD_KUBECONFIG_FILES}"
-OIFS="$IFS"
-IFS=$\n
-for kubeconfigFile in `find "${ADD_KUBECONFIG_FILES}" -type f -name "*.yml" -o -name "*.yaml"`
+[ ! -d "${ADD_KUBECONFIG_FILES}" ] && mkdir -p "${ADD_KUBECONFIG_FILES}"
+while IFS= read -r -d '' kubeconfigFile
 do
-    export KUBECONFIG="$kubeconfigFile:$KUBECONFIG"
-done
-IFS="$OIFS"
+    export KUBECONFIG="$kubeconfigFile${KUBECONFIG:+:$KUBECONFIG}"
+done < <(find "${ADD_KUBECONFIG_FILES}" -type f \( -name "*.yml" -o -name "*.yaml" \) -print0)
 ```
 
-Tous les fichiers dans ~/.kube/config-files et finissant en yml seront
-chargés automatiquement ! Free to use avec kubectx o/
+Tous les fichiers dans `~/.kube/config-files` (sous-dossiers compris) et finissant en `.yml` ou `.yaml` seront chargés automatiquement, même avec des espaces dans le nom ! Free to use avec kubectx o/
+
+L'ordre dans KUBECONFIG compte : en cas de conflit (même nom de context, de cluster ou de user, ou le `current-context`), c'est le premier fichier de la liste qui gagne. Ici `~/.kube/config` est ajouté en dernier, donc un fichier de `config-files` a la priorité sur lui.
 
 ## Utilisation avancée
 
 Autre manière, il y a l'outil kubeswitch qui permet de gérer facilement plusieurs contextes via son fichier de configuration [switch-config.yaml](https://github.com/danielfoehrKn/kubeswitch/blob/master/docs/kubeconfig_stores.md).
 
-Mon fichier de configuration est disponible dans mon [dotfiles](https://github.com/PixiBixi/dotfiles/blob/master/.kube/switch-config.yaml)
+Mon fichier de configuration est disponible dans mon [dotfiles](https://github.com/PixiBixi/dotfiles/blob/master/config/.kube/switch-config.yaml)
 
-Tous les fichiers dans `~/.kube/kubeconfig/` avec l'extension `.yaml` seront automatiquement chargés.
+Sans `switch-config.yaml`, kubeswitch ne lit que `~/.kube/config`. Pour charger automatiquement tous les fichiers `.yaml` de `~/.kube/kubeconfig/`, on déclare un store `filesystem` :
+
+```yaml
+kind: SwitchConfig
+version: v1alpha1
+kubeconfigStores:
+  - kind: filesystem
+    kubeconfigName: "*.yaml"
+    paths:
+      - ~/.kube/kubeconfig/
+```
 
 Si vous n'avez que des clusters managés par Rancher, c'est encore mieux ! l'URL Rancher, un token, quelques [lignes de configuration](https://github.com/danielfoehrKn/kubeswitch/blob/master/docs/stores/rancher/rancher.md) et hop, tous vos clusters sont automagiquement découverts. D'autres [fournisseurs](https://github.com/danielfoehrKn/kubeswitch/tree/master/docs/stores) sont également disponibles
 
