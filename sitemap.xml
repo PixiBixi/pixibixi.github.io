@@ -86,7 +86,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/ci-cd/gitlab/ci/optimize/</loc>
-    <lastmod>2026-10-13</lastmod>
+    <lastmod>2026-11-10</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/ci-cd/gitlab/ci/scan_image/</loc>
@@ -230,11 +230,11 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/databases/postgres/postgresql_replication/</loc>
-    <lastmod>2026-11-05</lastmod>
+    <lastmod>2026-11-10</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/databases/postgres/upgrade_version/</loc>
-    <lastmod>2026-10-26</lastmod>
+    <lastmod>2026-11-10</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/databases/redis/cluster_ha/</loc>
@@ -322,7 +322,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/kubernetes/argocd/applicationset/</loc>
-    <lastmod>2026-08-29</lastmod>
+    <lastmod>2026-11-10</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/kubernetes/argocd/argocd_sa/</loc>
@@ -502,11 +502,11 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/linux/cli/git/rework_files/</loc>
-    <lastmod>2026-08-22</lastmod>
+    <lastmod>2026-11-10</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/linux/fundamentals/base_commands/</loc>
-    <lastmod>2026-08-22</lastmod>
+    <lastmod>2026-11-10</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/linux/fundamentals/cron/</loc>
@@ -566,7 +566,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/linux/networking/buffer_nic/</loc>
-    <lastmod>2026-08-02</lastmod>
+    <lastmod>2026-11-10</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/linux/networking/openvpn/</loc>
@@ -582,7 +582,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/linux/security/disable_patches/</loc>
-    <lastmod>2026-08-02</lastmod>
+    <lastmod>2026-11-10</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/linux/security/hardening_sshd/</loc>
@@ -622,7 +622,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/linux/security/slack_notifications_ssh/</loc>
-    <lastmod>2026-08-02</lastmod>
+    <lastmod>2026-11-10</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/linux/security/ssh_improve_speed/</loc>
@@ -630,7 +630,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/linux/security/ssh_log_commands/</loc>
-    <lastmod>2026-08-02</lastmod>
+    <lastmod>2026-11-10</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/linux/security/telegram_notifications_ssh/</loc>
@@ -674,7 +674,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/linux/systemd/create_unit/</loc>
-    <lastmod>2026-10-25</lastmod>
+    <lastmod>2026-11-10</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/misc/</loc>
@@ -706,7 +706,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/misc/fibre_optique/info_transceiver/</loc>
-    <lastmod>2026-08-22</lastmod>
+    <lastmod>2026-11-10</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/monitoring/</loc>
@@ -714,7 +714,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/monitoring/eztools/</loc>
-    <lastmod>2026-08-23</lastmod>
+    <lastmod>2026-11-10</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/monitoring/munin/</loc>
@@ -798,7 +798,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/networking/cisco/commandes_base/</loc>
-    <lastmod>2026-08-22</lastmod>
+    <lastmod>2026-11-10</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/networking/cisco/dns/</loc>
@@ -826,7 +826,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/networking/cisco/ssh/</loc>
-    <lastmod>2026-10-26</lastmod>
+    <lastmod>2026-11-10</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/networking/cisco/stp/</loc>
@@ -882,7 +882,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/os/windows/desktop/tips/hosts_file/</loc>
-    <lastmod>2026-03-12</lastmod>
+    <lastmod>2026-11-10</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/os/windows/desktop/tips/improve_privacy/</loc>
@@ -1006,7 +1006,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/web/ftp/</loc>
-    <lastmod>2026-08-23</lastmod>
+    <lastmod>2026-11-10</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/web/troubleshooting/</loc>
@@ -1022,7 +1022,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/web/haproxy/memory_limit/</loc>
-    <lastmod>2026-10-13</lastmod>
+    <lastmod>2026-11-10</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/web/haproxy/operations/</loc>
@@ -1074,7 +1074,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/web/wordpress/migrate_wordpress_sql/</loc>
-    <lastmod>2026-08-22</lastmod>
+    <lastmod>2026-11-10</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/web/wordpress/tips_sql/</loc>
