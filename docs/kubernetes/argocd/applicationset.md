@@ -143,10 +143,11 @@ generators:
 | `{{path}}` | Chemin Git matché |
 | `{{path.basename}}` | Dernier segment du chemin |
 
+Cette syntaxe est celle de fasttemplate, que la doc ArgoCD annonce comme bientôt dépréciée au profit de Go Template (`goTemplate: true` avec `goTemplateOptions: ["missingkey=error"]`, puis `{{.name}}`, `{{.path.basename}}`, `{{index .path.segments 1}}`).
+
 ## Politique de suppression
 
-Par défaut, supprimer un ApplicationSet supprime aussi toutes les Applications générées.
-Sur de la prod, on ajoute ça :
+Par défaut, supprimer un ApplicationSet supprime aussi toutes les Applications générées, et chaque Application porte le finalizer `resources-finalizer.argocd.argoproj.io` : la suppression cascade jusqu'aux ressources déployées (Deployments, Services...). Sur de la prod, on ajoute ça pour que les Applications soient créées sans ce finalizer :
 
 ```yaml
 spec:
@@ -154,8 +155,14 @@ spec:
     preserveResourcesOnDeletion: true
 ```
 
+Les Applications sont quand même supprimées avec l'ApplicationSet, seules les ressources déployées restent sur le cluster. Pour garder aussi les Applications, on supprime l'ApplicationSet sans cascade (avec `preserveResourcesOnDeletion: true` en place, sinon la suppression ultérieure d'une Application emporte ses ressources) :
+
+```bash
+kubectl delete applicationset my-appset -n argocd --cascade=orphan
+```
+
 !!! danger
-    Sans ça, un `kubectl delete applicationset` en prod c'est un incident.
+    Sans `preserveResourcesOnDeletion`, un `kubectl delete applicationset` en prod c'est un incident.
 
 Pour les autres options de sync (CreateNamespace, ServerSideApply, etc.), voir [sync options](sync_options.md).
 
@@ -176,7 +183,7 @@ gitops-repo/
     └── all-apps.yaml
 ```
 
-Un `matrix` croise le générateur `git` sur `apps/*/*` avec la liste des clusters :
+Un `matrix` croise le générateur `git` sur `apps/*` avec la liste des clusters, chaque couple (app, cluster) pointe sur le dossier de son environnement :
 
 ```yaml
 apiVersion: argoproj.io/v1alpha1
@@ -192,7 +199,7 @@ spec:
               repoURL: https://github.com/org/gitops-repo.git
               revision: HEAD
               directories:
-                - path: apps/*/*
+                - path: apps/*
           - list:
               elements:
                 - cluster: staging
@@ -201,19 +208,19 @@ spec:
                   url: https://k8s-prod.example.com
   template:
     metadata:
-      name: '{{path[1]}}-{{cluster}}'
+      name: '{{path.basename}}-{{cluster}}'
     spec:
       project: default
       source:
         repoURL: https://github.com/org/gitops-repo.git
         targetRevision: HEAD
-        path: '{{path}}'
+        path: '{{path}}/{{cluster}}'
         helm:
           valueFiles:
             - 'values.yaml'
       destination:
         server: '{{url}}'
-        namespace: '{{path[1]}}'
+        namespace: '{{path.basename}}'
       syncPolicy:
         automated:
           prune: true
@@ -230,13 +237,16 @@ Voir ce qu'un ApplicationSet a réellement généré et le forcer à relire le r
 # Lister les ApplicationSets
 kubectl get applicationset -n argocd
 
-# Voir les Applications générées
-kubectl get applications -n argocd -l app.kubernetes.io/managed-by=applicationset-controller
+# Voir les Applications générées (elles portent un ownerReference vers l'ApplicationSet)
+kubectl get applications -n argocd -o json \
+  | jq -r '.items[] | select(any(.metadata.ownerReferences[]?; .kind == "ApplicationSet" and .name == "my-appset")) | .metadata.name'
 
-# Forcer le refresh
+# Forcer le refresh (relit le repo en contournant le cache de révisions, le contrôleur retire l'annotation ensuite)
 kubectl annotate applicationset my-appset -n argocd \
-  argocd.argoproj.io/refresh=normal --overwrite
+  argocd.argoproj.io/application-set-refresh=true --overwrite
 ```
+
+Le contrôleur ne pose aucun label `app.kubernetes.io/managed-by` sur les Applications générées. Pour filtrer avec `-l`, on pose soi-même un label dans `template.metadata.labels`.
 
 ## Voir aussi
 
