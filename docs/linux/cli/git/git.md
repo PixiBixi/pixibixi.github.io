@@ -33,26 +33,30 @@ Change l'URL distante
 ------------------------------------------------------------------------
 
 ```sh
+git clean -ndx .
 git clean -d -fx .
 ```
 
-Supprimer les fichiers non trackés inclus dans le gitignore
+Supprimer tous les fichiers non trackés du dossier courant, ceux du gitignore **et** les autres (`-d` ajoute les dossiers). C'est irréversible, d'où le dry-run `-n` d'abord pour relire la liste.
 
 ------------------------------------------------------------------------
 
 ```sh
-for BR in $(git branch --all --merged |grep -v $(git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@')) ; do
-    git push origin --delete "${BR#remotes/origin/}"
-done
+git fetch --prune origin
+DEFAULT=$(git symbolic-ref --short refs/remotes/origin/HEAD | sed 's@^origin/@@')
+git for-each-ref --format='%(refname:lstrip=3)' --merged "origin/$DEFAULT" refs/remotes/origin \
+  | grep -vx -e HEAD -e "$DEFAULT" > merged-branches.txt
+# Relire merged-branches.txt et retirer les branches à garder (release, protégées...)
+xargs -r git push origin --delete < merged-branches.txt
 ```
 
-Supprimer sur le repo distant toutes les branches déja merged
+Supprimer sur le repo distant toutes les branches déja merged dans la branche par défaut. On compare à `origin/<branche par défaut>` et pas à `HEAD`, sinon depuis une feature branch c'est elle qui part, et on ne liste que les branches distantes.
 
 ## .gitconfig
 
 Afin d'être indépendant de tout environnement (ohmyzsh ou autre), j'ai
 décidé d'utiliser les alias du .gitconfig disponible sur
-[github](https://github.com/PixiBixi/dotfiles/blob/master/.gitconfig)
+[github](https://github.com/PixiBixi/dotfiles/blob/master/config/.gitconfig)
 
 3 binaires sont nécessaires :
 
@@ -87,18 +91,15 @@ Le contrôle tient en une commande, `%G?` sortant `G` pour une bonne signature e
 git log --format="%h %G? %s" -5
 ```
 
-Pour rattraper un historique déjà poussé non signé, on ré-amende chaque commit
-depuis la base plutôt que de repartir de zéro :
+Pour rattraper un historique déjà poussé non signé, on ré-amende chaque commit depuis la base plutôt que de repartir de zéro. Ça réécrit tous les commits de la branche : on ne le fait que sur sa propre branche, jamais sur la branche partagée, et on pousse avec `--force-with-lease` (qui refuse d'écraser un commit poussé entre-temps par quelqu'un d'autre) :
 
 ```sh
 git rebase --exec "git commit --amend --no-edit -S --quiet" origin/main
+git push --force-with-lease
 ```
 
 !!! warning "Pas de `user.email` globale"
-    Garder l'identité par repo évite de signer un commit public avec l'adresse
-    du boulot, mais le prix est un `Author identity unknown` sur chaque repo
-    neuf. C'est un arbitrage, pas un oubli : le poser en global pour le confort
-    revient à choisir laquelle des 2 adresses fuitera par défaut.
+    Garder l'identité par repo évite de signer un commit public avec l'adresse du boulot. Sans `user.email`, git devine une adresse `user@hostname` : il ne bloque (`unable to auto-detect email address`) que si le hostname n'a pas de domaine, sinon le commit passe avec cette adresse devinée. `git config --global user.useConfigOnly true` désactive la devinette, chaque repo neuf bloque alors tant que l'identité n'est pas posée. C'est un arbitrage, pas un oubli : poser `user.email` en global pour le confort revient à choisir laquelle des 2 adresses fuitera par défaut.
 
 ## Voir aussi
 
