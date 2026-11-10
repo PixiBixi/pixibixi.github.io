@@ -13,12 +13,14 @@ Ecrire un script bash, tout le monde peut le faire. Ecrire un bon script bash, c
 #!/usr/bin/env bash
 
 set -Eeuo pipefail
-trap cleanup SIGINT SIGTERM ERR EXIT
+trap cleanup ERR EXIT
+trap 'exit 130' SIGINT
+trap 'exit 143' SIGTERM
 
 script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd -P)
 
 usage() {
-  cat << EOF # remove the space between << and EOF, this is due to web plugin issue
+  cat <<EOF
 Usage: $(basename "${BASH_SOURCE[0]}") [-h] [-v] [-f] -p param_value arg1 [arg2...]
 
 Script description here.
@@ -69,7 +71,8 @@ parse_params() {
     --no-color) NO_COLOR=1 ;;
     -f | --flag) flag=1 ;; # example flag
     -p | --param) # example named parameter
-      param="${2-}"
+      [[ $# -ge 2 ]] || die "Missing value for $1"
+      param="$2"
       shift
       ;;
     -?*) die "Unknown option: $1" ;;
@@ -100,7 +103,7 @@ msg "- arguments: ${args[*]-}"
 
 Quelques explications de ce template (qui n'est pas de moi, mais qui est excellent)
 
-* Utilisation de env à la place de bash directement pour garantir une compatibilité sur tous les OS
-* Utilisation de trap pour effectuer une fonction de cleanup
+* Utilisation de env à la place de `/bin/bash` pour prendre le bash du `PATH` : utile sur macOS (où `/bin/bash` est encore une 3.2), NixOS ou les BSD, mais ça ne garantit pas que la version trouvée soit assez récente
+* Utilisation de trap pour effectuer une fonction de cleanup, à la sortie normale comme sur erreur. Sur SIGINT et SIGTERM, le handler fait un `exit` (130 et 143, la convention 128 + numéro du signal) : sans ça, bash reprend le script à la commande suivante une fois le handler fini, et c'est le trap `EXIT` qui lance le cleanup
 * Affichage d'une aide
-* Parsage des paramètres fournit au script
+* Parsage des paramètres fournis au script
