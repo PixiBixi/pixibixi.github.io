@@ -20,7 +20,7 @@ Dans ces lignes de commande, nous définissons le pool nommé CLIENT_LAN,
 avec comme pool 192.168.0.0/24, ayant comme DNS 8.8.8.8 et comme
 passerelle par défaut 192.168.0.1
 
-Il est possible d'exclure des IPs du pool DHCP
+L'IP de l'interface du routeur (ici 192.168.0.1) est exclue du pool automatiquement. Pour les autres IPs déjà prises (serveurs, imprimantes...), il est possible d'exclure des IPs du pool DHCP
 
     Router(dhcp-config)#exit
     Router(config)#ip dhcp excluded-address 192.168.0.240 192.168.0.250
