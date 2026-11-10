@@ -3,46 +3,71 @@ description: Déployer ruTorrent avec Docker - interface web pour rTorrent en co
 tags:
   - ruTorrent
   - BitTorrent
+tested_with:
+  - "crazymax/rtorrent-rutorrent 5.3.18-0.16.25"
+variables:
+  - name: user
+    default: jdoe
+  - name: n
+    default: "1"
+  - name: domain
+    default: domain.tld
 ---
 
 # ruTorrent, WebUI rTorrent
 
 ## Version Docker
 
-```yaml
-  USER_rutorrent:
-    restart: always
-    image: xataz/rtorrent-rutorrent:latest-filebot
-    container_name: USER_rutorrent
-    volumes:
-      - /home/USER/incoming:/data:rw
-      - /root/.apps/USER/rtorrent/conf:/config:rw
-    ports:
-      - "4500$UID:4500$UID"
-      - "4500$UID:4500$UID/udp"
-    environment:
-      - UID=100$UID
-      - GID=100$UID
-      - PORT_RTORRENT=4500$UID
-      - WEBROOT=/
-      - VIRTUAL_PORT=8080
-      - VIRTUAL_HOST=rutorrent.USER.domain.tld
-      - LETSENCRYPT_HOST=rutorrent.USER.domain.tld
-      - LETSENCRYPT_EMAIL=admin@domain.tld
-    tty: true
+Un conteneur rTorrent + ruTorrent par user, plus un Organizr devant. On part sur l'image [crazymax/rtorrent-rutorrent](https://github.com/crazy-max/docker-rtorrent-rutorrent), maintenue, et sur l'image officielle d'Organizr v2. Les variables `VIRTUAL_*` et `LETSENCRYPT_*` sont lues par un nginx-proxy avec son compagnon ACME, pas par les images :
 
-  USER_organizr:
+```yaml
+services:
+  <user>_rutorrent:
     restart: always
-    image: lsiocommunity/organizr
-    container_name: USER_organizr
+    image: crazymax/rtorrent-rutorrent:5.3.18-0.16.25
+    container_name: <user>_rutorrent
     volumes:
-      - /root/.apps/USER/organizr:/config
+      - /home/<user>/incoming:/downloads:rw
+      - /root/.apps/<user>/rtorrent/data:/data:rw
+      - /root/.apps/<user>/rtorrent/passwd:/passwd:rw
+    ports:
+      - "4500<n>:4500<n>"
+      - "4600<n>:4600<n>/udp"
     environment:
-      - VIRTUAL_HOST=USER.domain.tld
+      - PUID=100<n>
+      - PGID=100<n>
+      - RT_INC_PORT=4500<n>
+      - RT_DHT_PORT=4600<n>
+      - VIRTUAL_HOST=rutorrent.<user>.<domain>
+      - VIRTUAL_PORT=8080
+      - LETSENCRYPT_HOST=rutorrent.<user>.<domain>
+      - LETSENCRYPT_EMAIL=admin@<domain>
+    ulimits:
+      nofile:
+        soft: 32000
+        hard: 40000
+
+  <user>_organizr:
+    restart: always
+    image: organizr/organizr:latest
+    container_name: <user>_organizr
+    volumes:
+      - /root/.apps/<user>/organizr:/config
+    environment:
+      - PUID=100<n>
+      - PGID=100<n>
+      - VIRTUAL_HOST=<user>.<domain>
       - VIRTUAL_PORT=80
-      - LETSENCRYPT_HOST=USER.domain.tld
-      - LETSENCRYPT_EMAIL=admin@domain.tld
+      - LETSENCRYPT_HOST=<user>.<domain>
+      - LETSENCRYPT_EMAIL=admin@<domain>
 ```
 
-* Modifier `USER` par le nom de l'user, `$UID` par le dernier
-    chiffre de son UID et `domain.tld` par le domaine
+* `<user>` est le nom de l'user, `<n>` le dernier chiffre de son UID (il sert à dériver ports et IDs sans collision entre users) et `<domain>` le domaine
+* Organizr ne publie que `latest`, pas de tag versionné
+* `PUID`/`PGID` doivent posséder les dossiers montés, sinon le conteneur peut ne pas démarrer
+
+Sans fichier htpasswd, ruTorrent est ouvert à tout le monde. On crée l'utilisateur de la basic auth avant d'exposer le conteneur :
+
+```bash
+docker run --rm httpd:2.4-alpine htpasswd -Bbn <user> 'MotDePasse' >> /root/.apps/<user>/rtorrent/passwd/rutorrent.htpasswd
+```
