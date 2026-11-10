@@ -27,9 +27,7 @@ Le protocole CDP permet de retrouver des propriétés intrinsèques à chaque é
 CDP est un protocole Cisco - les équipements doivent être de marque Cisco.
 L'interface physique doit être up et les deux machines doivent être voisines.
 
-Étant donné que l'IOS est basé sur un noyau Linux, il est possible d'implémenter CDP
-sur des machines Linux via `lldpd` avec compatibilité CDP, ce qui peut être pratique
-pour un inventaire réseau.
+Côté Linux, `lldpd` implémente aussi CDP (option `-c`) : un serveur peut alors apparaître dans `show cdp neighbors` et voir ses switchs, ce qui peut être pratique pour un inventaire réseau.
 
 ## Utilisation
 
@@ -91,6 +89,8 @@ no cdp run
 
 ##### Sur une interface
 
+CDP annonce le modèle, la version d'IOS et l'IP de management à quiconque est branché : on le coupe sur les ports d'accès (côté utilisateurs), sauf là où un téléphone IP Cisco s'en sert pour récupérer son voice VLAN.
+
 ```ios
 interface Fa0/0
  no cdp enable
@@ -115,7 +115,9 @@ exit
 
 ### Timers CDP
 
-* `cdp holdtime <x>` - durée de vie de l'information envoyée (10-255)
-* `cdp timer <x>` - période de renvoi des informations (5-254)
+* `cdp holdtime <x>` - durée de vie de l'information envoyée (10-255, 180 s par défaut)
+* `cdp timer <x>` - période de renvoi des informations (5-254, 60 s par défaut)
+
+Le holdtime doit rester supérieur au timer, sinon les voisins disparaissent de la table entre 2 annonces.
 
 Source : [ciscomadesimple.be](https://www.ciscomadesimple.be/2010/03/09/cdp-cisco-discovery-protocol/)
