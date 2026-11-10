@@ -18,7 +18,7 @@ Une utilité basique, une commande basique
 ss | less
 ```
 
-Nous voyons ici **toutes** les connexion, aussi bien celles basées sur
+Nous voyons ici **toutes** les connexion (hors sockets en écoute), aussi bien celles basées sur
 UDP/TCP, que des connexions à des sockets UNIX. Cette commande est
 complète, mais l'est donc trop (Par exemple, nous ne voulons
 généralement pas voir les connexions à des sockets UNIX)
@@ -33,7 +33,7 @@ Rentrons un peu plus en profondeur dans la commande ss avec les filtres par type
 
 Les filtres sont assez explicites. Il existe également 2 autres types de filtres, mais ceux-ci ne sont jamais utilisés dans un usage normal :
 
-* `-d` ou `--dccp` : Sockets DCCP
+* `-d` ou `--dccp` : Sockets DCCP (retiré dans iproute2 7.3.0)
 * `-w` ou `--raw` : Sockets RAW
 
 Cette option est particulièrement utilisée avec `-a` ou `--all` qui permet de lister toutes les connexions d'un protocole
@@ -44,7 +44,7 @@ Par exemple, pour lister toutes les connexions TCP :
 ss -t -a | less
 ```
 
-Par défaut (sans l'option -a), seuls les connexions ESTABLISHED sont listées (ou CONNECTED pour UDP). (Il s'agit de l'option `-l` ou `--listening`)
+Par défaut (sans l'option -a), les sockets en écoute (LISTEN) sont masquées, ainsi que les états CLOSED, TIME-WAIT et SYN-RECV : on voit les connexions ESTABLISHED, mais aussi SYN-SENT, FIN-WAIT, CLOSE-WAIT... Pour ne voir **que** les sockets en écoute, c'est l'option `-l` ou `--listening`.
 
 ## Afficher les numéros de port / ne pas résoudre les IPs
 
@@ -54,15 +54,17 @@ Il est fort préférable que vous préferiez voir l'IP et le numéro de port, pl
 
 Pour cela, voici l'option :
 
-* `-n` ou `--numeric` : Permet de ne pas résoudre les IP et les ports associés aux services
+* `-n` ou `--numeric` : Permet de ne pas résoudre les ports en noms de service
 
-A noter qu'il n'est pas possible de ne pas résoudre les adresses IPs ou les numéros de ports uniquement, les deux sont liés.
+Les 2 sont indépendants : `-n` ne touche qu'aux ports, les IP ne sont de toute façon pas résolues par défaut.
 
 Pour résoudre les adresses IP :
 
 * `-r` ou `--resolve` : Permet de résoudre les adresse IPs
 
-Petit exemple en cumulant les paramètres vu avant
+On peut cumuler les 2 : `ss -t -n -r` affiche les noms d'hôtes avec les numéros de port.
+
+Petit exemple en cumulant les paramètres vu avant, `-s` (vu plus bas) affiche le résumé global puis la liste de toutes les sockets TCP :
 
 ```bash
 ss -s -t -a
@@ -88,18 +90,22 @@ ss sait aussi faire des statistiques des connexions actives sur votre serveur
 ss -s
 ```
 
-## Filtrer les connexions par types
+## Filtrer les connexions par famille
 
 Si vous ne souhaitez voir que les connexions IPv4 ou IPv6 (voir socket), c'est possible avec ss :
 
 * `-f` ou `--family=...`
 
-Et voici les types disponibles
+Et voici les familles disponibles
 
 * `inet`
 * `inet6`
 * `link`
 * `netlink`
+* `unix`
+* `vsock`
+* `tipc`
+* `xdp`
 
 Voici un exemple d'utilisation
 
@@ -133,15 +139,16 @@ Voici tous les états supportés par ss
 * closed
 * close-wait
 * last-ack
-* listen
+* listening
 * closing
+* bound-inactive (sockets TCP bindées mais inactives, aussi via `-B`)
 
 Certains de ces états sont également regroupés en « catégories » :
 
-* `connected` = {established'|syn-sent'|syn-recv'|fin-wait-{1,2}'|time-wait'|close-wait'|last-ack'|closing}
-* `synchronized` = {established'|syn-recv'|fin-wait-{1,2}'|time-wait'|close-wait'|last-ack'|closing}
-* `bucket` = {syn-recv'|time-wait}
-* `big` = {established'|syn-sent'|fin-wait-{1,2}'|closed'|close-wait'|last-ack'|listen'|closing}
+* `connected` = tous les états sauf listening et closed
+* `synchronized` = tous les états `connected` sauf syn-sent
+* `bucket` = {syn-recv|time-wait}
+* `big` = tous les états sauf ceux de `bucket`
 
 ### Filter les ports
 
@@ -161,10 +168,10 @@ ss -nt state ESTABLISHED dst :https
 
 Ici, nous voulons toutes les connexions TCP ayant l'état ESTABLISHED dont le port destination est HTTPS.
 
-Et enfin, il est possible de réunir plusieurs conditions avec un `AND` ou `OR`
+Et enfin, il est possible de réunir plusieurs conditions avec un `AND` ou `OR`. Les parenthèses sont quotées, sinon le shell les interprète :
 
 ```bash
-ss -nt ( dport = :443 or dport = :80 )
+ss -nt '( dport = :443 or dport = :80 )'
 ```
 
 Enfin, nous voulons ici lister toutes les connexions de notre machine vers des sites internet (HTTP ou HTTPS)
@@ -187,12 +194,12 @@ Vous observez que nous avons ici beaucoup plus d'informations qu'en temps normal
 * `bbr` indique ici l'algorythme de congestion TCP que nous utilisons, tel que cubic...
 * `rto` indique (en ms) le timeout avant retransmission du paquet
 * `rtt:<rtt>/<rttvar>`
-  * `rtt` indique (en ms) la valeur moyenne du (round time trip)
-  * `rttvar` est l'écart type
-* `ptmu` est la valeur du MTU pour la connection TCP
+  * `rtt` indique (en ms) la valeur moyenne du RTT (round trip time)
+  * `rttvar` est la déviation moyenne du rtt
+* `pmtu` est la valeur du MTU pour la connection TCP
 * `mss` est la taille maximum du payload d'un paquet (hors entête)
 
-Si vous voulez plus d'informations sur ss, n'hésitez pas à consulter le wiki Arch Linux ou directement dman7.org
+Si vous voulez plus d'informations sur ss, n'hésitez pas à consulter le wiki Arch Linux ou directement [man7.org](https://man7.org/linux/man-pages/man8/ss.8.html)
 
 ---
 
