@@ -45,23 +45,34 @@ d'exemple
 echo "warrior" > /etc/hostname
 ```
 
-Ou alors, une autre possibilité :
+`/etc/hostname` n'est lu qu'au boot. Pour appliquer le nom tout de suite, on le pose aussi à chaud ; `hostname` seul ne change le nom que jusqu'au prochain reboot :
 
 ```bash
 hostname warrior
 ```
 
-Puis on edit le fichier **/etc/hosts**
+Sur une machine avec systemd, `hostnamectl` fait les 2 d'un coup (nom courant et `/etc/hostname`) :
+
+```bash
+hostnamectl hostname warrior
+```
+
+Puis on edit le fichier **/etc/hosts**. La ligne `localhost` ne bouge pas. On ajoute une ligne avec le FQDN en premier puis le nom court en alias, sur l'IP fixe du serveur (IPv4 et IPv6) :
 
 ```bash
 $ cat /etc/hosts
-127.0.0.1 warrior.toto.fr warrior
-127.0.0.1 localhost.localdomain localhost
-IPv4 warrior.toto.fr warrior
-IPv6 warrior.toto.fr warrior
+127.0.0.1 localhost
+203.0.113.10 warrior.toto.fr warrior
+2001:db8::10 warrior.toto.fr warrior
 ```
 
-Les lignes concernant 127.0.0.1 ne sont pas à éditer
+Sans IP fixe, on met cette ligne sur `127.0.1.1` (convention Debian) plutôt que sur `127.0.0.1` :
+
+```bash
+127.0.1.1 warrior.toto.fr warrior
+```
+
+L'ordre compte : le premier nom de la ligne est le FQDN, les suivants sont des alias. Sans le nom court sur cette ligne, `hostname -f` ne trouve rien et répond `Name or service not known`.
 
 ## Vérifications
 
@@ -76,7 +87,7 @@ Voici les différentes commande à effectuer :
 hostname -d
 ```
 
-Doit retourner le nom de domaine
+Doit retourner le nom de domaine, c'est-à-dire le FQDN sans le premier segment. Si le FQDN ne résout pas (ni `/etc/hosts`, ni DNS), la commande échoue avec `Name or service not known`.
 
 ```bash
 hostname -f
@@ -88,7 +99,7 @@ Doit retourner le FQDN
 hostname -a
 ```
 
-Doit retourner l'hostname
+Doit retourner les alias, donc ici l'hostname `warrior` parce qu'on l'a mis en alias dans `/etc/hosts`. Pour le nom court seul, c'est `hostname -s` (ou `hostname` tout court).
 
 Si tout se passe correctement, alleluia, sinon, il faut répeter les
 étapes précédentes
