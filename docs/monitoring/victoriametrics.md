@@ -10,7 +10,7 @@ tags:
 
 # VictoriaMetrics cluster : RAM, disque, facture CPU et pièges de dimensionnement
 
-L'argument qui fait regarder VictoriaMetrics est toujours le même : 2 à 4 fois moins de RAM qu'un Prometheus pour la même volumétrie. Sur un cluster de production il tient à moitié, et il ne dit ni ce qui se paye à la place ni ce qui casse avant la première mesure.
+L'argument qui fait regarder VictoriaMetrics est toujours le même : moins de RAM qu'un Prometheus pour la même volumétrie, [jusqu'à 7 fois moins](https://valyala.medium.com/prometheus-vs-victoriametrics-benchmark-on-node-exporter-metrics-4ca29c75590f) d'après le benchmark de l'éditeur. Sur un cluster de production il tient à moitié, et il ne dit ni ce qui se paye à la place ni ce qui casse avant la première mesure.
 
 Le terrain de ce retour est un cluster de production à 302k samples/s, avec un Prometheus local que la stack VictoriaMetrics a doublé pendant 2 semaines, du 15 au 29 septembre, pour comparer les 2 moteurs sur exactement les mêmes cibles. Le convertisseur prometheus-operator de l'opérateur VictoriaMetrics reprend les ServiceMonitor et les PrometheusRule existants, donc vmagent scrape ce que scrape Prometheus, sans configuration dupliquée.
 
@@ -38,8 +38,8 @@ VictoriaMetrics est **1,36 fois plus compact par sample** en régime permanent, 
 
 Côté RAM, **l'écart se resserre avec le temps** : 12% de moins en portant 2 copies à 6 jours, 9% de plus au total à 10 jours. Ramené à une copie (vmstorage divisé par 2, les autres composants comptés une fois), c'est environ 54 GiB contre 90,4, soit jusqu'à 40% de moins par copie. C'est une borne haute : vmstorage remplit la limite qu'on lui donne, une partie de cette RAM est du cache opportuniste et pas un besoin (voir plus bas). Une mesure à chaud sur un PoC de 2 jours surestime le gain.
 
-!!! warning "La déduplication se fait à la lecture, pas à l'écriture"
-    Deux vmagent qui scrapent les mêmes cibles ingèrent 2 fois les mêmes samples. `-dedup.minScrapeInterval` les élimine pendant les merges, donc le disque en régime permanent ne double pas, mais l'ingestion instantanée oui. Un `vm_rows_inserted_total` à 630k/s pour 302k samples/s réels n'est pas une anomalie.
+!!! warning "La déduplication ne se fait pas à l'ingestion"
+    Deux vmagent qui scrapent les mêmes cibles ingèrent 2 fois les mêmes samples. `-dedup.minScrapeInterval` les élimine pendant les merges en arrière-plan de vmstorage, et vmselect dédoublonne aussi à la lecture, donc le disque en régime permanent ne double pas, mais l'ingestion instantanée oui. Un `vm_rows_inserted_total` à 630k/s pour 302k samples/s réels n'est pas une anomalie.
 
 ## Le CPU : la contrepartie non chiffrée
 
@@ -114,7 +114,7 @@ count(count by(__name__) ({__name__=~"^:.*|.*:.*:.*"}))
 
 C'est le piège le plus coûteux, parce qu'il se referme 2 fois dans des sens opposés.
 
-`-search.maxConcurrentRequests` n'a pas de valeur en dur : son défaut est `cgroup.AvailableCPUs() * 2`, donc il **suit le limit CPU du conteneur**. Avec un limit à 2 cœurs, vmselect accepte 4 requêtes concurrentes et un vmalert qui évalue 163 groupes toutes les 30 s en met beaucoup plus que ça en vol. Pire, `-search.maxQueueDuration` vaut 10 s, donc plus court que l'intervalle d'évaluation : une requête en file est jetée avant même son tick suivant.
+`-search.maxConcurrentRequests` n'a pas de valeur en dur : son défaut est `cgroup.AvailableCPUs() * 2` (plafonné à 16 avant la v1.150.0 du cluster), donc il **suit le limit CPU du conteneur**. Le vmselect intégré au single-node garde le plafond à 16. Avec un limit à 2 cœurs, vmselect accepte 4 requêtes concurrentes et un vmalert qui évalue 163 groupes toutes les 30 s en met beaucoup plus que ça en vol. Pire, `-search.maxQueueDuration` vaut 10 s, donc plus court que l'intervalle d'évaluation : une requête en file est jetée avant même son tick suivant.
 
 Le dimensionnement se pose avec la loi de Little. À 69 requêtes par seconde et 0,418 s de latence moyenne, il faut 29 slots concurrents ; il y en avait 16, soit un facteur 1,8 de sur-souscription et 70% des requêtes attendaient en file avant de s'exécuter. Comme les règles d'un groupe sont évaluées en série, cette attente se multiplie par le nombre de règles.
 
@@ -163,7 +163,7 @@ Le `labelSelector` est nécessaire mais pas suffisant. `maxSkew: 1` compare les 
 
 ## Une file persistante plafonnée par son PVC
 
-Dernier piège et le seul qui perd des données. vmagent tamponne sur disque ce qu'il n'arrive pas à pousser et l'opérateur cale `-remoteWrite.maxDiskUsagePerURL` sur la taille de `statefulStorage`, divisée par le nombre de destinations `remoteWrite`. Le plafond de la file **est** donc le disque.
+Dernier piège et le seul qui perd des données. vmagent tamponne sur disque ce qu'il n'arrive pas à pousser et si on ne fixe pas `-remoteWrite.maxDiskUsagePerURL` soi-même, l'opérateur le cale sur la taille de `statefulStorage`, divisée par le nombre de destinations `remoteWrite` (1 GiB par défaut sans `statefulStorage`). Le plafond de la file **est** donc le disque.
 
 Quand vmstorage sature son limit CPU, vminsert n'arrive plus à le drainer, la file de vmagent monte jusqu'au bord du PVC et jette. Sur une nuit, 18,4 GB jetés et 1,29 G de samples perdus, soit 2,9% de ce que vmagent avait envoyé. Ce n'est pas un export secondaire qui manque : quand la seule destination configurée est vminsert, ces samples manquent au TSDB lui-même.
 
