@@ -11,7 +11,8 @@ inventé, les commandes viennent d'une cheatsheet des internet mondiaux.
 J'ai simplement repris les commandes qui me sont utiles de ce [magnifique PDF](https://justinoconnorcodes.files.wordpress.com/2021/09/terraform-cheatsheet-1.pdf)
 
 * `terraform version` : Obtenir la version de terraform
-* `terraform get -update=true` : Update les modules d'un projet
+* `terraform get -update` : Update les modules d'un projet
+* `terraform init -upgrade` : Update modules **et** providers (dans les contraintes de version), à préférer à `get` qui ne touche qu'aux modules
 * `terraform validate` : Valide la syntaxe d'un Terraform
 * `terraform fmt` : Formate notre terraform (très pratique pour avoir une uniformité entre collaborateurs) - utile pour maintenir la cohérence avant de pousser du code
 * `terraform plan` : Montre les modifications
