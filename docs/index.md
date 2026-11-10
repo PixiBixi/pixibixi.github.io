@@ -182,6 +182,7 @@ Le plan complet est ci-dessous, sinon la recherche fait le job.
 
 - [Déployer un Redis en High Availability](databases/redis/cluster_ha.md)
 - [Décoder une fonction Redis](databases/redis/decode_function.md)
+- [Redis : timeout, tcp-keepalive et pconnect PHP](databases/redis/timeouts.md)
 
 ### Memcached
 
