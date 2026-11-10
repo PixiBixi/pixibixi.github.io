@@ -1,5 +1,5 @@
 ---
-description: "Désactiver la résolution DNS sur Cisco IOS avec no ip domain-lookup et transport preferred none, pour supprimer le timeout de 30 secondes après une faute de frappe en console."
+description: "Désactiver la résolution DNS sur Cisco IOS avec no ip domain lookup (ou transport preferred none par ligne), pour supprimer le timeout de 30 secondes après une faute de frappe en console."
 tags:
   - Cisco
   - DNS
@@ -7,9 +7,9 @@ tags:
 
 # Cisco : désactiver la résolution DNS (no ip domain-lookup)
 
-Une faute de frappe en mode enable et IOS considère le mot comme un nom d'hôte à résoudre. Le terminal se bloque une trentaine de secondes, sans qu'aucune touche ne réponde. Deux commandes suppriment ce comportement et la plupart des réponses n'en donnent qu'une.
+Une faute de frappe en mode enable et IOS considère le mot comme un nom d'hôte à résoudre. Le terminal se bloque une trentaine de secondes, sans qu'aucune touche ne réponde. Une commande globale suffit à supprimer ce comportement, une alternative existe ligne par ligne.
 
-## La première commande
+## La commande globale
 
 En mode configuration globale :
 
@@ -19,15 +19,15 @@ Router# configure terminal
 Router(config)# no ip domain-lookup
 ```
 
-Sur IOS 15 et au-delà, la commande a perdu son tiret. Les deux formes coexistent selon les versions et la complétion par tabulation tranche en une seconde :
+Sur les IOS récents, la commande a perdu son tiret, l'ancienne syntaxe `ip domain-lookup` est celle des vieilles releases. Les deux formes coexistent selon les versions et la complétion par tabulation tranche en une seconde :
 
 ```cisco
 Router(config)# no ip domain lookup
 ```
 
-## La seconde, celle qu'on oublie
+## L'alternative, ligne par ligne
 
-`no ip domain-lookup` empêche la résolution, mais IOS tente encore d'ouvrir une session Telnet vers ce qu'il a pris pour un hôte et le blocage reste. Il faut lui retirer ce réflexe, ligne par ligne :
+Une fois `no ip domain lookup` posé, un mot inconnu est refusé immédiatement (`% Unknown command or computer name, or unable to find computer address`), sans requête DNS. Si on veut garder la résolution DNS active, on retire plutôt à IOS le réflexe de prendre un mot inconnu pour un hôte où ouvrir une session Telnet, ligne par ligne :
 
 ```cisco
 Router(config)# line con 0
@@ -37,7 +37,7 @@ Router(config)# line vty 0 4
 Router(config-line)# transport preferred none
 ```
 
-C'est cette commande qui fait réellement disparaître l'attente. Sans elle, le comportement s'améliore sans disparaître, ce qui explique les retours du type « ça ne marche pas chez moi ».
+Le mot tapé n'est alors plus du tout interprété comme un nom d'hôte sur ces lignes. C'est une alternative à la commande globale, pas un complément obligatoire.
 
 ## Tant qu'on y est
 
