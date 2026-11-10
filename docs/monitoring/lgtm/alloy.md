@@ -1,5 +1,7 @@
 ---
 description: Grafana Alloy - le collecteur universel qui remplace Promtail et Grafana Agent. Config, pipelines logs/métriques/traces, migration depuis Promtail.
+tested_with:
+  - "Alloy v1.21.3"
 tags:
   - Alloy
   - Promtail
@@ -44,8 +46,10 @@ L'UI de debug est dispo sur `http://localhost:12345` - elle affiche le graphe de
     docker run -d \
       -v /etc/alloy/config.alloy:/etc/alloy/config.alloy \
       -p 12345:12345 \
-      grafana/alloy:latest \
-      run /etc/alloy/config.alloy
+      grafana/alloy:v1.21.3 \
+      run /etc/alloy/config.alloy \
+      --server.http.listen-addr=0.0.0.0:12345 \
+      --storage.path=/var/lib/alloy/data
     ```
 
 === "Kubernetes (Helm)"
@@ -55,6 +59,8 @@ L'UI de debug est dispo sur `http://localhost:12345` - elle affiche le graphe de
       --namespace monitoring \
       -f values.yaml
     ```
+
+En Docker, Alloy écoute sur `127.0.0.1:12345` par défaut : sans `--server.http.listen-addr=0.0.0.0:12345`, le `-p` n'expose rien. Passer `run ...` remplace aussi le `CMD` de l'image, donc on remet le `--storage.path` qu'il contient.
 
 Le fichier de config par défaut : `/etc/alloy/config.alloy`
 
@@ -368,8 +374,8 @@ loki.process "multiline_app" {
 ```
 
 - `firstline` : regex qui identifie le **début** d'un nouvel événement
-- `max_wait_time` : flush forcé si aucune nouvelle ligne après ce délai (défaut : `5s`)
-- `max_lines` : flush forcé au-delà de N lignes (garde-fou contre les dumps infinis)
+- `max_wait_time` : flush forcé si aucune nouvelle ligne après ce délai (défaut : `3s`)
+- `max_lines` : flush forcé au-delà de N lignes, garde-fou contre les dumps infinis (défaut : `128`)
 
 ### Java stack traces
 
@@ -534,18 +540,18 @@ Les labels disponibles depuis `__journal_*` correspondent aux champs journald st
 journalctl -o json | head -1 | jq 'keys'
 ```
 
-Par défaut `loki.source.journal` démarre depuis la position courante. Pour rejouer depuis le début (migration initiale) :
+`loki.source.journal` reprend à la position sauvegardée dans son dossier de données. Sans position (premier démarrage), il remonte les 7 dernières heures du journal (`max_age`, défaut `7h`), et une position plus vieille que `max_age` est ignorée. Pour élargir la fenêtre lors d'une migration initiale, on augmente `max_age` :
 
 ```alloy
 loki.source.journal "systemd" {
   forward_to = [loki.write.default.receiver]
   path       = "/var/log/journal"
-  max_age    = "24h"           // ne pas remonter plus loin que 24h
+  max_age    = "24h"           // remonter jusqu'à 24h en arrière
 }
 ```
 
 !!! warning "Permissions"
-    Alloy doit appartenir au groupe `systemd-journal` pour lire le journal :
+    Alloy doit appartenir au groupe `systemd-journal` pour lire le journal. Le paquet deb/rpm l'y ajoute déjà à l'installation, la commande ne sert qu'en install manuelle :
     ```bash
     usermod -aG systemd-journal alloy
     systemctl restart alloy
@@ -553,7 +559,7 @@ loki.source.journal "systemd" {
 
 ### Alloy en Docker
 
-Depuis un conteneur, `loki.source.journal` ne voit rien sans les bons montages. Il faut exposer le journal de l'hôte et le network host pour que la socket journald soit accessible :
+Depuis un conteneur, `loki.source.journal` ne voit rien sans les bons montages : il lit les fichiers du journal, il faut donc monter ceux de l'hôte. Le volume `alloy-data` garde la position de lecture d'un redémarrage à l'autre :
 
 ```bash
 docker run -d \
@@ -563,11 +569,12 @@ docker run -d \
   -v /run/log/journal:/run/log/journal:ro \
   -v /var/log/journal:/var/log/journal:ro \
   -v /etc/machine-id:/etc/machine-id:ro \
-  grafana/alloy:latest \
-  run /etc/alloy/config.alloy
+  -v alloy-data:/var/lib/alloy/data \
+  grafana/alloy:v1.21.3 \
+  run /etc/alloy/config.alloy --storage.path=/var/lib/alloy/data
 ```
 
-`/etc/machine-id` est requis - Alloy s'en sert pour identifier le journal local. Sans `--network host`, journald n'est pas accessible depuis le conteneur.
+`/etc/machine-id` est requis - Alloy s'en sert pour identifier le journal local. `--network host` n'est pas nécessaire pour lire le journal : il sert ici à joindre Loki et à garder l'UI sur `localhost:12345` côté hôte.
 
 Pour vérifier que les logs arrivent bien dans Loki après démarrage :
 
