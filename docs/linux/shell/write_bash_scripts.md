@@ -62,13 +62,12 @@ d'en connaitres quelques unes.
 * `$1` contient la valeur du premier argument de votre script bash ou
     de votre fonction. (`$0` représente le script lui même)
 * `$#` contient le nombre d'arguments passés à votre script
-* `$?` contient le code retour de votre programme script...
+* `$?` contient le code retour de la dernière commande exécutée
 * `$PWD` contient le chemin du répertoire courant
 
 #### Assignation de variables
 
-Pour assigner une valeur à une variable en bash, qu'une seule façon est
-possible :
+Pour assigner une valeur à une variable en bash, la forme de base est `NOM=valeur`, sans espace autour du `=` (`declare`, `local`, `read` ou `printf -v` assignent aussi des variables) :
 
 ```bash
 #!/bin/bash
@@ -76,8 +75,7 @@ VAL="mavaleur"
 ```
 
 Il est également possible d'assigner dynamiquement une valeur à une
-variable. Notre première bonne pratique ici est d'écrire le nom de la
-variable en majuscule.
+variable. Notre première bonne pratique ici est d'écrire le nom de la variable en majuscule, en faisant attention à ne pas écraser une variable d'environnement ou du shell (`PATH`, `HOME`, `USER`...). Beaucoup de guides réservent d'ailleurs les majuscules à ces variables et aux constantes, et passent les variables locales en minuscules.
 
 ```bash
 #!/bin/bash
@@ -124,8 +122,8 @@ de base
 
 ```bash
 #!/bin/bash
-# echo ${FOO:position:taille}
-${FOO:2:2}
+# ${FOO:position:taille}
+echo "${FOO:2:2}"
 ```
 
 Par exemple, ici, nous allons afficher la variable à partir de la
@@ -152,6 +150,8 @@ do
    echo "Welcome $i times"
 done
 ```
+
+Avec un pas (`{début..fin..pas}`), qui demande bash 4 ou plus : le `/bin/bash` de macOS est encore en 3.2 et affiche `{0..10..2}` tel quel.
 
 ```bash
 #!/bin/bash
@@ -207,9 +207,7 @@ set -euo pipefail
 
 Petite explication de ces options :
 
-* **-e** : Interrompt le script à la moindre commande ne retournant
-    pas 0. Implique une manière d'écrire ses scripts afin qu'aucune
-    commande ne retourne d'erreur par défaut
+* **-e** : Interrompt le script quand une commande ne retourne pas 0, mais pas partout : une commande testée par un `if`, un `while`, précédée de `!` ou placée avant le dernier `&&`/`||` d'une liste ne l'arrête pas (`false && true` passe sans broncher). Ce n'est donc pas un filet de sécurité complet : pour les commandes critiques, on garde un `|| exit 1` explicite ou un `trap '...' ERR`
 * **-u** : Indique qu'une variable n'a pas été définit. Par défaut,
     bash va bug ou ne rien afficher dans le cas d'un *echo*. Prenons un
     exemple où nous avons un problème de casse :
@@ -271,36 +269,36 @@ Quelques astuces de scripts bash trouvées à gauche ou à droite
 echo avant && : moi  && echo après
 ```
 
-Ici, le : moi est en faite un commentaire inline, plutôt ingénieux !
+Ici, `:` est un builtin qui ne fait rien : `: moi` sert de commentaire inline, plutôt ingénieux ! Attention, ses arguments sont quand même développés : `: $(rm fichier)` exécute bien le `rm`.
 
 ------------------------------------------------------------------------
 
 ```bash
 #!/bin/bash
-if doesnotexist |& grep command not found >/dev/null
+if doesnotexist |& grep -q 'command not found'
 then
   echo oops
 fi
 ```
 
-Nous connaissons tous les fameux 2&'>1 pour rediriger STDERR dans
+Nous connaissons tous les fameux `2>&1` pour rediriger STDERR dans
 STDOUT. Ici, nous redirigons les 2 sorties vers la prochaine instruction
-du pipeline, très utile.
+du pipeline, très utile. Le motif est entre quotes, sinon grep cherche `command` dans des fichiers `not` et `found`. Le message dépend aussi de la locale (« commande introuvable » en français).
 
 ------------------------------------------------------------------------
 
 ```bash
 #!/bin/bash
-exec 8<>/dev/tcp/wiki.jdelgado.fr/80
-echo -e "GET / HTTP/1.1\r\nHost: wiki.jdelgado.fr\r\n\r\n" >&8
+exec 8<>/dev/tcp/example.com/80
+printf "GET / HTTP/1.1\r\nHost: example.com\r\nConnection: close\r\n\r\n" >&8
 cat <&8
 ```
 
 Petit snippet utile afin de s'affranchir de toute commande. Dans un
 premier temps, nous ouvrons le file descriptor 8. Via cette première
-commande, nous ouvrons ainsi un socket TCP sur notre wiki. Secondement,
+commande, nous ouvrons ainsi un socket TCP vers example.com. Secondement,
 nous envoyons un header HTTP classique, enfin, nous lisons le contenu du
-file descriptor 8
+file descriptor 8. Le `Connection: close` est indispensable : en HTTP/1.1 la connexion reste ouverte par défaut et `cat` ne rend jamais la main. `/dev/tcp` ne parle que du TCP brut, donc pas de HTTPS sur le port 443
 
 ------------------------------------------------------------------------
 
