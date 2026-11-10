@@ -7,14 +7,13 @@ tags:
 
 # ArgoCD : Sync Waves & Hooks
 
-Par défaut ArgoCD applique tout en parallèle. En pratique ça pose problème : un Deployment
-qui démarre avant sa ConfigMap, une migration qui tourne pendant que l'appli reçoit du trafic...
+Par défaut ArgoCD applique tout d'un coup, dans un ordre fixé par le kind (Namespace, Secret et ConfigMap avant les Deployment, les custom resources en dernier), sans attendre que quoi que ce soit soit `Healthy`. En pratique ça pose problème : une custom resource appliquée avant que son operator soit prêt, un backend qui démarre avant que sa base réponde, une migration qui tourne pendant que l'appli reçoit du trafic...
 
 2 solutions s'offrent ici à nous : on attend le retry d'ArgoCD ou on gère ça proprement avec les _waves_ et les _hooks_. Pour contrôler d'autres aspects du sync (comme `PruneLast` ou `ServerSideApply`), voir [Sync Options](sync_options.md).
 
 ## Sync Waves
 
-ArgoCD applique wave par wave en ordre croissant et attend que tout soit `Healthy` avant de passer à la suivante.
+ArgoCD applique wave par wave en ordre croissant et attend que tout soit `Healthy` avant de passer à la suivante, plus 2 secondes de délai entre 2 waves (réglable avec la variable d'environnement `ARGOCD_SYNC_WAVE_DELAY`). Au prune, c'est l'inverse : les waves les plus hautes sont supprimées en premier.
 
 ```yaml
 metadata:
@@ -67,8 +66,7 @@ spec:
 
 ## Hooks
 
-Des ressources (souvent des Jobs) qu'on branche sur des moments clés du sync, indépendamment
-des waves.
+Des ressources (souvent des Jobs) qu'on branche sur des moments clés du sync : les phases. Les waves continuent de s'appliquer à l'intérieur de chaque phase (détail plus bas).
 
 ```yaml
 metadata:
@@ -82,9 +80,11 @@ metadata:
 | Hook | Quand |
 |------|-------|
 | `PreSync` | Avant le début du sync |
-| `Sync` | Pendant le sync (wave 0) |
+| `Sync` | Une fois les `PreSync` réussis, en même temps que les manifests (avec sa wave, `0` par défaut) |
 | `PostSync` | Après que tout soit `Healthy` |
 | `SyncFail` | Si le sync échoue |
+| `PreDelete` | Avant la suppression des ressources, uniquement quand on supprime l'Application (pas sur un sync, même avec prune). Un échec bloque la suppression. Depuis ArgoCD 3.3 |
+| `PostDelete` | Après la suppression de toutes les ressources de l'Application, pratique pour nettoyer des objets externes. Depuis ArgoCD 2.10 |
 | `Skip` | Jamais appliqué |
 
 ### Politiques de suppression
@@ -182,8 +182,9 @@ spec:
 
 ## Dans quel ordre ça se passe
 
-Les hooks ignorent les waves. L'ordre c'est toujours : PreSync → waves (de -N à +N) → PostSync.
-Un `PreSync` s'exécute donc toujours avant la wave `-1`.
+ArgoCD trie d'abord par phase, puis par wave à l'intérieur de la phase, puis par kind, puis par nom. L'ordre des phases c'est toujours : PreSync → Sync (waves de -N à +N) → PostSync. Un `PreSync` s'exécute donc toujours avant la wave `-1` de la phase Sync.
+
+Les hooks respectent quand même les waves dans leur phase : 2 Jobs `PreSync` se trient avec `sync-wave`, par exemple une migration en wave `-1` puis un seed en wave `0`. Un hook sans annotation est en wave `0`, comme le reste.
 
 ## Debug
 
