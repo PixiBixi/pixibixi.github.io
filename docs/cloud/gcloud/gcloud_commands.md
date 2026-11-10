@@ -7,23 +7,27 @@ tags:
 
 # Commandes utiles pour la CLI Gcloud
 
+Pour se connecter a une instance Cloud SQL depuis son poste :
+
 ```bash
-CLOUDSDK_CORE_PROJECT=<GCP_PROJECT> gcloud beta sql connect <INSTANCE_NAME> --database=<DB_NAME --user=<USER_SQL>
+CLOUDSDK_CORE_PROJECT=<GCP_PROJECT> gcloud sql connect <INSTANCE_NAME> --user=<USER_SQL>
 ```
 
-Permet de se connecter a n'importe quelle instance CloudSQL facilement sur le project que vous souhaitez.
+Permet de se connecter a n'importe quelle instance CloudSQL facilement sur le project que vous souhaitez. Sur PostgreSQL et SQL Server, on ajoute `--database=<DB_NAME>` ; sur MySQL gcloud refuse ce flag.
 
-Il vous faudra probablement le cloud-sql-proxy, pour cela : `gcloud components install cloud_sql_proxy`
+Sur un gcloud récent, la commande passe par le Cloud SQL Proxy v2 (`--private-ip` pour une instance sans IP publique), il faut donc le binaire dans le PATH : `gcloud components install cloud-sql-proxy`. Les vieilles versions de gcloud ajoutaient plutôt notre IP dans les authorized networks de l'instance, et seul `gcloud beta sql connect` passait par le proxy.
 
 ------------------------------------------------------------------------
+
+Pour un noeud GKE :
 
 ```bash
 gcloud compute ssh <NODE_NAME> --zone <ZONE>
 ```
 
-Pour se connecter a un noeud GKE en SSH, possible de faire un `gcloud compute instances list` avant pour lister les noeuds
+Pour se connecter a un noeud GKE en SSH, possible de faire un `gcloud compute instances list` avant pour lister les noeuds. Sur un cluster aux noeuds privés (sans IP externe), on ajoute `--tunnel-through-iap` pour passer par IAP.
 
-Petit bonus, dans un noeud GKE nous avons une petite commande appelée `toolbox` qui permet de troubleshoot un noeud
+Petit bonus, sur les noeuds en Container-Optimized OS (l'image par défaut de GKE) nous avons une petite commande appelée `toolbox` qui permet de troubleshoot un noeud.
 
 ## Voir aussi
 
