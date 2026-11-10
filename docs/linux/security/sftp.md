@@ -13,7 +13,7 @@ Si on nous demande un serveur FTP mais qu'on n'a pas envie d'en installer un, le
 
 2 types de chroot sont possibles :
 
-* Dans le chroot SFTP, on a les mêmes droits qu'avec un serveur FTP classique
+* Dans le chroot SFTP, l'utilisateur ne fait que du transfert de fichiers, comme sur un serveur FTP classique
 * Dans le chroot SSH, il s'agit d'un environnement SSH classique, mais l'accès aux différents fichiers/binaires système peut être limité par l'administrateur
 
 ## Chroot SFTP
@@ -24,20 +24,26 @@ Pour le SFTP, on doit appliquer des droits spéciaux sur le folder à chroot (g�
 Subsystem sftp internal-sftp
 Match user jeremy
     ChrootDirectory %h
+    ForceCommand internal-sftp
+    DisableForwarding yes
 ```
 
-Dans cet exemple, l'utilisateur *jeremy* sera chroot dans son home directory. Mais si on fait que ça, le chroot ne marchera pas. Il faut également corriger les droits :
+Dans cet exemple, l'utilisateur *jeremy* sera chroot dans son home directory. `ChrootDirectory` seul ne limite pas ce que le client demande : sans `ForceCommand internal-sftp`, il peut encore réclamer un shell ou un `ssh -L`. `ForceCommand` coupe le shell (`This service allows sftp connections only.`) et `DisableForwarding yes` refuse tout forwarding TCP, agent ou X11.
+
+Mais si on fait que ça, le chroot ne marchera pas. OpenSSH exige que la racine du chroot et tous ses parents appartiennent à root et ne soient pas writable par le groupe ou les autres. Du coup l'utilisateur ne peut rien écrire à la racine de son chroot (`dest open "/f": Permission denied`), il lui faut un sous-répertoire à lui :
 
 ```bash
 chown -R jeremy:jeremy /home/jeremy
 chown root:root /home/jeremy
 chmod 755 /home/jeremy
+mkdir -p /home/jeremy/upload
+chown jeremy:jeremy /home/jeremy/upload
 ```
 
-Et on redémarre OpenSSH :
+On valide la config, puis on redémarre OpenSSH (le service s'appelle `ssh` sur Debian/Ubuntu, avec un alias `sshd`, et `sshd` sur RHEL et dérivés) :
 
 ```bash
-systemctl try-restart sshd
+sshd -t && systemctl try-restart sshd
 ```
 
 `internal-sftp` est implémenté dans le process sshd lui-même, donc il n'a besoin d'aucun binaire ni d'aucune lib dans le répertoire chrooté. C'est toute la différence avec la suite : dès qu'on veut un shell, il faut peupler le jail.
@@ -93,7 +99,7 @@ Match user jeremy
     ChrootDirectory /srv/jail
 ```
 
-Si on veut aussi le SFTP dans ce jail, `internal-sftp` continue de marcher sans rien copier. En revanche `scp` et `rsync` sont de vrais binaires, ils doivent être présents dans le jail et avec leurs libs.
+Si on veut aussi le SFTP dans ce jail, `internal-sftp` continue de marcher sans rien copier. Pareil pour `scp` depuis un client OpenSSH 9.0+, qui passe par le protocole SFTP par défaut. Le binaire `scp` dans le jail ne sert qu'à `scp -O` (l'ancien protocole) et aux vieux clients, sinon `scp: command not found`. `rsync`, lui, est un vrai binaire côté serveur : il doit être présent dans le jail avec ses libs.
 
 ## Jailkit : le même jail sans le ldd
 
@@ -140,14 +146,14 @@ Un `--dry-run` est disponible pour voir ce qui bougerait avant de le faire.
 La connexion qui se ferme sans message est le cas normal, tout se passe dans les logs du serveur :
 
 ```bash
-journalctl -u ssh -f
+journalctl -u ssh -f    # -u sshd sur RHEL et dérivés
 ```
 
 Ce qu'on y lit le plus souvent :
 
-* `fatal: bad ownership or modes for chroot directory` : la racine du jail ou un de ses parents n'est pas `root:root` en `755`. Le `chmod 755` ne suffit pas si `/srv` lui-même est writable par un groupe
+* `bad ownership or modes for chroot directory` (suivi de `component "/srv/"` quand c'est un parent) : la racine du jail ou un de ses parents n'appartient pas à root, ou est writable par le groupe ou les autres. Le groupe n'a pas besoin d'être root, un `750` passe aussi. Le `chmod 755` du jail ne suffit pas si `/srv` lui-même est writable par un groupe
 * `/bin/bash: No such file or directory` alors que le fichier est bien là : c'est une lib qui manque, pas le binaire. Vérifier avec `chroot /srv/jail /bin/bash` en local, l'erreur est la même mais on peut itérer sans se déconnecter
-* pas de prompt et rien dans les logs : `/dev/null` ou `/dev/tty` absents
+* le prompt arrive mais `bash: /dev/null: Permission denied` à la moindre redirection : les devices n'ont pas été créés dans `$jail/dev`
 
 Le `chroot` local est d'ailleurs le meilleur test avant même de toucher au `sshd_config` :
 
