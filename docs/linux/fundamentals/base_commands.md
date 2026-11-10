@@ -19,17 +19,17 @@ permettant de rentrer dans les entrailles de GNU/Linux
 
 `rmdir <dir>` : **r**e**m**ove **dir**ectory
 
-`pwd <dir>` : **p**rint **w**orking **d**irectory : Permet d'afficher
+`pwd` : **p**rint **w**orking **d**irectory : Permet d'afficher
 le répertoire courant
 
-`ls <dir|file>` : **l**ist **s**orted : Permet de lister les éléments
+`ls <dir|file>` : **l**i**s**t : Permet de lister les éléments
 d'un dossier
 
 * -a : Affiche les dossiers cachés
 * -l : Affichages détaillé
 * -r : Affichage inversé
 * -t : Du plus récent au plus ancien
-* -S : Date décroissante
+* -S : Du plus gros au plus petit (taille décroissante)
 
 `cd <dir>` : **c**hange **d**irectory : Permet de se déplacer dans les
 répertoires
@@ -39,13 +39,12 @@ répertoires
 `ln <src> <dst>` : **l**i**n**k : Permet de créer un lien entre deux
 fichiers
 
-* -s : Lien symoblique (A la place d'un lien « dur » (hardlink))
+* -s : Lien symbolique (A la place d'un lien « dur » (hardlink))
 
 `touch <file>` : Met à jour l'heurodatage ou créé le document si
 celui-ci n'existe pas
 
-`type <file>` : Permet de trouver le chemin d'un binaire ainsi que son
-type
+`type <commande>` : Indique comment le shell interprète un nom (alias, fonction, builtin ou binaire avec son chemin). Pour récupérer juste le chemin dans un script : `command -v <commande>`
 
 `diff <file1> <file2>`: Différence entre 2 fichiers
 
@@ -88,8 +87,7 @@ type
 `umask <xxx>` : (**u**ser file creation mode **mask**) Droits sur les
 nouveaux fichiers
 
-* Par défaut, l'umask est de 022 (777-022 => Les fichiers seront
-    créés en 755)
+* Par défaut, l'umask est de 022 : les fichiers sont créés en 644 (666-022) et les dossiers en 755 (777-022)
 
 ## Misc
 
@@ -107,11 +105,11 @@ nouveaux fichiers
 
 * -v : Inverse les résultats
 * -i : Ignore la casse
-* -c : Compte le nombre d'occurence qui correspondent à la regex
+* -c : Compte le nombre de lignes qui correspondent à la regex (pas le nombre d'occurrences)
 * -R : Recherche recursivement
 * -n : Affiche le numéro de lignes
 
-`find` : Permet de rechercher un fichier ([article complet](https://wiki.jdelgado.fr/linux/cli/find/))
+`find` : Permet de rechercher un fichier ([article complet](../cli/find.md))
 
 `less/more` :
 
@@ -119,7 +117,8 @@ nouveaux fichiers
 
 * -l : Line
 * -w : Word
-* -c : chars
+* -c : Octets (bytes)
+* -m : Caractères (différent de -c en UTF-8 dès qu'il y a des accents)
 
 `cut` :
 
@@ -165,11 +164,10 @@ free : Affiche les informations sur la RAM/Swap
 
 `pstree` : **p**rocess **s**tatus tree
 
-* -p : Affiche les processus
+* -p : Affiche le PID de chaque processus
 
 `kill <pid>` : Tue un processus (via son PID)
 
-* kill 9 permet de forcer le kill d'un processus (A utiliser en
-    **dernier recours**)
+* `kill -9 <pid>` (ou `kill -KILL <pid>`) permet de forcer le kill d'un processus (A utiliser en **dernier recours**). Sans le tiret, `kill 9 <pid>` envoie un simple SIGTERM au PID 9 et au PID visé
 
 `killall <processus_name>` : Tue un processus (via son nom)
