@@ -2,6 +2,13 @@
 description: Suivre en temps réel l'upgrade d'un cluster GKE via la CLI gcloud
 tags:
   - GKE
+variables:
+  - name: cluster
+    default: tooling-gcp-europe-west9
+  - name: location
+    default: europe-west9
+  - name: operation
+    default: operation-1711458817372-c0195207-cfe4-4043-b42c-ce7f1a213154
 ---
 
 # Suivre l'upgrade de son cluster GKE
@@ -23,6 +30,18 @@ operation-1711458817372-c0195207-cfe4-4043-b42c-ce7f1a213154  UPGRADE_NODES   eu
 ```
 
 Il peut être important de préciser le `CLOUDSDK_CORE_PROJECT` si nous souhaitons follow plusieurs projects Google au même moment
+
+Sans `--location`, la commande liste toutes les opérations du project, toutes locations et tous clusters confondus (ici `base` et `tooling-gcp-europe-west9` se mélangent). La propriété `compute/region` est ignorée pour ce listing. On filtre sur le cluster (le `targetLink` d'une opération de node pool contient aussi `/clusters/<cluster>/`) et on ne garde que ce qui tourne :
+
+```bash
+gcloud container operations list --filter='targetLink~/clusters/<cluster> AND status=RUNNING'
+```
+
+Pour suivre une opération jusqu'au bout, `wait` rend la main une fois qu'elle est `DONE` :
+
+```bash
+gcloud container operations wait <operation> --location=<location>
+```
 
 ## Voir aussi
 
