@@ -1,5 +1,8 @@
 ---
 description: "Makefile : à quoi sert make, cibles PHONY, les 4 types d'affectation, recettes strictes avec .SHELLFLAGS, dépendances de fichiers et auto-documentation des cibles."
+tested_with:
+  - "GNU Make 4.3"
+  - "GNU Make 4.4.1"
 tags:
   - Makefile
   - Automation
@@ -40,7 +43,7 @@ test:
 
 ## Les 4 affectations et laquelle utiliser
 
-C'est la source de bug la plus discrète du format, parce que les 4 se ressemblent et ne s'évaluent pas au même moment.
+C'est la source de bug la plus discrète du format, parce que les 4 se ressemblent et ne s'évaluent pas au même moment. GNU make en connaît d'autres (`::=`, l'équivalent POSIX de `:=`, et `!=` qui stocke la sortie d'une commande shell), mais ces 4 couvrent l'usage courant.
 
 | Forme | Nom | Évaluation |
 |---|---|---|
@@ -72,8 +75,10 @@ make deploy TAG=v1.2.3 REGISTRY=docker.io/org
 
 Par défaut, `make` appelle `/bin/sh` sans aucun garde-fou : un pipe qui échoue au milieu passe pour un succès et une variable non définie devient une chaîne vide. Sur un Makefile qui déploie, c'est le genre de silence qu'on ne veut pas.
 
+Ce bloc demande GNU make 3.82 ou plus. Le `make` livré avec macOS est un GNU Make 3.81 qui ignore `.SHELLFLAGS` et `.ONESHELL` sans rien dire : pas de `-e`, pas de `pipefail`, une ligne par shell. Sur Mac, on passe par `brew install make` et on lance `gmake`.
+
 ```Makefile
-SHELL := /usr/bin/env bash
+SHELL := bash
 .SHELLFLAGS := -euo pipefail -c
 .ONESHELL:
 .DELETE_ON_ERROR:
@@ -85,11 +90,13 @@ Ce que chaque ligne apporte :
 - `.ONESHELL` exécute toute la recette dans un seul shell, donc un `cd` tient sur les lignes suivantes et on arrête d'écrire des `&& \` en fin de ligne
 - `.DELETE_ON_ERROR` supprime le fichier produit quand la recette échoue, sinon `make` le considère à jour au prochain appel et saute l'étape
 
+`SHELL` doit rester un seul mot (`bash` ou `/bin/bash`) : avec `.ONESHELL`, un `SHELL := /usr/bin/env bash` fait échouer chaque recette sur `make: /usr/bin/env bash: No such file or directory`.
+
 Ces 4 lignes en tête de fichier changent plus la fiabilité d'un Makefile que n'importe quelle astuce de syntaxe.
 
 ## Ne refaire que ce qui a changé
 
-C'est là que `make` gagne contre un script shell. On déclare une cible qui est un vrai fichier et l'étape est sautée tant que ses sources n'ont pas bougé.
+Sur ce point, `make` gagne contre un script shell. On déclare une cible qui est un vrai fichier et l'étape est sautée tant que ses sources n'ont pas bougé.
 
 ```Makefile
 # Le binaire dépend des sources : pas de rebuild si rien n'a changé
@@ -143,7 +150,7 @@ deploy: build ## Pousser l'image et appliquer le manifest
 
 - **`.PHONY` oublié sur une cible dont un fichier porte le nom.** Le symptôme est un `make` qui ne fait rien et annonce `up to date`. On déclare toutes les cibles non-fichier en une ligne en tête de Makefile.
 - **`make -j` sans dépendances déclarées.** Le parallélisme suit le graphe : sans dépendance entre 2 cibles, `make -j4` les lance en même temps, y compris quand l'une avait besoin de l'autre. Le bug est intermittent, donc pénible.
-- **La récursion avec `make` au lieu de `$(MAKE)`.** Seul `$(MAKE)` transmet les flags du parent, notamment `-j` et `-n`. Un `make -C sous-repo` écrit en dur casse le dry-run et le parallélisme.
+- **La récursion avec `make` au lieu de `$(MAKE)`.** Les flags passent à tout sous-make via `MAKEFLAGS`, mais seule une ligne qui contient `$(MAKE)` est exécutée sous `make -n`. Un `make -C sous-repo` écrit en dur est juste affiché en dry-run, sans voir ce que ferait le sous-make, et jusqu'à GNU make 4.3 il retombe en `-j1` (`warning: jobserver unavailable`).
 - **Les variables d'environnement qui traversent.** Tout l'environnement du shell est visible dans le Makefile, donc une variable `TAG` déjà exportée dans le shell surcharge un `TAG ?=` sans prévenir. Sur les noms génériques, préfixer (`APP_TAG`) évite la collision.
 - **`@` devant chaque ligne par réflexe.** Le `@` masque la commande affichée. C'est bien pour un `echo`, c'est une mauvaise idée sur une commande qui déploie : quand ça casse en CI, on veut voir la commande exacte dans les logs.
 
