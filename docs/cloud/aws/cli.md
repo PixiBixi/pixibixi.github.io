@@ -1,8 +1,13 @@
 ---
-description: Référence des commandes AWS CLI - EC2, S3, IAM, EKS et autres services essentiels
+description: Référence des commandes AWS CLI - requêtes et filtres EC2, paramètres RDS modifiés
 tags:
   - AWS
   - CLI
+variables:
+  - name: parameter_group
+    default: my-mysql8-params
+  - name: region
+    default: eu-west-1
 ---
 
 # AWS : CLI
@@ -70,16 +75,16 @@ aws ec2 describe-instances \
 +----------------------------------------+-----------------+----------+----------------+
 ```
 
-Il est possible d'utiliser des regex. Si nous souhaitons toutes les m6i, nous allons donc utiliser le filtre suivant : `Name=instance-type,Values='m6i.*'`
+Les filtres ne prennent pas de regex, seulement 2 jokers : `*` (zéro ou plusieurs caractères) et `?` (un caractère). Si nous souhaitons toutes les m6i, nous allons donc utiliser le filtre suivant : `Name=instance-type,Values='m6i.*'`. Un motif façon regex comme `m6[ia].*` ne matche rien, sans erreur. Pour plusieurs familles, on liste les valeurs (OR) : `Name=instance-type,Values='m6i.*','m6a.*'`.
 
-Vous pouvez tester vos expressions régulières en ligne avec des outils comme [Regex101](https://regex101.com/) ou [Pyrexp](https://pythonium.net/regex).
+Pour un vrai filtrage par regex, on passe côté client avec `--query` (JMESPath, qui a `starts_with` et `contains` mais pas de regex non plus) ou on pipe la sortie JSON dans `jq` et son `test()`.
 
 Beaucoup d'autres exemples sont [disponibles ici](https://www.middlewareinventory.com/blog/aws-cli-ec2/)
 
 ## RDS
 
-```bash
-aws rds describe-db-parameters --db-parameter-group-name <PG_name> --region <region> --query "Parameters[?Source=='user' || ApplyMethod=='immediate'].[ParameterName]" --output text
-```
+Petite query pour lister les options qui ont été modifiées au sein d'un parameter group. `--source user` filtre côté API sur les valeurs posées à la main (les autres sources sont `system` et `engine-default`). Pas de `ApplyMethod` dans le filtre : il dit quand une modif s'applique (`immediate` ou `pending-reboot`), pas si le paramètre a été modifié.
 
-Petite query pour lister les options qui ont été modifié au sein d'un parameter group
+```bash
+aws rds describe-db-parameters --db-parameter-group-name <parameter_group> --region <region> --source user --query "Parameters[].[ParameterName,ParameterValue]" --output text
+```
