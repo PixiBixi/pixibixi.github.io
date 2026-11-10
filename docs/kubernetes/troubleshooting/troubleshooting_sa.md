@@ -3,6 +3,9 @@ description: Déboguer les droits d'accès d'un service account Kubernetes avec 
 tags:
   - RBAC
   - ServiceAccount
+variables:
+  - name: namespace
+    default: loki
 ---
 
 # Debug son ServiceAccount Kubernetes
@@ -18,7 +21,7 @@ C'est simple, en lancant un pod qui utilise ce ServiceAccount et qui exécute un
 Exemple simple, j'ai un ServiceAccount qui a pour but de donner l'accès à un bucket S3. Voici à quoi ressemble mon ServiceAccount :
 
 ```bash
-k get serviceaccounts loki -o yaml
+k get serviceaccounts loki -n <namespace> -o yaml
 ```
 
 ```yaml
@@ -27,9 +30,9 @@ automountServiceAccountToken: true
 kind: ServiceAccount
 metadata:
   annotations:
-    eks.amazonaws.com/role-arn: arn:aws:iam:::role/AccessToS3Loki
+    eks.amazonaws.com/role-arn: arn:aws:iam::123456789012:role/AccessToS3Loki
     meta.helm.sh/release-name: loki
-    meta.helm.sh/release-namespace: namespace
+    meta.helm.sh/release-namespace: <namespace>
   creationTimestamp: "2023-05-15T14:15:20Z"
   labels:
     app.kubernetes.io/instance: loki
@@ -38,16 +41,16 @@ metadata:
     app.kubernetes.io/version: 2.8.2
     helm.sh/chart: loki-5.5.0
   name: loki
-  namespace: namespace
+  namespace: <namespace>
   resourceVersion: "103524415"
   uid: dd3baab0-7d90-4cf7-aead-76abbe9f77f0
-secrets:
-- name: loki-x
 ```
+
+Pas de champ `secrets:` sur un cluster récent : depuis Kubernetes 1.24, plus aucun Secret de token n'est créé automatiquement pour un ServiceAccount, le token est projeté dans le Pod avec une durée de vie limitée.
 
 On observe que notre bucket S3 reste vide alors que nos pod tournent, on peut donc (légitimiement) soupconner le role d'être mauvais, ou que le ServiceAccount soit défaillant d'une manière ou d'une autre.
 
-On va donc lancer la CLI aws dans un Pod en utilisant ce ServiceAccount
+On va donc lancer la CLI aws dans un Pod en utilisant ce ServiceAccount. Le Pod doit tourner dans le même namespace que le ServiceAccount, sinon il ne le trouve pas :
 
 ```yaml
 apiVersion: v1
@@ -56,9 +59,9 @@ metadata:
   labels:
     run: my-pod
   name: my-pod
-  namespace:  default
+  namespace: <namespace>
 spec:
-  serviceAccountName: default
+  serviceAccountName: loki
   initContainers:
   - image: amazon/aws-cli
     name: my-aws-cli
@@ -82,7 +85,24 @@ my-pod my-aws-cli
 my-pod my-aws-cli An error occurred (AccessDenied) when calling the ListObjectsV2 operation: Access Denied
 ```
 
-Bingo, notre pod a un problème pour accéder au Bucket, probablement la politique à modifier :)
+Bingo, notre pod a un problème pour accéder au Bucket :) On est ici côté IAM AWS, pas côté RBAC Kubernetes : la cause peut être la policy du rôle, sa trust policy (le `sub` doit correspondre à `system:serviceaccount:<namespace>:loki`), l'annotation du ServiceAccount ou la bucket policy.
+
+Pour savoir quel rôle le Pod assume vraiment, un Pod jetable suffit :
+
+```bash
+kubectl run aws-debug -n <namespace> --rm -it --restart=Never \
+  --image=amazon/aws-cli \
+  --overrides='{"spec":{"serviceAccountName":"loki"}}' \
+  -- sts get-caller-identity
+```
+
+Si l'`Arn` renvoyé n'est pas le rôle `AccessToS3Loki`, c'est le lien IRSA qui est cassé (annotation, OIDC provider ou trust policy), pas la policy.
+
+Quand le doute porte sur le RBAC Kubernetes, pas besoin de Pod :
+
+```bash
+kubectl auth can-i list pods -n <namespace> --as=system:serviceaccount:<namespace>:loki
+```
 
 Par ailleurs, la bonne pratique est de ne pas utiliser le ServiceAccount par défaut, voici une petite commande pour être sur qu'aucun Pod ne tourne avec :
 
