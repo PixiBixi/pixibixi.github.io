@@ -31,6 +31,17 @@ Mais avant cela, nous devons activer le routage IPv6
 
 Nous gardons évidemment le PID en OSPFv2 et v3
 
+`ipv6 router ospf` est la syntaxe historique, limitée à IPv6. Depuis IOS 15.2(1)T et IOS XE 3.4S, on utilise plutôt `router ospfv3` avec des address-families, qui porte IPv4 et IPv6 dans le même process :
+
+    (config)# router ospfv3 pid
+    (config-router)# router-id A.B.C.D
+    (config-router)# address-family ipv6 unicast
+    (config-router-af)# passive-interface e0/0
+
+Et sur l'interface, `ipv6 ospf` devient `ospfv3` :
+
+    (config-if)# ospfv3 pid ipv6 area area-id
+
 ## router-id
 
 En OSPFv2, ce sera l'adresse IP des loopback la plus élevée qui fera le
@@ -38,9 +49,9 @@ rôle de router-id, sans cela, l'adresse IP des interfaces
 
     (config-router)# router-id A.B.C.D
 
-En OSPFv3, le comportement est le même
+En OSPFv3, le router-id reste un identifiant 32 bits au format IPv4, choisi de la même façon. Mais sur un routeur IPv6 only, sans aucune adresse IPv4, IOS ne peut pas en choisir un : le process ne démarre pas (`please configure a router-id`) tant qu'on ne le fixe pas à la main
 
-    (router-rtr)# router-id A.B.C.D
+    (config-rtr)# router-id A.B.C.D
 
 **Pour rappel, le router-id est le premier paramètre devant être
 configuré, sans cela, nous sommes obliger de reload le processus**
