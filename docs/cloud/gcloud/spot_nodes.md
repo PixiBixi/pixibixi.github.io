@@ -8,7 +8,7 @@ tags:
 
 # Spot sur GKE : node pools, scheduling et workloads éligibles
 
-Les Spot VMs sont des instances que GCP peut évicter à tout moment avec 30 secondes de préavis. En échange, la [doc Compute Engine](https://cloud.google.com/compute/docs/instances/spot#pricing) annonce une remise allant jusqu'à 91 % du prix on-demand, qui varie selon le type de machine et la région (voir la [grille tarifaire](https://cloud.google.com/spot-vms/pricing)).
+Les Spot VMs sont des instances que GCP peut évicter à tout moment. Sans option particulière, il n'y a pas de préavis : la VM reçoit le signal de préemption et dispose d'une période d'arrêt de 30 secondes au plus (best effort). En échange, la [doc Compute Engine](https://cloud.google.com/compute/docs/instances/spot#pricing) annonce une remise allant jusqu'à 91 % du prix on-demand, qui varie selon le type de machine et la région (voir la [grille tarifaire](https://cloud.google.com/spot-vms/pricing)).
 
 La fréquence des évictions varie selon le type de machine et la zone. Un workload stateless et répliqué les absorbe en général sans impact visible.
 
@@ -81,7 +81,7 @@ spec:
       effect: NoSchedule
   nodeSelector:
     cloud.google.com/gke-spot: "true"
-  # Sur les 30s de préavis, GKE ne laisse que 15s aux pods applicatifs
+  # Sur les 30s de graceful termination, GKE ne laisse que 15s aux pods applicatifs
   terminationGracePeriodSeconds: 15
   containers:
     - name: my-app
@@ -92,7 +92,7 @@ spec:
           memory: 512Mi
 ```
 
-Les 30 secondes de préavis ne vont pas toutes à l'application. GKE donne 15 secondes aux pods ordinaires, puis 15 secondes aux pods système critiques. Un `terminationGracePeriodSeconds` au-delà de 15 ne sert à rien sur une éviction Spot. Depuis la version 1.35.0-gke.1171000 du control plane, la [doc GKE](https://cloud.google.com/kubernetes-engine/docs/concepts/spot-vms) permet d'allonger cette période jusqu'à 120 secondes sur un node pool Standard.
+Côté GKE, à la réception du signal de préemption, les pods ont par défaut 30 secondes de graceful termination, qui ne vont pas toutes à l'application. GKE donne 15 secondes aux pods ordinaires, puis 15 secondes aux pods système critiques. Un `terminationGracePeriodSeconds` au-delà de 15 ne sert à rien sur une éviction Spot. Depuis la version 1.35.0-gke.1171000 du control plane, la [doc GKE](https://cloud.google.com/kubernetes-engine/docs/concepts/spot-vms) permet d'allonger cette période jusqu'à 120 secondes sur un node pool Standard.
 
 ## Ce que le PDB couvre sur Spot
 
