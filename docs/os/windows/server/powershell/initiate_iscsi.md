@@ -23,7 +23,7 @@ On initie la connexion vers le serveur iSCSI
 New-IscsiTargetPortal -TargetPortalAddress $IP_ISCSI
 ```
 
-On vérifie que la connexion est initialisée et que nous voyons les LUN
+On vérifie que la connexion est initialisée et que nous voyons les targets
 
 ```powershell
 Get-IscsiTarget
@@ -34,19 +34,19 @@ IsConnected NodeAddress                                        PSComputerName
       False iqn.2000-01.com.synology:NASCL.LUN-DATA.44034fd745
 ```
 
-Nous voyons ici nos 3 différentes LUN qui sont déconnectées.
+Nous voyons ici nos 3 targets (identifiées par leur IQN) qui sont déconnectées. Sur ce Synology, chaque target expose une LUN, d'où les noms `LUN-VM` et `LUN-DATA`, mais une target peut en porter plusieurs.
 
-Nous pouvons connecter toutes nos LUNs de manière persistente d'un coup
+Nous pouvons connecter toutes nos targets de manière persistante d'un coup
 à l'aide d'un *foreach*
 
 ```powershell
 foreach($a in (Get-IscsiTarget).NodeAddress) { Connect-IscsiTarget -NodeAddress $a -IsPersistent $true }
 ```
 
-Ou alors on connecte le node que l'on veut :
+Ou alors on connecte la target que l'on veut :
 
 ```powershell
 Connect-IscsiTarget -NodeAddress iqn.2000-01.com.synology:NASCL.WITNESS.44034fd745 -IsPersistent $true
 ```
 
-On peut vérifier que le disque est bien monté avec `Get-Disk`
+Une fois les targets connectées, leurs LUN apparaissent comme des disques : on vérifie avec `Get-Disk`
