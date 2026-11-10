@@ -12,7 +12,7 @@ Par défaut Kubernetes n'empêche rien : un pod sans limits, un container `privi
 un Service NodePort exposé sur tous les nœuds... Avant v1.30 on réglait ça avec [Kyverno](https://kyverno.io/),
 OPA Gatekeeper ou un webhook maison - tous avec leur lot d'infra à opérer.
 
-Depuis v1.30 c'est natif avec **ValidatingAdmissionPolicy** et du CEL.
+Depuis v1.30 c'est natif avec **ValidatingAdmissionPolicy** et du CEL. Le pendant pour modifier les objets, **MutatingAdmissionPolicy**, est GA et activé par défaut depuis v1.36.
 
 !!! warning "Les exemples de cet article sont des points de départ"
     Toutes les règles présentées ici sont à adapter au workload. Bloquer les NodePorts peut casser un ingress controller déployé en `hostPort`. Forcer les limits sur tous les pods peut bloquer des DaemonSets système. Passer systématiquement par la phase `Audit` pour mesurer l'impact avant d'activer `Deny`.
@@ -95,7 +95,7 @@ spec:
       - apiGroups: [""]
         apiVersions: ["v1"]
         operations: ["CREATE", "UPDATE"]
-        resources: ["pods"]
+        resources: ["pods", "pods/ephemeralcontainers"]
   validations:
     - expression: >
         object.spec.containers.all(c,
@@ -104,12 +104,29 @@ spec:
           c.securityContext.privileged == false
         )
       message: "Les containers privileged sont interdits."
+    - expression: >
+        !has(object.spec.initContainers) ||
+        object.spec.initContainers.all(c,
+          !has(c.securityContext) ||
+          !has(c.securityContext.privileged) ||
+          c.securityContext.privileged == false
+        )
+      message: "Les initContainers privileged sont interdits."
+    - expression: >
+        !has(object.spec.ephemeralContainers) ||
+        object.spec.ephemeralContainers.all(c,
+          !has(c.securityContext) ||
+          !has(c.securityContext.privileged) ||
+          c.securityContext.privileged == false
+        )
+      message: "Les ephemeralContainers privileged sont interdits."
 ```
+
+`object.spec.containers` ne couvre que les containers principaux : un pod privileged passe sans problème par un `initContainer`, ou par un ephemeral container ajouté avec `kubectl debug` (sous-ressource `pods/ephemeralcontainers`, d'où la 2e entrée dans `resources`). Chaque liste a donc sa propre expression. Le même trou existe pour les limits et les registries : toute règle sur les containers d'un pod doit aussi regarder `initContainers`.
 
 ### Bloquer les Services NodePort
 
-Un NodePort ouvre un port sur chaque nœud du cluster - c'est une faille potentielle.
-Dans 99,9% des cas on veut un LoadBalancer devant.
+Un NodePort ouvre un port sur chaque nœud du cluster - c'est une faille potentielle. En général on veut un LoadBalancer ou un Ingress devant. Attention, un Service `LoadBalancer` alloue lui aussi des nodePorts par défaut : pour fermer vraiment les ports nœuds, il faut aussi `allocateLoadBalancerNodePorts: false` (si le load balancer du cluster n'en dépend pas).
 
 ```yaml
 apiVersion: admissionregistration.k8s.io/v1
@@ -151,8 +168,8 @@ spec:
     - port: 80
 EOF
 # The services "test-nodeport" is invalid:
-# ValidatingAdmissionPolicy 'no-nodeport-services' denied the request:
-# Les Services de type NodePort sont interdits.
+# ValidatingAdmissionPolicy 'no-nodeport-services' with binding 'no-nodeport-services-binding'
+# denied request: Les Services de type NodePort sont interdits.
 ```
 
 ### Limiter aux registries autorisés (avec params)
@@ -184,6 +201,15 @@ spec:
         )
       messageExpression: >
         "Image interdite. Registries autorisés : " + params.data.registries
+    - expression: >
+        !has(object.spec.initContainers) ||
+        object.spec.initContainers.all(c,
+          params.data.registries.split(",").exists(r,
+            c.image.startsWith(r)
+          )
+        )
+      messageExpression: >
+        "Image d'initContainer interdite. Registries autorisés : " + params.data.registries
 ```
 
 ```yaml
@@ -261,7 +287,7 @@ validations:
 
 ## auditAnnotations : savoir ce qui pose problème
 
-En mode `Audit`, on sait qu'il y a des violations - mais pas lesquelles. `auditAnnotations` permet de logger des données précises dans les audit logs du kube-apiserver via une expression CEL, sans bloquer la requête.
+En mode `Audit`, l'annotation `validation_failure` donne la policy, le binding et le message, mais pas le détail calculé (quels containers posent problème). `auditAnnotations` permet de logger ces données précises dans les audit logs du kube-apiserver via une expression CEL. Elles sont publiées quels que soient les `validationActions` du binding, y compris quand la validation passe : ce n'est pas elles qui décident de bloquer ou non, c'est le binding.
 
 Utile pendant la phase de rollout : avant de passer en `Deny`, on sait exactement quels workloads ont un problème et pourquoi.
 
@@ -351,9 +377,11 @@ Retourne un warning HTTP au client, visible dans `kubectl`.
 validationActions: [Warn, Audit]
 ```
 
+Le warning n'arrive qu'au client qui crée l'objet ciblé par la policy. Avec une policy sur les `pods`, un `kubectl apply` de Deployment ne montre rien : les pods sont créés par le controller ReplicaSet, qui reçoit le warning à notre place. Pour le voir, on applique un Pod directement :
+
 ```text
-Warning: require-resource-limits: Tous les containers doivent avoir des limits CPU et mémoire.
-deployment.apps/my-app created
+Warning: Validation failed for ValidatingAdmissionPolicy 'require-resource-limits' with binding 'require-resource-limits-binding': Tous les containers doivent avoir des limits CPU et mémoire.
+pod/my-app created
 ```
 
 ### Deny
@@ -373,8 +401,8 @@ validationActions: [Deny]
 
 `failurePolicy` contrôle ce qui se passe si la policy elle-même plante (erreur d'évaluation CEL, param introuvable...) :
 
-- `Fail` (défaut) - l'erreur bloque la requête
-- `Ignore` - l'erreur est ignorée, la requête passe
+- `Fail` (défaut) - l'erreur est traitée comme une violation, selon les `validationActions` du binding : elle ne bloque la requête que si le binding contient `Deny`, sinon elle est seulement auditée ou remontée en warning
+- `Ignore` - l'erreur est ignorée, la requête passe, quels que soient les `validationActions`
 
 En général, `Fail` est le bon choix pour du security enforcement. `Ignore` peut servir pendant la phase de test sur des policies expérimentales.
 
