@@ -62,8 +62,11 @@ Ces commandes proviennent d'un peu partout, principalement la documentation Kube
     ```
 
 !!! note "Forcer un noeud RKE2 K8s comme NotReady"
+    Sur un worker, le service est `rke2-agent`. Sur un node server (control plane), c'est `rke2-server`.
+
     ```bash
-    systemctl stop rke2-agent
+    systemctl stop rke2-agent    # worker
+    systemctl stop rke2-server   # server
     ```
 
 ## Nodes
@@ -82,6 +85,8 @@ Ces commandes proviennent d'un peu partout, principalement la documentation Kube
     ```bash
     kubectl get svc -o jsonpath='{range .items[*]}{.metadata.name}.{.metadata.namespace}.svc.cluster.local{"\n"}{end}'
     ```
+
+    Sans `-n`, on ne voit que le namespace courant du context. `cluster.local` est le domaine par défaut, à adapter si le cluster a un autre `clusterDomain` (config du kubelet).
 
 !!! note "Lister les zones pour les noeuds K8s"
     ```bash
