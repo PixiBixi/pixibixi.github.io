@@ -16,25 +16,27 @@ Voici donc quelques outils pour mieux gérer tout ça :
 * `kubens` permet de switch rapidement entre plusieurs namespaces K8s : [a voir ici](https://github.com/ahmetb/kubectx).
 * `stern` permet de tail plusieurs pods rapidement : [a voir ici](https://github.com/stern/stern)
 * `kail` permet de tail plusieurs pods rapidement : [a voir ici](https://github.com/boz/kail).
-* `kubepug` permet de vérifier la compatibilité des différentes APIVersion : [a voir ici](https://github.com/rikatz/kubepug).
+* `kubepug` permet de vérifier la compatibilité des différentes APIVersion : [a voir ici](https://github.com/kubepug/kubepug).
 * `pluto` est un concurrent à kubepug, peut être plus facile : [a voir ici](https://github.com/FairwindsOps/pluto)
-* `ketall` permet de (réellement) lister toutes les ressources de son cluster : [a voir ici](https://github.com/corneliusweig/ketall)
-* `konfig` est un outil permettant de gérer sur `~/.kube/config` facilement, en faisant des merge, split... : [a voir ici](https://github.com/corneliusweig/konfig)
+* `ketall` permet de (réellement) lister toutes les ressources de son cluster, plus de commit depuis fin 2023 : [a voir ici](https://github.com/corneliusweig/ketall)
+* `konfig` est un outil permettant de gérer sur `~/.kube/config` facilement, en faisant des merge, split..., plus maintenu depuis 2022 : [a voir ici](https://github.com/corneliusweig/konfig)
 * `kubecolor` est un outil qui nous permet d'avoir une magnifique coloration syntaxique sur kubectl : [a voir ici](https://github.com/kubecolor/kubecolor)
 * `kdash` est un dashboard Kubernetes en CLI, tel que k9s : [a voir ici](https://github.com/kdash-rs/kdash)
 
-Evidemment, nous avons l'autocomplétion à activer :
+Evidemment, nous avons l'autocomplétion à activer. Le script de complétion doit être chargé avant de le brancher sur l'alias :
 
 ```bash
-echo alias k=kubectl >> ~/.bashrc
-echo complete -F __start_kubectl k >> ~/.bashrc/
+echo 'source <(kubectl completion bash)' >> ~/.bashrc
+echo 'alias k=kubectl' >> ~/.bashrc
+echo 'complete -o default -F __start_kubectl k' >> ~/.bashrc
 ```
 
-Ou bien en zsh :
+Ou bien en zsh, où la fonction s'appelle `_kubectl` (après `compinit`) :
 
 ```bash
-    echo alias k=kubectl >> ~/.zshrc
-    echo compdef __start_kubectl k >> ~/.zshrc
+echo 'source <(kubectl completion zsh)' >> ~/.zshrc
+echo 'alias k=kubectl' >> ~/.zshrc
+echo 'compdef _kubectl k' >> ~/.zshrc
 ```
 
 En GUI, nous avons [Lens](https://k8slens.dev/) qui nous permet d'avoir
