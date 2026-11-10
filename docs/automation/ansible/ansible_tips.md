@@ -9,8 +9,8 @@ tags:
 Quelques tips où j'ai perdu beaucoup de temps dessus
 
 ```jinja
-{% for SERVER in  groups[group_names[0]] -%}
-{{ hostvars[SERVER].ansible_host }},
+{% for SERVER in groups['web'] -%}
+{{ hostvars[SERVER].ansible_host | default(SERVER) }},
 {%- endfor %}
 ```
 
@@ -21,10 +21,10 @@ Plusieurs cas concrêts ici :
   * `groups` liste ici l'ensemble des groupes dont l'inventaire est constitué et chaque groupe contient les hosts qu'il possède.
 
 !!! warning "Multi group"
-    Dans le cas d'un multi-group, il faut utiliser l'id -1 qui correpsond au groupe dont notre serveur dépend directement
+    `group_names` est triée par ordre alphabétique (sans `all`) et contient aussi les groupes parents (`children`). `group_names[0]` ou `group_names[-1]` donnent donc le premier ou le dernier groupe par ordre alphabétique, pas le groupe dont le serveur dépend directement. Dès qu'un serveur appartient à plusieurs groupes, on nomme le groupe explicitement : `groups['web']`.
 
-Cette boucle parcourt l'intégralité des serveurs dont est constitué le premier groupe parent (index 0 de notre tableau) de notre serveur
+Cette boucle parcourt l'intégralité des serveurs du groupe `web`.
 
-`hostvars` est également une variable spéciale. Celle-ci contient l'ensemble des serveurs de notre inventaire ainsi que chaque variable qui lui est associé. Concrêtement, ici, nous listons toutes les adresses IPs de tous les serveurs qui constituent le premier groupe parent de notre serveur.
+`hostvars` est également une variable spéciale. Celle-ci contient l'ensemble des serveurs de notre inventaire ainsi que chaque variable qui lui est associé. Concrêtement, ici, nous listons toutes les adresses IPs de tous les serveurs du groupe `web`. Un serveur sans `ansible_host` dans l'inventaire fait planter le template (variable undefined), d'où le `default(SERVER)` qui retombe sur son nom d'inventaire.
 
-MAIS C'EST PAS FINIT: vous voyez le petit `-%}` dans le for et le `{%-`. Le - n'est pas là par hasard, celui-ci supprime le retour à la ligne après chaque item de notre for, plutôt pratique pour faire une liste d'adresse IP ou autre. Plus d'infos sont dispoibles [ici](https://jinja.palletsprojects.com/en/3.0.x/templates/#whitespace-control)
+MAIS C'EST PAS FINI: vous voyez le petit `-%}` dans le for et le `{%-`. Le - n'est pas là par hasard, celui-ci supprime le retour à la ligne après chaque item de notre for, plutôt pratique pour faire une liste d'adresse IP ou autre. Plus d'infos sont disponibles [ici](https://jinja.palletsprojects.com/en/3.0.x/templates/#whitespace-control)
