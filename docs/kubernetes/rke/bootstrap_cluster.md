@@ -8,14 +8,11 @@ tags:
 
 !!! warning "RKE1 est en fin de vie"
     Cet article documente **RKE1**, dont le support Rancher s'est arrêté en juillet 2025.
-    Pour un nouveau cluster, partir sur [RKE2](https://docs.rke2.io/) : contrairement à ce
-    que laissait penser son ancien nom « RKEv2 », il ne se base pas sur K3s et embarque le
-    durcissement CIS et le support FIPS. Le contenu ci-dessous reste valable pour maintenir
-    un cluster RKE1 existant.
+    Pour un nouveau cluster, partir sur [RKE2](https://docs.rke2.io/) : ce n'est pas un K3s, mais il en reprend le socle (K3s est embarqué comme bibliothèque Go) et le modèle de déploiement, et ajoute le durcissement CIS et le support FIPS. Le contenu ci-dessous reste valable pour maintenir un cluster RKE1 existant.
 
 Pour bootstrap rapidement un cluster, on peut utiliser RKE, un outil Rancher.
 
-RKE c'est un binaire et un fichier `cluster.yaml`. Il peut être exécuté depuis le serveur lui-même ou en remote. La dernière version est disponible [ici](https://github.com/rancher/rke/#latest-release).
+RKE c'est un binaire et un fichier `cluster.yaml`. Il peut être exécuté depuis le serveur lui-même ou en remote. La dernière version est disponible [ici](https://github.com/rancher/rke/releases).
 
 Voici un exemple de fichier `cluster.yaml` :
 
@@ -82,7 +79,7 @@ nodes:
 # ---
 services:
   kube-api:
-    extra-args:
+    extra_args:
       external-hostname: rancher.k8s.domain.tld
   etcd:
     snapshot: true
@@ -124,4 +121,6 @@ Voici un fichier hosts adapté :
 192.168.1.212   node03.vlan node03.rancher.k8s    node03.rancher.k8s.local
 ```
 
-On active également quelques options supplémentaires comme le snapshot automatique d'etcd toutes les 6h. Des [exemples](https://rancher.com/docs/rke/latest/en/example-yamls/) sont disponibles sur le site officiel de Rancher - il est possible par exemple d'envoyer les snapshots automatiquement dans un S3.
+On active également quelques options supplémentaires comme le snapshot automatique d'etcd toutes les 6h. Des [exemples](https://rke.docs.rancher.com/example-yamls) sont disponibles sur la doc officielle de RKE - il est possible par exemple d'envoyer les snapshots automatiquement dans un S3 (`backup_config`).
+
+Attention aux clés du `cluster.yaml` : RKE attend des underscores (`extra_args`, `hostname_override`...) et ignore sans erreur une clé inconnue, donc une faute de frappe passe inaperçue au `rke up`.
