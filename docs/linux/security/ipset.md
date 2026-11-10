@@ -74,7 +74,11 @@ ipset create bruteforce hash:ip timeout 3600
 ipset add bruteforce 203.0.113.7 timeout 600
 ```
 
-Le compte à rebours restant s'affiche dans le listing et un `ipset add` sur une IP déjà présente remet le compteur à zéro.
+Le compte à rebours restant s'affiche dans le listing. Un `ipset add` sur une IP déjà présente échoue (`Element cannot be added to the set: it's already added`) : pour reposer le timeout, on passe `-exist`.
+
+```bash
+ipset -exist add bruteforce 203.0.113.7 timeout 600
+```
 
 ## Les commandes du quotidien
 
@@ -157,16 +161,18 @@ nftables gère les listes nativement, il n'y a donc plus besoin d'ipset :
 
 ```bash
 nft add table inet filter
+nft add chain inet filter input '{ type filter hook input priority 0; }'
 nft add set inet filter blocklist '{ type ipv4_addr; flags interval; }'
 nft add element inet filter blocklist '{ 14.144.0.0/12, 27.8.0.0/13 }'
 nft add rule inet filter input ip saddr @blocklist drop
 ```
 
-Le flag `interval` est l'équivalent de `hash:net` et autorise les CIDR ; sans lui, le set n'accepte que des adresses unitaires. Pour migrer une configuration existante, `ipset` sait traduire ses propres sauvegardes :
+Le flag `interval` est l'équivalent de `hash:net` et autorise les CIDR ; sans lui, le set n'accepte que des adresses unitaires. Pour migrer une configuration existante, `ipset-translate` (livré avec ipset) traduit les sauvegardes d'ipset. Il affiche les commandes `nft` sans rien appliquer, on les relit puis on les passe à `nft -f -` :
 
 ```bash
 ipset save > sets.ipset
-ipset-translate restore < sets.ipset
+ipset-translate restore < sets.ipset          # relire
+ipset-translate restore < sets.ipset | nft -f -
 nft list ruleset
 ```
 
