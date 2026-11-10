@@ -11,7 +11,7 @@ Les CI c'est bien, une CI optimisée c'est mieux. Voici quelques tips pour l'opt
 
 ## Clone superficiel
 
-Sur un gros repo, le `git clone` peut représenter 30-50% du temps d'un job. `GIT_DEPTH: 1` ne récupère que le dernier commit - suffisant dans 95% des cas.
+Sur un gros repo, le `git clone` peut peser lourd dans la durée d'un job. `GIT_DEPTH: 1` ne récupère que le dernier commit, ce qui suffit à la plupart des jobs (les nouveaux projets GitLab sont à 20 par défaut).
 
 ```yaml
 variables:
@@ -28,7 +28,7 @@ release-job:
 
 ## Annuler les pipelines obsolètes
 
-Quand on push plusieurs commits rapprochés, les vieux pipelines continuent de tourner pour rien. `interruptible: true` les annule dès qu'un nouveau pipeline démarre sur la même branche.
+Quand on push plusieurs commits rapprochés, les vieux pipelines continuent de tourner pour rien. Avec l'option projet *Auto-cancel redundant pipelines*, `interruptible: true` permet de les annuler dès qu'un nouveau pipeline démarre sur la même branche.
 
 ```yaml
 default:
@@ -37,51 +37,62 @@ default:
 
 On peut aussi le définir job par job. Les jobs de deploy restent souvent non-interruptibles pour éviter un rollback partiel.
 
+Par défaut (`conservative`), GitLab n'annule le vieux pipeline que si aucun job `interruptible: false` n'a encore démarré : dès que le deploy est lancé, plus rien n'est annulé. Pour annuler quand même les jobs interruptibles restants, on passe par `workflow:auto_cancel:on_new_commit` :
+
+```yaml
+workflow:
+  auto_cancel:
+    on_new_commit: interruptible  # conservative (défaut), interruptible ou none
+```
+
 ## Skip Docker
 
-Pour gagner du temps, on peut ne pas utiliser Docker afin de ne pas attendre que le daemon Docker soit prêt. On peut à la place utiliser buildah. La syntaxe est identique à celle de Docker :
+Pour gagner du temps, on peut ne pas utiliser Docker afin de ne pas attendre que le daemon Docker soit prêt. On peut à la place utiliser buildah. La syntaxe est très proche de celle de Docker, mais `buildah push` sans tag ne pousse que `:latest` : on pousse chaque tag explicitement.
 
 ```yaml
 Docker Build:
   before_script:
     # to skip default before_script
     - buildah info
-    - buildah login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - echo "$CI_REGISTRY_PASSWORD" | buildah login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
   stage: package
   image: quay.io/buildah/stable:latest
   script:
     - buildah build
       -t ${CI_REGISTRY_IMAGE}/gprg:prod
       -t ${CI_REGISTRY_IMAGE}/gprg:latest .
-    - buildah push ${CI_REGISTRY_IMAGE}/gprg
+    - buildah push ${CI_REGISTRY_IMAGE}/gprg:prod
+    - buildah push ${CI_REGISTRY_IMAGE}/gprg:latest
 ```
 
 ## Optimisation niveau runner
 
-Le runner GitLab expose des feature flags via des variables CI. À partir de la version 13.6, Fastzip compresse/décompresse bien plus vite les artefacts et le cache.
+Le runner GitLab expose des feature flags via des variables CI. Fastzip compresse/décompresse bien plus vite les artefacts et le cache : apparu en 13.6 derrière `FF_USE_FASTZIP`, il est actif par défaut depuis le runner 19.4 et le flag est déprécié. Sur un runner récent, on ne règle plus que le niveau et le format de compression (`zipzstd` à partir du runner 19.3, compresse en parallèle, intéressant sur les gros caches avec plusieurs cœurs) :
 
 ```yaml
 variables:
-  FF_USE_FASTZIP: "true"
   ARTIFACT_COMPRESSION_LEVEL: "fast"
   CACHE_COMPRESSION_LEVEL: "fast"
+  CACHE_COMPRESSION_FORMAT: "zipzstd"
 ```
+
+Sur un runner antérieur à 19.4, on ajoute `FF_USE_FASTZIP: "true"`.
 
 2 autres feature flags utiles :
 
-- **`FF_TIMESTAMPS: "true"`** - ajoute des timestamps dans les logs, pratique pour identifier où un job rame
-- **`FF_ENABLE_BASH_EXIT_CODE_CHECK: "true"`** - force la détection d'erreur dans les pipes bash (`cmd1 | cmd2` masque sinon l'exit code de `cmd1`)
+- **`FF_TIMESTAMPS`** : ajoute des timestamps dans les logs, pratique pour identifier où un job rame. Actif par défaut depuis le runner 19.0, on ne le pose que sur un runner plus ancien (ou à `"false"` pour les retirer)
+- **`FF_ENABLE_BASH_EXIT_CODE_CHECK: "true"`** : le script ne se repose plus seulement sur `set -e` et vérifie le code retour après chaque commande. Rien à voir avec les pipes : le runner active déjà `set -o pipefail` quand le shell le supporte
 
 ```yaml
 variables:
-  FF_USE_FASTZIP: "true"
-  FF_TIMESTAMPS: "true"
   FF_ENABLE_BASH_EXIT_CODE_CHECK: "true"
   ARTIFACT_COMPRESSION_LEVEL: "fast"
   CACHE_COMPRESSION_LEVEL: "fast"
 ```
 
 ## Divers
+
+Un build qui passe son résultat au job suivant par un artifact :
 
 ```yaml
 build-job:
@@ -125,7 +136,7 @@ cache:
 
 ### Python
 
-De la même manière qu'avec PHP & composer, on peut mettre en cache le `.pip` d'un projet Python mais également le dossier venv :
+De la même manière qu'avec PHP & composer, on peut mettre en cache le dossier `.cache/pip` d'un projet Python mais également le dossier venv :
 
 ```yaml
 # Change pips cache directory to be inside the project directory since we can
@@ -144,7 +155,7 @@ cache:
     - venv/
 ```
 
-D'autres caches sont possibles pour d'autres langages (Go, Ruby...), voir la [documentation officielle](https://docs.gitlab.com/ee/ci/caching/index.html#cache-nodejs-dependencies).
+D'autres caches sont possibles pour d'autres langages (Go, Ruby...), voir la [documentation officielle](https://docs.gitlab.com/ci/caching/#cache-nodejs-dependencies).
 
 ## Cache policy
 
@@ -166,11 +177,11 @@ test-job:
     policy: pull  # consomme uniquement, pas de re-upload
 ```
 
-Sur un pipeline avec 5 jobs de test en parallèle, on économise 4 uploads inutiles.
+Sur un pipeline avec 5 jobs de test en parallèle, on économise 5 uploads inutiles : seul le build-job pousse le cache.
 
 ## Héritage des variables
 
-Tous les jobs héritent par défaut de toutes les variables globales. Sur un pipeline avec beaucoup de secrets ou de variables d'env, ça pollue et ça ralentit. On peut couper l'héritage et être explicite :
+Tous les jobs héritent par défaut de toutes les variables globales. Sur un pipeline avec beaucoup de secrets ou de variables d'env, ça pollue l'environnement du job et ça expose des secrets à des jobs qui n'en ont pas besoin. On peut couper l'héritage et être explicite :
 
 ```yaml
 test-job:
@@ -193,9 +204,13 @@ unit-tests:
   stage: test
   script: jest
 
+e2e-tests:
+  stage: test
+  script: npm run e2e  # job lent, le build ne l'attend pas
+
 build:
   stage: build
-  needs: [lint, unit-tests]  # démarre sans attendre les autres jobs du stage test
+  needs: [lint, unit-tests]  # démarre sans attendre e2e-tests
   script: docker build .
 
 deploy:
