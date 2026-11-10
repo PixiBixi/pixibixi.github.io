@@ -36,6 +36,7 @@ Concrètement, voici un exemple type d'unit :
 [Unit]
 Description=Prometheus
 Documentation=https://prometheus.io/docs/guides/
+Wants=network-online.target
 After=network-online.target
 
 [Service]
@@ -63,7 +64,7 @@ directive Documentation nous sert juste à apporter une documentation
 (comme son nom l'indique). *After* est une directive importante,
 celle-ci indique que nous devrons lancer notre unit après celle
 indiquée, ici, network-online (logique étant donner que notre logiciel
-écoutera sur un port).
+écoutera sur un port). *After* ne fait qu'ordonner : sans *Wants=network-online.target*, la target n'est pas tirée au boot et l'ordre ne sert à rien, d'où les 2 lignes.
 
 Par la suite, nous avons la partie qui nous concerne réellement,
 Service.
@@ -72,19 +73,13 @@ Dans cette partie, nous commencons par la directive *Type=Simple*. Il
 existe de nombreux types, celui-ci nous indique simplement que notre
 processus va démarrer immédiatement :
 
-* `Simple` : Il s'agit du type par défaut. C'est un service
-    démarrant immédiatement qui ne doit pas fork. Il ne faut pas
-    utiliser ce type de service s'il dépend d'autres services
-* `idle` : Le service est identique au type *Simple*. Cependant, il
-    n'est pas prioritaire et sera lancé après tous les autres au
-    démarrage du système.
+* `Simple` : Il s'agit du type par défaut. C'est un service qui ne doit pas fork. systemd le considère démarré juste après le fork, avant même que le binaire soit lancé : un binaire ou un user manquant n'est pas remonté comme un échec de démarrage, et les units qui viennent après ne l'attendent pas.
+* `exec` : Comme *Simple*, mais systemd attend que le binaire soit réellement exécuté, donc les erreurs de lancement sont remontées. C'est le type que systemd recommande pour les services longue durée (systemd 240 et plus).
+* `idle` : Le service est identique au type *Simple*, mais son lancement est retardé jusqu'à ce que les autres jobs en cours soient dispatchés, pour éviter de mélanger sa sortie avec celle du boot sur la console. Ce n'est pas un outil d'ordonnancement : au bout de 5 s, le programme est lancé quoi qu'il arrive.
 * `Forking` : Considère le service comme lancé une fois que le
     processus père à exit après démarrage complet de son fork. Il est
-    utile d'y combiner l'option *PIDFile* afin que systemd garde une
-    trace du processus père
-* `Oneshot` : Encore une fois, il s'agit du même comportement que
-    le service simple. Il est par exemple très utile dans l'exécution
-    d'un script qui font un seul job et se terminent.
+    utile d'y combiner l'option *PIDFile* afin que systemd identifie le processus enfant, qui devient le processus principal du service
+* `Oneshot` : Contrairement à *Simple*, systemd attend la fin du processus avant de considérer l'unit démarrée et de lancer les units qui viennent après. Il est par exemple très utile dans l'exécution d'un script qui fait un seul job et se termine. Sans `RemainAfterExit=yes`, l'unit ne passe jamais `active` : elle retombe directement en `dead` une fois le script fini.
 
 D'autres services sont également disponibles mais sont très peu
 utilisés. Je vous renvoie vers la section Type de la [page
@@ -121,9 +116,7 @@ post-start (ainsi que pour stop) grâces aux directives ExecStartPre et
 ExecStartPost
 
 Dernier block de notre unit systemd et pas le moins important,
-`Install`. La directive `WantedBy=multi-user.target` permet de spécifier
-dans quelle target doit être actif 2,3,4 et 5. Concrêtement, nous allons
-toujours utiliser cette target.
+`Install`. La directive `WantedBy=multi-user.target` indique à quelle target rattacher l'unit lors du `systemctl enable` (multi-user correspond à peu près aux anciens runlevels 2, 3, 4 et 5) : elle est alors lancée à chaque boot, mais `enable` seul ne la démarre pas tout de suite (`systemctl enable --now` pour ça). Concrêtement, nous allons toujours utiliser cette target.
 
 ## Service Modèle
 
@@ -137,16 +130,16 @@ Description=OpenVPN service for %I
 After=syslog.target network-online.target
 Wants=network-online.target
 Documentation=man:openvpn(8)
-Documentation=https://community.openvpn.net/openvpn/wiki/Openvpn24ManPage
+Documentation=https://openvpn.net/community-resources/reference-manual-for-openvpn-2-6/
 Documentation=https://community.openvpn.net/openvpn/wiki/HOWTO
 
 [Service]
 Type=notify
 PrivateTmp=true
 WorkingDirectory=/etc/openvpn/client/%i/
-ExecStart=/usr/sbin/openvpn --status %t/openvpn-server/status-%i.log --status-version 2 --suppress-timestamps --cipher AES-256-GCM --ncp-ciphers AES-256-GCM:AES-128-GCM:AES-256-CBC:AES-128-CBC:BF-CBC --config /etc/openvpn/client/%i/%i.conf
-    =CAP_IPC_LOCK CAP_NET_ADMIN CAP_NET_BIND_SERVICE CAP_NET_RAW CAP_SETGID CAP_SETUID CAP_SYS_CHROOT CAP_DAC_OVERRIDE
-LimitNPROC=10
+ExecStart=/usr/sbin/openvpn --status %t/openvpn-server/status-%i.log --status-version 2 --suppress-timestamps --data-ciphers AES-256-GCM:AES-128-GCM:CHACHA20-POLY1305 --config /etc/openvpn/client/%i/%i.conf
+CapabilityBoundingSet=CAP_IPC_LOCK CAP_NET_ADMIN CAP_NET_BIND_SERVICE CAP_NET_RAW CAP_SETGID CAP_SETUID CAP_SYS_CHROOT CAP_DAC_OVERRIDE
+TasksMax=20
 DeviceAllow=/dev/null rw
 DeviceAllow=/dev/net/tun rw
 ProtectSystem=true
@@ -165,8 +158,7 @@ contient un **@**. Celui-ci signifie qu'il s'agit d'un template.
 
 L'exemple est un peu plus compliqué que le précédent.
 
-* `PrivateTmp` nous permet de nous assurer qu'aucun fichier ne soit écrit
-dans le */tmp* (accessible par tout le monde).
+* `PrivateTmp` donne au service ses propres */tmp* et */var/tmp*, dans un namespace privé : ce qu'il y écrit n'est pas visible des autres processus (le */tmp* partagé est accessible par tout le monde) et est supprimé à l'arrêt du service.
 
 * `WorkingDirectory`
 contient ici un %i indiquant une variable systemd. Ici, le %i signifie
@@ -181,7 +173,9 @@ service.
 capabilities aura accès le binaire, seules les capabilities listées dans
 la liste seront autorisées et aucune autre.
 
-* `LimitNPROC` nous définit le nombre de processus pouvant être lancés par le service.
+* `TasksMax` borne le nombre de tâches (processus et threads) du service. On ne prend pas `LimitNPROC`, que l'on voit encore dans de vieilles units : c'est une limite par UID réel, cumulée avec tous les processus du même user, et elle n'est pas appliquée si le service tourne en root.
+
+* `--data-ciphers` liste les ciphers négociables (OpenVPN 2.5 et plus). Il remplace `--ncp-ciphers`, encore accepté comme alias, et on n'y met plus de CBC ni BF-CBC. C'est d'ailleurs le défaut depuis la 2.6 quand ChaCha20-Poly1305 est disponible.
 
 * `DeviceAllow` nous permet d'accéder à un device spécifique en lecture
 et écriture.
