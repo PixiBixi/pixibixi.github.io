@@ -9,21 +9,25 @@ tags:
 
 ## Repository
 
-La CLI gitlab peut être utile en de nombreux points. Pour l'instant, voici l'intérêt principale pour moi de cette CLI, le clonage récursif.
+La CLI gitlab peut être utile en de nombreux points. Pour l'instant, voici l'intérêt principal pour moi de cette CLI, le clonage récursif.
 
 ```bash
 glab repo clone -g tecteam --archived=false --paginate -p
 ```
 
-Via cette simple ligne, je peux cloner tous les projets non archiver en concernant la structure de dossier de l'ensemble de l'organisation. Pour ma part, étant donné que je navigue entre beaucoup de projets Git, j'aime posséder l'intégralité des repositories sur lesquels je serai potentiellement être amené à travailler
+Via cette simple ligne, je peux cloner tous les projets non archivés en conservant la structure de dossier de l'ensemble de l'organisation. Pour ma part, étant donné que je navigue entre beaucoup de projets Git, j'aime posséder l'intégralité des repositories sur lesquels je suis potentiellement amené à travailler.
+
+Pour sauter un sous-groupe trop gros ou sans intérêt, on ajoute `--exclude-subgroup <chemin/relatif>` (répétable).
 
 ## Merge Request
+
+Pour créer une MR depuis la branche courante, titre et description repris des commits :
 
 ```bash
 glab mr create --fill --yes
 ```
 
-Une petite commande magique pour créer une MR sans rien faire, juste magique.
+Une petite commande magique pour créer une MR sans rien faire, juste magique. Attention, `--fill` pousse aussi la branche sur le remote, on ajoute `--push=false` si on l'a déjà poussée ou si on ne veut pas pousser.
 
 ## Configuration
 
@@ -45,7 +49,7 @@ Ici, nous allons rechercher le projet `myproject` dans le gitlab `gitlab.myorg.c
 
 ---
 
-Comme toute CLI en 2023, GitLab vient avec sa propre auto completion disponible sous Bash, zsh et Fish
+Comme toute CLI moderne, glab vient avec sa propre auto completion disponible sous Bash, zsh, Fish et PowerShell
 
 !!! warning "Lenteurs"
     Pour ma part, je n'ai pas activé cette autocompletion, je trouve mon shell (zsh) lent à charger après ajout de cette completion
