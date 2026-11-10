@@ -3,6 +3,8 @@ description: Configurer nginx pour écouter en IPv6 - directives listen, entrée
 tags:
   - nginx
   - IPv6
+tested_with:
+  - "nginx 1.27.3"
 ---
 
 # Configurer nginx pour utiliser IPv6
@@ -10,11 +12,7 @@ tags:
 Configurer l'IPv6 et nginx est un vrai casse-tête et je ne vous parle
 même pas lorsque l'on a plusieurs vhosts.
 
-Tout d'abord, **2 vérifications** sont à faire au préalable pour être
-sur que nous avons l'IPv6 d'activée, mais également que nginx la
-supporte.
-
-Pour vérifier que nous avons l'IPv6 :
+Tout d'abord, on vérifie que l'hôte a bien l'IPv6 d'activée :
 
 ```bash
 ping6 google.com
@@ -23,45 +21,41 @@ ping6 google.com
 Si cela ping, nous sommes déjà sûr que votre hôte dispose d'une
 **connexion IPv6**.
 
-Maintenant, pour être sur que **nginx**, nous affichons les options de
-compilation nginx et nous devons apercevoir `--with-ipv6`
+Côté **nginx**, plus rien à vérifier : depuis nginx 1.11.5 (2016), le support IPv6 est compilé automatiquement et l'option `--with-ipv6` a disparu de `nginx -V`. Ne pas la voir ne veut donc rien dire. Sur un très vieux binaire, on la cherche comme ceci (`nginx -V` écrit sur stderr) :
 
 ```bash
-nginx -V | grep --with-ipv6
+nginx -V 2>&1 | grep -- --with-ipv6
 ```
 
-Si nous avons la ligne, nous sommes prêts à modifier la configuration
-afin d'y ajouter l'IPv6
-
-Dans **un seul** block nginx, nous devons y ajouter cette ligne :
+Dans **un seul** block nginx, celui qui doit répondre par défaut, nous ajoutons cette ligne :
 
 ```nginx
-listen [::]:80 ipv6only=on deferred default_server;
+listen [::]:80 default_server;
 ```
 
 Dans cette ligne, nous pouvons observer plusieurs éléments :
 
 * `listen` l'instruction **nginx** qui nous indique que nous devons
     « écouter »
-* `[::']` qui nous indique sur quelles interfaces écouter (Ici, sur
+* `[::]` qui nous indique sur quelles interfaces écouter (Ici, sur
     toutes)
-* `ipv6only=on` signifie que cette ligne listen ne concerne uniquement
-    l'IPv6
-* `deferred` peut accélerer la communication TCP, mais est tout de
-    même **indispensable** en IPv6
-* `default_server` signifie que nous voulons que cette configuration
-    soit chargée avant les autres
+* `default_server` désigne le server block qui répond quand aucun `server_name` ne correspond, pour cette paire adresse:port. Il ne peut y en avoir qu'un par adresse:port, sinon `nginx -t` refuse (`a duplicate default server for [::]:80`)
 
-Sur les autres servers blocks, nous devons ajouter
+On croise souvent `ipv6only=on` et `deferred` sur cette ligne. Ces options de socket ne se posent qu'une fois par adresse:port (sinon `duplicate listen options for [::]:80`), d'où le « un seul block » :
+
+* `ipv6only=on` limite la socket `[::]:80` à l'IPv6, l'IPv4 restant servie par `listen 80;`. C'est déjà la valeur par défaut de nginx, inutile de l'écrire
+* `deferred` active `TCP_DEFER_ACCEPT` (Linux seulement) : nginx n'est réveillé qu'à l'arrivée des premières données. Aucun lien avec l'IPv6, c'est une option facultative
+
+Sur les autres servers blocks qui doivent répondre en IPv6, nous ajoutons
 
 ```nginx
 listen [::]:80;
 ```
 
-Un petit coup de restart
+On valide la configuration puis un reload suffit, il ouvre aussi la nouvelle socket `[::]:80` sans couper les connexions en cours :
 
 ```bash
-service nginx restart
+nginx -t && systemctl reload nginx
 ```
 
 Et voilà, nous avons désormais nos serveurs utilisant l'IPv6 o/
@@ -75,4 +69,4 @@ ne pourrons communiquer en IPv6 avec le client.
 
 ## Voir aussi
 
-* [Installer son Serveur Web : nginx, PHP-FPM et MariaDB](installation.md) - Vérification de la compilation `--with-ipv6`
+* [Installer son Serveur Web : nginx, PHP-FPM et MariaDB](installation.md) - Installation de nginx
