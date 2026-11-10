@@ -25,8 +25,8 @@ base. Nous allons voir ultérieuemenr les différentes options de hardening
 
 ## Structure de base de /proc
 
-Il s'agit d'un point de montage monté dans toute les distributions
-UNIX. Toutes les commandes tels que ps,top,vmstat et free parsent
+Il s'agit d'un point de montage monté dans toutes les distributions
+Linux (les BSD et Solaris ont aussi un procfs, mais avec un autre format). Toutes les commandes tels que ps,top,vmstat et free parsent
 différents fichiers de /proc afin d'obtenir leur résultats. Voici par
 exemple le résultat de free et son équivalent dans /proc
 
@@ -133,24 +133,15 @@ Buffers:           87848 kB
 Cached:         12093768 kB
 ```
 
-* `/proc/cgroup` est un mécanisme de linux (Control Group) est un
-    ensemble de processus liés à un ensemble de limites ou paramètres
-    définis via un filesystem cgroup. Ce mécanisme est par exemple
-    utilisé par Docker afin de limiter les ressources si vous le
-    souhaitez. Nous explorerons certainement les cgroups dans un prochain
-    articl.
-* `/proc/cmdline` est également un fichier très intéressant. il nous
-    indique avec quels paramètres est lancé notre kernel Linux mais
-    également dans quelle version
+* `/proc/cgroups` liste les contrôleurs cgroup (Control Group) connus du kernel, et `/proc/<pid>/cgroup` indique à quel cgroup appartient un process. Un cgroup est un ensemble de processus liés à un ensemble de limites ou paramètres définis via un filesystem cgroup. Ce mécanisme est par exemple utilisé par Docker afin de limiter les ressources si vous le souhaitez. Attention, `/proc/cgroup` (sans `s`) n'existe pas.
+* `/proc/cmdline` est également un fichier très intéressant. Il nous indique avec quels paramètres est lancé notre kernel Linux. La version qu'on y lit vient seulement du nom du fichier `vmlinuz` passé par le bootloader : la vraie version du kernel se lit avec `uname -r` ou `/proc/version`
 
 ```bash
 λ jeremy /proc → cat cmdline
 BOOT_IMAGE=/vmlinuz-4.19.0-8-amd64 root=UUID=ccedef42-f296-4e01-ad9e-4327f847b728 ro debian-installer=en_US.UTF-8 quiet noibrs noibpb nopti nospectre_v2 nospectre_v1 l1tf=off nospec_store_bypass_disable no_stf_barrier mds=off mitigations=off
 ```
 
-Je démarre ici sur le kernel 4.19.0-8 sur la partition ayant l'UUID
-ccedef42-f296-4e01-ad9e-4327f847b728 en désactivant tous les patchs de
-sécurité du CPU
+Je démarre ici sur l'image `vmlinuz-4.19.0-8` sur la partition ayant l'UUID ccedef42-f296-4e01-ad9e-4327f847b728 en désactivant tous les patchs de sécurité du CPU. Au passage, `no_stf_barrier` n'a d'effet que sur PowerPC, et sur un kernel récent `mitigations=off` suffit seul.
 
 * `/proc/filesystems` pour lister tous les FS gérer par le kernel
     nativement.
@@ -209,8 +200,7 @@ pour une durée donnée (Ici 60 secondes)
 14-04 22:20:05|   0     0   119    15     0     1     0     0 | 412     0     9    10     0     0
 ```
 
-Plus d'informations dans le [man](https://linux.die.net/man/1/dstat) de
-la commande.
+Plus d'informations dans le [man](https://linux.die.net/man/1/dstat) de la commande. `dstat` n'est plus maintenu (dépôt archivé), son fork [dool](https://github.com/scottchiefbaker/dool) reprend les mêmes options.
 
 * **loadavg** qui nous fournit le load-average que nous connaissons
     tous
@@ -222,8 +212,8 @@ la commande.
 
 Les 3 premières valeurs nous fournissent la charge moyenne du système
 pour 1/5/15 minutes dernières minutes. Le 4ème champ contient 2 valeurs
-distinctes séparées par un /, la première corresond au nombre de
-processus s'exécutant en ce moment et le nombre total de processus.
+distinctes séparées par un /, la première correspond au nombre de
+processus runnable (en cours d'exécution ou en file d'attente du scheduler) et la seconde au nombre total de processus.
 Enfin la dernière valeur correspond au PID le plus récent du système.
 
 Il est possible d'avoir un load détaillé, pour cela, on s'intéresse au dossier `/proc/pressure`
@@ -240,19 +230,22 @@ Ici, le format est légèrement différent du fichier `/proc/loadavg`
 some avg10=3.58 avg60=4.12 avg300=3.72 total=603533453516
 ```
 
-Dans notre exemple, il s'agit du % de process attendant le CPU pendant les 10, 60 et 300 dernières secondes. Il s'agit donc d'une valeur plus intéressante en cas d'un troubleshooting fin qu'un simple load-average
+La ligne `some` donne le % de temps pendant lequel au moins une tâche était bloquée en attente du CPU, en moyenne sur les 10, 60 et 300 dernières secondes (`total` est le cumul en microsecondes). Ce n'est pas un % de process. Il s'agit donc d'une valeur plus intéressante en cas d'un troubleshooting fin qu'un simple load-average. Depuis Linux 5.13 une ligne `full` apparaît aussi dans `cpu`, toujours à zéro au niveau système : elle n'a de sens que dans `memory` et `io` (toutes les tâches bloquées en même temps).
 
 ## Hardening de /proc
 
 2 options sont particulièrement intéressantes dans le montage de `/proc`pour renforcer de la sécurité sous Linux : `hidepid` et `gid`
 
-La première permet de cacher les informations des différents PID par certains utilisateurs. Cette option prend 3 valeurs :
+La première permet de cacher les informations des différents PID par certains utilisateurs. Cette option prend 4 valeurs, chacune avec un nom équivalent depuis Linux 5.8 :
 
-* **hidepid=0** : Tout le monde peut accéder au différents PID. Si aucune valeur n'est explicitement spécifiée, il s'agit de la valeur par défaut
-* **hidepid=1** : Tout le monde peut voir l'arborescence de tous les PID, mais certains fichiers ne seront pas accessible par les autres utilisateurs
-* **hidepid=2** : Personne ne voit les dossier des PID (/proc/[pid]) hormis root. Il s'agit donc de l'option la plus sure.
+* **hidepid=0** (`off`) : Tout le monde peut accéder aux différents PID. Si aucune valeur n'est explicitement spécifiée, il s'agit de la valeur par défaut
+* **hidepid=1** (`noaccess`) : Tout le monde voit les dossiers `/proc/[pid]` de tous les PID, mais on ne peut entrer que dans les siens : ceux des autres utilisateurs sont inaccessibles
+* **hidepid=2** (`invisible`) : comme `1`, mais les dossiers `/proc/[pid]` des autres utilisateurs sont en plus invisibles. Chacun ne voit que ses propres process (root voit tout)
+* **hidepid=4** (`ptraceable`, Linux 5.8+) : on ne voit que les process qu'on a le droit de `ptrace`
 
-En combinaison avec `hidepid`, nous avons l'option `gid`. Comme son nom l'indique très simplement, cela permettra aux users qui disposent du GID indiqué de voir tous les PID, malgré un `hidpid=2` spécifié.
+Depuis Linux 5.8, `subset=pid` cache en plus tous les fichiers de `/proc` qui ne concernent pas les process (`meminfo`, `sys`, `net`...), surtout utile pour une instance procfs montée dans un container.
+
+En combinaison avec `hidepid`, nous avons l'option `gid`. Comme son nom l'indique très simplement, cela permettra aux users qui disposent du GID indiqué de voir tous les PID, malgré un `hidepid=2` spécifié.
 
 Un cas typique est l'utilisation d'un monitoring. Celui-ci aura besoin de voir l'intégralité du système, mais ne doit pas tourner en tant que root.
 
@@ -271,7 +264,7 @@ Dans ce notre exemple ci-dessus :
 
 ## Système de fichier /sys
 
-Là où `/proc` expose surtout des process et du legacy kernel, `sysfs` expose le modèle de périphériques du noyau : un objet kernel = un répertoire, un attribut = un fichier contenant une seule valeur. C'est là que se trouvent la quasi-totalité des tunables hardware et la plupart sont accessibles en écriture.
+Là où `/proc` expose surtout des process et du legacy kernel, `sysfs` expose le modèle de périphériques du noyau : un objet kernel = un répertoire, un attribut = un fichier, en principe avec une seule valeur (certains, comme `queue/scheduler`, listent les choix possibles avec l'actif entre crochets). C'est là que se trouvent la plupart des tunables hardware, même si une bonne partie des attributs (vitesse, compteurs, topologie) reste en lecture seule.
 
 ### Structure de base de /sys
 
@@ -301,7 +294,7 @@ powersave
 
 ### Stockage : scheduler et read-ahead
 
-Le scheduler par défaut est rarement le bon sur du NVMe. `rotational` à `0` confirme qu'on est bien sur du flash.
+Sur du NVMe (multi-queue), le kernel choisit déjà `none` par défaut, ce qui est en général le bon choix : seuls les périphériques single-queue démarrent en `mq-deadline`. `rotational` à `0` confirme qu'on est bien sur du flash.
 
 ```bash
 # Le scheduler actif est entre crochets
@@ -329,13 +322,13 @@ Le scheduler par défaut est rarement le bon sur du NVMe. `rotational` à `0` co
 λ jeremy ~ → cat /sys/class/net/eth0/mtu
 9000
 
-# Compteurs de drop, bien plus rapide à lire que ethtool -S
+# Compteurs de drop génériques du kernel. Les drops hardware du NIC (ring plein, rx_missed) ne sont que dans ethtool -S
 λ jeremy ~ → grep . /sys/class/net/eth0/statistics/{rx,tx}_dropped
 ```
 
 ### Transparent hugepages
 
-Les THP sont une cause classique de latences erratiques sur les bases de données. La valeur active est celle entre crochets.
+Les THP sont une cause classique de latences erratiques sur les bases de données. La valeur active est celle entre crochets, et la valeur par défaut dépend de la config du kernel de la distribution (`always` ou `madvise`).
 
 ```bash
 λ jeremy ~ → cat /sys/kernel/mm/transparent_hugepage/enabled
@@ -355,7 +348,7 @@ Sur un bi-socket, savoir quels cores appartiennent à quel node conditionne le p
 ```
 
 !!! warning "Rien n'est persistant"
-    Tout ce qu'on écrit dans `/sys` est perdu au reboot. Pour rendre un réglage durable, il faut passer par une règle udev, une unit systemd, `tuned`, ou `sysfsutils` (`/etc/sysfs.conf`) selon la distribution. Contrairement à `/proc/sys`, `sysctl.conf` ne couvre pas `/sys`.
+    Tout ce qu'on écrit dans `/sys` est perdu au reboot. Pour rendre un réglage durable, il faut passer par une règle udev, une unit systemd, une ligne `w` dans `/etc/tmpfiles.d/` (`w /sys/kernel/mm/transparent_hugepage/enabled - - - - madvise`), `tuned`, ou `sysfsutils` (`/etc/sysfs.conf`) selon la distribution. Contrairement à `/proc/sys`, `sysctl.conf` ne couvre pas `/sys`.
 
 ## Voir aussi
 
