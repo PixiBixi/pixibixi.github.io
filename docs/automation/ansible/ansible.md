@@ -71,7 +71,7 @@ ansible -i /etc/ansible/customers/absix.hosts linux -a "ls /var/www"
 ```
 
 Via cette commande, nous utilisons comme fichier hosts
-`/etc/ansible/customers/lol.absix` sur le groupe 'linux' et nous
+`/etc/ansible/customers/absix.hosts` sur le groupe 'linux' et nous
 lançons la commande `ls /var/www`
 
 Si vous souhaitez boucler sur tous les clients, il suffira de faire une
@@ -84,7 +84,7 @@ do
 done
 ```
 
-Plus d'informations sur les commandes ad-hoc sont disponibles sur [le site officiel](https://docs.ansible.com/ansible/latest/user_guide/intro_adhoc.html#intro-adhoc)
+Plus d'informations sur les commandes ad-hoc sont disponibles sur [le site officiel](https://docs.ansible.com/ansible/latest/command_guide/intro_adhoc.html)
 
 ## Playbooks
 
@@ -96,32 +96,33 @@ Voici un exemple de playbook simple :
 ```yaml
 ---
 - hosts: linux
-  user: root
-  connection: ssh
+  remote_user: root
 
   tasks:
   - name: Copy mk_mysql script
-    copy:
+    ansible.builtin.copy:
       src: /root/mk_mysql/files_script/mk_mysql
       dest: /usr/lib/check_mk_agent/plugins/mk_mysql
       owner: root
       group: root
-      mode: 0755
-    when: ansible_distribution == Debian
+      mode: '0755'
+    when: ansible_distribution == 'Debian'
 
   - name: Add configuration file
-    command: cp /etc/mysql/debian.cnf /etc/check_mk
+    ansible.builtin.command: cp /etc/mysql/debian.cnf /etc/check_mk
 
   - name: Rename with correct name
-    command: mv /etc/check_mk/debian.cnf /etc/check_mk/mysql.cfg
+    ansible.builtin.command: mv /etc/check_mk/debian.cnf /etc/check_mk/mysql.cfg
 
   - name: Remove white space
-    command: sed -i s/ //g /etc/check_mk/mysql.cfg
+    ansible.builtin.command: sed -i 's/ //g' /etc/check_mk/mysql.cfg
 ```
 
 Ce playbook est tout simple. Tout d'abord, il sera appliqué qu'aux
 hotes dans le groupe ansible linux en utilisant une connexion SSH via
-l'utilisateur root.
+l'utilisateur root (`remote_user`, SSH étant la connexion par défaut).
+
+La copie du script n'est faite que sur les Debian : la valeur comparée dans `when:` doit être quotée, sinon Jinja2 cherche une variable nommée `Debian` et la tâche plante avec `'Debian' is undefined`. Même piège pour le `sed` : le module *command* ne passe pas par un shell et découpe la ligne sur les espaces, d'où les quotes autour de `'s/ //g'`.
 
 4 taches seront exécutées via ce script :
 
@@ -135,9 +136,7 @@ l'utilisateur root.
     `debian.cnf` à `mysql.cfg`
 * Et enfin, il supprime tous les whitespace du fichier
 
-Dans ce playbook, seul le module *copy* est utilisé, mais une liste
-exhaustive des modules existants est disponible sur le [site
-officiel](https://docs.ansible.com/ansible/latest/modules/modules_by_category.html)
+Dans ce playbook, seuls les modules *copy* et *command* sont utilisés. *command* n'est pas idempotent : les 3 dernières tâches sont rejouées à chaque passage. La liste exhaustive des modules existants est disponible sur le [site officiel](https://docs.ansible.com/ansible/latest/collections/index_module.html)
 
 Pour lancer ce playbook sur tous les clients d'un seul coup, la même
 boucle for que toute à l'heure est nécessaire, mais avec une commande
@@ -165,9 +164,10 @@ users:
   ## tecteam users
   jdelgado:
     my_key: my_value
+    group_name: sysadmin
 ```
 
-Dans ce fichiers *vars/users.yml*, nous avons une variable nommée **users** contenant 1 entrée, jdelgado, qui contient elle même une entrée exemple.
+Dans ce fichiers *vars/users.yml*, nous avons une variable nommée **users** contenant 1 entrée, jdelgado, qui contient elle même 2 clés : une entrée exemple et son groupe, `group_name`.
 
 Pour utiliser ce fichier dans un role, il faut dans un premier temps inclure le fichier dans notre task:
 
@@ -185,7 +185,7 @@ Puis nous pouvons utiliser comme ceci la variable :
   ansible.builtin.copy:
     src: files/.bashrc
     dest: "/home/{{ item.key }}/.bashrc"
-    mode: 0644
+    mode: '0644'
   loop: "{{ users | dict2items }}"
   loop_control:
     label: "{{ item.key }}"
@@ -194,7 +194,7 @@ Puis nous pouvons utiliser comme ceci la variable :
 
 Dans cet exemple, nous transformons notre variable en item afin d'utiliser plus facilement la clé.
 
-Nous souhaitons boucler  autour du nom d'utilisateur, qui sera dans notre cas la clé.
+Nous souhaitons boucler  autour du nom d'utilisateur, qui sera dans notre cas la clé. Le `when:` ne garde que les utilisateurs dont `group_name` vaut `sysadmin` : la clé doit exister pour chaque utilisateur, sinon la tâche plante sur une clé non définie.
 
 ## Voir aussi
 
