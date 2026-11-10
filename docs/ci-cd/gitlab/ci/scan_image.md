@@ -3,39 +3,44 @@ description: Intégrer Trivy dans la CI GitLab pour scanner les vulnérabilités
 tags:
   - GitLab CI
   - Security
+tested_with:
+  - "Trivy 0.76.2"
 ---
 
 # Intégrer un scan d'image à sa CI
 
-Avoir une CI qui créé une image, c'est bien. Si l'on peut y ajouter des tests de sécurité, c'est mieux :)
+Avoir une CI qui crée une image, c'est bien. Si l'on peut y ajouter des tests de sécurité, c'est mieux :)
 
 [Trivy](https://github.com/aquasecurity/trivy) est un scanner de vulnérabilité rapide & simple à utiliser. Il peut nous aider à scanner un repository Git, un filesystem, ou bien comme dans notre cas, une image.
 
 ## .gitlab-ci.yml
 
-Voilà le bout de code à ajouter à sa CI pour intégrer un scan à sa CI, générant un rapport détaillé
+Depuis GitLab 15.0, le scan de containers intégré à GitLab utilise déjà Trivy : si le template officiel suffit, une ligne fait le travail.
+
+```yaml
+include:
+  - template: Security/Container-Scanning.gitlab-ci.yml
+```
+
+Pour garder la main sur le job, voilà le bout de code à ajouter à sa CI, générant un rapport détaillé. On part de l'image officielle `aquasec/trivy`, qui embarque déjà le template GitLab sous `/contrib/gitlab.tpl` : plus rien à installer à chaque run.
 
 ```yaml
 Trivy_container_scanning:
   stage: test
   image:
-    name: alpine:3.11
+    name: aquasec/trivy:0.76.2
+    entrypoint: [""]
   variables:
-    # Override the GIT_STRATEGY variable in your `.gitlab-ci.yml` file and set it to `fetch` if you want to provide a `clair-whitelist.yml`
-    # file. See https://docs.gitlab.com/ee/user/application_security/container_scanning/index.html#overriding-the-container-scanning-template
-    # for details
     GIT_STRATEGY: none
     IMAGE: "$CI_REGISTRY_IMAGE"
+    # Trivy lit ces variables pour s'authentifier sur la registry, pas besoin de docker login
+    TRIVY_USERNAME: "$CI_REGISTRY_USER"
+    TRIVY_PASSWORD: "$CI_REGISTRY_PASSWORD"
+    TRIVY_CACHE_DIR: ".trivycache/"
+    TRIVY_NO_PROGRESS: "true"
   allow_failure: true
-  before_script:
-    - export TRIVY_VERSION=$(wget -qO - "https://api.github.com/repos/aquasecurity/trivy/releases/latest" | grep '"tag_name":' | sed -E 's/.*"v([^"]+)".*/\1/')
-    - apk add --no-cache curl docker-cli
-    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
-    - curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin ${TRIVY_VERSION}
-    - curl -sSL -o /tmp/trivy-gitlab.tpl https://github.com/aquasecurity/trivy/raw/${TRIVY_VERSION}/contrib/gitlab.tpl
   script:
-    # --cache-dir global arg, then before image
-    - trivy --cache-dir .trivycache/ image --exit-code 0  --no-progress --format template --template "@/tmp/trivy-gitlab.tpl" -o gl-container-scanning-report.json $IMAGE
+    - trivy image --exit-code 0 --format template --template "@/contrib/gitlab.tpl" -o gl-container-scanning-report.json "$IMAGE"
   cache:
     paths:
       - .trivycache/
@@ -45,6 +50,6 @@ Trivy_container_scanning:
   dependencies: []
 ```
 
-Il s'agit ici de la configuration que j'ai souhaité, je vous invite bien évidemment à l'adapter (Nom de l'image, génération de rapport en utilisant un artefact...).
+Il s'agit ici de la configuration que j'ai souhaité, je vous invite bien évidemment à l'adapter (Nom de l'image, génération de rapport en utilisant un artefact...). Avec `allow_failure: true` et `--exit-code 0`, un job cassé ne se voit pas dans la pipeline : on vérifie de temps en temps que le rapport sort bien.
 
-A noter que la [documentation de Trivy](https://aquasecurity.github.io/trivy/v0.28.1/docs/integrations/gitlab-ci/) intègre un exemple pour GitLab-CI, mais également d'autres pour Travis, Circle...
+A noter que la [documentation de Trivy](https://trivy.dev/docs/latest/tutorials/integrations/gitlab-ci/) intègre un exemple pour GitLab-CI, mais également d'autres pour Travis, Circle...
