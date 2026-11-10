@@ -14,12 +14,8 @@ tags:
 [L'application munin](https://munin-monitoring.org/) se compose de 2
 parties :
 
-1. Munin (master pour les systèmes BSD qui sont plus explicites) qui se
-    charge de générer les pages web et de réaliser les graphiques à
-    partir des données...
-2. fournies par Munin node qui se charge à l'aide de "sondes"
-    écrites en perl ou en shell script de générer les fichiers RRD qui
-    vont bien. Le démon écoute par défaut sur le port TCP 4949.
+1. Munin (master pour les systèmes BSD qui sont plus explicites) qui se charge de collecter les données, de les stocker dans les fichiers RRD qui vont bien, puis de générer les pages web et les graphiques...
+2. à partir des valeurs fournies par Munin node, qui fait tourner des "sondes" (plugins) écrites en perl ou en shell script et renvoie leurs valeurs en texte au master. Le démon écoute par défaut sur le port TCP 4949.
 
 ### Installation
 
@@ -34,7 +30,7 @@ Certains plugins tiers peuvent nécessiter des programmes additionnels (bien sou
 
 ### Configuration basique
 
-On édite **/etc/munin.conf** par exemple, sachant que la page web
+On édite **/etc/munin/munin.conf** par exemple, sachant que la page web
 affichera monfqdn.demondomaine.grd :
 
 ```ini
@@ -49,11 +45,10 @@ Oui, IPv6 roulaize.
 
 La configuration par défaut du paquet Debian fait écouter le démon
 munin-node sur toutes les interfaces réseaux. Il serait peut-être
-intéressant de limiter l'écoute à la boucle locale en éditant
-**/etc/munin-node.conf** :
+intéressant de limiter l'écoute à la boucle locale en éditant **/etc/munin/munin-node.conf**. L'adresse IPv6 se met entre crochets côté node : un `host ::1` nu fait planter le démon au démarrage (`Unresolveable [:1]:4949`) :
 
 ```ini
-host ::1
+host [::1]
 #host *
 ```
 
@@ -66,7 +61,7 @@ seulement la génération dynamique des graphiques et pas celles des pages
 web dont le comportement parfois aléatoire (au moins avec la version de
 munin fournie avec Wheezy) était désespérant.
 
-On repère les lignes intéressantes dans **/etc/munin.conf** :
+On repère les lignes intéressantes dans **/etc/munin/munin.conf** :
 
 ```ini
 graph_strategy cgi
@@ -82,11 +77,12 @@ On installe spawn-fcgi :
 apt install spawn-fcgi
 ```
 
-On récupère les fichiers d'init. Attention, ce sont des scripts sysvinit, écrits à l'époque de Wheezy et jamais retouchés depuis : ils passent encore via la couche de compatibilité de systemd, mais sur une distribution récente il vaut mieux en faire une vraie unit, voir [Créer son service systemd](../linux/systemd/create_unit.md).
+On récupère les fichiers d'init. Attention, ce sont des scripts sysvinit, écrits à l'époque de Wheezy et jamais retouchés depuis : ils passent encore via la couche de compatibilité de systemd, mais sur une distribution récente il vaut mieux en faire une vraie unit, voir [Créer son service systemd](../linux/systemd/create_unit.md). Ce sont des scripts tiers qui tourneront en root, sans checksum publié : on les relit avant de les installer.
 
 ```sh
-sudo wget http://files.julienschmidt.com/public/cfg/munin/spawn-fcgi-munin-html
-sudo wget http://files.julienschmidt.com/public/cfg/munin/spawn-fcgi-munin-graph
+sudo wget https://files.julienschmidt.com/public/cfg/munin/spawn-fcgi-munin-html
+sudo wget https://files.julienschmidt.com/public/cfg/munin/spawn-fcgi-munin-graph
+# miroir : la même paire de scripts, en archive
 wget "https://wiki.mirtouf.fr/lib/exe/fetch.php?media=munin:munin-cgi.tar.gz" -O munin-cgi.tar.gz
 ```
 
@@ -148,7 +144,7 @@ Exemple pour l'adresse suivante :
              include fastcgi_params;
         }
 
-        location ~ /'.ht {
+        location ~ /\.ht {
             allow 127.0.0.1;
             deny all;
         }
@@ -161,7 +157,7 @@ En cas de génération dynamique des pages web :
 location /munin/ {
     fastcgi_split_path_info ^(/munin)(.*);
     fastcgi_param PATH_INFO $fastcgi_path_info;
-    fastcgi_pass unix:/var/run/munin/fcgi-html.sock;
+    fastcgi_pass unix:/run/munin/spawn-fcgi-munin-html.sock;
     include fastcgi_params;
 }
 ```
