@@ -3,6 +3,8 @@ description: Déployer Spegel comme cache de registre OCI local sur Kubernetes p
 tags:
   - Docker
   - Registry
+tested_with:
+  - "Containerd 2.2"
 ---
 
 # Spegel : Un OCI registry cache stateless
@@ -28,7 +30,17 @@ Le partage est donc intra-cluster : le premier pull d'une image neuve tape toujo
 
 ## Compatibilité
 
-Spegel requiert certains paramètres spécifiques, donc il n'est pas compatible avec tous les clusters. Le point bloquant est l'accès à `config_path` de Containerd : les offres managées qui ne le laissent pas modifier sont hors-jeu, GKE par exemple. EKS passe (cf. le script plus bas), Talos aussi via un patch machine config. Le tableau de compatibilité complet est sur le [site officiel](https://spegel.dev/docs/getting-started/#compatibility).
+Spegel requiert certains paramètres spécifiques de Containerd (`config_path` et `discard_unpacked_layers`). Depuis la v0.8, il exige aussi **Containerd 2.2 ou plus récent** (sur un Containerd plus vieux, on reste sur une version antérieure du chart), et à partir de Containerd 2.4 il vérifie les 2 paramètres au démarrage : s'ils ne vont pas, il sort en erreur.
+
+Aucune distribution n'est incompatible d'après le tableau officiel, mais beaucoup demandent de la configuration en plus :
+
+- AKS, DigitalOcean, Minikube, Kapsule : ça marche out of the box
+- EKS : `discard_unpacked_layers` est activé par défaut sur AL2023, on le désactive via la config nodeadm (cf. plus bas)
+- GKE : `discard_unpacked_layers` est aussi activé par défaut, ça passe par un startup script au niveau projet plus un registry host bidon pour forcer la nouvelle config de mirror
+- Talos : patch machine config, `containerdRegistryConfigPath: /etc/cri/conf.d/hosts` dans les values, et le namespace `spegel` labellisé `pod-security.kubernetes.io/enforce=privileged`
+- K3s/RKE2, k0s, Kind : configuration spécifique aussi
+
+Le détail par distribution est sur le [site officiel](https://spegel.dev/docs/getting-started/#compatibility).
 
 ## Installation
 
@@ -53,24 +65,49 @@ Par défaut, le `values.yaml` ne nécessite quasiment aucune modification hormis
 
 ## Configuration de Containerd
 
-Spegel a besoin de 2 paramètres dans `/etc/containerd/config.toml`.
+Spegel a besoin de 2 paramètres dans `/etc/containerd/config.toml` : activer `config_path` pour que Containerd lise les configs de mirror par registre (c'est ce qui permet de rediriger les pulls vers Spegel), et désactiver `discard_unpacked_layers` (par défaut à `true` sur certaines distros), sinon Containerd jette les layers compressés après unpack et Spegel n'a plus rien à partager.
 
-D'abord activer `config_path` pour que Containerd lise les configs de mirror par registre (c'est ce qui permet de rediriger les pulls vers Spegel) :
+Avec Containerd 2.x et une config `version = 3`, les 2 paramètres vivent sous le plugin `io.containerd.cri.v1.images` :
 
 ```toml
+version = 3
+
+[plugins."io.containerd.cri.v1.images".registry]
+  config_path = "/etc/containerd/certs.d"
+[plugins."io.containerd.cri.v1.images"]
+  discard_unpacked_layers = false
+```
+
+Un fichier encore en `version = 2` (format Containerd 1.x, toujours accepté et migré par Containerd 2.x) garde l'ancien nom de plugin `io.containerd.grpc.v1.cri` :
+
+```toml
+version = 2
+
 [plugins."io.containerd.grpc.v1.cri".registry]
   config_path = "/etc/containerd/certs.d"
+[plugins."io.containerd.grpc.v1.cri".containerd]
+  discard_unpacked_layers = false
 ```
 
-Ensuite désactiver `discard_unpacked_layers` (par défaut à `true` sur certaines distros), sinon Containerd jette les layers décompressés et Spegel n'a plus rien à partager :
-
-```toml
-discard_unpacked_layers = false
-```
+Mélanger les 2 ne marche pas : une clé `grpc.v1.cri` dans un fichier `version = 3` est ignorée, avec juste un warning `Ignoring unknown key in TOML` dans les logs de Containerd. Sur un Containerd 2.x vanilla, les défauts conviennent déjà (`config_path = '/etc/containerd/certs.d:/etc/docker/certs.d'`, `discard_unpacked_layers = false`) : ce sont les distros qui les changent. On vérifie la config effective avec `containerd config dump`.
 
 ### Pour EKS
 
-Petit script pour rendre un nœud EKS Spegel-compatible :
+Sur les AMI AL2023, `discard_unpacked_layers` est activé par défaut. On le désactive dans la `NodeConfig` nodeadm passée en user data (partie MIME `application/node.eks.aws`), ce qui survit au remplacement des nœuds :
+
+```yaml
+apiVersion: node.eks.aws/v1alpha1
+kind: NodeConfig
+spec:
+  containerd:
+    config: |
+      [plugins."io.containerd.cri.v1.images".registry]
+        config_path = "/etc/containerd/certs.d"
+      [plugins."io.containerd.cri.v1.images"]
+        discard_unpacked_layers = false
+```
+
+Pour tester à la main sur un nœud existant, un `sed` suffit, mais il saute au prochain remplacement du nœud :
 
 ```bash
 grep "discard_unpacked_layers" /etc/containerd/config.toml && \
@@ -82,14 +119,30 @@ sudo systemctl restart containerd
 
 ## Test de fonctionnement
 
-Pour vérifier que Spegel fonctionne, on devrait observer ce genre de lignes dans les logs :
+Le fallback vers l'upstream est silencieux : si Spegel ne sert rien, les pulls passent quand même. Pour vérifier, on pull la même image sur 2 nœuds différents, le 2ème doit être servi par le premier. On repère d'abord 2 pods Spegel et leur nœud :
 
 ```bash
-spegel-l75n8 registry {"time":"2025-10-25T16:34:14.191396548Z","level":"INFO","source":{"function":"github.com/spegel-org/spegel/pkg/state.Track","file":"github.com/spegel-org/spegel/pkg/state/state.go","line":86},"msg":"OCI event","key":"docker.io/library/nginx:latest","type":"CREATE"}
-spegel-l75n8 registry {"time":"2025-10-25T16:34:14.236101335Z","level":"INFO","source":{"function":"github.com/spegel-org/spegel/pkg/state.Track","file":"github.com/spegel-org/spegel/pkg/state/state.go","line":86},"msg":"OCI event","key":"sha256:029d4461bd98f124e531380505ceea2072418fdf28752aa73b7b273ba3048903","type":"CREATE"}
+UPSTREAM_POD=$(kubectl -n spegel get pods -l app.kubernetes.io/name=spegel -o custom-columns=:metadata.name --no-headers | shuf -n 1)
+UPSTREAM_NODE=$(kubectl -n spegel get pod "$UPSTREAM_POD" -o jsonpath='{.spec.nodeName}')
+MIRROR_POD=$(kubectl -n spegel get pods -l app.kubernetes.io/name=spegel -o custom-columns=:metadata.name --no-headers | grep -v "^${UPSTREAM_POD}$" | shuf -n 1)
+MIRROR_NODE=$(kubectl -n spegel get pod "$MIRROR_POD" -o jsonpath='{.spec.nodeName}')
 ```
 
-L'image n'est pas disponible sur le nœud et est donc créée. Au 2ème pull, on s'aperçoit que celui-ci ne dure que quelques millisecondes vs une dizaine de secondes au premier pull.
+Puis on lance un pod sur chaque nœud, le premier avant le second :
+
+```bash
+kubectl run upstream --image=ubuntu:25.04 --restart=Never --overrides="{\"spec\":{\"nodeName\":\"${UPSTREAM_NODE}\",\"containers\":[{\"name\":\"ubuntu\",\"image\":\"ubuntu:25.04\",\"imagePullPolicy\":\"Always\",\"command\":[\"true\"]}]}}"
+kubectl run mirror --image=ubuntu:25.04 --restart=Never --overrides="{\"spec\":{\"nodeName\":\"${MIRROR_NODE}\",\"containers\":[{\"name\":\"ubuntu\",\"image\":\"ubuntu:25.04\",\"imagePullPolicy\":\"Always\",\"command\":[\"true\"]}]}}"
+kubectl delete pod upstream mirror
+```
+
+Spegel expose une page de debug (activée par défaut, `spegel.debugWebEnabled`). On fait un port-forward vers le pod Spegel du 2ème nœud :
+
+```bash
+kubectl -n spegel port-forward "$MIRROR_POD" 9090
+```
+
+Sur <http://localhost:9090/debug/web>, la case `Last Mirror Success` doit afficher une durée. `Pending` veut dire que le pull n'est jamais passé par Spegel : la config Containerd n'est pas bonne.
 
 ## Voir aussi
 
