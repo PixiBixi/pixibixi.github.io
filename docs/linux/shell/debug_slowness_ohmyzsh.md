@@ -31,7 +31,7 @@ printf 'source ~/.zshrc\nzprof\n' > "$ZD/.zshrc"
 ZDOTDIR=$ZD zsh -i -c exit | head -15
 ```
 
-oh-my-zsh place son dump dans `$ZDOTDIR`, donc le premier lancement le reconstruit : on lit le profil du 2e lancement.
+oh-my-zsh place son dump dans `$ZDOTDIR`, donc le premier lancement le reconstruit : on relance seulement la dernière ligne, avec le même `$ZD`, et on lit ce 2e profil. Relancer le bloc entier recrée un `mktemp -d` vide, donc un nouveau dump.
 
 ```text
 num  calls                time                       self            name
@@ -109,7 +109,7 @@ kafkactl() {
 
 ## Éviter les reconstructions du compdump
 
-oh-my-zsh ajoute 2 lignes à la fin du dump, `#omz revision:` (le commit d'oh-my-zsh) et `#omz fpath:` (le `$fpath` complet). À chaque ouverture il les cherche avec `grep` : si l'une ne correspond plus, il supprime le dump, que `compinit` reconstruit ensuite en un peu moins d'une seconde.
+oh-my-zsh ajoute 2 lignes à la fin du dump, `#omz revision:` (le commit d'oh-my-zsh) et `#omz fpath:` (le `$fpath` complet). À chaque ouverture il les cherche dans le dump (avec `grep` jusqu'en septembre 2026, en zsh pur depuis) : si l'une ne correspond plus, il supprime le dump, que `compinit` reconstruit ensuite en un peu moins d'une seconde.
 
 Après une mise à jour d'oh-my-zsh, c'est attendu. Le cas sournois, c'est quand 2 types de shells construisent un `fpath` différent : chacun invalide le dump écrit par l'autre et la reconstruction revient sans cesse. 2 causes rencontrées :
 
@@ -134,7 +134,9 @@ fpath+=$HOME/.orbstack/shell/completions/zsh
 
 ## Se passer de oh-my-zsh.sh
 
-Même avec un dump stable, `oh-my-zsh.sh` lance à chaque ouverture `git rev-parse`, 3 `grep`, un `mkdir`, un `rm` et `zrecompile` pour vérifier son dump, soit environ 90ms sur le Mac mesuré. Ses fichiers `lib/grep.zsh` et `lib/theme-and-appearance.zsh` forkent aussi `grep`, `diff` et `ls` pour détecter des flags qui ne changent jamais sur une machine donnée.
+Même avec un dump stable, l'`oh-my-zsh.sh` mesuré ici lançait à chaque ouverture `git rev-parse`, 3 `grep`, un `mkdir`, un `rm` et `zrecompile` pour vérifier son dump, soit environ 90ms sur le Mac mesuré. Son `lib/theme-and-appearance.zsh` forkait aussi `diff` et `ls` pour détecter des flags qui ne changent jamais sur une machine donnée (`lib/grep.zsh`, lui, garde son résultat en cache une journée).
+
+Depuis septembre 2026, oh-my-zsh a retiré lui-même la plupart de ces forks : la révision est lue directement dans `.git`, les lignes du dump sont lues en zsh, `mkdir` et `zrecompile` ne tournent plus que si le cache ou le `.zwc` manque, et les tests de `diff`, `ls` et du nom d'hôte macOS (`scutil`) sont en cache une journée. Avec un oh-my-zsh à jour (`omz update`), on re-mesure avant d'aller plus loin : le chargeur ci-dessous et le tableau "Résultat" valent pour les versions antérieures.
 
 Pas besoin de changer de gestionnaire de plugins pour s'en débarrasser : on garde `~/.oh-my-zsh` comme réserve de fichiers et on remplace la ligne `source $ZSH/oh-my-zsh.sh` par un chargeur qui source les mêmes libs, plugins et thème.
 
@@ -165,6 +167,7 @@ unset _lib
 
 # Ce que lib/grep.zsh et lib/theme-and-appearance.zsh détectaient, figé en dur
 alias grep='grep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn,.idea,.tox,.venv,venv}'
+alias egrep='grep -E' fgrep='grep -F'
 autoload -U colors && colors
 setopt prompt_subst
 diff() { command diff --color "$@" }
@@ -182,12 +185,12 @@ source "$ZSH/themes/$ZSH_THEME.zsh-theme"
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 ```
 
-Les valeurs figées (`LS_COLORS`, alias `grep`) se récupèrent dans un shell qui tourne encore avec oh-my-zsh, avec `alias grep` et `echo $LS_COLORS`. La liste des libs écarte celles qui ne servent pas (bzr, nvm, spectrum, vcs_info, diagnostics) et `compfix.zsh`.
+Les valeurs figées (`LS_COLORS`, alias `grep`) se récupèrent dans un shell qui tourne encore avec oh-my-zsh, avec `alias grep` et `echo $LS_COLORS`. La liste des libs écarte celles qui ne servent pas (bzr, correction, nvm, spectrum, vcs_info, diagnostics) et `compfix.zsh`. `correction.zsh` ne fait rien sans `ENABLE_CORRECTION="true"` : avec cette option, on l'ajoute à la liste.
 
 Le compromis est dans `compinit -C` : le dump n'est plus confronté au `fpath` à chaque ouverture, il est reconstruit quand il a plus de 24h. Après l'installation d'un outil qui apporte sa complétion, `zcomp-rebuild` la rend disponible tout de suite.
 
 !!! warning "SHORT_HOST"
-    Le plugin `ssh-agent` nomme son fichier d'état `~/.ssh/environment-$SHORT_HOST`, une variable calculée par `oh-my-zsh.sh`. Sans elle, chaque shell démarre un nouvel agent au lieu de réutiliser celui qui tourne.
+    Le plugin `ssh-agent` nomme son fichier d'état `~/.ssh/environment-$SHORT_HOST`, une variable calculée par `oh-my-zsh.sh`. Sans elle, le fichier devient `~/.ssh/environment-` : l'agent est toujours réutilisé, mais le nom n'est plus propre à la machine et 2 machines qui partagent leur `$HOME` (NFS) s'écrasent ce fichier.
 
 Pour vérifier que rien ne manque, on capture l'état du shell avant et après le changement puis on compare :
 
