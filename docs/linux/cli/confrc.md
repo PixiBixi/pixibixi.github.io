@@ -20,15 +20,12 @@ Le fichier `Brewfile` permet de restaurer un environnement complet en une
 commande sur macOS :
 
 ```bash
-brew bundle install --file=Brewfile
+brew bundle --file=packages/Brewfile
 ```
 
-Il installe l'intégralité de la toolchain : outils CLI (ripgrep, bat, fzf,
-lsd, fd...), Kubernetes (kubectl, helm, krew, kubeswitch...), cloud providers
-(AWS CLI, gcloud, az...), IaC (Terraform, Vault, Consul) et applications
-GUI (Arc, DBeaver, TablePlus...).
+Il installe l'intégralité de la toolchain : outils CLI (ripgrep, bat, fzf, lsd, fd...), Kubernetes (kubectl, helm, krew, switch...), cloud providers (AWS CLI, gcloud, az...), IaC (Terraform, Vault) et applications GUI (TablePlus, Ghostty, WezTerm...).
 
-Le script `init_mac.sh` orchestre l'installation complète de manière
+Le script `scripts/init_mac.sh` orchestre l'installation complète de manière
 idempotente.
 
 ---
@@ -42,7 +39,7 @@ plugins suivants :
 
 | Plugin | Rôle |
 |--------|------|
-| `zsh-defer` | Chargement différé pour accélérer le démarrage |
+| `zsh-defer` | Chargement différé pour accélérer le démarrage (plugin tiers [romkatv/zsh-defer](https://github.com/romkatv/zsh-defer), à cloner dans `~/.oh-my-zsh/custom/plugins/`) |
 | `ssh-agent` | Gestion automatique des clés SSH |
 | `terraform` | Autocompletion Terraform |
 | `kubectl` | Autocompletion kubectl |
@@ -52,18 +49,25 @@ plugins suivants :
 
 ### Chargement différé (performance)
 
-Toutes les sources lourdes sont chargées via `zsh-defer` pour ne pas
-pénaliser le démarrage du shell :
+Les fichiers d'aliases, de fonctions et fzf sont chargés via `zsh-defer` pour ne pas pénaliser le démarrage du shell :
 
 ```zsh
-zsh-defer source ~/.zsh_functions
-zsh-defer source ~/.zsh_alias
-zsh-defer source ~/.zsh_mac       # ou ~/.zsh_linux selon l'OS
-zsh-defer source <(fzf --zsh)
-zsh-defer source <(gcloud ... completion zsh)
+zsh-defer -c '[ -f ~/.zsh_functions ] && source ~/.zsh_functions'
+zsh-defer -c '[[ -f ~/.zsh_alias ]] && source ~/.zsh_alias'
+zsh-defer -c '[[ $(uname) == "Darwin" ]] && source ~/.zsh_mac'
+zsh-defer -c '[[ $(uname) == "Linux" ]] && source ~/.zsh_linux'
+zsh-defer -c '[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh'
 ```
 
-Les completions de `kafkactl` et `delta` sont également différées.
+Les completions de `gcloud`, `kafkactl` et `delta` vont plus loin : une fonction wrapper les charge au premier appel de la commande, puis s'efface :
+
+```zsh
+kafkactl() {
+    unfunction kafkactl
+    eval "$(command kafkactl completion zsh)"
+    kafkactl "$@"
+}
+```
 
 ### Historique
 
@@ -108,7 +112,7 @@ alias s='ssh'
 alias vim='nvim'
 alias cat='bat --style=plain'
 alias df='dfc'
-alias dig='dog'
+alias dig='doggo'
 alias rm='rip'
 alias ls='lsd'
 ```
@@ -116,35 +120,32 @@ alias ls='lsd'
 Voir [Remplacer les commandes de base](replace_base_commands.md) pour
 le détail de chaque outil.
 
----
-
-## Voir aussi
-
-- [tmux](tmux.md) - configuration de session persistante
-- [Remplacer les commandes de base](replace_base_commands.md) - alternatives modernes à df, rm, ls, cat, etc.
-
 ### Kubernetes
 
+Le changement de contexte et de namespace passe par [switch](https://github.com/danielfoehrkn/kubeswitch) :
+
 ```zsh
-alias kctx='kubectx'            # switch de contexte
-alias kns='kubens'              # switch de namespace
-alias switch='kubeswitch'
+alias kctx="switch"             # switch de contexte
+alias kubectx="switch"
+alias kubens="switch ns"        # switch de namespace
 ```
 
 Avec `kubecolor` pour coloriser la sortie de `kubectl` :
 
 ```zsh
-alias kubectl='kubecolor'
+alias kubectl=kubecolor
 ```
 
 ### Git sur plusieurs dépôts
 
-```zsh
-# git pull sur tous les dossiers du répertoire courant
-alias pullparallel='ls | xargs -P10 -I{} git -C {} pull'
+Les 2 aliases cherchent les vrais dépôts (dossiers `.git`) sous le répertoire courant, à n'importe quelle profondeur :
 
-# git pull récursif avec submodules
-alias pullrecursive='git pull --recurse-submodules'
+```zsh
+# git pull en parallèle (30 à la fois) sur tous les dépôts trouvés
+alias pullparallel="fd -Hu -t d '^\\.git$' -x dirname {} | xargs -P30 -I % git -C % pull"
+
+# même chose, un dépôt après l'autre
+alias pullrecursive="find . -type d -name .git -exec sh -c \"cd \"{}\"/../ && pwd && git pull\" \;"
 ```
 
 ---
@@ -159,7 +160,7 @@ Identifie l'extension et applique la commande adaptée :
 extract archive.tar.gz   # tar xzf
 extract archive.zip      # unzip
 extract archive.7z       # 7z x
-extract archive.rar      # rar x
+extract archive.rar      # unrar x
 # ... gzip, bzip2, xz, lzma, uncompress
 ```
 
@@ -209,7 +210,7 @@ pour une lecture colorisée et lisible :
 | `g cma` | `commit --amend` |
 | `g d` | `diff` |
 | `g dc` | `diff --cached` |
-| `g st` | `status -sb` |
+| `g st` | `status --short` |
 | `g co` | `checkout` |
 | `g nah` | Hard reset + clean (abandon tout) |
 | `g psf` | `push --force-with-lease` (force safe) |
@@ -219,11 +220,11 @@ pour une lecture colorisée et lisible :
 ### Inclusions conditionnelles (work/perso)
 
 ```ini
-[includeIf "gitdir:~/work/"]
-    path = ~/.gitconfig_work
-
-[includeIf "gitdir:~/perso/"]
+[includeIf "gitdir:~/Documents/perso/git/"]
     path = ~/.gitconfig_perso
+
+[includeIf "gitdir:~/Documents/work/git/"]
+    path = ~/.gitconfig_work
 ```
 
 L'identité (nom, email) change automatiquement selon le répertoire du projet.
@@ -238,7 +239,7 @@ L'identité (nom, email) change automatiquement selon le répertoire du projet.
     gpgsign = true
 
 [gpg "ssh"]
-    allowedSignersFile = ~/.ssh/allowed_signers
+    allowedSignersFile = ~/.config/git/allowed_signers
 ```
 
 La signature se fait via une clé SSH plutôt que GPG - plus simple à gérer.
@@ -273,7 +274,13 @@ Host *
     ControlPersist 10m
 ```
 
-Une seule connexion TCP est établie par hôte, réutilisée pendant 10 minutes.
+Le répertoire du socket doit exister avant la première connexion. Sans lui, ssh ne peut pas créer le socket (`unix_listener: cannot bind to path`) et la connexion échoue :
+
+```bash
+mkdir -m 700 -p ~/.ssh/private
+```
+
+Une seule connexion TCP est établie par combinaison hôte, port et utilisateur (`%C` en est le hash), réutilisée pendant 10 minutes.
 Gain significatif sur les workflows avec beaucoup de connexions répétées
 (déploiements, tunnels, Ansible...).
 
@@ -298,3 +305,10 @@ Plus besoin de réorganiser manuellement après avoir tué un processus.
 [WezTerm](https://wezfurlong.org/wezterm/) est le terminal utilisé,
 configuré via `.wezterm.lua`. Il remplace iTerm2 avec le bénéfice d'une
 configuration as-code en Lua, versionnable dans le dépôt.
+
+---
+
+## Voir aussi
+
+- [tmux](tmux.md) - configuration de session persistante
+- [Remplacer les commandes de base](replace_base_commands.md) - alternatives modernes à df, rm, ls, cat, etc.
