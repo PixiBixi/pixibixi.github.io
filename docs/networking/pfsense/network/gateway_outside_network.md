@@ -25,14 +25,18 @@ une gateway en dehors de son réseau.
     route add default 62.210.0.1
     ```
 
-    Il faut bien évidemment penser à changer l'adresse et l'interface à
-    votre convenance. Une fois ceci fait, tapez **pfctl -d** pour désactiver
-    le pare-feu temporairement.
+    Il faut bien évidemment penser à changer l'adresse et l'interface à votre convenance (`vmx0` est la carte VMXNET3 d'une VM ESXi). Une fois ceci fait, tapez **pfctl -d** pour désactiver le pare-feu temporairement : pendant ce temps, plus aucun filtrage, tout passe.
 
 3. Une fois ceci fait, nous passons sur l'interface graphique : **System /
-    Routing / Gateways / '[+ Add']**
+    Routing / Gateways / + Add**
 
     Il y a un bouton **« Display Advanced »** en bas de la page et vers la
     fin de ces options, nous avons **« Use non-local gateway »** à cocher
+
+4. Une fois la gateway enregistrée et appliquée, on réactive le pare-feu sans attendre. Le rechargement du filtrage par pfSense le fait normalement, mais on ne compte pas dessus :
+
+    ```bash
+    pfctl -e
+    ```
 
 </div>
