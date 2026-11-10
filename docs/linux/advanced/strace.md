@@ -3,6 +3,8 @@ description: Utilisation de strace pour déboguer les processus Linux - filtrage
 tags:
   - Debugging
   - Observability
+tested_with:
+  - "strace 6.13"
 ---
 
 # strace : tracer les appels système
@@ -10,6 +12,9 @@ tags:
 strace intercepte et trace les appels système effectués par un processus.
 Indispensable pour déboguer un processus qui bloque, échoue silencieusement,
 ou consomme des ressources inattendues.
+
+!!! warning "Overhead"
+    strace arrête le process à chaque appel système : le process tracé ralentit fortement. En prod sur un chemin chaud, on préfère `perf trace` ou `bpftrace` (voir [Alternatives](#alternatives)).
 
 ---
 
@@ -43,9 +48,11 @@ strace -c commande
 | `-t` | Ajouter l'heure à chaque ligne |
 | `-T` | Afficher la durée de chaque appel |
 | `-s <n>` | Taille max des strings affichées (défaut : 32) |
-| `-x` | Afficher les strings en hexadécimal |
+| `-x` | Afficher en hexadécimal les strings non ASCII (`-xx` : toutes) |
 | `-y` | Afficher les chemins de fichiers des fd |
 | `-yy` | Afficher aussi les infos socket |
+| `-Z` | N'afficher que les appels en échec (`-e status=failed`, strace 5.2+) |
+| `-k` | Afficher la stack de chaque appel (si strace est compilé avec libunwind) |
 
 ---
 
@@ -74,7 +81,9 @@ strace -e openat,read,write commande
 strace -e trace='!futex' commande
 ```
 
-Catégories disponibles : `file`, `network`, `memory`, `process`, `signal`, `ipc`, `desc`
+Catégories disponibles : `file`, `network`, `memory`, `process`, `signal`, `ipc`, `desc`. La forme actuelle les préfixe d'un `%` (`%file`, `%network`), l'ancienne reste acceptée. Pour les `stat`, on passe par `%%stat` : glibc appelle aujourd'hui `fstat`, `newfstatat` ou `statx`, et `trace=stat` ne sort quasiment plus rien.
+
+Avec `-f` et un filtre `-e`, `--seccomp-bpf` laisse le noyau filtrer les appels non tracés et réduit l'overhead.
 
 ---
 
@@ -104,7 +113,7 @@ Utile pour identifier quel appel système consomme le plus de temps.
 sudo strace -f -c $(pgrep php-fpm | sed 's/^/-p /' | tr '\n' ' ')
 
 # Résumé des appels stat sur PHP-FPM
-sudo strace -f -e trace=stat $(pgrep php-fpm | sed 's/^/-p /' | tr '\n' ' ')
+sudo strace -f -c -e trace=%%stat $(pgrep php-fpm | sed 's/^/-p /' | tr '\n' ' ')
 
 # Attacher à tous les workers nginx
 sudo strace -f -p $(pgrep -d',' nginx)
@@ -120,7 +129,8 @@ sudo strace -f -p $(pgrep -d',' nginx)
 # Voir sur quel appel système le process est bloqué
 strace -p <PID>
 # Si le process ne répond plus, il sera souvent bloqué sur :
-# read(), recv(), select(), poll(), futex(), nanosleep()
+# read(), recvfrom(), accept4(), epoll_wait(), poll()/ppoll(),
+# select()/pselect6(), futex(), clock_nanosleep(), wait4()
 ```
 
 ### Fichier introuvable
@@ -128,6 +138,9 @@ strace -p <PID>
 ```bash
 # Identifier les ENOENT (No such file or directory)
 strace -e openat commande 2>&1 | grep ENOENT
+
+# Sans grep : seulement les appels en échec, dans un fichier séparé de la sortie de la commande
+strace -e trace=openat -Z -o /tmp/trace.log commande
 ```
 
 ### Problème de permissions
@@ -154,7 +167,11 @@ strace -e openat -y commande 2>&1 | grep -v ENOENT
 
 ```bash
 # Afficher la durée de chaque appel, trier par les plus lents
-strace -T -f commande 2>&1 | sort -t '<' -k2 -rn | head -20
+strace -T -f -o /tmp/trace.log commande
+sed -nE 's/.*<([0-9.]+)>$/\1 &/p' /tmp/trace.log | sort -rn | head -20
+
+# Temps cumulé par syscall, en temps réel (wall-clock) plutôt qu'en temps CPU
+strace -w -c -f commande
 ```
 
 ---
