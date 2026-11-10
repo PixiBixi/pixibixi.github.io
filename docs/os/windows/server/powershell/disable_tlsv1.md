@@ -10,7 +10,7 @@ tags:
 Ces 2 protocoles sont mort et devraient être désactivés depuis
 longtemps, voici la solution :
 
-Tout d'abord, nous avons besoin de ce script PowerShell :
+Tout d'abord, nous avons besoin de ce script PowerShell, qu'on enregistre sous `Set-SchannelProtocol.ps1` :
 
 ```powershell
 [CmdletBinding()]
@@ -133,7 +133,7 @@ Param(
 [ValidateSet("Enable","Disable")]
 ```
 
-Le **premier** protocole concerne le protocole, 4 sont disponibles :
+Le **premier** paramètre concerne le protocole, 4 sont disponibles :
 SSL3, TLS1.0, TLS1.1 et TLS1.2 et est obligatoire.
 
 Le **second** paramètre est facultatif, il s'agit de savoir si l'on
@@ -144,5 +144,18 @@ Et enfin le **dernier** s'agit de savoir si l'on veut activer ou
 désactiver le protocole
 
 Voici un simple exemple pour désactiver SSL3 côté client :
+
+```powershell
+.\Set-SchannelProtocol.ps1 -Proto SSL30 -Target Client -Action Disable
+```
+
+Et pour ce qui nous intéresse ici, TLS 1.0 et 1.1 côté client et serveur :
+
+```powershell
+.\Set-SchannelProtocol.ps1 -Proto TLS10 -Action Disable
+.\Set-SchannelProtocol.ps1 -Proto TLS11 -Action Disable
+```
+
+Le script écrit `Enabled` et `DisabledByDefault`. La doc Microsoft actuelle ne documente plus que `Enabled` (`0` = désactivé), `DisabledByDefault` est un reste des anciennes versions de cette doc, on peut le laisser. Le réglage s'applique aux nouvelles connexions : un redémarrage des applications et services concernés (IIS, SQL Server...) peut suffire, le reboot reste le plus sûr.
 
 Pour plus d'informations détaillé sur le script, je vous renvoie vers la [source](https://4sysops.com/archives/disable-ssl-and-tls-1-01-1-on-iis-with-powershell/)
