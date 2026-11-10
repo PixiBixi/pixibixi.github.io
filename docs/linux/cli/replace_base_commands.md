@@ -1,5 +1,5 @@
 ---
-description: Alternatives modernes aux commandes Unix de base - lsd, bat, fd, dust, ripgrep, procs, dog, httpie et plus, la plupart écrites en Rust.
+description: Alternatives modernes aux commandes Unix de base - lsd, bat, fd, dust, ripgrep, procs, doggo, httpie et plus, la plupart écrites en Rust.
 tags:
   - Rust
   - Productivity
@@ -14,7 +14,7 @@ colorisée et parfois des gains de performance significatifs.
 
 !!! note "Installation"
     Tous ces outils sont disponibles via Homebrew (`brew install <tool>`)
-    et la plupart via `apt`/`dnf` sur Linux.
+    et la plupart via `apt`/`dnf` sur Linux. Seule exception côté Homebrew : `rip` s'installe avec `brew install rm-improved`.
 
 ---
 
@@ -34,7 +34,7 @@ lsd --tree --depth 2  # limiter la profondeur
 
 !!! note "exa / eza"
     [exa](https://the.exa.website/) était l'alternative historique mais le
-    projet est archivé depuis 2022. Son fork
+    projet est abandonné (dernière release en 2021, le dépôt n'est même pas archivé faute de mainteneur joignable). Son fork
     [eza](https://github.com/eza-community/eza) continue mais `lsd` reste
     mon choix par défaut.
 
@@ -107,16 +107,18 @@ duf /home       # filtré sur un point de montage
 
 ### `rm` → `rip`
 
-[rip](https://github.com/nivekuil/rip) déplace les fichiers dans un
-répertoire temporaire plutôt que de les supprimer définitivement :
+[rip](https://github.com/nivekuil/rip) déplace les fichiers dans un "graveyard" (`/tmp/graveyard-$USER` par défaut) plutôt que de les supprimer définitivement :
 
 ```bash
 rip file.txt        # "suppression" récupérable
-rip --seance        # liste les fichiers supprimés
-rip --unbury file   # restaurer un fichier
+rip --seance        # liste les fichiers supprimés depuis le répertoire courant
+rip --unbury        # annule la dernière suppression
+rip --unbury file   # restaure un fichier précis du graveyard
 ```
 
-Filet de sécurité indispensable quand on travaille vite.
+Filet de sécurité indispensable quand on travaille vite. Le graveyard vit dans `/tmp` : il ne survit pas forcément à un reboot, ce n'est pas une corbeille longue durée.
+
+`rip` n'a plus de commit depuis 2021. Le fork [rip2](https://github.com/MilesCranmer/rip2) (`brew install rip2`) est maintenu.
 
 ---
 
@@ -124,9 +126,7 @@ Filet de sécurité indispensable quand on travaille vite.
 
 ### `grep` → `ripgrep`
 
-[ripgrep](https://github.com/BurntSushi/ripgrep) est en moyenne 2× plus
-rapide que grep. Il respecte `.gitignore` par défaut et supporte les
-expressions régulières avancées :
+[ripgrep](https://github.com/BurntSushi/ripgrep) est nettement plus rapide que `grep -r` sur un gros arbre : il parcourt les dossiers en parallèle et saute ce que `.gitignore` exclut. Le gain dépend du cas (regex, Unicode, `-i`), les benchmarks du README upstream face à GNU grep vont de 2x à 10x. Il supporte aussi les expressions régulières avancées :
 
 ```bash
 rg pattern              # recherche dans le répertoire courant
@@ -176,20 +176,18 @@ procs --tree        # vue arborescente des processus
 
 ## Réseau
 
-### `dig` → `dog`
+### `dig` → `doggo`
 
-[dog](https://github.com/ogham/dog) offre une sortie colorisée et une
-syntaxe plus intuitive que `dig` :
+[doggo](https://github.com/mr-karan/doggo) offre une sortie colorisée et une syntaxe plus intuitive que `dig`, avec DoH/DoT en bonus :
 
 ```bash
-dog example.com          # requête A par défaut
-dog example.com MX       # enregistrement MX
-dog example.com @8.8.8.8 # serveur DNS spécifique
+doggo example.com            # requête A par défaut
+doggo example.com MX         # enregistrement MX
+doggo example.com @8.8.8.8   # serveur DNS spécifique
+doggo -x 8.8.8.8             # reverse DNS (équivalent de dig -x)
 ```
 
-!!! warning "Limitation"
-    `dog` ne supporte pas l'équivalent de `dig -x` (reverse DNS).
-    Pour le reverse DNS, utiliser `dig -x` ou `host`.
+L'ancien choix, [dog](https://github.com/ogham/dog), n'a plus de commit depuis 2021 et n'a plus de formule Homebrew.
 
 ---
 
@@ -223,14 +221,15 @@ http --download example.com/file.zip
 
 ### `gzip` → `pigz`
 
-[pigz](https://zlib.net/pigz/) est un `gzip` multithread - gain de
-performance de ×3 sur les machines multi-cœurs :
+[pigz](https://zlib.net/pigz/) est un `gzip` multithread : à la compression, le gain croît avec le nombre de cœurs. La décompression, elle, reste sur un seul thread (le format deflate ne se parallélise pas), le gain y est faible :
 
 ```bash
 pigz file.txt           # compression (remplace gzip)
 pigz -d file.txt.gz     # décompression
-tar -I pigz -czf archive.tar.gz dir/  # via tar
+tar --use-compress-program=pigz -cf archive.tar.gz dir/  # via tar, GNU tar et bsdtar
 ```
+
+Attention à `tar -I pigz -czf` : GNU tar refuse `-I` combiné avec `-z` (`Conflicting compression options`), et sur macOS bsdtar ne connaît pas `-I` comme raccourci de `--use-compress-program`.
 
 ---
 
@@ -239,7 +238,7 @@ tar -I pigz -czf archive.tar.gz dir/  # via tar
 ### `diff` → `delta`
 
 [delta](https://github.com/dandavison/delta) remplace le pager de diff de
-git avec coloration syntaxique et affichage côte-à-côte :
+git avec coloration syntaxique et, en option, affichage côte-à-côte (`side-by-side`) :
 
 ```ini title="~/.gitconfig"
 [core]
@@ -247,6 +246,9 @@ git avec coloration syntaxique et affichage côte-à-côte :
 
 [interactive]
     diffFilter = delta --color-only
+
+[delta]
+    side-by-side = true   # optionnel, sinon delta --side-by-side ponctuellement
 ```
 
 Voir la [configuration complète dans les dotfiles](confrc.md#git).
@@ -294,7 +296,7 @@ glow                    # naviguer dans les .md du répertoire
 | `grep` | `ripgrep` | Rust | - |
 | `top` | `htop` / `bottom` | C / Rust | - |
 | `ps` | `procs` | Rust | - |
-| `dig` | `dog` | Rust | `alias dig='dog'` |
+| `dig` | `doggo` | Go | `alias dig='doggo'` |
 | `ping`/`mtr` | `trippy` | Rust | - |
 | `curl` | `httpie` | Python | - |
 | `gzip` | `pigz` | C | - |
