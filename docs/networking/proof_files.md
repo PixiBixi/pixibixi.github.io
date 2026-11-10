@@ -37,17 +37,16 @@ autre réseau et donc de tester son peering
 | --- | --- |
 | I3D | [Ici](https://customer.i3d.net/mirror/) |
 | Tele2 | [Ici](http://speedtest.tele2.net/) |
-| Vultr | [Ici](https://vultrcoupons.com/test-vultr-download-speed-from-your-location/) |
+| Vultr (Francfort) | [Ici](https://fra-de-ping.vultr.com/) |
 | Free | [Ici](http://test-debit.free.fr/) |
 | Linode | [Ici](https://www.linode.com/speedtest) |
-| Feral | [Ici](https://www.feral.io/test.bin) |
 | OVH | [Ici](https://proof.ovh.net/) |
 | Online (AMS) | [Ici](http://ping-ams1.online.net/) |
 | Online | [Ici](http://ping.online.net/) |
 | Test Debit | [Ici](https://testdebit.info/) |
 | X4B | [Ici](http://lg.x4b.net/) |
 | Serverius | [Ici](http://speedtest.serverius.net/) |
-| Hetzner | [Ici](https://speed.hetzner.de/) |
+| Hetzner (Falkenstein) | [Ici](https://fsn1-speed.hetzner.com/) |
 | Belwue | [Ici](http://speedtest.belwue.net/) |
 | LG | [Ici](http://lg.core-backbone.com) |
 
@@ -61,39 +60,36 @@ Voici le rendu du script :
 
 ## iPerf, kezako ?
 
-iperf est un logiciel nécessitant un serveur et un client compatible
-IPv4 et IPv6, se basant sur les protocoles UDP, TCP et SCTP disponible
-sur Windows, Linux et même Android et iOS.
+iperf est un logiciel nécessitant un serveur et un client compatible IPv4 et IPv6, se basant sur les protocoles UDP et TCP (plus SCTP avec iperf3, sous Linux et FreeBSD uniquement), disponible sur Windows, Linux et même Android et iOS. 2 versions cohabitent : iperf2 (`iperf`) et iperf3 (`iperf3`), qui ne sont pas compatibles entre elles. Un client iperf2 ne parle pas à un serveur iperf3.
 
 Il s'agit de la solution la plus pure pour tester la vitesse d'un
 réseau car une multitude d'options sont disponibles : taille du paquet,
 connections simultanées, port....
 
-Par défaut, le port utilisé par iPerf est le 5001, sur le protocole TCP.
+Par défaut, iperf2 utilise le port 5001 en TCP, iperf3 le port 5201.
 
 2 options sont toutefois indispensables à l'utilisation de iperf :
 
 * `-s` pour exécuter iperf en mode `serveur`
 * `-c` pour exécuter iperf en mode `client`
 
-Voici l'exemple typique de la commande à lancer côté client :
+Voici l'exemple typique de la commande à lancer côté client. *ping.online.net* ne répond plus qu'en iperf3, sur les ports 5200 à 5209 (le 5001 d'iperf2 est fermé) :
 
 ```bash
-iperf -c ping.online.net -i 2 -t 2 -r
+# Client vers serveur, 4 flux en parallèle
+iperf3 -c ping.online.net -p 5200 -i 2 -t 10 -P 4
+# Sens inverse : le serveur envoie, on reçoit
+iperf3 -c ping.online.net -p 5200 -i 2 -t 10 -R
 ```
 
-Dans cette commande, nous pouvons voir que nous lancons iperf en mode
-client (-c) sur l'hôte *ping.online.net*, que nous faisons 2 essais (-t
-2) et que nous faisons un test bi-directionnel (-r), quand au (-i 2),
-celui-ci signifie que nous attendons 2 secondes avant de faire le
-prochain test.
+Dans cette commande, nous lançons iperf3 en mode client (`-c`) sur l'hôte *ping.online.net*, pendant 10 secondes (`-t 10`, une durée en secondes, pas un nombre d'essais), avec un rapport de débit intermédiaire toutes les 2 secondes (`-i 2`). `-P 4` ouvre 4 flux en parallèle et `-R` inverse le sens du test. Un serveur public ne sert qu'un test à la fois : sur `the server is busy running a test`, on essaie le port suivant.
 
 Pour plus d'informations, je vous invite à aller consulter [la
 documentation officielle](https://iperf.fr/iperf-doc.php) du logiciel.
 
 Il semble également exister une [liste officieuse](https://iperf3serverlist.net/) comprenant de nombreux autres serveurs
 
-Voici le résultat que nous devrions obtenir :
+La capture ci-dessous date de l'époque iperf2, avec `iperf -c ping.online.net -i 2 -t 2 -r`. `-r` teste les 2 sens l'un après l'autre (`-d` les teste en même temps) :
 
 ![iPerf Output](./_img/iperf_client.webp)
 
@@ -112,10 +108,7 @@ d'abord, sous l'identifiant « 5 », il s'agit des données qui sont
 envoyées par le serveur et enfin, sous le champ 4, les données qui
 sont réellement reçus par le serveur « hôte ».
 
-Nous pouvons apercevoir d'une perte de 10mbps, ce qui est plutôt
-faible, mais qui n'est tout de même pas insignifiant. Nous pouvons
-supposer (et c'est quasi une certitude) que des paquets sont perdus en
-route, ce qui peut montrer une qualité plutôt mauvaise du réseau.
+Nous pouvons apercevoir un écart de 10 Mbps entre les 2 sens. Ce n'est pas une preuve de perte de paquets : les 2 sens sont mesurés l'un après l'autre, pendant 2 secondes seulement, et peuvent suivre des routes différentes (routage asymétrique, congestion d'un côté, fenêtre TCP). Pour mesurer la perte, on passe en UDP avec iperf3 (`iperf3 -c <serveur> -u -b 500M`, colonne `Lost/Total`) ou on regarde la colonne `Retr` (retransmissions TCP) d'un test iperf3 classique.
 
 A savoir qu'il existe une petite liste officielle de serveurs publics
 disponible sur [le site officiel](https://iperf.fr/iperf-servers.php) de
