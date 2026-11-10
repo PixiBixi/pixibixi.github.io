@@ -1,5 +1,9 @@
 ---
 description: Partager ses fichiers en ligne avec H5ai - installation, configuration nginx et authentification basique
+tested_with:
+  - "h5ai 0.30.0"
+  - "nginx 1.27"
+  - "PHP 8.3"
 tags:
   - h5ai
 ---
@@ -12,8 +16,7 @@ tags:
 
 h5ai est un index amélioré afin de partager facilement tous vos
 fichiers... Celui-ci remplacera aisément un index fade et sans gout.
-Celui- ci est disponible pour tous les serveurs web, à condition
-d'avoir au minimum la version 5.5 de PHP.
+Celui-ci est disponible pour Apache, lighttpd et nginx, à condition d'avoir au minimum PHP 7.0 pour la 0.30.0 (PHP 5.5 suffisait jusqu'à la 0.29.2).
 
 ## Installation
 
@@ -35,17 +38,16 @@ d'avoir au minimum la version 5.5 de PHP.
 
     ```bash
     cd /var/www/downloads/
-    wget https://release.larsjung.de/h5ai/h5ai-0.28.1.zip
+    wget https://github.com/lrsjng/h5ai/releases/download/v0.30.0/h5ai-0.30.0.zip
     ```
 
-    N'oublier pas de vous rendre [ici](https://release.larsjung.de/h5ai/)
-    afin de consulter les dernières versions de h5ai disponibles
+    Les versions disponibles sont sur les [releases GitHub](https://github.com/lrsjng/h5ai/releases) : l'ancien site `release.larsjung.de` ne répond plus en HTTPS (certificat invalide).
 
 3. Enfin, nous extrayons l'archive, puis nous renommons `_h5ai` en
     **.h5ai** afin de ne pas le voir dans l'explorateur.
 
     ```bash
-    unzip h5ai-0.28.1.zip
+    unzip h5ai-0.30.0.zip
     mv _h5ai .h5ai
     ```
 
@@ -65,8 +67,9 @@ d'avoir au minimum la version 5.5 de PHP.
         return 301 https://$host$request_uri;
     }
     server {
-        listen 443 ssl http2;
-        listen [::]:443 ssl http2;
+        listen 443 ssl;
+        listen [::]:443 ssl;
+        http2 on;
         server_name downloads.titi.ovh;
 
         error_log /var/log/nginx/downloads.error.log;
@@ -82,11 +85,9 @@ d'avoir au minimum la version 5.5 de PHP.
 
         root /var/www/downloads;
         index  index.html  index.php /.h5ai/public/index.php;
-
-        autoindex on;
     }
     ```
 
-    La dernière ligne **autoindex on** est cruciale, car c'est elle qui va permettre de lister le contenu.
+    La ligne **index** est cruciale : son dernier élément, en chemin absolu, renvoie chaque dossier sans `index.html` vers h5ai, qui fait le listing lui-même. Pas besoin d'`autoindex on`. Avant nginx 1.25.1, on garde l'ancienne syntaxe `listen 443 ssl http2;` à la place de `http2 on;`.
 
 </div>
