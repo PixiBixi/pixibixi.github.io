@@ -1,5 +1,7 @@
 ---
 description: Envoyer des alertes Slack en temps réel lors des connexions SSH via webhooks et PAM
+tested_with:
+  - "OpenSSH 9.2 (Debian 12)"
 tags:
   - SSH
   - Slack
@@ -14,33 +16,51 @@ SSH
 
 ## Configuration du Webhook
 
-Tout d'abord, il faut créer votre **Webhook** sur le panneau de
-configuration de votre Workspace. Pour cela, il faut choisir (ou créer)
-un chan où les messages du bot seront envoyés ainsi que le nom du bot.
-Une fois cela fait, penser à copier votre **Webhook URL** (De cette
-forme :
-<https://hooks.slack.com/services/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>)
+Tout d'abord, on crée une Slack app avec la fonctionnalité **Incoming Webhooks** (les webhooks "custom integration" legacy sont dépréciés). À l'activation, on choisit le chan où les messages seront envoyés : avec une app, le chan, le nom et l'icône du bot viennent de la config de l'app et ne peuvent plus être changés dans le message. Pour envoyer dans un autre chan, on crée un autre webhook. Une fois cela fait, penser à copier votre **Webhook URL** (de cette forme : `https://hooks.slack.com/services/<TEAM_ID>/<HOOK_ID>/<TOKEN>`)
+
+Cette URL est un secret : n'importe qui la connaissant peut poster dans le chan, et Slack révoque celles qu'il trouve en ligne. On la stocke dans un fichier lisible par root seul plutôt qu'en dur dans le script :
+
+```bash
+echo 'https://hooks.slack.com/services/<TEAM_ID>/<HOOK_ID>/<TOKEN>' > /etc/ssh/slack_webhook
+chmod 600 /etc/ssh/slack_webhook
+```
 
 ## Configuration côté serveur
 
-Nous commençons par faire notre fichier qui enverra nos notifications à
-notre Slack : /etc/ssh/notify.sh
+Le script construit le JSON avec `jq` (un nom d'utilisateur contenant un guillemet ne casse plus le payload), on l'installe :
 
 ```bash
+apt install jq curl
+```
+
+Nous commençons par faire notre fichier qui enverra nos notifications à
+notre Slack : /etc/ssh/notify.sh. Le shebang est obligatoire : `pam_exec` lance le script via `execve()`, qui refuse un fichier sans `#!` et rien n'est envoyé.
+
+```bash
+#!/usr/bin/env bash
 if [ "$PAM_TYPE" != "close_session" ]; then
- url="WEBHOOK_URL"
- channel="#external-servers"
- host=$(hostname -f)
- content="\"attachments\": [ { \"mrkdwn_in\": [\"text\", \"fallback\"], \"fallback\": \"SSH login: $PAM_USER connected to \`$host\`\", \"text\": \"SSH login to \`$host\`\", \"fields\": [ { \"title\": \"User\", \"value\": \"$PAM_USER\", \"short\": true }, { \"title\": \"IP Address\", \"value\": \"$PAM_RHOST\", \"short\": true } ], \"color\": \"#F35A00\" } ]"
- curl -s -X POST --data-urlencode "payload={\"channel\": \"$channel\", \"mrkdwn\": true, \"username\": \"ssh-bot\", $content, \"icon_emoji\": \":computer:\"}" $url &
+  url=$(cat /etc/ssh/slack_webhook)
+  host=$(hostname -f)
+  payload=$(jq -n --arg user "$PAM_USER" --arg rhost "${PAM_RHOST:-local}" --arg host "$host" '{
+    attachments: [{
+      mrkdwn_in: ["text", "fallback"],
+      fallback: "SSH login: \($user) connected to `\($host)`",
+      text: "SSH login to `\($host)`",
+      fields: [
+        {title: "User", value: $user, short: true},
+        {title: "IP Address", value: $rhost, short: true}
+      ],
+      color: "#F35A00"
+    }]
+  }')
+  curl -s --max-time 5 -H 'Content-type: application/json' --data "$payload" "$url" >/dev/null 2>&1 &
 fi
 ```
 
-Penser à remplacer le WEBHOOK_URL et le channel par le votre. On rend
-notre script exécutable
+`pam_exec` attend la fin du script avant de rendre la main : le `curl` part en arrière-plan avec un `--max-time`, un Slack lent ou injoignable ne retarde donc jamais le login. On rend notre script exécutable par root seul
 
 ```bash
-chmod +x /etc/ssh/notify.sh
+chmod 700 /etc/ssh/notify.sh
 ```
 
 Et on modifie notre service PAM SSH /etc/pam.d/sshd en y ajoutant le
@@ -56,4 +76,4 @@ Nous relançons notre service
 systemctl try-restart ssh.service
 ```
 
-Et voici le résultat que nous aurons :
+À la prochaine connexion SSH, un message arrive dans le chan avec l'utilisateur et l'IP source. En cas de souci, les erreurs de `pam_exec` (`execve(...) failed`) sont dans `/var/log/auth.log` ou `journalctl -u ssh`.
