@@ -7,32 +7,38 @@ tags:
 
 # yt-dlp : télécharger et archiver ses vidéos en CLI
 
-youtube-dl n'a plus sorti de release depuis décembre 2021. Le fork actif est **yt-dlp**, qui publie toutes les quelques semaines et suit les changements des sites au fur et à mesure qu'ils cassent. Si un `youtube-dl` traîne encore quelque part, il ne télécharge probablement plus rien.
+youtube-dl n'a plus sorti de release depuis décembre 2021. Le fork actif est **yt-dlp**, qui publie régulièrement (une release toutes les quelques semaines à 2 mois) et suit les changements des sites au fur et à mesure qu'ils cassent. Si un `youtube-dl` traîne encore quelque part, il ne télécharge probablement plus rien.
 
 ## Installer sans passer par les dépôts
 
 La version packagée dans `apt` a systématiquement plusieurs mois de retard, ce qui sur cet outil veut dire « ne fonctionne plus ». On installe depuis la source ou en binaire autonome.
 
 ```bash
-# Binaire autonome, celui qui sait se mettre à jour tout seul
+# Binaire zipimport (demande Python 3.11+), celui qui sait se mettre à jour tout seul
 curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o /usr/local/bin/yt-dlp
 chmod a+rx /usr/local/bin/yt-dlp
 yt-dlp -U
 
-# Ou via pipx, si on préfère gérer ça en Python
-pipx install yt-dlp
+# Ou via pipx, si on préfère gérer ça en Python : l'extra [default] tire yt-dlp-ejs
+pipx install "yt-dlp[default]"
 pipx upgrade yt-dlp
 ```
 
 `ffmpeg` est une dépendance de fait : sans lui, pas de fusion vidéo + audio, donc pas de 1080p et plus sur YouTube, qui sert les deux flux séparément.
+
+YouTube demande en plus un runtime JavaScript pour faire tourner `yt-dlp-ejs` (déjà embarqué dans le binaire `yt-dlp`, tiré par `[default]` avec pipx). Seul `deno` est activé par défaut, `node`, `bun` ou QuickJS passent par `--js-runtimes`. Sans runtime, yt-dlp se rabat sur moins de clients YouTube et certains formats manquent. Pour installer deno :
+
+```bash
+curl -fsSL https://deno.land/install.sh | sh
+```
 
 ## Choisir ce qu'on télécharge
 
 C'est la partie qui déroute au début, parce que `-f` sélectionne un format précis alors que `-S` trie les candidats. Dans la vraie vie, `-S` est plus robuste : il exprime une préférence et retombe sur le meilleur disponible au lieu d'échouer.
 
 ```bash
-# La meilleure vidéo jusqu'à 1080p, en préférant AV1 puis VP9
-yt-dlp -S "res:1080,vcodec:av01,vcodec:vp9" "$URL"
+# La meilleure vidéo jusqu'à 1080p, en préférant AV1 puis VP9 (ordre par défaut de vcodec)
+yt-dlp -S "res:1080,vcodec:av01" "$URL"
 
 # Forcer un conteneur mp4, pratique pour les lecteurs capricieux
 yt-dlp -S "res:1080" --merge-output-format mp4 "$URL"
@@ -90,7 +96,7 @@ yt-dlp --concurrent-fragments 4 "$URL"
 Réécrire 6 flags à chaque appel n'a aucun intérêt. yt-dlp lit un fichier de configuration au démarrage.
 
 ```text title="~/.config/yt-dlp/config"
--S res:1080,vcodec:av01,vcodec:vp9
+-S res:1080,vcodec:av01
 --merge-output-format mp4
 --embed-metadata
 --embed-thumbnail
