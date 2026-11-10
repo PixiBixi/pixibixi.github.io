@@ -8,7 +8,7 @@ tags:
 # Mémo sur la commande IP
 
 Comme vous le savez certainement, la commande **ifconfig** est
-maintenant depreciated depuis bon nombre de mois/années, pourtant, nous
+maintenant deprecated depuis bon nombre de mois/années, pourtant, nous
 avons toujours comme habitue d'utiliser cette commande.
 
 Pourtant, la commande **ip** propose bien plus d'options que son
@@ -38,17 +38,19 @@ ip link set wlan0 down
 
 ## Parametrer une adresse IP
 
+Contrairement à ifconfig, `ip addr add` ne calcule pas l'adresse de broadcast tout seul : on ajoute `brd +` pour qu'il la déduise du masque.
+
 ```bash
-ip addr add 192.168.1.8/24 dev wlan0
+ip addr add 192.168.1.8/24 brd + dev wlan0
 ```
 
-Afin de vérifier que l'adresse IP a bien été prise en compte
+Afin de vérifier que l'adresse IP a bien été prise en compte :
 
 ```bash
 ip addr show wlan0
 ```
 
-Et voici l'output que nous devons obtenir :
+Et voici l'output que nous devons obtenir (sans `brd +`, la ligne `inet` n'a pas de `brd`) :
 
 ```sh
     3: wlan0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
@@ -62,6 +64,13 @@ Si nous souhaitons supprimer une adresse IP, il suffit de remplacer
 
 ```bash
 ip addr del 192.168.1.8/24 dev wlan0
+```
+
+Pour un coup d'oeil rapide, `-br` donne une ligne par interface et `-c` colorise la sortie :
+
+```bash
+ip -br -c addr
+ip -br -c link
 ```
 
 ## Route
@@ -101,7 +110,7 @@ ip -statistics link
 Output :
 
 ```sh
-    1: lo: <LOOPBACK,UP,LOWER_UP> mtu 16436 qdisc noqueue state UNKNOWN mode DEFAULT
+    1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN mode DEFAULT
         link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
         RX: bytes  packets  errors  dropped overrun mcast
         439862908634 45470372 0       0       0       0
@@ -142,7 +151,7 @@ ip -statistics link show eth0
 ## ARP
 
 Nous pouvons également observer différents éléments ARP avec la commande
-ip. Pour rappel, ARP fait la correspondance IP '<-'> MAC dans un réseau
+ip. Pour rappel, ARP fait la correspondance entre IP et adresse MAC dans un réseau
 local.
 
 ### Ajout Statique
