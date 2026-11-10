@@ -18,7 +18,7 @@ Pour y parvenir, plusieurs méthodes sont disponibles :
 * Filtre IP sur le reverse-proxy
 * Ajout d'une règle iptables et création d'une liste ipset
 
-Dans ce tutoriel, nous allons appliquer la dernière règle qui est la plus optimisée. iptables charge un module appelé *xt_conntrack* qui s'occupe d'analyser les trames.
+Dans ce tutoriel, nous allons appliquer la dernière règle qui est la plus optimisée. Le match `-m set` d'iptables passe par le module noyau *xt_set*, qui interroge la liste ipset : une seule règle, quel que soit le nombre d'IP.
 
 !!! warning
     Un trop grand nombre de règles iptables entraine une **importante** dégradation de la stack TCP/IP - phénomène observé de nombreuses fois.
@@ -30,7 +30,7 @@ C'est pour cela que nous utilisons ipset qui nous permet de créer des listes d'
 Il faut tout d'abord installer les pré-requis
 
 ```bash
-apt-get install ipset iptables netfilter-persistent iptables-persistent
+apt-get install ipset iptables netfilter-persistent iptables-persistent ipset-persistent
 ```
 
 ## Configuration initiale
@@ -38,12 +38,22 @@ apt-get install ipset iptables netfilter-persistent iptables-persistent
 Tout d'abord, nous commencons à créer notre liste ipset
 
 ```bash
-ipset create whitelist hash:ip hashsize 4096
+ipset create whitelist hash:ip
 ```
 
 Nous créons une liste ipset s'appelant whitelist utilisant le principe
 de hash par IP et non le hash par network (Dans notre cas, nous
 autorisons que des IPs et non des réseaux de tailles différentes)
+
+Pas besoin de `hashsize` : ce n'est qu'une taille initiale (1024 par défaut), la table grossit toute seule. La vraie limite est `maxelem`, 65536 par défaut, au-delà `ipset add` échoue.
+
+On remplit la liste **avant** de poser les règles, sinon le `DROP` qui suit bloque tout le monde, nous compris :
+
+```bash
+ipset add whitelist 203.0.113.10
+ipset add whitelist 198.51.100.25
+ipset list whitelist
+```
 
 Puis nous créons nos règles iptables
 
@@ -54,6 +64,8 @@ iptables -A INPUT -p tcp -m tcp --dport 9001 -j DROP
 
 Nous autorisons certaines IPs vers le port 9001 en TCP puis nous
 rejetons tout le reste, règles à adapter bien évidemment
+
+`-A` ajoute en fin de chaîne : si une règle `ACCEPT` plus large existe déjà dans `INPUT` (ufw, Docker...), elle matche avant et le filtre ne sert à rien. On vérifie l'ordre avec `iptables -S INPUT` et on insère à la bonne position avec `-I INPUT <n>` si besoin.
 
 **Pour faire du multiport**, nous utilisons un module dédié à ça dans
 iptables
@@ -67,15 +79,10 @@ iptables -A INPUT -p tcp -m multiport --destination-ports 9000:9005,9006,9021,90
 
 <div class="steps" markdown>
 
-1. Pour rendre notre configuration permanente, nous utilisons le logiciel
-    **netfilter-persistent** ainsi qu'un plugin ipset disponible
-    [ici](https://github.com/freeyoung/netfilter-persistent-plugin-ipset)
+1. Pour rendre notre configuration permanente, nous utilisons le logiciel **netfilter-persistent** et son plugin ipset, packagé par Debian depuis bullseye (`ipset-persistent`, déjà installé plus haut). Il pose `/usr/share/netfilter-persistent/plugins.d/10-ipset`, qui restaure les sets avant les règles iptables. On n'installe donc plus le plugin tiers [freeyoung/netfilter-persistent-plugin-ipset](https://github.com/freeyoung/netfilter-persistent-plugin-ipset) : il porte le même nom de fichier et sauvegarde ailleurs (`/etc/iptables/rules.ipset`). On vérifie que le plugin est en place :
 
     ```bash
-    cd ~ 
-    git clone https://github.com/freeyoung/netfilter-persistent-plugin-ipset
-    chmod +x netfilter-persistent-plugin-ipset/10-ipset
-    mv netfilter-persistent-plugin-ipset/10-ipset /usr/share/netfilter-persistent/plugins.d
+    ls /usr/share/netfilter-persistent/plugins.d/
     ```
 
 2. Une fois le plugin installé, il faut activer le service au démarrage
@@ -84,10 +91,10 @@ iptables -A INPUT -p tcp -m multiport --destination-ports 9000:9005,9006,9021,90
     systemctl enable netfilter-persistent
     ```
 
-3. Et sauvegarder la configuration actuelle
+3. Et sauvegarder la configuration actuelle, les sets atterrissent dans `/etc/iptables/ipsets` et les règles dans `/etc/iptables/rules.v4`
 
     ```bash
-    /etc/init.d/netfilter-persistent save
+    netfilter-persistent save
     ```
 
 </div>
