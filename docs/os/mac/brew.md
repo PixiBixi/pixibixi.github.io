@@ -17,7 +17,7 @@ Homebrew a besoin des Command Line Tools de Xcode, pas de Xcode entier. Le scrip
 xcode-select --install
 ```
 
-Puis l'installeur officiel, en bash. Les instructions en `ruby -e` qu'on trouve encore partout datent d'avant 2019 et l'URL qu'elles utilisent n'existe plus :
+Puis l'installeur officiel, en bash. Les instructions en `ruby -e` qu'on trouve encore partout datent d'avant 2020 (le passage à `install.sh` date de janvier 2020) et le script Ruby qu'elles appellent a été supprimé en 2023 :
 
 ```bash
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -56,10 +56,11 @@ brew update    # met à jour le catalogue de formules, pas les paquets
 brew upgrade   # met à jour les paquets installés
 ```
 
-`brew upgrade` seul ne touche pas les casks sur les versions récentes ; il faut le demander et `--greedy` inclut les applications qui se mettent à jour toutes seules (à éviter, elles gèrent déjà leur propre update) :
+`brew upgrade` seul met à jour les formules **et** les casks. Il saute seulement les casks marqués `auto_updates true` (les applications qui gèrent leur propre update) et ceux en `version :latest` : `--greedy` les inclut aussi, et `--greedy-auto-updates` ou `--greedy-latest` ciblent l'une des 2 catégories. `--cask` limite la mise à jour aux casks :
 
 ```bash
-brew upgrade --cask
+brew upgrade --cask              # uniquement les casks
+brew upgrade --greedy-latest     # inclut aussi les casks version :latest
 ```
 
 Pour figer un paquet dont on ne veut pas la dernière version :
@@ -74,13 +75,13 @@ brew unpin terraform
 `brew bundle` sérialise tout ce qui est installé dans un fichier versionnable, formules, casks et taps compris. C'est le seul moyen propre de reconstruire un poste à l'identique :
 
 ```bash
-brew bundle dump --describe --file=~/Brewfile   # générer
-brew bundle install --file=~/Brewfile           # restaurer
-brew bundle check --file=~/Brewfile             # que manque-t-il ?
-brew bundle cleanup --file=~/Brewfile           # lister ce qui n'y est pas
+brew bundle dump --force --file=~/Brewfile   # générer (--force écrase un Brewfile existant)
+brew bundle install --file=~/Brewfile        # restaurer
+brew bundle check --file=~/Brewfile          # que manque-t-il ?
+brew bundle cleanup --file=~/Brewfile        # désinstaller ce qui n'y est pas, après confirmation
 ```
 
-`--describe` ajoute un commentaire de description devant chaque ligne, ce qui rend le fichier relisible 6 mois plus tard. Mon Brewfile est [dans mes dotfiles](https://github.com/PixiBixi/dotfiles/blob/master/Brewfile).
+`dump` ajoute par défaut un commentaire de description devant chaque ligne, ce qui rend le fichier relisible 6 mois plus tard (`--no-describe` pour s'en passer). L'ancien `--describe` est désormais refusé avec une erreur. `cleanup` demande confirmation avant de désinstaller quoi que ce soit, et `--force` saute la question. Mon Brewfile est [dans mes dotfiles](https://github.com/PixiBixi/dotfiles/blob/master/Brewfile).
 
 ## Faire de la place
 
@@ -98,10 +99,11 @@ du -sh "$(brew --cache)"
 
 `brew doctor` est le premier réflexe devant un comportement bizarre. Il est bavard et signale des choses parfaitement bénignes, donc on ne cherche pas à obtenir un sans-faute : on y cherche les liens symboliques cassés et les `dylib` d'autres gestionnaires (MacPorts, conda) qui entrent en conflit.
 
-Le `brew update` qui se déclenche tout seul à chaque `brew install` et ajoute 30 secondes se coupe par variable d'environnement :
+Le `brew update` qui se déclenche tout seul avant un `brew install` (au plus une fois toutes les 24 h par défaut) et ajoute 30 secondes se règle par variable d'environnement, en l'espaçant ou en le coupant :
 
 ```bash
-export HOMEBREW_NO_AUTO_UPDATE=1
+export HOMEBREW_AUTO_UPDATE_SECS=604800   # une fois par semaine
+export HOMEBREW_NO_AUTO_UPDATE=1          # jamais
 ```
 
 Après une mise à jour majeure de macOS, les Command Line Tools sont souvent cassés et les compilations échouent sur des en-têtes introuvables. La réinstallation les remet en état :
