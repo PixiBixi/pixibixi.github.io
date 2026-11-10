@@ -11,8 +11,7 @@ tags:
 
 Le protocole LLDP (**L**ink **L**ayer **D**iscovery **P**rotocol) est un
 protocole de découverte de périphériques réseau qui fonctionne au L2.
-Il est défini par le standard **802.11AB**. Contrairement au CDP (Cisco),
-l'avantage du LLDP est qu'il est compatible sur toutes les plateformes sans modification.
+Il est défini par le standard **IEEE 802.1AB**. Contrairement au CDP (Cisco), l'avantage du LLDP est que c'est un standard ouvert, parlé par la plupart des constructeurs. Il n'est pas forcément actif pour autant : sur IOS il est désactivé par défaut (il faut un `lldp run`), et les TLV optionnels annoncés varient d'un équipement à l'autre.
 
 ## Utilité
 
@@ -82,9 +81,12 @@ no lldp run
 
 ##### Sur une interface
 
+Sur IOS, il n'y a pas de `lldp enable` : on coupe l'émission et la réception séparément.
+
 ```ios
 interface Fa0/0
- no lldp enable
+ no lldp transmit
+ no lldp receive
 exit
 ```
 
@@ -100,11 +102,12 @@ lldp run
 
 ```ios
 interface Fa0/0
- lldp enable
+ lldp transmit
+ lldp receive
 exit
 ```
 
 ### Timers LLDP
 
-* `lldp holdtime <x>` - durée de vie de l'information envoyée (10-255)
-* `lldp timer <x>` - période de renvoi des informations (5-254)
+* `lldp holdtime <x>` - durée de vie de l'information envoyée (0-65535 secondes, 120 par défaut)
+* `lldp timer <x>` - période de renvoi des informations (5-65534 secondes, 30 par défaut)
