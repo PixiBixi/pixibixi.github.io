@@ -8,7 +8,7 @@ tags:
 
 # Ajouter le dépôt EPEL sur RHEL, Rocky et AlmaLinux
 
-EPEL (Extra Packages for Enterprise Linux) est le dépôt maintenu par le projet Fedora qui apporte sur la famille RHEL les paquets que Red Hat ne fournit pas : `htop`, `tmux`, `nginx`, `fail2ban`, `ansible` et quelques milliers d'autres. L'installation tient en une commande, mais elle est incomplète sans une seconde que la moitié des tutos oublient.
+EPEL (Extra Packages for Enterprise Linux) est le dépôt maintenu par le projet Fedora qui apporte sur la famille RHEL les paquets que Red Hat ne fournit pas : `htop`, `ncdu`, `screen`, `fail2ban`, `ansible` (le paquet complet, `ansible-core` est dans AppStream) et quelques milliers d'autres. `tmux` et `nginx` n'en font pas partie, ils sont déjà dans BaseOS et AppStream. L'installation tient en une commande, mais elle est incomplète sans une seconde que la moitié des tutos oublient.
 
 ## Rocky, AlmaLinux et CentOS Stream
 
@@ -26,6 +26,12 @@ dnf config-manager --set-enabled crb
 
 # EL8, le dépôt s'appelait PowerTools
 dnf config-manager --set-enabled powertools
+```
+
+Plus simple, `epel-release` livre un script `crb` qui retrouve tout seul le nom du dépôt (`crb` ou `powertools`) :
+
+```bash
+crb enable
 ```
 
 Si `dnf config-manager` n'existe pas, c'est que le plugin manque :
@@ -56,7 +62,7 @@ Un `dnf repolist` qui affiche `epel` sans `crb` est exactement la configuration 
 
 ## epel-next et quand en avoir besoin
 
-Sur CentOS Stream uniquement, `epel-next` complète EPEL pour les paquets qui doivent être recompilés en avance de phase, parce que Stream est en amont de RHEL. Sur Rocky, Alma ou RHEL, il n'a pas lieu d'être :
+Sur CentOS Stream 9 uniquement (Stream 8 est EOL depuis mai 2024), `epel-next` complète EPEL pour les paquets qui doivent être recompilés en avance de phase, parce que Stream est en amont de RHEL. Sur Stream 10, il n'existe plus : EPEL 10 cible directement Stream. Sur Rocky, Alma ou RHEL, il n'a pas lieu d'être :
 
 ```bash
 dnf install epel-next-release
@@ -73,7 +79,7 @@ rpm -ivh epel-release-latest-9.noarch.rpm
 
 ## Limiter EPEL à quelques paquets
 
-EPEL est vaste et remplace parfois un paquet de base par une version plus récente, ce qui n'est jamais souhaitable en production. Deux garde-fous, à choisir selon le besoin.
+La politique EPEL interdit de remplacer un paquet de la distribution, mais le dépôt reste vaste et on ne veut pas forcément tout son catalogue à portée d'un `dnf install` en production. Deux garde-fous, à choisir selon le besoin.
 
 Garder le dépôt désactivé et l'activer à la demande :
 
@@ -87,12 +93,12 @@ Ou l'autoriser en permanence sur une liste blanche de paquets :
 ```ini title="/etc/yum.repos.d/epel.repo"
 [epel]
 ...
-includepkgs=htop,tmux,fail2ban
+includepkgs=htop,ncdu,fail2ban
 ```
 
 ## Les erreurs classiques
 
-`Error: Failed to download metadata for repo 'epel'` sur un CentOS 7 vient de la fin de vie : CentOS 7 et EPEL 7 sont EOL depuis juin 2024, les miroirs ne servent plus ces dépôts et il faut basculer vers les archives ou, mieux, migrer.
+`Cannot find a valid baseurl for repo: base/7/x86_64` (yum) sur un CentOS 7, ou `Error: Failed to download metadata for repo 'appstream'` (dnf) sur un CentOS 8, vient de la fin de vie : CentOS 8 est EOL depuis fin 2021, CentOS 7 et EPEL 7 depuis juin 2024. `mirrorlist.centos.org` ne répond plus, il faut basculer vers `vault.centos.org` ou, mieux, migrer.
 
 `GPG check FAILED` signale que la clé n'est pas importée, ce qui arrive quand le RPM a été posé avec `--nogpgcheck` ou copié à la main :
 
