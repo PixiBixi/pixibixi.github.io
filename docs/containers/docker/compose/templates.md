@@ -8,17 +8,14 @@ tags:
 # Templates docker-compose
 
 !!! error "Deprecated"
-    **Article plus mis à jour, images potentiellement dead également**
+    **Article plus mis à jour** : les images `xataz/nginx-php`, `bixidock/h5ai` et `xataz/rtorrent-rutorrent` ne bougent plus depuis 2017-2019.
 
-Template prédéfinis pour les applications Docker
-
-## Plex
-
-## Let's Encrypt + Reverse Proxy
+Template prédéfinis pour les applications Docker. Chaque bloc est un service à coller sous la clé `services:` de son `compose.yml`, derrière un reverse proxy qui lit `VIRTUAL_HOST` et `LETSENCRYPT_HOST` (nginx-proxy + acme-companion).
 
 ## Backend nginx
 
 ```yaml
+services:
   nginx-backend:
     restart: always
     image: xataz/nginx-php
@@ -39,6 +36,7 @@ Template prédéfinis pour les applications Docker
 ## h5ai
 
 ```yaml
+services:
   USER_h5ai:
     image: bixidock/h5ai
     container_name: USER_h5ai
@@ -55,6 +53,7 @@ Template prédéfinis pour les applications Docker
 ## ruTorrent
 
 ```yaml
+services:
   USER_rutorrent:
     restart: always
     image: xataz/rtorrent-rutorrent:latest-filebot
@@ -78,13 +77,16 @@ Template prédéfinis pour les applications Docker
 ## Organizr
 
 ```yaml
+services:
   USER_organizr:
     restart: always
-    image: lsiocommunity/organizr
+    image: organizr/organizr
     container_name: organizr
     volumes:
       - /root/.apps/USER/organizr:/config
     environment:
+      - PUID=1000
+      - PGID=1000
       - VIRTUAL_HOST=USER.domain.tld
       - VIRTUAL_PORT=80
       - LETSENCRYPT_HOST=USER.domain.tld
