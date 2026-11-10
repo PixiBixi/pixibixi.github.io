@@ -40,10 +40,16 @@ Lister sans le code source :
 FUNCTION LIST
 ```
 
-Stats d'exécution (temps CPU, nombre d'appels) :
+Script en cours d'exécution (nom, commande, durée) et nombre de librairies et de fonctions par engine :
 
 ```redis
 FUNCTION STATS
+```
+
+`FUNCTION STATS` ne donne ni temps CPU ni nombre d'appels. Pour ça, on regarde la ligne `cmdstat_fcall` (appels, temps cumulé en µs), toutes fonctions confondues :
+
+```redis
+INFO commandstats
 ```
 
 Supprimer une librairie :
