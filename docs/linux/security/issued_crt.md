@@ -11,7 +11,7 @@ Désormais, tous les certificats intégrant le _Certificate Transparency_ peuven
 
 Pour cela, il existe un magnifique outil appelé [crt.sh](https://crt.sh), vous proposant une multitude de filtre permettant d'exporter tous les CRT
 
-Sinon, un petit script en ligne de commande :
+Sinon, un petit script en ligne de commande, qui interroge directement la base PostgreSQL publique de crt.sh. Elle est fournie en best-effort : connexion parfois refusée, requêtes longues annulées, on relance plus tard si ça ne répond pas. La requête ne renvoie que les sous-domaines (et les wildcards `*.domaine`), pas le domaine apex lui-même.
 
 ```sh
 #!/usr/bin/env bash
@@ -23,16 +23,23 @@ if [ -z "$psql" ]; then
         echo "Ni Docker, ni PostgreSQL... can't do anything for you"
         exit 1
     fi
-    psql="docker run -it --rm postgres psql"
+    psql="docker run --rm postgres psql"
 fi
 
 if [ -z "${1}" ]; then
     echo "Usage: $0 domain-name"
     exit
 fi
+# $1 is pasted into the SQL query: only accept a domain name
+if [[ ! "$1" =~ ^[A-Za-z0-9.-]+$ ]]; then
+    echo "Invalid domain name: $1"
+    exit 1
+fi
 Q="select distinct(lower(name_value)) FROM certificate_and_identities cai WHERE plainto_tsquery('$1') @@ identities(cai.CERTIFICATE) AND lower(cai.NAME_VALUE) LIKE ('%.$1')"
 $psql -P pager=off -P footer=off -U guest -d certwatch --host crt.sh -c "$Q" | sed -e '$d' -e 's/^ //' -e '1,2d'
 ```
+
+Pas de `-it` sur le `docker run` : `-t` alloue un TTY, le script casserait en cron ou derrière un pipe.
 
 Petit usage tout simple :
 
@@ -60,4 +67,10 @@ rutorrent.mydomain.eu
 shaarli.mydomain.eu
 sync.mydomain.eu
 unifi.mydomain.eu
+```
+
+Pour un besoin ponctuel, on peut aussi se passer de psql avec l'endpoint JSON de crt.sh (`%25` est le `%` encodé) :
+
+```bash
+curl -s 'https://crt.sh/?q=%25.mydomain.eu&output=json' | jq -r '.[].name_value' | tr 'A-Z' 'a-z' | sort -u
 ```
