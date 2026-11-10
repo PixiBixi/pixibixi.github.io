@@ -22,6 +22,8 @@ Une installation de base de portsentry se fera toujours via apt :
 apt update && apt install portsentry
 ```
 
+Ce tuto vaut pour portsentry 1.2, la version de Debian bookworm et trixie. La 2.x (Debian forky et sid) est une réécriture : plus de `/etc/default/portsentry` ni de modes `tcp`/`atcp`, le mode stealth (libpcap) est le défaut et tout se règle dans `portsentry.conf` ou en ligne de commande.
+
 Conrêtement, portsentry s'axe autour de 3 fichiers :
 
 * `/etc/default/portsentry` : Fichier où l'on indique dans quel mode
@@ -65,7 +67,7 @@ selon votre OS, il n'y a pas besoin d'y toucher.
 Cependant, `KILL_RUN_CMD` demeure vide, voici une bonne valeur :
 
 ```bash
-KILL_RUN_CMD="/sbin/iptables -I INPUT -s $TARGET$ -j DROP && /sbin/iptables -I INPUT -s $TARGET$ -m limit --limit 3/minute --limit-burst 5 -j LOG --log-level debug --log-prefix Portsentry: dropping: "
+KILL_RUN_CMD="/sbin/iptables -I INPUT -s $TARGET$ -j DROP && /sbin/iptables -I INPUT -s $TARGET$ -m limit --limit 3/minute --limit-burst 5 -j LOG --log-level debug --log-prefix 'Portsentry: dropping: '"
 ```
 
 ## Bonus : Utilisation d'ipset
@@ -85,7 +87,7 @@ iptables-persistent afin de rendre la config persistent):
 apt install ipset iptables-persistent
 ```
 
-**Si vous êtes sous Debian 10, Ubuntu 19.04 ou supérieur**, alors il
+**Si vous êtes sous Debian 10, Ubuntu 20.04 ou supérieur**, alors il
 existe un paquet permettant de rendre ipset persistent également :
 
 ```bash
@@ -152,7 +154,7 @@ Nous allons spécifier la valeur 2 aux options BLOCK_TCP et BLOCK_UDP du
 fichier `/etc/portsentry/portsentry.conf`, pour utiliser
 **uniquement** la directive KILL_RUN_CMD.
 
-Voici la KILL_RUN_CMD à définir (autour de la ligne 269) :
+Voici la KILL_RUN_CMD à définir, à la place de la ligne `#KILL_RUN_CMD=` commentée (ligne 268 sur trixie, le numéro bouge selon la version) :
 
 ```bash
 KILL_RUN_CMD="/sbin/ipset add portsentry $TARGET$"
