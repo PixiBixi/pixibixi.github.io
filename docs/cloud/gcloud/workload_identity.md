@@ -9,21 +9,22 @@ tags:
 
 # GKE Workload Identity : lier un KSA à un GSA sans clé JSON
 
-2 façons de s'identifier sur les services Google : les service accounts (SA) avec leur clé JSON ou Workload Identity.
+2 façons de s'identifier sur les services Google : les service accounts (SA) avec leur clé JSON ou Workload Identity (renommé Workload Identity Federation for GKE).
 
 La clé d'un SA est un secret qu'il faut stocker, distribuer à chaque pod qui en a besoin et rotate en cas de compromission...
 
 Workload Identity règle ça : on lie un service account K8s (KSA) à un service account GCP (GSA) et les SDK GCP récupèrent automatiquement un token depuis la metadata API du nœud. Cette approche marche sur tous les types de nodes, y compris les [Spot Nodes](spot_nodes.md).
 
+Workload Identity se décline en 2 variantes : on lie le KSA à un GSA qu'il impersonne (ce que décrit l'article), ou on donne les rôles IAM directement au KSA, sans GSA ni annotation (section « Accès direct sans GSA » plus bas). Google présente l'accès direct comme la voie par défaut et l'impersonation comme une option, à garder quand un service Google a des limitations avec l'identité fédérée.
+
 ![Schéma Workload Identity : Pod → KSA → GSA → services GCP](./_img/workload_identity.svg)
 
 ## Câbler le cluster, le GSA et le KSA
 
-2 points à activer : le cluster (`workload_pool`) et chaque node pool (`GKE_METADATA`).
+Sur un cluster Standard, 2 points à activer : le cluster (`workload_pool`) et chaque node pool (`GKE_METADATA`). Sur Autopilot, c'est toujours activé, rien à faire côté cluster ni node pool. L'impersonation d'un GSA demande aussi l'API IAM Service Account Credentials (`iamcredentials.googleapis.com`) activée dans le projet du cluster.
 
-!!! warning "Node pool obligatoire"
-    Sans `workload_metadata_config { mode = "GKE_METADATA" }` sur le node pool, Workload
-    Identity ne fonctionne pas même si le cluster est configuré.
+!!! warning "Node pools existants"
+    Une fois le cluster configuré, les nouveaux node pools passent en `GKE_METADATA` d'eux-mêmes, mais les node pools existants restent comme ils sont. Sans `workload_metadata_config { mode = "GKE_METADATA" }` sur ceux-là, Workload Identity ne fonctionne pas même si le cluster est configuré.
 
 ```hcl
 # Cluster - activer le workload pool
@@ -76,6 +77,24 @@ resource "kubernetes_service_account" "app" {
 }
 ```
 
+## Accès direct sans GSA
+
+Sans GSA, on donne le rôle directement au KSA via son identifiant `principal://`, qui demande le numéro du projet (pas son ID). Pas d'annotation sur le KSA, pas de binding `roles/iam.workloadIdentityUser` :
+
+```hcl
+data "google_project" "current" {
+  project_id = var.project_id
+}
+
+resource "google_project_iam_member" "app_storage_direct" {
+  project = var.project_id
+  role    = "roles/storage.objectViewer"
+  member  = "principal://iam.googleapis.com/projects/${data.google_project.current.number}/locations/global/workloadIdentityPools/${var.project_id}.svc.id.goog/subject/ns/${var.namespace}/sa/${var.ksa_name}"
+}
+```
+
+Chaque API Google a ses limitations avec l'identité fédérée (listées dans la doc Google de Workload Identity Federation for GKE) : si l'une bloque, on revient à l'impersonation d'un GSA.
+
 ## Utiliser l'identité dans le pod
 
 Le pod ne référence que le KSA, les SDK GCP récupèrent le token tout seuls via ADC :
@@ -114,10 +133,21 @@ curl -H "Metadata-Flavor: Google" \
 
 | Symptôme | Cause probable |
 |----------|---------------|
-| `could not find default credentials` | Annotation KSA manquante ou mauvais SA dans le pod |
-| `403 Permission denied` | IAM binding manquant ou mauvais rôle sur le GSA |
-| Token GSA incorrect | Node pool sans `GKE_METADATA` |
-| `svc.id.goog` absent de la metadata | Workload Identity non activé sur le cluster |
+| `could not find default credentials`, `cannot find the metadata server` | Metadata server injoignable : NetworkPolicy qui bloque `169.254.169.252/32` port 988 (`169.254.169.254/32` port 80 en Dataplane V2), DNS de `metadata.google.internal` |
+| `403`, `Permission 'iam.serviceAccounts.getAccessToken' denied` | Binding `roles/iam.workloadIdentityUser` manquant sur le GSA, propagation IAM pas finie (2 à 7 minutes), API IAM Service Account Credentials désactivée |
+| `403` sur l'API visée, email `PROJECT_ID.svc.id.goog` dans la metadata | Annotation KSA manquante : le pod tourne avec l'identité fédérée du KSA, sans les rôles du GSA |
+| Email du SA des nodes dans la metadata | Node pool sans `GKE_METADATA` |
+
+Pour vérifier que le cluster a bien un workload pool et que le node pool est en `GKE_METADATA` :
+
+```bash
+gcloud container clusters describe ${CLUSTER_NAME} \
+  --format="value(workloadIdentityConfig.workloadPool)"
+
+gcloud container node-pools describe ${NODEPOOL_NAME} \
+  --cluster=${CLUSTER_NAME} \
+  --format="value(config.workloadMetadataConfig.mode)"
+```
 
 Les 2 commandes qui tranchent entre un problème d'IAM et un problème de metadata :
 
