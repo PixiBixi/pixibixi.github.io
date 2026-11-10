@@ -72,6 +72,12 @@ curl -s http://127.0.0.1:3200/api/echo
 curl -s http://127.0.0.1:3200/api/search/tags | jq -r '.tagNames[]'
 ```
 
+L'endpoint v2 range les tags par scope TraceQL (`resource`, `span`, `intrinsic`...)
+
+```sh
+curl -s http://127.0.0.1:3200/api/v2/search/tags | jq -r '.scopes[] | "\(.name)\t\(.tags | join(", "))"'
+```
+
 ## Voir aussi
 
 - [Netdata, Prometheus et Grafana : une stack de monitoring simple et puissante](simple_monitoring_stack.md)
