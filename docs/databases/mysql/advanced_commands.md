@@ -2,11 +2,14 @@
 description: Commandes avancées MySQL et MariaDB pour l'administration - analyse des performances, gestion de la RAM, des connexions et optimisation des requêtes.
 tags:
   - MySQL
+tested_with:
+  - "MySQL 8.4"
+  - "MariaDB 11.4"
 ---
 
 # MySQL : Commandes avancées
 
-La plupart de ces commandes sont disponibles pour MySQL ou MariaDB.
+La plupart de ces commandes sont disponibles pour MySQL ou MariaDB. Quand ce n'est pas le cas (variables non-défaut), on donne une requête par moteur.
 
 ## RAM
 
@@ -27,6 +30,8 @@ SELECT ( @@key_buffer_size
 
 Check la max RAM qui sera utilisée par MySQL. Il est important de bien prendre en compte la RAM pouvant être utilisée par chaque connection.
 
+C'est une estimation pire cas, pas un plafond exact : `join_buffer_size` et `tmp_table_size` peuvent être alloués plusieurs fois par requête (une fois par jointure ou table temporaire), et la RAM du `performance_schema` et des structures internes n'est pas comptée.
+
 Des sites existent tels que [MySQLCalculator](https://www.mysqlcalculator.com/), [MySQL DBA](https://www.abhinavbit.com/p/mysql-memory-calculator.html) ou encore le plus visuel [Avchinnikov](https://avchinnikov.com/utils/mysqlcalc)
 
 ## InnoDB
@@ -38,13 +43,11 @@ SELECT  ENGINE,
         ROUND(SUM(data_length + index_length)/1024/1024, 1) AS "Total MB",
         COUNT(*) "Num Tables"
     FROM  INFORMATION_SCHEMA.TABLES
-    WHERE  table_schema not in ("information_schema", "PERFORMANCE_SCHEMA", "SYS_SCHEMA", "ndbinfo")
+    WHERE  table_schema NOT IN ('information_schema', 'performance_schema', 'sys', 'mysql', 'ndbinfo')
     GROUP BY  ENGINE;
 ```
 
-Nous permet de déterminer la taille de chaque moteur de stockage. Ainsi,
-nous pouvons dimensionner **innodb_buffer_pool_size** au plus juste (20%
-en plus de la valeur retournée)
+Nous permet de déterminer la taille de chaque moteur de stockage, hors schémas système (sur MySQL 8 la comparaison sur `table_schema` est sensible à la casse, d'où les noms en minuscules). Ainsi, nous pouvons dimensionner **innodb_buffer_pool_size** au plus juste : en règle empirique, 20% en plus de la valeur retournée. Data + index sur disque est un majorant du working set, et le buffer pool n'est pas la seule RAM consommée (cf. section précédente).
 
 ```sql
 MariaDB [(none)]> ...
@@ -61,22 +64,23 @@ MariaDB [(none)]> ...
 Nous savons que dans notre exemple nous avons un moteur InnoDB utilisant
 1.6G. Nous pouvons donc définir le pool à 2G.
 
+On convertit toutes les tables MyISAM en InnoDB d'un coup en générant les `ALTER TABLE` et en les renvoyant dans `mysql` :
+
 ```bash
-Q=` ; mysql --skip-column-names -Be "select concat(alter table ${Q}, table_schema,${Q}.${Q}, table_name, ${Q} engine=innodb;)
-from information_schema.tables where engine = MyISAM and table_schema not in (mysql)" | mysql
+Q='`'
+mysql --skip-column-names -Be "select concat('alter table ${Q}', table_schema, '${Q}.${Q}', table_name, '${Q} engine=innodb;') from information_schema.tables where engine = 'MyISAM' and table_schema not in ('mysql', 'information_schema', 'performance_schema', 'sys')" | mysql
 ```
 
-Cette commande nous sert à convertir toutes les tables MyISAM en InnoDB.
 Un use case parmis tant d'autres, une cluster Galera.
 
 ## Misc
 
 ```sql
-MariaDB [(none)]> SHOW (FULL) PROCESSLIST 'G;
+MariaDB [(none)]> SHOW [FULL] PROCESSLIST\G
 ```
 
 Permet de lister les process SQL tournant d'une manière « propre »
-(''G), on peut également aller plus loin en détail en ajoutant FULL
+(`\G`), on peut également aller plus loin en détail en ajoutant FULL
 
 ```sql
 MariaDB [(none)]>  KILL xxxx
@@ -85,20 +89,25 @@ MariaDB [(none)]>  KILL xxxx
 Permet de kill le process MySQL xxxx (Attention, rollback de la
 transaction, peut également être long)
 
-```sql
+Pour dump la liste des users SQL et leurs grants, `pt-show-grants` fait le travail :
+
+```bash
 pt-show-grants
-mysql --silent --skip-column-names --execute "select concat(',User,'@',Host,') as User from mysql.user" | sort | '
-while read u
- do echo "-- $u"; mysql --silent --skip-column-names --execute "show grants for $u" | sed s/$/;/
+```
+
+Si `pt-show-grants` n'est pas dispo, on boucle sur `mysql.user` :
+
+```bash
+mysql --silent --skip-column-names --execute "select concat(quote(User), '@', quote(Host)) from mysql.user" | sort | \
+while read -r u; do
+  echo "-- $u"
+  mysql --silent --skip-column-names --execute "show grants for $u" | sed 's/$/;/'
 done
 ```
 
-* Permet de dump la liste des users SQL (commande mysql si
-    pt-show-grants pas dispo)
-
 ```sql
 SELECT ENGINE,
-       concat(TABLE_SCHEMA, TABLE_NAME) AS TABLE_NAME,
+       concat(TABLE_SCHEMA, '.', TABLE_NAME) AS TABLE_NAME,
        round(DATA_LENGTH/1024/1024, 2) AS data_length,
        round(INDEX_LENGTH/1024/1024, 2) AS index_length,
        round(DATA_FREE/1024/1024, 2) AS data_free,
@@ -110,6 +119,9 @@ ORDER BY data_free DESC LIMIT 10;
 
 * Permet de voir la fragmentation des tables MySQL. Il est possible de
     récuperer l'espace en faisant un **OPTIMIZE TABLE**
+* Sur MySQL 8, ces statistiques sont mises en cache 24h (`information_schema_stats_expiry = 86400`) : on lance un `ANALYZE TABLE` ou un `SET SESSION information_schema_stats_expiry = 0;` avant pour avoir des valeurs fraîches. Pour une table dans un tablespace partagé (`innodb_file_per_table = OFF`), `DATA_FREE` est celui de tout le tablespace, pas de la table
+
+Pour lister les variables qui n'ont pas les valeurs par défaut, la requête dépend du moteur. Sur MariaDB, `information_schema.system_variables` donne la valeur par défaut :
 
 ```sql
 SELECT information_schema.system_variables.variable_name,
@@ -122,7 +134,15 @@ WHERE system_variables.variable_name=global_variables.variable_name
   AND system_variables.default_value <> 0
 ```
 
-* Permet de lister les variables qui n'ont pas les valeurs par défaut
+Sur MySQL, cette table n'existe pas (`Unknown table 'SYSTEM_VARIABLES' in information_schema`). On passe par `performance_schema.variables_info` (MySQL 8.0+), dont `VARIABLE_SOURCE` vaut `COMPILED` tant que la variable n'a été changée nulle part (`my.cnf`, ligne de commande, `SET GLOBAL`, `SET PERSIST`) :
+
+```sql
+SELECT vi.VARIABLE_NAME, vi.VARIABLE_SOURCE, vi.VARIABLE_PATH, gv.VARIABLE_VALUE
+FROM performance_schema.variables_info vi
+JOIN performance_schema.global_variables gv USING (VARIABLE_NAME)
+WHERE vi.VARIABLE_SOURCE <> 'COMPILED'
+ORDER BY vi.VARIABLE_NAME;
+```
 
 ## Voir aussi
 
