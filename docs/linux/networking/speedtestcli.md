@@ -15,11 +15,11 @@ Le réflexe, c'est `apt install speedtest-cli`. Sauf que ce paquet-là est le cl
 | Outil | Ce qu'il vaut |
 |---|---|
 | `speedtest` (Ookla officiel) | Le successeur légitime, multi-connexions, mesure la latence en charge. Binaire propriétaire, dépôt à ajouter |
-| `speedtest-cli` (Python, sivel) | Archivé. Mono-connexion, donc sous-estime les liens rapides. Présent dans tous les dépôts distro, d'où sa survie |
+| `speedtest-cli` (Python, sivel) | Archivé. Multi-connexions par défaut (une seule avec `--single`), mais pas de latence en charge. Présent dans tous les dépôts distro, d'où sa survie |
 | `librespeed-cli` | Open source et activement maintenu, serveurs communautaires ou les siens. Le choix si on veut auto-héberger la cible |
 | `speed-cloudflare-cli` | Mesure vers le PoP Cloudflare le plus proche, donne latence et jitter. Utile comme second avis |
 
-Le point qui compte vraiment : le client Python ouvre **une seule connexion TCP**. Sur un lien à 1 Gbit/s ou plus, une seule session ne sature pas le tuyau et le résultat sort 2 à 3 fois sous la réalité. C'est la première chose à vérifier avant de conclure qu'un serveur a un problème de débit.
+Le point qui compte vraiment : un test sur **une seule connexion TCP** (`speedtest-cli --single`, `curl`, `iperf3` sans `-P`) ne sature pas un lien à 1 Gbit/s ou plus et le résultat sort sous la réalité. C'est la première chose à vérifier avant de conclure qu'un serveur a un problème de débit.
 
 ## Installer le client officiel Ookla
 
@@ -35,6 +35,13 @@ Sur RHEL, Rocky et AlmaLinux, c'est le même principe avec le script `.rpm.sh` :
 ```bash
 curl -s https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.rpm.sh | sudo bash
 dnf install speedtest
+```
+
+Pour ne pas ajouter de dépôt, Ookla publie aussi le binaire seul dans un tarball :
+
+```bash
+curl -sSL https://install.speedtest.net/app/cli/ookla-speedtest-1.2.0-linux-x86_64.tgz \
+  | sudo tar xz -C /usr/local/bin speedtest
 ```
 
 Le paquet s'appelle `speedtest`, sans tiret, ce qui évite le conflit avec le paquet Python `speedtest-cli`. Si les deux sont installés, vérifier lequel répond avec `command -v speedtest`.
@@ -119,7 +126,7 @@ JSON=$(speedtest -f json --accept-license --accept-gdpr)
 mv "${OUT}.tmp" "$OUT"
 ```
 
-Un test consomme 1 à 2 Go de trafic sur un lien rapide. À 4 mesures par heure ça fait plusieurs centaines de Go par mois, facturés sur la plupart des clouds. Une mesure toutes les 6h est un compromis raisonnable et on met le cron à une minute aléatoire pour ne pas taper le même serveur que tout le monde à l'heure pile.
+Un test consomme 1 à 2 Go de trafic sur un lien rapide. À 4 mesures par heure ça fait 3 à 6 To par mois, facturés sur la plupart des clouds. Une mesure toutes les 6h est un compromis raisonnable et on met le cron à une minute aléatoire pour ne pas taper le même serveur que tout le monde à l'heure pile.
 
 ## Mesurer sans rien installer
 
@@ -127,10 +134,10 @@ Sur une machine où l'on ne veut ou ne peut rien poser, `curl` donne un ordre de
 
 ```bash
 curl -o /dev/null -w 'debit: %{speed_download} o/s  temps: %{time_total}s\n' \
-  https://speed.hetzner.de/100MB.bin
+  https://fsn1-speed.hetzner.com/100MB.bin
 ```
 
-Une seule connexion là aussi, donc sous-estimation sur les liens rapides et le résultat dépend entièrement de la qualité du lien vers ce serveur précis. C'est bon pour répondre à « est-ce que ça télécharge à 50 Ko/s ou à 50 Mo/s », pas pour qualifier un lien.
+Une seule connexion, donc sous-estimation sur les liens rapides et le résultat dépend entièrement de la qualité du lien vers ce serveur précis. C'est bon pour répondre à « est-ce que ça télécharge à 50 Ko/s ou à 50 Mo/s », pas pour qualifier un lien.
 
 ## Débit entre 2 de ses serveurs
 
@@ -144,7 +151,7 @@ iperf3 -s
 iperf3 -c 10.0.0.1 -P 4 -t 30
 ```
 
-Sans `-P`, un flux unique plafonne sur les liens à forte latence à cause de la fenêtre TCP et on mesure le RTT plutôt que le débit.
+Sans `-P`, un flux unique plafonne sur les liens à forte latence à cause de la fenêtre TCP (débit max = fenêtre / RTT) : on mesure ce plafond plutôt que le débit du lien. Depuis iperf3 3.16, chaque flux `-P` tourne dans son propre thread, avant tous se partageaient un seul cœur CPU.
 
 ## Le client Python, si on y tient
 
