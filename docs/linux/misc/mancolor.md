@@ -17,11 +17,7 @@ la rend plus agréable à l'utiliser. Il se peut que les couleurs soient
 plus agressives, j'utilise un thème un peu moins flashy pour reposer
 les yeux :D
 
-Pour obtenir ce résultat, il y a deux moyens, installer un programme qui
-se nomme **most**, ou bien en exportant quelques variables. Je vais
-détailler les 2 méthodes, mais personnellement, j'utilise la 2nd
-méthode, car elle fait totalement pareil que la 1ère méthode, sans
-l'ajout d'un paquet inutile.
+Pour obtenir ce résultat, il y a deux moyens, installer un programme qui se nomme **most**, ou bien en exportant quelques variables. Je vais détailler les 2 méthodes, mais personnellement, j'utilise la 2nd méthode : on garde `less` comme pager, avec les couleurs qu'on choisit, sans l'ajout d'un paquet. **most** est un autre pager, avec sa propre navigation et ses propres couleurs.
 
 Pour la 1ère méthode, comme d'habitude, il suffit d'installer
 simplement un paquet
@@ -42,17 +38,19 @@ Pour la seconde méthode, il faut exporter plusieurs variables dans votre
 **.bashrc** :
 
 ```bash
-cat >> ~/.bashrc << EOF
-export LESS_TERMCAP_mb=$'E[01;31m
-export LESS_TERMCAP_md=$'E[01;31m
-export LESS_TERMCAP_me=$'E[0m
-export LESS_TERMCAP_se=$'E[0m
-export LESS_TERMCAP_so=$'E[01;44;33m
-export LESS_TERMCAP_ue=$'E[0m
-export LESS_TERMCAP_us=$'E[01;32m
+cat >> ~/.bashrc << 'EOF'
+export LESS_TERMCAP_mb=$'\e[01;31m'
+export LESS_TERMCAP_md=$'\e[01;31m'
+export LESS_TERMCAP_me=$'\e[0m'
+export LESS_TERMCAP_se=$'\e[0m'
+export LESS_TERMCAP_so=$'\e[01;44;33m'
+export LESS_TERMCAP_ue=$'\e[0m'
+export LESS_TERMCAP_us=$'\e[01;32m'
 export PAGER=less
 EOF
 ```
+
+Le `'EOF'` entre quotes empêche le shell d'interpréter le contenu au moment de l'écriture : les lignes arrivent telles quelles dans le `.bashrc`, et c'est bash qui décode les `$'\e[...'` à chaque ouverture de session.
 
 Comme pour la commande précédente, **Il faut refaire les commandes
 export pour chaque utilisateur**
