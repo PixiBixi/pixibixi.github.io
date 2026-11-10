@@ -1,5 +1,7 @@
 ---
 description: Accélérer Terraform - parallélisme, cache des providers et optimisations CI pour des déploiements plus rapides
+tested_with:
+  - "Terraform 1.17"
 tags:
   - Terraform
 ---
@@ -12,10 +14,14 @@ Pour accélerer Terraform, quelques bonnes pratiques. Complémentaire aux [comma
 
 Par défaut, si on dispose d'un large nombre de ressources, le parallélisme de Terraform est seulement de 10 - Terraform ne va pas effectuer plus de 10 opérations en parallèle.
 
-Pour ça, augmenter le `-parallelism` à une valeur supérieure.
+Pour ça, on augmente `-parallelism`. Le flag se passe à `plan`, `apply` et `destroy`, pas à `init` :
+
+```bash
+terraform apply -parallelism=20
+```
 
 !!! warning "Danger"
-    Attention à ne pas spam les API provider et provoquer d'autres bugs
+    Attention à ne pas spam les API provider et provoquer d'autres bugs (rate limit) : on monte par paliers plutôt que de passer directement à 100.
 
 ## Réutilisation des providers
 
@@ -27,9 +33,9 @@ Pour ça, la bonne pratique est de définir la variable `TF_PLUGIN_CACHE_DIR`. C
 
 En pratique, il existe 2 manières d'effectuer cette opération.
 
-Dans la configuration de la CLI Terraform :
+Dans la configuration de la CLI Terraform (`~/.terraformrc`) :
 
-```ini
+```hcl
 plugin_cache_dir = "${HOME}/.terraform.d/plugin-cache"
 ```
 
@@ -39,16 +45,22 @@ La seconde manière, conseillée, est d'ajouter directement une variable d'envir
 export TF_PLUGIN_CACHE_DIR="${HOME}/.terraform.d/plugin-cache"
 ```
 
+Le dossier doit exister avant le `terraform init`, Terraform ne le crée pas.
+
+!!! warning "Le cache a besoin du lock file"
+    Depuis Terraform 1.4, `init` n'utilise une entrée du cache que si son checksum figure déjà dans `.terraform.lock.hcl`. Sans lock file commité, chaque repo re-télécharge ses providers, cache ou pas. On commite donc le lock file, ou on force l'ancien comportement avec `TF_PLUGIN_CACHE_MAY_BREAK_DEPENDENCY_LOCK_FILE=true` (ou `plugin_cache_may_break_dependency_lock_file = true` dans `~/.terraformrc`), au prix d'un lock file incomplet qui ne contient que le checksum de la plateforme courante.
+
 ## Bonus : GitLab-CI
 
 Il est également possible de setup du cache sur une pipeline GitLab.
 
-Comme pour Terraform en local, il est nécessaire de définir la même variable puis on va utiliser le keyword cache de Terraform pour activer ce dernier :
+Comme pour Terraform en local, il est nécessaire de définir la même variable puis on va utiliser le keyword `cache` de GitLab CI pour activer ce dernier. L'image officielle est `hashicorp/terraform`, avec une version figée, et son entrypoint `terraform` doit être vidé pour que `script` tourne dans un shell :
 
 ```yaml
 .terraform:
   image:
-    name: terraform:latest
+    name: hashicorp/terraform:1.17.1
+    entrypoint: [""]
   variables:
     TF_INPUT: "false"
     TF_IN_AUTOMATION: "true"
