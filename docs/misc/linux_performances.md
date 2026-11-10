@@ -33,7 +33,7 @@ Avant de lancer des outils au hasard, localiser le goulot d'étranglement :
 ### Charge et utilisation globale
 
 ```bash
-# Vue temps réel (q pour quitter)
+# Snapshot unique en mode batch (pour le temps réel : top, q pour quitter)
 top -b -n1 | head -20
 
 # Par CPU (utile pour détecter un seul core saturé)
@@ -41,11 +41,14 @@ mpstat -P ALL 1
 
 # Historique via sar (nécessite sysstat)
 sar -u 1 10        # 10 mesures, 1 seconde d'intervalle
-sar -u -f /var/log/sysstat/sa$(date +%d)  # historique du jour
+sar -u             # sans intervalle : relit l'historique du jour
+sar -u -f /var/log/sysstat/sa$(date +%d)  # même chose sur Debian/Ubuntu (/var/log/sa/saDD sur RHEL)
 
-# Load average interprétation
+# Load average interprétation (heuristique)
 # 1 core : load > 1.0 = saturé
 # 8 cores : load > 8.0 = saturé
+# Le load compte aussi les process en état D (I/O bloquée, NFS) :
+# un load élevé avec un CPU idle = I/O, à croiser avec vmstat (colonnes r et b)
 uptime
 ```
 
@@ -89,11 +92,17 @@ done | sort -k2 -n -r | head -10
 ### Pression mémoire
 
 ```bash
-# Ratio kswapd actif = swap en cours
+# Colonnes si/so (pages swappées in/out par seconde) > 0 en continu = swap actif
 vmstat 1 5
 
-# Détail compaction/reclaim
-cat /proc/vmstat | grep -E "pgmajfault|pgfault|pswpin|pswpout"
+# Page faults et swap (compteurs depuis le boot)
+grep -E "pgmajfault|pgfault|pswpin|pswpout" /proc/vmstat
+
+# Reclaim et compaction
+grep -E "pgscan_|pgsteal_|allocstall|compact_stall" /proc/vmstat
+
+# Temps passé bloqué faute de mémoire (PSI, si le noyau l'expose)
+cat /proc/pressure/memory
 ```
 
 ---
@@ -105,18 +114,23 @@ cat /proc/vmstat | grep -E "pgmajfault|pgfault|pswpin|pswpout"
 iostat -xz 1
 
 # Colonnes clés de iostat -x :
-# %util   : taux d'occupation du disque (>80% = problème)
-# await   : temps d'attente moyen en ms
+# %util   : taux d'occupation du disque, proche de 100% = saturé seulement
+#           pour un disque qui sert les requêtes en série (HDD). Sur SSD,
+#           NVMe ou RAID, ça ne dit rien : regarder r_await/w_await et aqu-sz
+# r_await / w_await : temps moyen d'une lecture / écriture en ms (file d'attente comprise)
+# aqu-sz  : longueur moyenne de la file d'attente
 # r/s w/s : IOPS en lecture/écriture
 
 # Process les plus actifs en I/O (nécessite root)
 iotop -o -b -n 5
 
-# Vue combinée CPU + I/O + réseau
+# Vue combinée CPU + I/O + réseau (dstat n'est plus maintenu,
+# sur RHEL 9 la commande vient de pcp-system-tools, pcp-dstat)
 dstat -cdngy 1
 
-# Latence par opération (lecture/écriture/fsync)
+# Latence par opération : lectures par défaut, -W pour l'écriture, -Y pour du sync (O_SYNC)
 ioping -c 10 /var/log
+ioping -c 10 -W -Y /var/log
 ```
 
 ### Identifier les fichiers ouverts / actifs
@@ -129,7 +143,7 @@ lsof -p <PID>
 lsof /var/log/syslog
 
 # Fichiers supprimés mais encore ouverts (espace non libéré)
-lsof | grep deleted
+lsof +L1
 ```
 
 ---
@@ -153,8 +167,8 @@ ss -s
 ip -s link show eth0
 cat /proc/net/dev
 
-# Paquets droppés
-netstat -s | grep -i drop
+# Paquets droppés par la pile réseau (netstat n'est plus installé par défaut)
+nstat -az | grep -i drop
 ```
 
 ### Latence & DNS
@@ -188,7 +202,7 @@ strace -e trace=network curl https://example.com
 ltrace -p <PID>
 
 # Threads et leur état
-ps -eLf | grep <PID>
+ps -L -o pid,lwp,stat,comm -p <PID>
 
 # Priorité et nice value
 ps -o pid,ni,pri,comm -p <PID>
@@ -205,7 +219,8 @@ glances
 # Alternative avec graphes dans le terminal
 btm
 
-# Historique de toutes les métriques (sysstat)
+# Toutes les métriques sysstat en direct (5 mesures à 1 s),
+# sar -A sans intervalle relit l'historique du jour
 sar -A 1 5
 ```
 
@@ -214,8 +229,11 @@ sar -A 1 5
 ## One-liners de diagnostic rapide
 
 ```bash
-# Top 10 des process par CPU
+# Top 10 des process par CPU (moyenne depuis leur démarrage, pas l'instantané)
 ps aux --sort=-%cpu | head -11
+
+# Usage CPU instantané par process (sysstat)
+pidstat 1 5
 
 # Top 10 des process par mémoire RSS
 ps aux --sort=-%mem | head -11
@@ -228,11 +246,15 @@ watch -n1 cat /proc/interrupts
 
 # Vérifier si un process est CPU-bound ou I/O-bound
 cat /proc/<PID>/status | grep -E "voluntary|nonvoluntary"
-# voluntary_ctxt_switches élevé = I/O-bound
-# nonvoluntary_ctxt_switches élevé = CPU-bound
+# Indice, pas une preuve :
+# voluntary_ctxt_switches élevé = le process cède le CPU (I/O, lock, sleep)
+# nonvoluntary_ctxt_switches élevé = préempté, plutôt CPU-bound
 
-# Limites système ouvertes
+# Limites du shell courant
 ulimit -a
+
+# Limites d'un process déjà lancé
+cat /proc/<PID>/limits
 
 # Descripteurs de fichiers utilisés
 cat /proc/sys/fs/file-nr
@@ -246,8 +268,8 @@ cat /proc/sys/fs/file-nr
 |----------|---------------|----------|
 | Load average | > nb de vCPU | `uptime` |
 | CPU `%iowait` | > 20% | `iostat -x 1` |
-| Swap utilisé | > 0 (prod) | `free -m` |
-| `%util` disque | > 80% | `iostat -x 1` |
-| `await` disque | > 50ms | `iostat -x 1` |
+| Swap actif (`si`/`so`) | > 0 en continu | `vmstat 1` |
+| `%util` disque (HDD) | proche de 100% | `iostat -x 1` |
+| `r_await`/`w_await` disque | > 50ms | `iostat -x 1` |
 | Paquets droppés | > 0 | `ip -s link` |
 | Descripteurs ouverts | > 80% du max | `cat /proc/sys/fs/file-nr` |
