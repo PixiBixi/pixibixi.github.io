@@ -12,8 +12,8 @@ GKE réserve une part du CPU et de la RAM pour ses composants système et ce n'e
 
 Source : [GKE - Plan node sizes / Resource reservations](https://docs.cloud.google.com/kubernetes-engine/docs/concepts/plan-node-sizes#resource_reservations)
 
-!!! warning "Chiffres valables en avril 2026"
-    Ces valeurs reflètent la documentation GKE au moment de l'écriture de cet article.
+!!! warning "Node pools créés en GKE 1.36 ou avant"
+    Les formules et le tableau ci-dessous valent pour les node pools créés en 1.36 ou avant (même upgradés ensuite). Les node pools créés en 1.37+ réservent moins de RAM, voir la section dédiée plus bas.
     GCP peut modifier les formules de réservation à tout moment - vérifier la source officielle ci-dessus avant de dimensionner en production.
 
 ## Ce qui est réservé
@@ -27,6 +27,7 @@ Source : [GKE - Plan node sizes / Resource reservations](https://docs.cloud.goog
 
 ### RAM (progressif également)
 
+- 255 MiB fixe pour les machines de moins de 1 GiB
 - 25% des premiers 4 GiB
 - 20% des 4 GiB suivants (jusqu'à 8 GiB)
 - 10% des 8 GiB suivants (jusqu'à 16 GiB)
@@ -53,6 +54,20 @@ La RAM, en revanche, pique sur les petits nodes : sur un 4 GiB, on perd 27,5% av
 !!! tip "Implication FinOps"
     Privilégier des nodes plus grands améliore l'efficacité RAM (72% → 92%).
     Sur des clusters avec beaucoup de petits nodes, on paye pour de la RAM que K8s ne peut pas utiliser.
+
+## Node pools créés en GKE 1.37+
+
+La RAM réservée dépend aussi du nombre max de pods par node, on garde le plus petit des 2 :
+
+```text
+MemoryReserved = Min(ancienne formule, 15 MiB x MaxPodsPerNode + BaseOverhead)
+```
+
+- `BaseOverhead` vaut 500 MiB sur Container-Optimized OS, 700 MiB sur Ubuntu
+- les 100 MiB du seuil d'éviction s'ajoutent toujours par-dessus
+- le CPU réservé est plafonné à 1 vCPU, sans effet sur les gabarits du tableau
+
+Exemple sur un node 32 GiB en COS : avec 110 pods max, on réserve 2,20 GiB au lieu de 3,66 GiB ; avec 32 pods max, 1,05 GiB. Avec 110 pods max (le défaut en Standard), rien ne change jusqu'à 8 GiB : le gain se voit sur les gros nodes et quand on baisse le max pods.
 
 ## Voir aussi
 
