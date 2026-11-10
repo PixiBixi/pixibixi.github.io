@@ -24,8 +24,7 @@ de PowerShell suffit :
 Install-WindowsFeature DHCP -IncludeManagementTools
 ```
 
-Tout d'abord, il est important de rajouter l'utilisateur et le groupe
-du serveur DHCP aux administrateurs locaux
+Tout d'abord, il est important de créer les groupes de sécurité locaux du serveur DHCP (**DHCP Users** et **DHCP Administrators**), qui servent à déléguer la consultation et l'administration du DHCP :
 
 ```powershell
 Add-DHCPServerSecurityGroup -ComputerName DHCPServer
@@ -59,7 +58,7 @@ Où DHCPServer est le nom de notre serveur et 1.1.1.1 son IP
 Set-DHCPServerDnsCredential -ComputerName "DHCPServer"
 ```
 
-Cette ligne nous perment de définir des identifiants afin de pouvoir
+Cette ligne nous permet de définir des identifiants afin de pouvoir
 enregistrer ou supprimer des entrées DNS sur notre serveur DNS local
 pour un ADDS
 
@@ -81,19 +80,21 @@ Add-DHCPServerV4ExclusionRange -ScopeId 10.1.1.0 -StartRange 10.1.1.70 -EndRange
 Set-DHCPServerv4OptionValue -ComputerName DHCPServer.test.com -DnsServer 10.1.1.2 -DnsDomain test.com -Router 10.1.1.1
 ```
 
-**Autre manière :**
+**Autre manière**, option par option avec son ID (au niveau serveur ici, on ajoute `-ScopeId 10.1.1.0` pour ne viser qu'un scope) :
 
 ```powershell
-Set-DhcpServerv4OptionDefinition -OptionId 3 -DefaultValue 10.1.1.1
+Set-DhcpServerv4OptionValue -OptionId 3 -Value 10.1.1.1
 ```
 
 ```powershell
-Set-DhcpServerv4OptionDefinition -OptionId 6 -DefaultValue 10.1.1.2
+Set-DhcpServerv4OptionValue -OptionId 6 -Value 10.1.1.2
 ```
 
 ```powershell
-Set-DhcpServerv4OptionDefinition -OptionId 15 -DefaultValue test.com
+Set-DhcpServerv4OptionValue -OptionId 15 -Value test.com
 ```
+
+Attention à ne pas confondre avec `Set-DhcpServerv4OptionDefinition -DefaultValue` : celle-ci modifie la définition de l'option (nom, description, valeur par défaut), elle ne distribue rien aux clients.
 
 Les options sont les suivantes **OptionID**
 
@@ -103,9 +104,7 @@ Les options sont les suivantes **OptionID**
 
 ### Réservation IP
 
-Il peut-être pratique (par exemple dans le cas de serveurs) de faire une
-réservation d'IP avec un bail extrêmement long. Deux manières de
-procéder existe :
+Il peut-être pratique (par exemple dans le cas de serveurs) de faire une réservation d'IP : l'adresse est toujours attribuée à la même adresse MAC, quel que soit le bail. Deux manières de procéder existent :
 
 * Soit l'ajout manuel IP par IP (Ici, on va fixer l'adresse IP
     10.10.10.8 qui se trouve dans le range 10.10.10.0 ayant l'adresse
@@ -126,7 +125,7 @@ ScopeId,IPAddress,Name,ClientId,Description
 ```
 
 ```powershell
-Import-Csv –Path Reservations.csv | Add-DhcpServerv4Reservation -ComputerName dhcpserver.contoso.com
+Import-Csv -Path Reservations.csv | Add-DhcpServerv4Reservation -ComputerName dhcpserver.contoso.com
 ```
 
 ## Vérification
@@ -155,7 +154,7 @@ Exporter la configuration du serveur DHCP
 Export-DHCPServer -ComputerName DHCPServer -File C:\dhcp\dhcp.xml
 ```
 
-* `-Lease` pour inclure les baux
+* `-Leases` pour inclure les baux
 
 ## Problème de failover
 
@@ -164,5 +163,5 @@ dupliquée automatiquement entre les 2 serveurs du Failover, il faut donc
 faire la commande manuellement :
 
 ```powershell
-Invoke–DhcpServerv4FailoverReplication –ComputerName dhcpserver.contoso.com
+Invoke-DhcpServerv4FailoverReplication -ComputerName dhcpserver.contoso.com
 ```
