@@ -10,13 +10,20 @@ Une nouvelle fois, grace à notre amis Stack Overflow, nous pouvons
 savoir combien de temps a durée une commande :
 
 ```powershell
-.'do_something.ps1
+.\do_something.ps1
 $command = Get-History -Count 1
 $command.EndExecutionTime - $command.StartExecutionTime
 ```
 
-Cette commande compare la date d'exécution du début - la date
-d'exécution de fin.
+Cette commande soustrait la date de début d'exécution à la date de fin. Depuis PowerShell 6.1, la propriété `Duration` fait le calcul toute seule : `(Get-History -Count 1).Duration`. Get-History ne marche qu'en session interactive : dans un script, l'historique est vide.
+
+Le plus simple reste la cmdlet native `Measure-Command`, qui renvoie directement un `TimeSpan` :
+
+```powershell
+Measure-Command { .\do_something.ps1 }
+```
+
+La sortie de la commande mesurée est avalée, on ne récupère que la durée.
 
 Il existe également une function pour ceci
 
@@ -29,8 +36,8 @@ function time($block) {
 }
 ```
 
-Et voici comment l'exéctuer :
+Et voici comment l'exécuter :
 
 ```powershell
-time { .'some_command }
+time { .\some_command.ps1 }
 ```
