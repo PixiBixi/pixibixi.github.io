@@ -3,6 +3,9 @@ description: Installer et configurer un serveur VPN OpenVPN sous Linux - génér
 tags:
   - OpenVPN
   - VPN
+tested_with:
+  - "OpenVPN 2.6 (Debian 12)"
+  - "easy-rsa 3.1"
 ---
 
 # Installer et configurer son VPN OpenVPN
@@ -36,7 +39,7 @@ cd /etc/openvpn/easy-rsa
 ./easyrsa build-ca nopass
 ./easyrsa gen-dh
 ./easyrsa build-server-full server nopass
-openvpn --genkey secret /etc/openvpn/ta.key
+openvpn --genkey tls-crypt /etc/openvpn/ta.key
 ```
 
 Les fichiers générés :
@@ -47,7 +50,7 @@ Les fichiers générés :
 | `pki/issued/server.crt` | Certificat serveur |
 | `pki/private/server.key` | Clé privée serveur |
 | `pki/dh.pem` | Diffie-Hellman |
-| `/etc/openvpn/ta.key` | Clé TLS (HMAC) |
+| `/etc/openvpn/ta.key` | Clé `tls-crypt` (chiffre et authentifie le canal de contrôle) |
 
 ## Configuration serveur
 
@@ -88,7 +91,7 @@ verb 3
 ```
 
 !!! warning "comp-lzo"
-    `comp-lzo` est déprécié depuis OpenVPN 2.5 - ne pas l'utiliser. Ça trigger des warnings et ça expose à des attaques de type VORACLE.
+    `comp-lzo` est déprécié depuis OpenVPN 2.4 (remplacé par `compress`), et depuis 2.6 `allow-compression` vaut `no` par défaut : on ne met aucune directive de compression. Ça trigger des warnings et ça expose à des attaques de type VORACLE.
 
 ## Ports firewall
 
@@ -115,11 +118,11 @@ Et on active le NAT via iptables pour que le trafic des clients VPN sorte avec l
 iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
 ```
 
-Adapter `eth0` à l'interface de sortie (`ip route get 1.1.1.1` pour la trouver). Par défaut, OpenVPN utilise le réseau `10.8.0.0/24`.
+Adapter `eth0` à l'interface de sortie (`ip route get 1.1.1.1` pour la trouver). Le réseau des clients est celui de la directive `server` (`10.8.0.0/24` dans la config plus haut) : OpenVPN n'a pas de valeur par défaut.
 
 ## Démarrage
 
-Une fois la config en place, on démarre et on active au boot. Le `@server` correspond au nom du fichier de conf - ici `/etc/openvpn/server.conf` :
+Une fois la config en place, on démarre et on active au boot. Le `@server` correspond au nom du fichier de conf, ici `/etc/openvpn/server.conf` (le paquet Debian fournit aussi `openvpn-server@<nom>`, qui lit `/etc/openvpn/server/<nom>.conf`) :
 
 ```bash
 systemctl enable --now openvpn@server
@@ -148,6 +151,7 @@ client
 dev tun
 proto udp
 remote <ip-serveur> 1194
+remote-cert-tls server
 resolv-retry infinite
 nobind
 persist-key
