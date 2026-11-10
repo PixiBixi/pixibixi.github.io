@@ -1,5 +1,5 @@
 ---
-description: Outils essentiels Terraform - tfswitch, terraform-docs, tflint, tfsec, checkov et Infracost pour le versionning, la sécurité et le coût
+description: Outils essentiels Terraform - tfswitch, terraform-docs, tflint, Trivy, checkov et Infracost pour le versionning, la sécurité et le coût
 tags:
   - Terraform
   - FinOps
@@ -7,21 +7,22 @@ tags:
 
 # Tools Terraform indispensables
 
-Terraform est un outil fabuleux permettant de faire du IaaS
-(Infrastructure As A Service).
+Terraform est un outil fabuleux permettant de faire de l'IaC
+(Infrastructure as Code).
 
 Cependant, nous pouvons encore améliorer son expérience avec quelques
 outils :
 
 * [`tfswitch`](https://github.com/warrensbox/terraform-switcher/) sélectionne
-    automatiquement la bonne version de Terraform
+    automatiquement la bonne version de Terraform (ou d'OpenTofu avec `--product opentofu`)
 * [`terraform-docs`](https://github.com/terraform-docs/terraform-docs) génère la
     documentation d'un module, à agrémenter évidemment
 * [`tflint`](https://github.com/terraform-linters/tflint) attrape ce que
     `terraform validate` laisse passer : types d'instance qui n'existent pas, attributs
     dépréciés, conventions de nommage
-* [`tfsec`](https://github.com/aquasecurity/tfsec) vérifie les bonnes pratiques de
-    sécurité, avec possibilité de règles custom
+* [`trivy`](https://github.com/aquasecurity/trivy) vérifie les bonnes pratiques de
+    sécurité (`trivy config`), avec possibilité de règles custom en Rego. Il remplace
+    `tfsec`, qui ne sort plus de release depuis 2025 : Aqua a basculé son moteur dans Trivy
 * [`checkov`](https://github.com/bridgecrewio/checkov) est un équivalent générique, il
     scanne aussi les YAML K8s, les Dockerfile et les templates CloudFormation
 * [`infracost`](https://github.com/infracost/infracost) chiffre le coût mensuel d'un
@@ -37,14 +38,17 @@ tfswitch
 terraform-docs markdown table --output-file README.md .
 
 tflint --init && tflint --recursive
-tfsec .
+trivy config .
 checkov -d . --framework terraform
 ```
 
 ## Chiffrer un plan avec Infracost
 
 C'est le seul du lot qui répond à « combien ça coûte » plutôt qu'à « est-ce que c'est
-valide ». On part d'un plan au format JSON.
+valide ». On part d'un plan au format JSON. Les commandes ci-dessous sont celles du CLI
+historique (v0.10, dépôt `infracost/infracost`) : le nouveau CLI v2 (`infracost/cli`), que
+le README met désormais en avant, scanne le dossier avec `infracost scan` et son `diff`
+compare à un scan précédent, il ne prend plus de `--path plan.json`.
 
 ```bash
 terraform plan -out tfplan.binary
@@ -63,8 +67,10 @@ la facture totale. Branché en commentaire automatique sur une MR, il évite le 
 
 !!! warning "Les ressources à l'usage ne sont pas chiffrées"
     Infracost calcule le coût des ressources provisionnées. Tout ce qui se facture à la
-    consommation (egress réseau, requêtes S3, scans BigQuery) sort à zéro sauf à fournir
-    des estimations d'usage. Le chiffre est un plancher, pas la facture.
+    consommation (egress réseau, requêtes S3, scans BigQuery) sort avec un prix unitaire
+    (`Monthly cost depends on usage`) mais reste hors du total, sauf à fournir des
+    estimations dans un fichier d'usage (`--usage-file`). Le chiffre est un plancher, pas
+    la facture.
 
 ## Voir aussi
 
