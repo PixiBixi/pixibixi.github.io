@@ -3,6 +3,8 @@ description: Administrer un cluster Kafka avec kafkactl - topics, partitions, r�
 tags:
   - Kafka
   - kafkactl
+tested_with:
+  - "kafkactl 5.21"
 ---
 
 # Kafkactl, un outil magique
@@ -11,15 +13,12 @@ Manageant quelques clusters Kafka, je devais effectuer quelques opérations de m
 
 Si vous êtes familiers avec l'univers Kafka, vous savez à quel point ces opérations sont chiantes.
 
-Il y'a peu, j'ai découvert un outil changeant ma manière de travailler avec Kafka, [kafkactl](https://github.com/deviceinsight/kafkactl). Son nom n'est pas sans vous rappeler le binary `kubectl` et c'est normal. Tout comme ce dernier, il est écrit en go et possède les même notions (Utilisation de contexts, keyword get/describe)...
+Il y'a peu, j'ai découvert un outil changeant ma manière de travailler avec Kafka, [kafkactl](https://github.com/deviceinsight/kafkactl). Son nom n'est pas sans vous rappeler le binary `kubectl` et c'est normal. Tout comme ce dernier, il est écrit en Go et possède les même notions (Utilisation de contexts, keyword get/describe)...
 
-Sous mac, l'installer est d'une simplicité enfantine
+Sous mac, l'installer est d'une simplicité enfantine, la formule est dans Homebrew core (plus besoin du tap `deviceinsight/packages`) :
 
 ```bash
-# install tap repostory once
-brew tap deviceinsight/packages
-# install kafkactl
-brew install deviceinsight/packages/kafkactl
+brew install kafkactl
 ```
 
 Et son utilisation l'est tout autant. Tout se passe dans un seul fichier de configuration :
@@ -46,7 +45,7 @@ Beaucoup d'autres paramètres sont disponibles, n'hésitez pas à consulter la d
 Et tout comme kubectl, il ne faut pas oublier de source l'autocompletion, à ajouter dans ton .zshrc (ou tout autre)
 
 ```bash
-echo "source <(kafkactl completion zsh)" >> .zshrc"
+echo 'source <(kafkactl completion zsh)' >> ~/.zshrc
 ```
 
 L'utilisation des contextes est comme sur Kube
@@ -75,10 +74,15 @@ Afin de voir les futures modifications (--validate-only). Si elles vous convienn
 kafkactl get consumer-groups
 ```
 
-Et pour avoir les détails d'un consumer group
+Et pour avoir les détails d'un consumer group : d'abord les offsets et le lag par partition, puis les membres et leurs partitions assignées (`--print-topics=false` ou `--print-members=false` pour n'afficher qu'une des deux tables, `--only-with-lag` pour ne garder que les partitions en retard). La colonne `GROUP_INSTANCE_ID` n'apparaît que si le broker la supporte :
 
 ```bash
 kafkactl describe consumer-group "my-consumer-group"
+TOPIC      PARTITION     NEWEST_OFFSET     OLDEST_OFFSET     CONSUMER_OFFSET     LEAD     LAG
+topica     0             1530211           1210004           1530198             320194   13
+topica     1             1529876           1209871           1529876             320005   0
+...
+
 CLIENT_HOST       CLIENT_ID     TOPIC  ASSIGNED_PARTITIONS
 /1.2.3.21     rdkafka       topica     44,45,46,47,48,49,50,51,52,53
 /1.2.3.21     rdkafka       topicb     44,45,46,47,48,49,50,51,52,53
