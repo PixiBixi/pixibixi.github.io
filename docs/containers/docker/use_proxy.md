@@ -24,10 +24,12 @@ Depuis Docker Engine 23.0, ça se déclare directement dans `daemon.json`, ce qu
   "proxies": {
     "http-proxy": "http://proxy.example.com:3128",
     "https-proxy": "http://proxy.example.com:3128",
-    "no-proxy": "localhost,127.0.0.0/8,*.internal.example.com,10.0.0.0/8"
+    "no-proxy": "localhost,127.0.0.0/8,.internal.example.com,10.0.0.0/8"
   }
 }
 ```
+
+Puis on redémarre le daemon pour qu'il relise le fichier :
 
 ```bash
 systemctl restart docker
@@ -60,7 +62,7 @@ systemctl show --property=Environment docker
 docker info | grep -i proxy
 ```
 
-Ne pas mettre les deux méthodes en place en même temps : si `daemon.json` et l'unité systemd déclarent chacun un proxy, le daemon refuse de démarrer avec `conflicting proxy settings`.
+Mieux vaut ne pas mettre les deux méthodes en place en même temps : si `daemon.json` et l'unité systemd déclarent chacun un proxy, le daemon démarre quand même, la valeur de `daemon.json` écrase la variable systemd et seul un warning `overriding existing proxy variable with value from configuration` le signale dans `journalctl -u docker`. Si les deux divergent, on débugue un proxy qui n'est pas celui qu'on croit.
 
 ## Le proxy du build et des conteneurs
 
@@ -78,7 +80,7 @@ Le daemon configuré, `docker pull` marche et un `RUN apt update` dans un Docker
 }
 ```
 
-Ce fichier appartient à l'utilisateur qui lance `docker`, donc celui de root n'est pas lu quand on passe par `sudo docker` avec `sudo` qui préserve `$HOME` et inversement. C'est la deuxième cause de « ça marche chez moi ».
+Le client lit `config.json` dans `$HOME/.docker/` (ou `$DOCKER_CONFIG`) de celui qui lance `docker`. Avec `sudo docker`, c'est celui de root si `sudo` réinitialise `$HOME`, celui de l'utilisateur s'il le préserve, selon la conf `sudo` (`env_reset`, `always_set_home`). C'est la deuxième cause de « ça marche chez moi ».
 
 Ponctuellement, on peut faire la même chose en arguments de build, sans rien écrire sur le disque :
 
@@ -100,7 +102,7 @@ Attention à ne pas les déclarer en `ENV` dans le Dockerfile : ils seraient per
 localhost,127.0.0.0/8,10.0.0.0/8,.example.com,registry.internal
 ```
 
-Un `.example.com` avec le point initial couvre les sous-domaines. Un `*.example.com` est accepté par Docker mais pas par toutes les libs Go des outils qu'on met dans les conteneurs, donc autant garder la forme avec le point. Et le registry interne doit y figurer, sinon les pull internes partent vers le proxy et sortent en timeout alors que le registry est à 2 mètres.
+Un `.example.com` avec le point initial couvre les sous-domaines. Un `*.example.com` est compris par Docker et les outils en Go, mais `curl` l'ignore et passe par le proxy, donc autant garder la forme avec le point. Et le registry interne doit y figurer, sinon les pull internes partent vers le proxy et sortent en timeout alors que le registry est à 2 mètres.
 
 ## Vérifier avant d'accuser Docker
 
