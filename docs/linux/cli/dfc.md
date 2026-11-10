@@ -28,33 +28,25 @@ Comme vous pouvez, le voir, le résultat est quasiment identique, mais
 
 ## Installation
 
-### Wheezy
-
-Sous Wheezy, il n'y a rien à faire, vu que le paquet est dans les
-dépots de base, donc on l'installe comme d'habitude :
+dfc est dans les dépôts Debian depuis Wheezy (sauf Jessie, où il était absent). Depuis Buster, c'est la 3.1.1, la dernière version :
 
 ```bash
-apt-get -y install dfc
+apt update && apt install -y dfc
 ```
 
-La version téléchargé est la 2.5.0, à l'heure actuelle, nous sommes à
-la 3.0.5. Cependant, aucun ajout utile ne nécéssite une upgrade, vous
-pouvez donc soit compiler à la main, soit installer depuis les dépots.
 Le *changelog* est disponible
 [ici](https://github.com/Rolinh/dfc/blob/master/CHANGELOG.md)
 
 Puis nous l'utilisons simplement via la commande dfc
 
-### Jessie
+### Compiler depuis les sources
 
-Sous Jessie, cela se complique un peu, nous devons le compiler à la
-main, étant donné qu'aucun paquet n'est disponible dans les sources de
-base.
+Sur une distribution qui ne le package pas, on le compile à la main.
 
-On commence par installer les pré-requis pour compiler **dfc**
+On commence par installer les pré-requis pour compiler **dfc** (`gettext` sert aux traductions, désactivables avec `-DNLS_ENABLED=false` au moment du `cmake`)
 
 ```bash
-apt-get -y install cmake gettext git-core
+apt-get -y install build-essential cmake gettext git
 ```
 
 On télécharge les sources
@@ -75,19 +67,10 @@ On créé un dossier nécéssaire à la compilation
 mkdir build && cd build
 ```
 
-Et enfin, on lance la compilation
+Et enfin, on lance la compilation. Le binaire s'installe dans `/usr/local/bin`, d'où le `sudo` sur `make install`
 
 ```bash
-cmake .. && make && make install
-```
-
-### Stretch et Supérieur
-
-A partir de Debian Stretch, dfc est rentré dans les repositories, il
-n'est donc plus nécessaire de le compiler.
-
-```bash
-apt update && apt install -y dfc
+cmake .. && make && sudo make install
 ```
 
 ## Bonus
