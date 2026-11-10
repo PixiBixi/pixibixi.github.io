@@ -45,9 +45,9 @@ Dans certains cas, il peut être utile d'upgrade son firmware de sa NIC si vous 
 
     Nous voyons ici que notre première NIC a le PSID _MT_0000000248_.
 
-    Après une petite recherche Google, nous pouvons en déduire qu'il s'agit du modele MCX542B-ACA.
+    Après une petite recherche Google (ou dans la table "Firmware Compatible Products" des release notes NVIDIA), nous pouvons en déduire qu'il s'agit du modele MCX542B-ACAN. Le `N` final compte : c'est la référence sous laquelle on trouve le firmware.
 
-3. Via un autre utilitaire fournit par Mellanox, disponible [ici](https://network.nvidia.com/products/adapter-software/firmware-tools/), nous devons trouver le nom "interne" de la NIC.
+3. Via un autre utilitaire fournit par Mellanox, disponible [ici](https://network.nvidia.com/products/adapter-software/firmware-tools/), nous devons trouver le device MST de la NIC (`mt4119` est l'identifiant des ConnectX-5, pas un nom de modèle).
 
     ```bash
     root@hostname:/home/user# mst start
@@ -73,6 +73,20 @@ Dans certains cas, il peut être utile d'upgrade son firmware de sa NIC si vous 
     root@hostname:/home/user# flint -d <device_name> -i <binary image> burn
     ```
 
-    Un petit restart, un recommence la commande mstflint et hop, firmware upgraded :)
+    L'image doit être celle du PSID de la carte (`MT_0000000248` ici). On vérifie le PSID de l'image avant de flasher :
+
+    ```bash
+    root@hostname:/home/user# mstflint -i <binary image> q | grep PSID
+    ```
+
+    flint refuse de toute façon une image d'un autre PSID, sauf avec `-allow_psid_change`, à ne jamais utiliser sans savoir pourquoi.
+
+    Sans installer MFT, mstflint sait aussi flasher directement sur l'adresse PCI :
+
+    ```bash
+    root@hostname:/home/user# mstflint -d 18:00.0 -i <binary image> burn
+    ```
+
+    Le nouveau firmware n'est actif qu'après un reboot, ou un reset de la carte avec `mlxfwreset` (MFT) ou `mstfwreset` (mstflint). Avant ça, `mstflint -d 18:00.0 q` affiche déjà la nouvelle version en `FW Version` et l'ancienne en `FW Version(Running)`. Un petit restart, on recommence la commande mstflint et hop, firmware upgraded :)
 
 </div>
