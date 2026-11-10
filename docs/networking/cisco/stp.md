@@ -11,13 +11,15 @@ Rappel sur les commandes utiles pour le protocole STP
 
 ## Montrer les informations utiles
 
+Les `show` se tapent en mode privilégié (`Switch#`). Depuis le mode config, on les préfixe par `do`.
+
 ### De tous les VLAN
 
-    Switch(config)# show spanning-tree
+    Switch# show spanning-tree
 
 ### D'un VLAN précis
 
-    Switch(config)# show spanning-tree vlan $id
+    Switch# show spanning-tree vlan $id
 
 ## Définition du pont racine
 
@@ -31,21 +33,29 @@ Rappel sur les commandes utiles pour le protocole STP
 
 ## Modes
 
-### STP
+IOS propose 3 modes : `pvst`, `rapid-pvst` et `mst`. Un seul est actif pour tous les VLAN.
 
-    Switch(config)# spanning-tree mode stp
+### PVST+ (STP classique, une instance par VLAN)
 
-### RSTP
+    Switch(config)# spanning-tree mode pvst
+
+### Rapid PVST+ (RSTP, une instance par VLAN)
 
     Switch(config)# spanning-tree mode rapid-pvst
+
+### MST (802.1s, plusieurs VLAN par instance, pour les grands réseaux)
+
+    Switch(config)# spanning-tree mode mst
 
 ## BPDU Guard
 
 ### Partout
 
-    Switch(config-if-range)# spanning-tree bpduguard enable
+En global, BPDU Guard s'applique à tous les ports en PortFast (pas aux autres) :
+
+    Switch(config)# spanning-tree portfast bpduguard default
 
 ### Sur certains interfaces
 
-    Switch(config)# interface range fa0/1–10
+    Switch(config)# interface range fa0/1 - 10
     Switch(config-if-range)# spanning-tree bpduguard enable
