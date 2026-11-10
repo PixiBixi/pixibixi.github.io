@@ -22,7 +22,7 @@ argo-cd:
         p, mysuperSA, applications, get, */*, allow
 ```
 
-Ici on définit un compte `mysuperSA` avec l'autorisation `get` sur toutes les applications de tous les projets ArgoCD (`*/*`).
+Ici on définit un compte `mysuperSA` avec l'autorisation `get` sur toutes les applications de tous les projets ArgoCD : pour `applications`, l'objet est `<projet>/<app>` (`<projet>/<namespace>/<app>` avec les applications in any namespace), et `*` matche aussi les `/`, donc `*/*` couvre les deux formats.
 
 La syntaxe des politiques ArgoCD : `p, <role/user/group>, <resource>, <action>, <object>, <effect>` - voir la [documentation RBAC ArgoCD](https://argo-cd.readthedocs.io/en/stable/operator-manual/rbac/).
 
@@ -34,10 +34,10 @@ NAME                 ENABLED  CAPABILITIES
 mysuperSA            true     apiKey
 ```
 
-On génère le token associé :
+On génère le token associé. Par défaut il n'expire jamais, on lui donne plutôt une durée de vie avec `--expires-in` (unités `s`, `m`, `h`, `d`) :
 
 ```bash
-argocd account generate-token --account mysuperSA
+argocd account generate-token --account mysuperSA --expires-in 30d
 ```
 
 ## Voir aussi
