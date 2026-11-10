@@ -17,20 +17,30 @@ Ces étapes sont disponibles via le binaire `sconfig`
 
 ## Renommage du serveur
 
+Le paramètre est `-NewName`, et le nouveau nom n'est effectif qu'après un redémarrage :
+
 ```powershell
-Rename-Computer -Name DHCP1
+Rename-Computer -NewName DHCP1 -Restart
 ```
 
 ## Ajout au domaine
 
+`-Credential` est obligatoire pour une jonction à un domaine : sans lui, PowerShell le demande en interactif. On passe un compte autorisé à joindre des machines au domaine. `Add-Computer` n'existe que dans Windows PowerShell 5.1, pas dans PowerShell 7.
+
 * **OU par défaut**
 
 ```powershell
-Add-Computer -DomainName "Domain01" -Restart
+Add-Computer -DomainName "Domain01" -Credential "Domain01\Admin01" -Restart
 ```
 
 * **OU Prédéfinie**
 
 ```powershell
-Add-Computer -DomainName "Domain02" -OUPath "OU=testOU,DC=domain,DC=Domain,DC=com" -Restart
+Add-Computer -DomainName "Domain02" -OUPath "OU=testOU,DC=domain,DC=Domain,DC=com" -Credential "Domain02\Admin01" -Restart
+```
+
+Pour renommer et joindre le domaine en un seul redémarrage, on saute `Rename-Computer` et on passe `-NewName` à `Add-Computer` :
+
+```powershell
+Add-Computer -DomainName "Domain01" -NewName DHCP1 -Credential "Domain01\Admin01" -Restart
 ```
