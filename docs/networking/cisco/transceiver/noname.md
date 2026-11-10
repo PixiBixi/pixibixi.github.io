@@ -7,10 +7,9 @@ tags:
 
 # Autoriser les transceiver no-name
 
-Pour éviter de payer une fortune le transceiver 1XG LC LR, il est
-possible d'autoriser des transceivers dit « no-name ». Par exemple, un
-simple transceiver 1XG LC LR peut couter dans les 300e alors que le
-no-name (qui fera exactement le même travaille) ne coutera que 25e.
+Pour éviter de payer une fortune un transceiver Cisco, il est possible d'autoriser des transceivers dits « no-name ». Par exemple, un simple SFP 1000BASE-LX/LH (1G, monomode, LC, GLC-LH-SMD chez Cisco) pouvait coûter dans les 300e quand j'ai écrit ces lignes, alors que l'équivalent no-name ne coûtait que 25e. Attention à prendre le bon type : en 10G, l'équivalent monomode est un SFP+ 10GBASE-LR.
+
+La commande est cachée et non supportée : IOS affiche un avertissement à la saisie, et le TAC Cisco peut refuser le support sur un problème qu'il impute à l'optique tierce. Un no-name bas de gamme peut aussi se montrer moins fiable (DOM absent ou faux, lien instable), on surveille les erreurs sur l'interface après la pose.
 
 Voici la commande magique à rentrer (en configuration générale)
 
@@ -18,7 +17,7 @@ Voici la commande magique à rentrer (en configuration générale)
     service unsupported-transceiver
 ```
 
-Et voici les logs que vous obtiendrez :
+Et voici les logs qu'on obtient sur un Catalyst 4500 : le switch signale l'optique non supportée et l'échec du contrôle d'intégrité, puis le port monte quand même.
 
 ```cisco
 Feb 18 12:40:49 sw4-occ4-bre01 warning/821: 000810: Feb 18 12:40:49: %GBIC_SECURITY-4-UNSUPPORTED_GBIC_INSERTED: Unsupported transceiver inserted in port Gi1/48
