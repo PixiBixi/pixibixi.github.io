@@ -10,10 +10,10 @@ Liens d'optimisations vers pas mal de logiciels
 
 ## nginx
 
-- [Optimiser les performances de nginx (Buzut)](https://buzut.fr/optimiser-nginx/)
-- [How to Configure nginx for Optimized Performance (Linode)](https://www.linode.com/docs/websites/nginx/configure-nginx-for-optimized-performance)
-- [Un tutoriel de la mise en cache](https://www.mnot.net/cache_docs/)
-- [Servers for Hackers : nginx Caching](https://serversforhackers.com/nginx-caching)
+- [Optimiser les performances de nginx (Buzut)](https://buzut.net/optimiser-nginx/)
+- [Getting Started with nginx, Part 2: Advanced Configuration (Linode)](https://www.linode.com/docs/guides/getting-started-with-nginx-part-2-advanced-configuration/)
+- [Un tutoriel de la mise en cache](https://mnot.net/cache_docs/)
+- [Servers for Hackers : nginx Caching](https://serversforhackers.com/c/nginx-caching)
 
 ## Optimisation HTML
 
@@ -25,7 +25,7 @@ Liens d'optimisations vers pas mal de logiciels
 
 ## Optimisation SQL
 
-- [Optimiser les performances de MySQL](https://buzut.fr/optimiser-performances-de-mysql/)
+- [Optimiser les performances de MySQL (Buzut)](https://buzut.net/optimiser-performances-de-mysql/)
 
 ## Linux
 
