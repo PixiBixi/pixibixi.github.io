@@ -10,15 +10,15 @@ tags:
 Il peut être utile de déplacer un processus dans un tmux pour une
 opération qui peut être plus longue que prévue. Techniquement, c'est
 plutôt simple. **nelhage** a écrit un super outil permettant de
-rattacher un processus a un nouveau TTY,
+rattacher un processus à un nouveau TTY,
 [reptyr](https://github.com/nelhage/reptyr)
 
-Premièrement, il faut passer un processus en background. Une fois que
-c'est effectué, il faut dissocier le processus du TTY.
+Premièrement, on suspend le processus avec `CTRL-Z` puis on le relance en background avec `bg`, sinon il reste stoppé. On récupère son PID avec `jobs -l`, puis on le dissocie du shell avec `disown`.
 
 ```bash
+└─$ bg
 └─$ jobs -l
-[1]+ 25644 Signal darrêt         php
+[1]+ 25644 Signal d'arrêt        php
 └─$ disown 25644
 -bash: avertissement :suppression de la tâche stoppée 1 avec le groupe de processus 25644
 └─$ jobs -l
@@ -32,3 +32,11 @@ nouveau TTY avec reptyr
 ```
 
 Et voilà, on a désormais le processus dans un tmux !
+
+Sur Ubuntu, `ptrace` est restreint par défaut (Yama) et reptyr échoue à s'attacher. On le débloque temporairement en root :
+
+```bash
+echo 0 > /proc/sys/kernel/yama/ptrace_scope
+```
+
+Pour le rendre permanent, ça se passe dans `/etc/sysctl.d/10-ptrace.conf`.
