@@ -11,3 +11,10 @@ pouvons installer tous les programmes du quotidien.
 
 Pas de blabla inutile, si vous voulez découvrir ninite, c'est
 [ici](https://ninite.com/) que ça se passe
+
+Pour un truc scriptable, winget (fourni avec Windows 11) fait la même chose en ligne de commande. On exporte la liste des logiciels d'un poste déjà installé, puis on la rejoue sur le nouveau :
+
+```powershell
+winget export -o apps.json
+winget import -i apps.json
+```
