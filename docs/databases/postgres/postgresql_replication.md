@@ -23,10 +23,10 @@ Tout d'abord, nous devons créer un utilisateur dédié pour exécuter la répli
 psql -c "CREATE USER replicator WITH REPLICATION ENCRYPTED PASSWORD 'Iej7choobeinohJa8shieNg4iev5dien'"
 ```
 
-Ensuite, nous devons configurer `pg_hba.conf` pour autoriser la connexion à cet utilisateur (`172.29.49.11` est notre IP de secours) :
+Ensuite, nous devons configurer `pg_hba.conf` sur le primary pour autoriser la connexion à cet utilisateur depuis le standby (`172.29.49.11` est l'IP du standby, `172.19.49.11` celle du primary). On met `scram-sha-256`, le défaut de `password_encryption` depuis PostgreSQL 14 (en 13 le défaut est encore `md5` : le mot de passe doit avoir été créé en SCRAM, sinon on garde `md5`) :
 
 ```psql
-host  replication          replicator         172.29.49.11/32         md5
+host  replication          replicator         172.29.49.11/32         scram-sha-256
 ```
 
 Puis on reload la configuration
@@ -39,13 +39,13 @@ psql -c "select pg_reload_conf()"
 
 C'est la partie délicate, quelques paramètres à adapter en fonction de votre workload :
 
-* **max_wal_senders** : Nombre de processus d'expéditeur WAL qui peuvent être démarrés sur le maître. Un pour chaque réplique. pg_basebackup peut utiliser un ou deux WAL senders. `max_wal_senders` est généralement fixé par défaut à 10 sur toutes les distributions. Ainsi, ce paramètre n'a pas besoin d'être modifié, sauf si nous configurons plus de 5 standby pour un maître.
+* **max_wal_senders** : Nombre de processus d'expéditeur WAL qui peuvent être démarrés sur le maître. Un pour chaque réplique. pg_basebackup peut utiliser un ou deux WAL senders. `max_wal_senders` vaut 10 par défaut depuis PostgreSQL 10. Ainsi, ce paramètre n'a pas besoin d'être modifié, sauf si on dépasse 10 connexions de réplication simultanées sur un maître (standby, `pg_basebackup` en cours et connexions de réplication logique comprises).
 
 ```bash
 postgres=# ALTER SYSTEM SET max_wal_senders TO '10';
 ```
 
-* **listen_addresses** : Ce paramètre détermine les interfaces IP par lesquelles les connexions sont autorisées. Par défaut, il s'agit de localhost. Il peut être défini sur l'interface IP publique ou privée ou par tout en utilisant (\*).
+* **listen_addresses** : Ce paramètre détermine les interfaces IP par lesquelles les connexions sont autorisées. Par défaut, il s'agit de localhost. Il peut être défini sur l'interface IP publique ou privée ou par tout en utilisant (\*). Avec `*`, PostgreSQL écoute sur toutes les interfaces : le filtrage repose alors sur `pg_hba.conf` et le firewall.
 
 ```bash
 postgres=# ALTER SYSTEM SET listen_addresses TO '*';
@@ -72,18 +72,22 @@ postgres=# ALTER SYSTEM SET archive_command TO 'cp %p /archives/%f';
 postgres=# ALTER SYSTEM SET wal_keep_size TO '1GB';
 ```
 
-→ Comme certaines de nos bases de données sont énormes, n'hésitez pas à mettre des valeurs très élevées (comme 300GB).
-
-Une fois que toutes ces valeurs sont correctement éditées, recharger une autre fois.
+→ Le défaut est 0, et cet espace est gardé en permanence dans `pg_wal`. Avec un slot de réplication (créé plus bas par `pg_basebackup`), c'est le slot qui retient les WAL dont le standby a besoin : inutile de gonfler `wal_keep_size` à des centaines de Go. Par contre un slot sans plafond peut remplir le disque du primary si le standby tombe, on le borne avec `max_slot_wal_keep_size` (PostgreSQL 13+, `-1` par défaut = illimité) :
 
 ```bash
-psql -c "select pg_reload_conf()"
+postgres=# ALTER SYSTEM SET max_slot_wal_keep_size TO '300GB';
 ```
 
-Et enfin, **sur le noeud standby**, nous exécutons une sauvegarde de base pour activer la réplication.
+Une fois que toutes ces valeurs sont correctement éditées, il faut **redémarrer** PostgreSQL : `max_wal_senders`, `listen_addresses` et `archive_mode` ne sont lus qu'au démarrage, un `pg_reload_conf()` ne les applique pas (ils apparaissent avec `pending_restart = t` dans `pg_settings`). Seuls `archive_command`, `wal_keep_size` et `max_slot_wal_keep_size` passent avec un reload.
 
 ```bash
-/usr/lib/postgresql/13/bin/ --create-slot --slot=data_slot_slave1 --host=172.19.49.11 --user=replicator --write-recovery-conf --wal-method=stream --pgdata=/data/pgsql/13/data/ --progress --checkpoint=fast"
+systemctl restart postgresql
+```
+
+Et enfin, **sur le noeud standby** (PostgreSQL arrêté, data directory vide), nous exécutons une sauvegarde de base pour activer la réplication. `--write-recovery-conf` crée `standby.signal` et écrit `primary_conninfo` et `primary_slot_name` dans `postgresql.auto.conf`, il n'y a plus de `recovery.conf` depuis PostgreSQL 12.
+
+```bash
+/usr/lib/postgresql/13/bin/pg_basebackup --create-slot --slot=data_slot_s1 --host=172.19.49.11 --username=replicator --write-recovery-conf --wal-method=stream --pgdata=/data/pgsql/13/data/ --progress --checkpoint=fast
 ```
 
 ### Deletion
@@ -91,10 +95,10 @@ Et enfin, **sur le noeud standby**, nous exécutons une sauvegarde de base pour 
 C'est la seule tâche facile dans PostgreSQL, nous devons seulement supprimer le slot de réplication.
 
 ```bash
-postgres=# SELECT pg_drop_replication_slot(slot_name) FROM pg_replication_slots WHERE slot_name = 'data_slot_slave1';
+postgres=# SELECT pg_drop_replication_slot(slot_name) FROM pg_replication_slots WHERE slot_name = 'data_slot_s1';
 ```
 
-C'est une commande personnalisée, elle n'échoue pas dans le cas où le slot n'existe pas. C'est utile si vous le scriptez !
+Grâce au `SELECT ... FROM pg_replication_slots WHERE`, elle n'échoue pas dans le cas où le slot n'existe pas : aucune ligne, donc la fonction n'est jamais appelée. Un `pg_drop_replication_slot('data_slot_s1')` seul renvoie `replication slot "data_slot_s1" does not exist`. C'est utile si vous le scriptez ! Le slot doit être inactif (standby arrêté), sinon on prend `replication slot "..." is active for PID ...`.
 
 ### Troubleshooting
 
