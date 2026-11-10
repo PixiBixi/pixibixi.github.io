@@ -63,13 +63,17 @@ On regarde le fichier `Analyze/blob-shas-and-paths.txt` pour voir ce qui nous pr
 
 Les 3 premiers fichiers occupent donc une grande majorité de notre repository, sans que ceux-ci ne nous soit utiles... Nous pouvons donc économiser près de 99% d'espace.
 
-Pour les supprimer, deux méthodes sont possibles.
+Pour les supprimer, deux méthodes sont possibles. Dans les 2 cas on réécrit tout l'historique : une erreur de filtre est irrécupérable sans copie, donc on travaille sur un clone dédié et on garde l'original de côté.
 
 ## Méthode moderne : `git filter-repo` (recommandée)
 
-`git filter-repo` est la méthode recommandée depuis Git 2.24+. Elle est bien plus rapide que `filter-branch` et réécrit l'historique proprement en une seule commande.
+`git filter-repo` n'est pas livré avec Git, c'est un script Python à installer à part (`brew install git-filter-repo`, `apt install git-filter-repo`). C'est la doc de `filter-branch` qui le recommande depuis Git 2.24. Il est bien plus rapide que `filter-branch` et réécrit l'historique proprement en une seule commande.
+
+Il refuse de tourner sur un repo qui n'est pas un clone frais (sauf `--force`), on part donc d'un clone dédié, qui sert aussi de sauvegarde :
 
 ```bash
+root~ git clone --no-local myscripts myscripts-clean
+root~ cd myscripts-clean
 root~ git filter-repo --path my/path1/rescue.gz --invert-paths
 ```
 
@@ -83,15 +87,30 @@ root~ git filter-repo \
   --invert-paths
 ```
 
+On peut aussi ne lister aucun chemin et virer tous les blobs au-dessus d'une taille :
+
+```bash
+root~ git filter-repo --strip-blobs-bigger-than 10M
+```
+
+`filter-repo` expire le reflog et repack lui-même à la fin, pas besoin de `git gc` derrière.
+
 !!! warning
-    `git filter-repo` supprime automatiquement le remote `origin`. Il faut le ré-ajouter avant de force-pusher.
+    `git filter-repo` supprime automatiquement le remote `origin`. Il faut le ré-ajouter avant de force-pusher. Chaque clone existant (collègues, CI) garde les gros blobs et peut les repousser : tout le monde doit reclone après le push.
+
+Un `git push --force origin main` ne réécrit que `main` : les autres branches et les tags garderaient les gros fichiers sur le remote. On pousse donc tout :
 
 ```bash
 root~ git remote add origin <url>
-root~ git push --force origin main
+root~ git push --force --all origin
+root~ git push --force --tags origin
 ```
 
+Côté GitHub ou GitLab, les blobs restent atteignables via les refs de PR/MR et les caches tant que la forge n'a pas fait son propre gc.
+
 ## Méthode historique : `git filter-branch` (dépréciée)
+
+`filter-branch` affiche à chaque lancement un avertissement qui renvoie vers `filter-repo` et attend 10 secondes (`FILTER_BRANCH_SQUELCH_WARNING=1` pour le masquer). On le lance une fois par fichier, ou on liste les 3 chemins dans le `git rm` :
 
 ```bash
 ~root git:(master) git filter-branch --force --index-filter \
@@ -109,14 +128,15 @@ WARNING: Ref 'refs/remotes/origin/master' is unchanged
 Ref 'refs/stash' was rewritten
 ```
 
-Une fois que nous avons supprimé les différents fichiers, on va réécrire les logs afin de supprimer toute occurence de ces fichiers qui ne sont plus dans aucun commit
+Une fois que nous avons supprimé les différents fichiers, on va réécrire les logs afin de supprimer toute occurence de ces fichiers qui ne sont plus dans aucun commit. `refs/original` et le reflog sont la seule sauvegarde locale de l'historique d'origine : on vérifie le résultat (`git log`, le script de listing plus haut) et on garde une copie du repo (`cp -a myscripts myscripts.bak`) avant de les supprimer.
 
 ```bash
 root~ rm -rf .git/refs/original/
 git reflog expire --expire=now --all
 git gc --prune=now
-git gc --aggressive --prune=now
 ```
+
+`git gc --aggressive` n'apporte rien ici : la doc Git le déconseille sans benchmark, il prend beaucoup plus de temps pour un gain incertain. Le push suit la même règle que plus haut (`--force --all` puis `--tags`, et tout le monde reclone).
 
 Une fois cette dernière étape faites... tadam
 
