@@ -49,7 +49,7 @@ lefthook install
 lefthook run pre-commit --all-files
 ```
 
-On désinstalle pre-commit dans le même commit que l'ajout de `lefthook.yml` (`pre-commit uninstall`, suppression du `.pre-commit-config.yaml`). Laisser les 2 outils branchés sur le même hook git ferait tourner chaque contrôle 2 fois. Si `core.hooksPath` est défini, `lefthook install` s'arrête avec une erreur tant qu'on ne passe pas `--force` ou `--reset-hooks-path`.
+On désinstalle pre-commit dans le même commit que l'ajout de `lefthook.yml` (`pre-commit uninstall`, suppression du `.pre-commit-config.yaml`) et avant `lefthook install`. Sinon Lefthook renomme le hook existant en `.git/hooks/pre-commit.old` sans l'exécuter, mais un `lefthook uninstall` le restaure et réactive pre-commit. Si `core.hooksPath` est défini, `lefthook install` s'arrête avec une erreur tant qu'on ne passe pas `--force` ou `--reset-hooks-path`.
 
 ## Partager une config avec remotes
 
@@ -66,12 +66,12 @@ remotes:
 
 Quelques comportements, tous dans la [doc de `remotes`](https://lefthook.dev/configuration/remotes.html) et le code de `internal/command/install.go` :
 
-- le clone vit dans `.git/info/lefthook-remotes/<repo>-<ref>` et un remote qui n'est plus référencé est supprimé de ce dossier
+- le clone vit dans `.git/info/lefthook-remotes/<repo>-<ref>` (juste `<repo>` sans `ref`, les `/` du `ref` deviennent `-` et ses `-` sont doublés) et un remote qui n'est plus référencé est supprimé de ce dossier
 - `git_url` est accessible avec les droits de la machine qui exécute Lefthook, donc un repo privé demande une clé SSH ou un token sur chaque poste et chaque runner
 - `configs` vaut `[lefthook.yml]` par défaut avec des chemins relatifs à la racine du remote
 - si le fetch échoue, Lefthook ne s'arrête pas : il avertit, puis réutilise un clone existant du même repo (parfois celui d'un autre `ref`, le message le nomme) ou ignore le remote s'il n'y en a aucun
 
-L'ordre de priorité compte autant que le partage. Selon la doc de `extends`, `remotes` écrase `lefthook.yml` et `lefthook-local.yml` écrase tout. Une commande du repo qui porte le même nom qu'une commande du remote est donc remplacée par celle du remote. C'est ce qu'on veut pour imposer un socle. C'est aussi ce qui rend le remote sensible.
+L'ordre de priorité compte autant que le partage. Selon la doc de `extends`, `remotes` écrase `lefthook.yml` et `lefthook-local.yml` écrase tout. Une commande du repo qui porte le même nom qu'une commande du remote est donc fusionnée avec elle, champ par champ : le remote écrase les champs qu'il définit, mais un `glob`, `exclude` ou `skip` défini côté repo survit et peut restreindre ou désactiver le contrôle du socle. Le remote impose donc la commande mais pas son périmètre : la revue d'un `lefthook.yml` regarde aussi ces champs. Le remote reste sensible pour autant, ce qu'il définit s'exécute sur tous les postes.
 
 Pour que les jobs d'un remote restent lisibles, on les garde indépendants les uns des autres, comme le recommande la doc de `remotes`.
 
@@ -84,9 +84,9 @@ La synchronisation suit ces règles, d'après `shouldRefetch` :
 - remote jamais cloné : fetch systématique, donc un runner CI sur un checkout neuf prend toujours le dernier état de la branche
 - `refetch: true` ou `refetch_frequency: always` : fetch à chaque exécution
 - `refetch_frequency: 24h` : fetch quand le dernier est plus vieux que 24h
-- rien de configuré : plus de fetch après le premier clone, chaque poste garde la version qu'il avait au premier `lefthook install`
+- rien de configuré : plus de fetch après le premier clone, chaque poste garde la version qu'il avait à son dernier `lefthook install` (sans `ref`, la première exécution refetch une fois, le clone ne laissant pas de `FETCH_HEAD`)
 
-La doc de `refetch_frequency` recommande d'ailleurs un refetch périodique pour les références mutables, y compris les remotes sans `ref`. C'est confortable pour un poste de dev et l'inverse de ce qu'on veut côté supply chain : un commit malveillant (ou une simple régression) poussé sur la branche `main` du repo partagé atteint tous les postes en 24h et toutes les CI au pipeline suivant. Le contenu est du `run:` exécuté en shell sur chaque commit.
+La doc de `refetch_frequency` recommande d'ailleurs un refetch périodique pour les références mutables, y compris les remotes sans `ref`. C'est confortable pour un poste de dev et l'inverse de ce qu'on veut côté supply chain : un commit malveillant (ou une simple régression) poussé sur la branche `main` du repo partagé atteint tous les postes en 24h avec `refetch_frequency: 24h` (jamais sans, jusqu'au prochain `lefthook install`) et toutes les CI sur checkout neuf au pipeline suivant. Le contenu est du `run:` exécuté en shell sur chaque commit.
 
 Quand la config fait tourner des commandes arbitraires avec les droits du développeur, un remote sur branche mutable donne à quiconque peut pousser sur ce repo un accès d'exécution sur toute la flotte. La parade est la même que pour une image ou une action CI : épingler une version immuable.
 
@@ -120,7 +120,7 @@ lefthook:
 
 Quelques points qui font la différence :
 
-- le runner clone le remote à chaque job, il lui faut donc l'accès au repo partagé (deploy token ou clé de déploiement), sinon Lefthook avertit puis continue sans le remote et le job passe vert sans rien vérifier
+- le runner clone le remote à chaque job sur un checkout neuf (un répertoire de build conservé garde un remote périmé sans `refetch: true`), il lui faut donc l'accès au repo partagé (deploy token ou clé de déploiement), sinon Lefthook avertit puis continue sans le remote et le job passe vert sans rien vérifier
 - les outils appelés (`gitleaks`, `yamllint`) doivent être dans l'image du job, aux mêmes versions que sur les postes, sinon le local et la CI divergent
 - [`min_version`](https://lefthook.dev/configuration/min_version.html) refuse un binaire trop ancien pour les options utilisées
 - avec `stage_fixed: true`, un formateur modifie les fichiers au commit sans bruit. En CI, [`fail_on_changes: ci`](https://lefthook.dev/configuration/fail_on_changes.html) fait échouer le job (quand la variable `CI` est définie, ce que fait GitLab CI) si un hook a modifié un fichier suivi. L'auto-fix local reste ainsi confortable et la CI stricte
