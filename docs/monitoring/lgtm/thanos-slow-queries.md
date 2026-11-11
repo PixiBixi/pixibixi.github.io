@@ -39,6 +39,7 @@ Le log est émis une fois la réponse terminée, y compris quand la requête éc
 - `trace_id` : lu dans le header de réponse `X-Thanos-Trace-Id`, `-` s'il est absent. Le header porte l'ID même quand la trace n'est pas échantillonnée, l'ID ne garantit donc pas que la trace existe dans Tempo
 - `param_query`, `param_start`, `param_end`, `param_step` : tous les paramètres de la requête, préfixés par `param_`
 - `query_range_hours` et `query_range_human` : l'étendue demandée, quand `start` et `end` sont présents
+- `peak_samples` et `total_samples_loaded` : en plus, avec `--query-frontend.query-stats-enabled`
 
 Les 2 headers `X-Dashboard-Uid` et `X-Panel-Id` sont ajoutés par Grafana aux requêtes qu'il envoie à ses datasources ([middleware de tracing du backend](https://github.com/grafana/grafana/blob/main/pkg/services/pluginsintegration/clientmiddleware/tracing_header_middleware.go)). Rien à activer côté Thanos, mais un proxy ou un ingress placé entre Grafana et le query frontend ne doit pas les retirer. `X-Grafana-User` est différent : Grafana ne l'envoie que si `send_user_header = true` dans la section `[dataproxy]`, désactivé par défaut.
 
@@ -207,7 +208,7 @@ Sur le chemin d'une requête, les spans qui comptent sont :
 - `querier_select` : la sélection de séries côté querier, qui contient le fan-out vers les store endpoints
 - `store_query_gate_ismyturn` : l'attente de la gate de la store gateway. Un span long ici signale une saturation, pas un bucket lent. Le traitement relève de [la concurrence de lecture](thanos-query-concurrency.md)
 - `bucket_store_preload_all` : le téléchargement des postings et des chunks depuis le cache ou le bucket
-- `bucket_store_block_series` : le travail par block (span retiré de la branche principale de Thanos après la v0.42.4, donc absent des versions suivantes). Beaucoup de ces spans en parallèle indiquent une requête qui touche beaucoup de blocks, donc un timerange large ou un shard mal découpé ([un shard par timerange](thanos.md#un-shard-par-timerange))
+- `bucket_store_block_series` : le travail par block (span retiré de la branche principale de Thanos, pas encore dans une release : la v0.42.5 l'émet encore). Beaucoup de ces spans en parallèle indiquent une requête qui touche beaucoup de blocks, donc un timerange large ou un shard mal découpé ([un shard par timerange](thanos.md#un-shard-par-timerange))
 - `bucket_store_merge_all` : la fusion des résultats de tous les blocks
 
 Ces noms viennent de `pkg/store/bucket.go` et `pkg/query/querier.go` à la v0.42.4 et peuvent changer d'une version à l'autre.
