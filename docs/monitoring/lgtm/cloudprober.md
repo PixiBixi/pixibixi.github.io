@@ -342,7 +342,7 @@ groups:
 
 `ProbeLatencyHigh` divise par le taux de succès : si toutes les requêtes échouent, la division donne `NaN`, la comparaison est fausse et seule `ProbeFailureRatioHigh` parle, ce qui est le comportement voulu. `ProberSilent` vise une probe nommée : un `absent` sans filtre ne se déclencherait que si plus aucun probe n'exporte rien. La 2e branche attrape un process vivant dont les probes sont bloquées : ses compteurs restent exposés mais n'avancent plus. La rétention de 4h des séries d'un target supprimé s'applique ici aussi, d'où l'intérêt de vérifier une suppression par la config et pas par l'alerte.
 
-Les règles de [workload_alerting](workload_alerting.md) s'appliquent telles quelles. Cloudprober sait aussi alerter lui-même (`alert` par probe, avec `condition { failures: 3 total: 5 }` et des notifiers PagerDuty, Slack, Opsgenie, Teams, email ou HTTP), mais passer par Prometheus garde un seul endroit pour les règles, les silences et les inhibitions.
+Les règles de [workload_alerting](workload_alerting.md) et le routage de [l'Alertmanager](alertmanager.md) s'appliquent tels quels. Cloudprober sait aussi alerter lui-même (`alert` par probe, avec `condition { failures: 3 total: 5 }` et des notifiers PagerDuty, Slack, Opsgenie, Teams, email ou HTTP), mais passer par Prometheus garde un seul endroit pour les règles, les silences et les inhibitions.
 
 ## Piloter les targets avec Git, Terraform et Argo CD
 
@@ -417,5 +417,6 @@ Les métriques des load balancers du datacenter ont confirmé : retransmissions 
 
 ## Voir aussi
 
+- [Alertmanager sans spam](alertmanager.md) pour router les alertes de probes
 - [Alertes de workload Kubernetes](workload_alerting.md) pour le même style de règles côté pods
 - [Cloudprober, doc officielle](https://cloudprober.org/docs/) et [le dépôt amont](https://github.com/cloudprober/cloudprober), dont les fichiers `.proto` font référence pour chaque champ

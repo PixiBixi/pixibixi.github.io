@@ -342,7 +342,7 @@ spec:
         # puis les autres templates de la liste par défaut
 ```
 
-Les alertes NetObserv elles-mêmes (`NetObservNoFlows` en tête) se désactivent par le même champ.
+Les alertes NetObserv elles-mêmes (`NetObservNoFlows` en tête) se désactivent par le même champ. Pour la partie routage, voir [Alertmanager](alertmanager.md).
 
 ### L'admission policy refuse l'agent
 
@@ -406,5 +406,6 @@ Sur 6h de dev, internet ne pèse qu'environ 1,1 % de l'egress externe, le reste 
 ## Voir aussi
 
 - [Network tiers GCP](../../cloud/gcloud/network_tiers.md) pour la facture d'egress côté load balancer
+- [Alertes de workload Kubernetes](workload_alerting.md) et [Alertmanager](alertmanager.md) pour le routage des health rules
 - [Conntrack Cilium](../../kubernetes/troubleshooting/cilium_conntrack.md) quand les nodes dépassent les 100k connexions suivies
 - [Metrics.md](https://github.com/netobserv/netobserv-operator/blob/main/docs/Metrics.md) et [HealthRules.md](https://github.com/netobserv/netobserv-operator/blob/main/docs/HealthRules.md) dans le repo de l'operator

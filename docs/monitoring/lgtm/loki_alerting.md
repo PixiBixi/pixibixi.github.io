@@ -108,3 +108,4 @@ loki:
 * [Netdata, Prometheus et Grafana : une stack de monitoring simple et puissante](simple_monitoring_stack.md) - alerting avec Prometheus et Alertmanager
 * [Grafana Alloy](alloy.md) - collecteur universel pour les logs vers Loki
 * [Quelques tips pour la stack LGTM](tips_lgtm.md)
+* [Alertmanager sans spam](alertmanager.md) - group_by, inhibition et notifications Slack

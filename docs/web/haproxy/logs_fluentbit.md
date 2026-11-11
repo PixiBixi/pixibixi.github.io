@@ -307,7 +307,7 @@ Les seuils (20 %, 1 requête par seconde, `> 0`, `> 1`) sont des valeurs de dép
 
 Le sélecteur `[sSRI].` couvre le timeout serveur (`s`), l'abandon serveur (`S`), l'épuisement de ressources du proxy (`R`) et l'erreur interne (`I`). Les abandons côté client (`CD`, `cD`, `CR`) sont du bruit normal sur Internet et ne méritent pas une alerte.
 
-[Tester avec promtool](../../monitoring/lgtm/workload_alerting.md#tester-avec-promtool) explique comment valider ces règles avant de les déployer.
+Le routage et le regroupement de ces alertes sont décrits dans [Alertmanager](../../monitoring/lgtm/alertmanager.md). [Tester avec promtool](../../monitoring/lgtm/workload_alerting.md#tester-avec-promtool) explique comment valider ces règles avant de les déployer.
 
 ## Retrouver la vraie IP client
 
