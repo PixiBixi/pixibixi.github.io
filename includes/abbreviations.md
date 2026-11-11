@@ -11,6 +11,7 @@
 *[DWARF]: Format des informations de debug (types, variables, lignes source) que lisent delve et gdb
 *[eBPF]: Programmes chargés dans le kernel Linux et exécutés sur des événements (paquet réseau, appel système), sans module ni recompilation
 *[ECDSA]: Signature sur courbes elliptiques, des handshakes TLS bien moins coûteux que RSA
+*[ESO]: External Secrets Operator, l'operator qui synchronise des secrets d'un coffre externe vers des Secrets Kubernetes
 *[fan-out]: Une requête envoyée en parallèle à plusieurs backends, dont on attend toutes les réponses avant de répondre
 *[HPA]: Horizontal Pod Autoscaler, l'objet Kubernetes qui ajuste le nombre de replicas selon une métrique
 *[IRQ]: Interruption matérielle envoyée par une carte réseau ou un disque au CPU
