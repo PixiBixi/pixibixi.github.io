@@ -28,7 +28,7 @@ Un namespace passe en stop-writes quand l'un de ces seuils est franchi. Les écr
 
 2 autres déclencheurs n'existent que si on les configure : `indexes-memory-budget` sur la mémoire des index (0 par défaut, donc désactivé) et les limites par set `stop-writes-count` et `stop-writes-size`.
 
-Les 3 premiers de la liste sont dynamiques. Dans un conteneur, le 3e dépend de la mémoire prise comme référence. Par défaut, c'est la mémoire de l'hôte : un pod limité à une fraction du nœud voit son stop-writes évalué sur la RAM du nœud. L'option de service `cgroup-mem-tracking` calcule le pourcentage contre la limite du cgroup, mais elle vaut `false` par défaut et n'existe que depuis la 8.1.2 (rétroportée en 8.0.0.17 et 7.2.0.19). Elle change aussi la valeur de `system_free_mem_pct`, que lisent les alertes mémoire plus bas.
+Les 3 premiers de la liste sont dynamiques. Dans un conteneur, le 3e dépend de la mémoire prise comme référence. Par défaut, c'est la mémoire de l'hôte : un pod limité à une fraction du nœud voit son stop-writes évalué sur la RAM du nœud. L'option de service `cgroup-mem-tracking` calcule le pourcentage contre la limite du cgroup, mais elle vaut `false` par défaut et n'existe que depuis la 8.1.2. Elle change aussi la valeur de `system_free_mem_pct`, que lisent les alertes mémoire plus bas.
 
 L'eviction est un mécanisme à part, qui doit se déclencher avant. `evict-used-pct` vaut 0 par défaut, valeur qui la désactive. Les records sans TTL ne sont jamais évictés. Si elle est activée, son seuil reste strictement sous `stop-writes-used-pct`, sinon elle ne sert à rien.
 
@@ -281,7 +281,7 @@ Cette commande pose un override en urgence puis le relit :
 $ asinfo -v "set-config:context=namespace;id=my-namespace;stop-writes-used-pct=98"
 ok
 $ asinfo -v "get-config:context=namespace;id=my-namespace" | tr ';' '\n' | grep stop-writes
+stop-writes-sys-memory-pct=90
 storage-engine.stop-writes-avail-pct=5
 storage-engine.stop-writes-used-pct=98
-stop-writes-sys-memory-pct=90
 ```
