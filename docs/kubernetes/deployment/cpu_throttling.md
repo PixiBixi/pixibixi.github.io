@@ -29,7 +29,7 @@ Avec `limits.cpu: "2"` et 8 threads runnable, chaque period se découpe ainsi :
 
 Une limit de 2 CPU ne veut pas dire « 2 threads à pleine vitesse » mais « 200ms de CPU à dépenser en 100ms de temps réel ». Plus le process a de threads runnable en même temps, plus vite le budget part et plus longue est la pause qui suit.
 
-Un cas y échappe : un pod `Guaranteed` dont le conteneur demande un nombre entier de CPU, sur un kubelet en `cpuManagerPolicy: static`. Ce conteneur reçoit des cœurs dédiés (cpuset), et depuis la 1.33 le kubelet ne lui pose plus de quota CFS (feature gate `DisableCPUQuotaWithExclusiveCPUs`, active par défaut). La policy par défaut est `none` : là, des `requests` égales aux `limits` ne réservent aucun cœur, le conteneur tourne sur tous les CPU du node et le quota s'applique.
+Un cas y échappe : un pod `Guaranteed` dont le conteneur demande un nombre entier de CPU, sur un kubelet en `cpuManagerPolicy: static`. Ce conteneur reçoit des cœurs dédiés (cpuset), et depuis la 1.33 le kubelet ne lui pose plus de quota CFS (feature gate `DisableCPUQuotaWithExclusiveCPUs`, active par défaut depuis la 1.33, dépréciée en 1.36 et retirée ensuite, le comportement est donc permanent). La policy par défaut est `none` : là, des `requests` égales aux `limits` ne réservent aucun cœur, le conteneur tourne sur tous les CPU du node et le quota s'applique.
 
 La period est configurable par le kubelet (`cpuCFSQuotaPeriod`), derrière la feature gate `CustomCPUCFSQuotaPeriod` restée en alpha (désactivée par défaut) de la 1.12 à la 1.35 et passée en GA (stable, activée par défaut) en 1.36 (source : `kube_features.go`). Une period plus courte lisse le throttling mais augmente la comptabilité du kernel. On y touche rarement.
 
