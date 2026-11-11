@@ -234,6 +234,7 @@ Le plan complet est ci-dessous, sinon la recherche fait le job.
 - [Migrer Grafana vers Grafana Cloud : datasources, alerting et convergence](monitoring/lgtm/grafana-cloud-migration.md)
 - [Datasource Grafana sur Thanos : incremental querying, cache et provisioning](monitoring/lgtm/grafana_datasource_perf.md)
 - [Recording rules : nommage, joins, federation et tests](monitoring/lgtm/recording_rules.md)
+- [NetObserv sans Loki : egress internet par namespace, FlowMetric, sampling et coût](monitoring/lgtm/netobserv.md)
 - [Cloudprober : probes HTTP, DNS et ping, traces OTel et alerting](monitoring/lgtm/cloudprober.md)
 - [Générer des alertes depuis Loki](monitoring/lgtm/loki_alerting.md)
 - [node_exporter en production : métriques textfile, collectors tcpstat et ethtool, limite CPU](monitoring/lgtm/custom_metrics_nodeexporter.md)
