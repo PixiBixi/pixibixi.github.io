@@ -279,7 +279,7 @@ uv run scripts/factcheck_stale.py            # every entry, compared with the wo
 uv run scripts/factcheck_stale.py docs/linux/cli/ss.md --rev origin/master --fetch
 ```
 
-The re-check workflow is in the `wiki-fact-check` skill.
+An entry that cannot be checked (missing clone, pin absent from the clone, malformed front matter) prints `UNKNOWN` and counts as to re-check. Exit code: 0 up to date, 1 stale, 2 unknown. The re-check workflow is in the `wiki-fact-check` skill.
 
 ## Gotchas
 
