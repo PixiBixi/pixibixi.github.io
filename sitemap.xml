@@ -82,7 +82,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/ci-cd/gitlab/runners_kubernetes/</loc>
-    <lastmod>2026-10-26</lastmod>
+    <lastmod>2026-11-11</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/ci-cd/gitlab/ci/optimize/</loc>
@@ -94,7 +94,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/ci-cd/hooks/lefthook/</loc>
-    <lastmod>2026-11-04</lastmod>
+    <lastmod>2026-11-11</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/ci-cd/hooks/prek/</loc>
@@ -130,7 +130,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/cloud/gcloud/compute_classes/</loc>
-    <lastmod>2026-11-01</lastmod>
+    <lastmod>2026-11-11</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/cloud/gcloud/gcloud_commands/</loc>
@@ -146,11 +146,11 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/cloud/gcloud/inter_zone_traffic/</loc>
-    <lastmod>2026-11-08</lastmod>
+    <lastmod>2026-11-11</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/cloud/gcloud/network_tiers/</loc>
-    <lastmod>2026-11-05</lastmod>
+    <lastmod>2026-11-11</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/cloud/gcloud/spot_nodes/</loc>
@@ -182,7 +182,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/databases/aerospike/monitoring/</loc>
-    <lastmod>2026-11-08</lastmod>
+    <lastmod>2026-11-11</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/databases/elasticsearch/log_slow_queries/</loc>
@@ -222,7 +222,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/databases/postgres/cnpg_cdc/</loc>
-    <lastmod>2026-11-05</lastmod>
+    <lastmod>2026-11-11</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/databases/postgres/commands/</loc>
@@ -246,7 +246,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/databases/redis/timeouts/</loc>
-    <lastmod>2026-11-10</lastmod>
+    <lastmod>2026-11-11</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/hardware/</loc>
@@ -358,7 +358,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/kubernetes/deployment/cpu_throttling/</loc>
-    <lastmod>2026-11-08</lastmod>
+    <lastmod>2026-11-11</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/kubernetes/deployment/gomaxprocs_gomemlimit_kubernetes/</loc>
@@ -370,7 +370,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/kubernetes/deployment/node_local_dns/</loc>
-    <lastmod>2026-10-26</lastmod>
+    <lastmod>2026-11-11</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/kubernetes/deployment/pdb_topology_spread/</loc>
@@ -386,11 +386,11 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/kubernetes/operator/external-secrets/sync_alerting/</loc>
-    <lastmod>2026-11-05</lastmod>
+    <lastmod>2026-11-11</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/kubernetes/operator/strimzi/authorization/</loc>
-    <lastmod>2026-11-08</lastmod>
+    <lastmod>2026-11-11</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/kubernetes/operator/strimzi/rollout_strimzi/</loc>
@@ -410,7 +410,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/kubernetes/troubleshooting/cilium_conntrack/</loc>
-    <lastmod>2026-10-26</lastmod>
+    <lastmod>2026-11-11</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/kubernetes/troubleshooting/resize_pvc_statefulset/</loc>
@@ -746,7 +746,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/monitoring/lgtm/grafana_datasource_perf/</loc>
-    <lastmod>2026-11-04</lastmod>
+    <lastmod>2026-11-11</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/monitoring/lgtm/loki_alerting/</loc>
@@ -774,7 +774,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/monitoring/lgtm/thanos-slow-queries/</loc>
-    <lastmod>2026-11-04</lastmod>
+    <lastmod>2026-11-11</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/monitoring/lgtm/thanos/</loc>
@@ -1026,7 +1026,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/web/haproxy/logs_fluentbit/</loc>
-    <lastmod>2026-11-04</lastmod>
+    <lastmod>2026-11-11</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/web/haproxy/memory_limit/</loc>
@@ -1074,7 +1074,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/web/php/sury/</loc>
-    <lastmod>2026-11-08</lastmod>
+    <lastmod>2026-11-11</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/web/varnish/config/</loc>
