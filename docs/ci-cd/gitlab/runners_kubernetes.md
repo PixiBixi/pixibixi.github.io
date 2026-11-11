@@ -64,7 +64,7 @@ Passer de 10 à 30 ou 60 minutes tient en une ligne par classe. Les nodes resten
 
 Le second levier réserve de la capacité d'avance. Depuis GitLab Runner 18.11, le kubernetes executor le fait seul avec des pause pods : un Deployment de pods `registry.k8s.io/pause:3.10` de priorité -1 (PriorityClass `gitlab-runner-idle-capacity`, créée par le runner) que n'importe quel job pod préempte. La doc annonce 18.10, mais le code n'apparaît que dans le tag `v18.11.0`.
 
-Chaque pause pod reprend `cpu_request`, `memory_request`, `node_selector` et les tolerations du runner, donc il atterrit sur la même ComputeClass que les jobs et réserve la place d'un job. On le règle dans `[runners.kubernetes.autoscaler]` :
+Chaque pause pod reprend `cpu_request`, `memory_request`, `node_selector`, les tolerations, `service_account` et `runtime_class_name` du runner, donc il atterrit sur la même ComputeClass que les jobs et réserve la place d'un job. On le règle dans `[runners.kubernetes.autoscaler]` :
 
 ```toml title="config.toml"
 [[runners]]
@@ -87,7 +87,7 @@ Chaque pause pod reprend `cpu_request`, `memory_request`, `node_selector` et les
 
 `idle_time` retarde seulement la baisse du nombre de pause pods, la hausse est immédiate. Aux heures de pointe, `scale_factor` garde `ceil(scale_factor × jobs actifs)` pods d'avance quand ce nombre dépasse `idle_count`, plafonné par `scale_factor_limit` puis par `max_pause_pods`.
 
-Les labels et annotations des job pods ne sont pas recopiés sur les pause pods (`pause_pod_labels` et `pause_pod_annotations` existent pour ça). La PriorityClass est un objet cluster-wide : le runner a besoin d'un `ClusterRole` pour la créer. Sans lui, il se contente d'un warning et crée quand même le Deployment, dont les pods sont rejetés faute de PriorityClass. L'alternative est de créer la classe soi-même et de la passer dans `pause_pod_priority_class_name`.
+Les labels et annotations des job pods ne sont pas recopiés sur les pause pods (`pause_pod_labels` et `pause_pod_annotations` existent pour ça, mais seulement sur la branche principale du runner, pas dans une release publiée au moins jusqu'à 19.5.3). La PriorityClass est un objet cluster-wide : le runner a besoin d'un `ClusterRole` pour la créer. Sans lui, il se contente d'un warning et crée quand même le Deployment, dont les pods sont rejetés faute de PriorityClass. L'alternative est de créer la classe soi-même et de la passer dans `pause_pod_priority_class_name`.
 
 ### Avant 18.11 : des pods balloon à la main
 
@@ -189,7 +189,7 @@ unit-tests:
 
 Un job Spot accepte un `retry` sur `runner_system_failure`. Qu'une éviction de node tombe dans cette catégorie dépend de la façon dont le runner constate la perte du pod, ce qui se vérifie en provoquant l'éviction d'un node de test avant de compter dessus.
 
-Depuis 18.11, `pod_disruption_budget = true` dans `[runners.kubernetes]` crée une PodDisruptionBudget `minAvailable: 1` par job pod. Son selector vise le projet et pas le pod : quand plusieurs jobs d'un même projet tournent en parallèle, un drain peut en évincer tous sauf un. Elle ne protège pas non plus d'une préemption Spot, que la doc range dans les disruptions involontaires. En contrepartie, un drain bloque tant que le dernier job du projet tourne.
+Depuis 18.11, `pod_disruption_budget = true` dans `[runners.kubernetes]` crée une PodDisruptionBudget `minAvailable: 1` par job pod. Son selector vise le projet et pas le pod : dès que 2 jobs d'un même projet tournent en parallèle, chaque job pod est couvert par plusieurs PodDisruptionBudgets, l'API d'éviction refuse alors de l'évincer (erreur 500) et le drain n'en évince aucun. Elle ne protège pas non plus d'une préemption Spot, que la doc range dans les disruptions involontaires. En contrepartie, un drain reste bloqué tant que 2 jobs du projet tournent en parallèle. Avec un seul job, il attend la fin du job.
 
 ## Dimensionner les job pods et l'ephemeral storage
 
