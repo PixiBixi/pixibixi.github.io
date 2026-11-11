@@ -115,11 +115,11 @@ defaults
     error-log-format "%ci:%cp [%tr] %ft/%[so_name]: %[fc_err_str] (%[ssl_fc_err_str]) sni=\"%[ssl_fc_sni]\" proto=%[ssl_fc_protocol]"
 ```
 
-Un fetch sans valeur s'écrit `-` : une erreur sans cause OpenSSL donne `(-)`, que la regex ignore au lieu d'en faire un `ssl_error`. Les 2 groupes de fin sont optionnels, si bien que le même parser lit les lignes avant et après le changement de format pendant un déploiement progressif. Tout autre changement de `error-log-format` demande d'adapter la regex.
+Un fetch sans valeur s'écrit `-` : une erreur sans cause OpenSSL donne `(-)`, que la regex ignore au lieu d'en faire un `ssl_error`. Les 2 groupes de fin sont optionnels, si bien que le même parser lit les lignes avant et après le changement de format pendant un déploiement progressif. Tout autre changement de `error-log-format` demande d'adapter la regex. Le message `Stopped a TLSv1 heartbeat attack (CVE-2014-0160)` fait exception : `error` s'arrête au premier `(` et `ssl_error` reçoit `CVE-2014-0160`.
 
 Le format par défaut écrit le numéro du `bind` après le `/` (`https-in/1`). `%[so_name]` lit son nom et vaut `-` si le `bind` n'en a pas : on ajoute `name b1` sur la ligne `bind` pour le retrouver dans les logs.
 
-Ce format écrit aussi une ligne pour chaque requête invalide ou connexion coupée sans erreur réseau, du type `http-in/-: Success (-) sni="-" proto=-`. Le format par défaut ne le fait pas. Ces lignes parsent avec `error` à `Success` et gonfleraient le compteur d'erreurs de connexion, d'où l'`exclude` sur le filtre plus bas.
+Avec ce format, chaque requête invalide ou connexion coupée sans erreur réseau passe du format httplog (`<BADREQ>`, status 400) au format d'erreur, du type `http-in/-: Success (-) sni="-" proto=-`. Ces lignes parsent avec `error` à `Success`, quittent le compteur de 4xx et gonfleraient le compteur d'erreurs de connexion, d'où l'`exclude` sur le filtre plus bas, qui doit être écrit avant le `regex`.
 
 ## Brancher les parsers dans le pipeline
 
@@ -170,7 +170,7 @@ Le parser des lignes d'erreur passe dans un second filtre, à la suite du premie
 
 Un record qui sort avec `status` est une requête HTTP et un record avec `error` est une erreur de connexion. Ce partage sert aux métriques plus bas.
 
-HAProxy écrit aussi ses propres messages sur stderr : serveur passé `DOWN`, rechargement de config, alerte au démarrage. Ils ont la forme `[WARNING]  (8) : Server api/api-01 is DOWN` et ne matchent aucun des 2 parsers. Un troisième parser, branché dans un troisième filtre `parser` sur le même modèle, en extrait la sévérité :
+HAProxy écrit aussi ses propres messages sur stderr : serveur passé `DOWN`, rechargement de config, alerte au démarrage. Ils ont la forme `[WARNING]  (8) : Server api/api-01 is DOWN` et ne matchent aucun des 2 parsers (les changements d'état de serveur partent aussi vers les loggers, donc sur stdout sans préfixe `[WARNING]`, où aucun parser ne les lit). Un troisième parser, branché dans un troisième filtre `parser` sur le même modèle, en extrait la sévérité :
 
 ```yaml title="parsers.yaml"
   - name: haproxy_system
@@ -227,8 +227,8 @@ Le filtre `log_to_metrics` lit les records, incrémente un compteur par record q
       metric_subsystem: log
       metric_name: conn_errors_total
       metric_description: Frontend connection errors logged by HAProxy
-      regex: error .
       exclude: error ^Success$
+      regex: error .
       label_field: frontend
 
   outputs:
