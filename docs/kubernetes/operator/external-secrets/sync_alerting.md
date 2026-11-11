@@ -12,7 +12,7 @@ tags:
 
 Quand un credential du secret store est révoqué, tous les ExternalSecret passent en échec d'un coup alors que les pods de l'operator restent `Running` et que les Secret déjà synchronisés gardent leur dernière valeur. Rien ne casse visiblement jusqu'au premier redémarrage d'une application, qui démarre alors avec un Secret périmé ou absent. Sans alerte dédiée, on le découvre à ce moment-là.
 
-Les alertes ci-dessous détectent cette panne avant le premier redémarrage et la routent vers l'équipe qui possède le namespace. Elles s'appuient sur les métriques d'External Secrets Operator (ESO), avec le choix du `refreshInterval` et son coût sur l'API du provider, puis la config HA du controller. Les valeurs par défaut et les noms de métriques sont lus dans le code d'ESO (branche `main`, chart 2.14.0) et dans la doc de GCP Secret Manager.
+Les alertes ci-dessous détectent cette panne avant le premier redémarrage et la routent vers l'équipe qui possède le namespace. Elles s'appuient sur les métriques d'External Secrets Operator (ESO), avec le choix du `refreshInterval` et son coût sur l'API du provider, puis la config HA du controller. Les valeurs par défaut et les noms de métriques sont lus dans le code d'ESO (branche `main`, chart 2.15.0) et dans la doc de GCP Secret Manager.
 
 ## Les métriques qui comptent
 
@@ -132,7 +132,7 @@ kubectl annotate externalsecret my-secret -n my-namespace force-sync=$(date +%s)
 
 ## Faire tourner le controller en HA
 
-Par défaut le chart déploie 1 replica sans leader election (`replicaCount: 1`, `leaderElect: false`, PodDisruptionBudget désactivé). Sur des nodes spot, un reschedule arrête la réconciliation le temps que le pod revienne. On passe donc à 2 replicas derrière une lease. Le chart demande la leader election dès que `replicaCount` dépasse 1 car sans elle les 2 pods réconcilient les mêmes objets en doublant les appels au provider. Les valeurs ci-dessous activent la leader election, le PodDisruptionBudget et l'étalement des pods :
+Par défaut le chart déploie 1 replica sans leader election (`replicaCount: 1`, `leaderElect: false`, PodDisruptionBudget désactivé). Sur des nodes spot, un reschedule arrête la réconciliation le temps que le pod revienne. On passe donc à 2 replicas derrière une lease. Le chart ne l'impose pas (`leaderElect: false` par défaut, `NOTES.txt` affiche seulement un warning) mais il faut l'activer dès que `replicaCount` dépasse 1, car sans elle les 2 pods réconcilient les mêmes objets en doublant les appels au provider. Les valeurs ci-dessous activent la leader election, le PodDisruptionBudget et l'étalement des pods :
 
 ```yaml
 replicaCount: 2
@@ -151,7 +151,7 @@ topologySpreadConstraints:
         app.kubernetes.io/name: external-secrets
 ```
 
-Le paramètre `replicaCount` ne concerne que le controller : le webhook et le cert controller ont chacun le leur (`webhook.replicaCount`, `certController.replicaCount`). Le chart demande la leader election aussi pour le cert controller dès qu'il dépasse 1 replica.
+Le paramètre `replicaCount` ne concerne que le controller : le webhook et le cert controller ont chacun le leur (`webhook.replicaCount`, `certController.replicaCount`). Le flag `leaderElect` est partagé : il faut aussi l'activer dès que le cert controller dépasse 1 replica (le warning du chart n'apparaît que si `webhook.certManager.enabled` vaut `false`).
 
 Une bascule de leader a un effet de bord sur l'alerting : le nouveau leader ré-enregistre les séries une par une, exactement comme un redémarrage, cas que le `max_over_time` du dénominateur absorbe. Avec plusieurs replicas, on vérifie aussi que le décompte n'est pas doublé : cette requête doit renvoyer un seul pod, puisque si 2 pods portent les séries, le `count` de l'alerte est doublé :
 
@@ -165,7 +165,7 @@ Le paramètre `concurrent` (1 par défaut dans le chart) borne le nombre de réc
 
 ### `1h` devient `1h0m0s`
 
-Le CRD documente la durée sous sa forme canonique (`1h0m0s`, `10m0s`). Avec certaines versions d'ESO, un `refreshInterval: 1h` se retrouve réécrit en `1h0m0s` dans l'objet vivant et l'application ArgoCD reste `OutOfSync` sur ce seul champ alors que le Secret est bien `SecretSynced`. Le controller ajoute son finalizer par un patch et non plus par un update depuis décembre 2025 (commit `7f0ec4c2d`, « avoid claiming ownership of spec fields like refreshInterval »), ce qui devrait réduire le cas sur les versions récentes, sans vérification sur un cluster. Écrire la forme canonique dans les manifests évite de dépendre de la version.
+Le CRD documente la durée sous sa forme canonique (`1h0m0s`, `10m0s`). Avec certaines versions d'ESO, un `refreshInterval: 1h` se retrouve réécrit en `1h0m0s` dans l'objet vivant et l'application ArgoCD reste `OutOfSync` sur ce seul champ alors que le Secret est bien `SecretSynced`. Le controller ajoute son finalizer par un patch et non plus par un update depuis décembre 2025 (commit `7f0ec4c2d`, « use patch instead of update for finalizers addition and removal », #5670), ce qui devrait réduire le cas sur les versions récentes, sans vérification sur un cluster. Écrire la forme canonique dans les manifests évite de dépendre de la version.
 
 ### Un namespace sans label `team` ne déclenche rien
 
