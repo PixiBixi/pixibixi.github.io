@@ -42,6 +42,7 @@
 *[SLI]: Service Level Indicator, la mesure qui sert de base à un objectif de service
 *[SLSA]: Supply-chain Levels for Software Artifacts, le framework qui décrit la provenance d'un build
 *[SNAT]: Source NAT, la réécriture de l'IP source d'un paquet sortant
+*[tailnet]: Le réseau privé Tailscale qui regroupe les machines d'un même compte
 *[TSDB]: Time Series Database, une base de séries temporelles, comme le stockage local de Prometheus
 *[TTFB]: Time To First Byte, le délai avant de recevoir le premier octet de la réponse
 *[TTL]: Time To Live, la durée de vie d'une entrée avant son expiration

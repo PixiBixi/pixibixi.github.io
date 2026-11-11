@@ -144,6 +144,7 @@ Le plan complet est ci-dessous, sinon la recherche fait le job.
 - [Alerting Strimzi : disque, MirrorMaker 2, reconciliation et brokers](kubernetes/operator/strimzi/alerting.md)
 - [Kafka authorization sur Strimzi : ACLs, superUsers, listeners et deny-by-default](kubernetes/operator/strimzi/authorization.md)
 - [External Secrets Operator : alerting sur la sync, refreshInterval et HA du controller](kubernetes/operator/external-secrets/sync_alerting.md)
+- [Opérateur Tailscale en production : ProxyClass, peer relays et pièges du chart](kubernetes/operator/tailscale/operator.md)
 
 ### Troubleshooting
 
