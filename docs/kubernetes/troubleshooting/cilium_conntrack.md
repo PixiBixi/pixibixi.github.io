@@ -91,7 +91,7 @@ Le GC ne tourne pas à intervalle fixe. Avec `conntrack-gc-interval` à 0 (la va
 
 Le premier intervalle vaut 5 minutes. Un node calme voit donc son intervalle grimper passage après passage, puis se retrouve avec une table qu'une rafale de connexions remplit en quelques secondes ou minutes avant le passage suivant. Sur un des nodes observés, l'intervalle relevé était de 8 492 s contre une médiane de 450 s sur le cluster.
 
-Quand une insertion échoue, le datapath envoie un signal `ct_fill_up` à l'agent, qui déclenche un passage de GC anticipé (`pkg/maps/ctmap/gc/signals.go`, `bpf/lib/conntrack.h`). Un passage anticipé ne libère que des entrées expirées : si toute la table est faite de connexions vivantes, il ne change rien. Cela correspond aux saturations mesurées plus bas : une table à 99,8 % pendant 3 minutes, puis vidée d'un coup au passage régulier suivant.
+Quand une insertion échoue faute de mémoire dans la map (`-ENOMEM`), le datapath envoie un signal `ct_fill_up` à l'agent, qui déclenche un passage de GC anticipé (`pkg/maps/ctmap/gc/signals.go`, `bpf/lib/conntrack.h`). Un passage anticipé ne libère que des entrées expirées : si toute la table est faite de connexions vivantes, il ne change rien. Cela correspond aux saturations mesurées plus bas : une table à 99,8 % pendant 3 minutes, puis vidée d'un coup au passage régulier suivant.
 
 !!! warning "La table est une LRU, mais l'insertion peut quand même échouer"
     Les maps CT sont créées en `LRUHash` (`newMap` dans `ctmap.go`), on pourrait donc penser que le kernel évince l'entrée la plus ancienne quand c'est plein. Le drop `CT: Map insertion failed` et la page de troubleshooting amont montrent que l'insertion échoue pourtant en pratique. Le mécanisme exact d'éviction n'a pas été vérifié ici.
@@ -124,7 +124,7 @@ La doc de Cilium (`Documentation/network/ebpf/maps.rst`) donne la table obtenue 
 
 Un node de 15 GiB ou moins retombe donc sur le plancher, alors qu'il peut encaisser des milliers de nouvelles connexions par seconde s'il porte un reverse proxy. À 10 000 nouvelles connexions par seconde, 131072 entrées se remplissent en une quinzaine de secondes si rien n'expire (au mieux 1 entrée par connexion, ordre de grandeur).
 
-Le coût mémoire se lit dans le commentaire de `LimitTableMax` : 16Mi entrées pour environ 1 GiB par map, soit une soixantaine d'octets par entrée. Doubler une table de 1Mi entrées coûte donc de l'ordre de 64 Mo de RAM par node.
+Le coût mémoire se lit dans le commentaire de `LimitTableMax` : 16Mi entrées pour environ 1 GiB par map, soit une soixantaine d'octets par entrée (clé et valeur, hors overhead de la LRU, donc plutôt 70 octets ou plus). Doubler une table de 1Mi entrées coûte donc de l'ordre de 64 Mo de RAM par node.
 
 ### Les valeurs Helm et leurs pièges
 
@@ -141,7 +141,7 @@ conntrackGCMaxInterval: "5m"
 
 3 points à savoir avant de les poser :
 
-- la table NAT ne doit pas dépasser la somme des tables CT TCP et non-TCP : une valeur `natMax` posée explicitement au-dessus fait échouer le démarrage de l'agent (`specified NAT tables size ... must not exceed maximum CT table size`). Seule une valeur laissée au défaut ou calculée dynamiquement est ramenée à `(tcp + any) * 2 / 3`, avec un warning. Ici, la somme vaut 1310720 donc `natMax: 786432` passe
+- la table NAT ne doit pas dépasser la somme des tables CT TCP et non-TCP : une valeur `natMax` posée explicitement au-dessus fait échouer le démarrage de l'agent (`specified NAT tables size ... must not exceed maximum CT table size`). Seule une valeur laissée au défaut ou calculée dynamiquement est ramenée à `(tcp + any) * 2 / 3`, avec un warning seulement en dimensionnement dynamique (un défaut statique est plafonné sans rien dire). Ici, la somme vaut 1310720 donc `natMax: 786432` passe
 - `conntrackGCMaxInterval` est un plafond sur l'intervalle dynamique : il garde le GC réactif sans le figer, mais il n'a plus d'effet si `conntrackGCInterval` est posé
 - changer la taille d'une map ne la redimensionne pas en place : `OpenOrCreate` dans `pkg/bpf/map_linux.go` la supprime et la recrée sans conserver son contenu. Le redémarrage de l'agent avec une nouvelle taille vide donc la table. Les connexions établies perdent leur entrée, avec un effet exact qui n'a pas été mesuré. Le rollout se fait node par node, hors pic
 
