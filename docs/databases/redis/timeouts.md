@@ -19,7 +19,7 @@ Un Redis qui ferme les connexions idle et des workers PHP qui gardent les leurs 
 
 Les 2 valeurs par défaut viennent de `redis.conf` et de `src/config.c` dans le repo amont (branche `unstable`). Le keepalive sert à détecter un pair mort et à empêcher un équipement réseau intermédiaire (firewall, NAT, load balancer) d'oublier une connexion silencieuse, les 2 usages listés dans `redis.conf`.
 
-Le sens du double se lit dans `anetKeepAlive` : le premier probe part après N secondes d'idle, l'intervalle entre 2 probes vaut N/3 (10 secondes minimum) et le kernel en envoie 3 avant d'abandonner. Les bornes sont aussi dans ce code : en dessous de 10 secondes, Redis force 10.
+Le sens du double se lit dans `anetKeepAlive` : le premier probe part après N secondes d'idle, l'intervalle entre 2 probes vaut N/3 (1 seconde minimum) et le kernel en envoie 3 avant d'abandonner. Le plancher de 10 secondes qu'on lit dans ce code ne concerne que Solaris.
 
 !!! warning "timeout 1 et pconnect"
     Un `timeout` de quelques secondes est tentant pour libérer des connexions, mais il tue précisément celles qu'un client persistant compte réutiliser. Chaque requête qui tombe après le délai paie une reconnexion.
