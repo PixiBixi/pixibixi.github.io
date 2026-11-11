@@ -34,7 +34,7 @@ spec:
 
 Les champs à connaître :
 
-- sans `machineFamily`, GKE prend la série de machines par défaut du cluster, donc on le pose toujours
+- sans `machineFamily`, GKE retombe sur `e2`, donc on le pose toujours
 - `spot: false` en dernière règle est le filet on-demand
 - `minCores` et `minMemoryGb` filtrent les machines d'une règle, par exemple `minMemoryGb: 64` pour viser des gabarits mémoire
 - `machineType` remplace la famille quand on veut un type exact (`n4-standard-32`)
