@@ -33,9 +33,9 @@ Le [cache de résultats du query frontend Thanos](thanos-cache.md) vient en plus
 
 L'option se pose sur une datasource de type Prometheus (Thanos compris) et se lit dans le code du plugin, `grafana-prometheus-datasource`. Grafana garde en mémoire, dans l'onglet du navigateur, les frames déjà reçues pour chaque panel et chaque `refId`. Au rafraîchissement suivant, il ne demande que la fin du timerange, plus une marge de recouvrement.
 
-La requête partielle part de `max(prevTo - overlap, from)`, où `prevTo` est la fin du timerange de la requête précédente. L'overlap window vaut `10m` par défaut. Elle sert à recoller les derniers points, qui peuvent être incomplets si Thanos n'avait pas encore tout ingéré au moment de la première requête.
+La requête partielle part de `max(prevTo - overlap, from)` arrondi vers le bas à l'`interval` de la requête, où `prevTo` est la fin du timerange de la requête précédente. L'overlap window vaut `10m` par défaut. Elle sert à recoller les derniers points, qui peuvent être incomplets si Thanos n'avait pas encore tout ingéré au moment de la première requête.
 
-Sur un timerange `now-24h` rafraîchi toutes les 5 minutes, on passe donc de 24h de données demandées à environ 15 minutes (5 minutes de nouveauté plus 10 minutes de recouvrement).
+Sur un timerange `now-24h` rafraîchi toutes les 5 minutes, on passe donc de 24h de données demandées à un peu plus de 15 minutes (5 minutes de nouveauté plus 10 minutes de recouvrement).
 
 ### Quand il ne s'applique pas
 
@@ -45,8 +45,8 @@ Le plugin retombe sur une requête complète, sans le dire, dans ces cas :
 - une expression contient la chaîne `$__range`, qui matche aussi `$__range_s` et `$__range_ms`
 - le dashboard est un public dashboard
 - le timerange ne se termine pas sur `now` (timerange absolu, lien partagé avec `from` et `to` fixes)
-- la requête, l'`interval`, le timerange brut (`now-24h`) ou une variable interpolée a changé depuis la requête précédente
-- le nouveau timerange ne prolonge pas le précédent (`newFrom` après `prevTo` ou `newTo` avant)
+- la requête, l'`interval`, le flag `exemplar`, le timerange brut (`now-24h`) ou une variable interpolée a changé depuis la requête précédente
+- le nouveau timerange ne prolonge pas le précédent (`newFrom` après `prevTo` ou `newTo` qui ne dépasse pas `prevTo`)
 
 Passer de `now-24h` à `now-48h` change le timerange brut, donc la signature du target. Les 48h entières sont alors redemandées. L'incremental querying ne remplit jamais le passé et ne prolonge que la fin d'une fenêtre glissante.
 
