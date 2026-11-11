@@ -269,6 +269,18 @@ When writing or rewriting an article, apply these whenever the condition holds (
 - **Steps**: the page walks the reader through an ordered procedure (install, bootstrap, migration, recovery, 3+ actions, commands between them) → wrap the numbered list, or the run of same-level headings, in `<div class="steps" markdown>` (syntax in `README.md`). Never for a plain enumeration, a comparison, alternatives or a list of facts. Keep the prose, only indent item bodies and drop numbers from step headings.
 - **Glossary `*[TERM]: ...`**: an acronym or a jargon term the target reader may not know and that the prose does not explain (NUMA, IRQ, TTFB, fan-out) → add it to `includes/abbreviations.md` (wiki-wide, sorted), never at the bottom of the article. Check it is not already there. Not every acronym: K8s nouns, HTTP, CPU, DNS and the like are left alone. One sentence in French, no em dash.
 
+## Fact-check ledger
+
+`factcheck/<path under docs>.md` holds the last fact-check of each article: front matter `checked`, `commit` (the fix commit), `sources` pinned to a commit of the clone in `~/Documents/work/src`, `unpinned`; the body is the report. It is outside `docs/`, so never built. Before a re-check, list what changed:
+
+```bash
+# articles whose text changed since the check, or whose pinned sources moved upstream after it
+uv run scripts/factcheck_stale.py            # every entry, compared with the working tree
+uv run scripts/factcheck_stale.py docs/linux/cli/ss.md --rev origin/master --fetch
+```
+
+The re-check workflow is in the `wiki-fact-check` skill.
+
 ## Gotchas
 
 - **MaterialX**: its plugins register as `materialx/<name>`, so a template testing `config.plugins["material/search"]` silently drops the feature. `docs/stylesheets/materialx.css`, first in `extra_css`, undoes the MaterialX restyles the theme was not designed on (nav spacing, header icon sizes, TOC guides, letter spacing). Search runs on `provider: pagefind`: there is no `search/search_index.json` anymore. `jd-palette.js` (Cmd+K) and the 404 suggestions in `pages.js` query `search/pagefind.js` through `window.jdSearch`, and read titles, tags and the article list from `search/jd-pages.json` (`hooks/article_meta.py`). Pagefind marks `?h=` terms with `mark.pagefind-highlight`, which `jd-highlight.js` counts. A new theme block inside the article that is not content goes in `exclude_selectors` in both configs. `tests/search_e2e.py` checks the whole search UI on a served full build.
