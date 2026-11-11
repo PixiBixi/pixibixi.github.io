@@ -13,7 +13,7 @@ tags:
 
 Debian stable fige une seule version de PHP, alors que le jour où une CVE sort on veut la correction sur toute la flotte avant la fin de journée. Avec une config apt qui survit à l'expiration de la clé de signature et un playbook en rolling upgrade, le patch passe nœud par nœud avec reload de php-fpm et health check, sans erreur `EXPKEYSIG` au milieu. Le dépôt [deb.sury.org](https://deb.sury.org/) fournit pour ça plusieurs branches de PHP en parallèle, au prix d'un dépôt tiers qui exécute des scripts en root sur chaque nœud, d'où les garde-fous de la fin.
 
-Pour une installation simple sur un seul serveur, voir [Installer une version custom de PHP](../nginx/php_custom_version.md), dont la méthode `trusted.gpg.d` est celle qui casse le plus souvent.
+Pour une installation simple sur un seul serveur, voir [Installer une version custom de PHP](../nginx/php_custom_version.md), qui utilise le paquet keyring et `signed-by`. La méthode générique `trusted.gpg.d` est celle qui casse le plus souvent.
 
 ## Corriger l'erreur EXPKEYSIG
 
@@ -25,7 +25,7 @@ Err:6 https://packages.sury.org/php bookworm InRelease
   The following signatures were invalid: EXPKEYSIG B188E2B695BD4743 DEB.SURY.ORG Automatic Signing Key <deb@sury.org>
 ```
 
-`EXPKEYSIG` veut dire que la signature est correcte mais que la clé qui l'a produite est périmée dans le keyring local. La clé à jour est publiée par le dépôt, il suffit de la récupérer. Le fingerprint complet `15058500A0235D97F5D10063B188E2B695BD4743` apparaît dans le champ `Signed-By` du fichier `InRelease` du dépôt, ce qui permet de vérifier qu'on parle bien de la même clé.
+`EXPKEYSIG` veut dire que la signature est correcte mais que la clé qui l'a produite est périmée dans le keyring local. La clé à jour est publiée par le dépôt, il suffit de la récupérer. Le fingerprint complet `15058500A0235D97F5D10063B188E2B695BD4743` se lit avec `gpg --show-keys` sur le `.deb` du keyring ou sur `apt.gpg`, ce qui permet de vérifier qu'on parle bien de la même clé.
 
 On commence par repérer quel fichier de clé la source utilise, puisque tout dépend de ça :
 
@@ -43,7 +43,7 @@ sudo dpkg -i /tmp/debsuryorg-archive-keyring.deb
 sudo apt-get update
 ```
 
-Si la clé est dans `/etc/apt/trusted.gpg.d/php.gpg` (l'ancienne méthode de l'article lié plus haut), on peut la rafraîchir à la même adresse que l'ancien guide :
+Si la clé est dans `/etc/apt/trusted.gpg.d/php.gpg` (l'ancienne méthode générique, plus celle de l'article lié), on peut la rafraîchir à la même adresse :
 
 ```bash
 sudo curl -sSLo /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
@@ -229,6 +229,6 @@ Les garde-fous qui valent leur coût :
 - Pinning par origine (section précédente), pour que le dépôt n'écrase pas des librairies système sans qu'on l'ait décidé.
 - Un miroir interne (aptly, reprepro ou un proxy de cache) quand la flotte est grande : on contrôle ce qui entre, on installe depuis un snapshot figé et un dépôt externe indisponible ne bloque plus un déploiement.
 - Un déploiement par vagues : staging, un nœud canari, puis le reste. C'est le rôle de `serial: 1` plus haut.
-- Le bootstrap de la clé reste un téléchargement HTTPS : on peut en vérifier le fingerprint contre celui annoncé dans `InRelease` (`Signed-By`) avant de le distribuer par un rôle Ansible.
+- Le bootstrap de la clé reste un téléchargement HTTPS : on peut en vérifier le fingerprint (`gpg --show-keys`) contre celui publié par le dépôt avant de le distribuer par un rôle Ansible.
 
 Le jour d'une CVE, rien ne garantit une publication immédiate pour chaque branche. Quand une branche n'est plus mise à jour, la seule sortie est de migrer vers une branche suivie.
