@@ -48,6 +48,7 @@ jobs:
             .pre-commit-config.yaml
             .pre-commit-hooks/**
             .claude/**
+            factcheck/**
 
   build:
     if: github.event_name == 'workflow_dispatch' || needs.lint.outputs.site == 'true'
