@@ -70,7 +70,7 @@ Un listener non authentifié est le vrai problème d'un cluster partagé. Tant q
 
 ## Ce que allow.everyone.if.no.acl.found autorise vraiment
 
-Le flag est à `false` quand il est absent. À `true`, il change le résultat par défaut de l'authorizer, mais pas pour toutes les requêtes : ce verdict par défaut ne s'applique que lorsqu'**aucune ACL n'existe sur la ressource**, quel que soit le principal ou l'opération visés. Dès qu'une ACL existe sur un topic, y compris pour un autre utilisateur, les principals qui ne matchent aucune règle sont refusés.
+Le flag est à `false` quand il est absent. À `true`, il change le résultat par défaut de l'authorizer, mais pas pour toutes les requêtes : ce verdict par défaut ne s'applique que lorsqu'**aucune ACL n'existe sur la ressource** (une ACL de préfixe ou un wildcard `*` qui couvre le topic compte aussi), quel que soit le principal ou l'opération visés. Dès qu'une ACL existe sur un topic, y compris pour un autre utilisateur, les principals qui ne matchent aucune règle sont refusés.
 
 La [doc Apache Kafka](https://kafka.apache.org/documentation/#security_authz) le décrit comme un réglage de développement, de test ou de migration par phases et recommande `false` en production. Les conséquences sur un cluster partagé :
 
@@ -95,7 +95,7 @@ C'est une dette de sécurité assumée, qu'un scanner de diff remonte à chaque 
 
 Passer le flag à `false` d'un coup refuse toute requête sans ACL, donc tous les clients anonymes en même temps. L'inventaire se fait sur l'état réel et pas sur ce que les équipes déclarent.
 
-L'authorizer logue chaque décision sur le logger `kafka.authorizer.logger`. Les refus sortent en `INFO` et les autorisations seulement en `DEBUG`. Le fichier de logging par défaut de Strimzi met ce logger à `INFO`, donc pour voir qui passe grâce au flag on le monte en `DEBUG` sur les brokers le temps de la collecte.
+L'authorizer logue chaque décision sur le logger `kafka.authorizer.logger`. Pour les requêtes explicites, les refus sortent en `INFO` et les autorisations seulement en `DEBUG` (le reste passe en `TRACE`). Le fichier de logging par défaut de Strimzi met ce logger à `INFO`, donc pour voir qui passe grâce au flag on le monte en `DEBUG` sur les brokers le temps de la collecte.
 
 ```yaml
 spec:
