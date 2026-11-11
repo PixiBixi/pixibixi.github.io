@@ -389,12 +389,20 @@
     <lastmod>2026-11-11</lastmod>
   </url>
   <url>
+    <loc>https://wiki.jdelgado.fr/kubernetes/operator/strimzi/alerting/</loc>
+    <lastmod>2026-11-11</lastmod>
+  </url>
+  <url>
     <loc>https://wiki.jdelgado.fr/kubernetes/operator/strimzi/authorization/</loc>
     <lastmod>2026-11-11</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/kubernetes/operator/strimzi/rollout_strimzi/</loc>
     <lastmod>2026-11-10</lastmod>
+  </url>
+  <url>
+    <loc>https://wiki.jdelgado.fr/kubernetes/operator/tailscale/operator/</loc>
+    <lastmod>2026-11-11</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/kubernetes/rancher/reset_password/</loc>
@@ -729,6 +737,10 @@
     <lastmod>2026-11-10</lastmod>
   </url>
   <url>
+    <loc>https://wiki.jdelgado.fr/monitoring/lgtm/alertmanager/</loc>
+    <lastmod>2026-11-11</lastmod>
+  </url>
+  <url>
     <loc>https://wiki.jdelgado.fr/monitoring/lgtm/alloy/</loc>
     <lastmod>2026-11-10</lastmod>
   </url>
@@ -750,7 +762,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/monitoring/lgtm/loki_alerting/</loc>
-    <lastmod>2026-10-25</lastmod>
+    <lastmod>2026-11-11</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/monitoring/lgtm/netobserv/</loc>
