@@ -19,7 +19,7 @@ Avec un `dnsPolicy: ClusterFirst`, un pod envoie ses requêtes à l'IP du Servic
 - le pod CoreDNS visé peut être sur un autre node, donc chaque résolution paie un aller-retour réseau
 - un paquet UDP perdu se paie en timeout côté client, avec des retries qui peuvent monter jusqu'à 30 secondes dans le pire cas décrit par la doc (3 retries et 10 secondes de timeout)
 
-NodeLocal DNSCache fait tourner un CoreDNS en mode cache sur chaque node, en DaemonSet. Les pods parlent à ce cache local, sans DNAT ni conntrack sur ce segment. Le cache interroge `kube-dns` en TCP pour ses misses. Une connexion TCP libère son entrée conntrack à la fermeture au lieu d'attendre un timeout.
+NodeLocal DNSCache fait tourner un CoreDNS en mode cache sur chaque node, en DaemonSet. Les pods parlent à ce cache local, sans DNAT ni conntrack sur ce segment. Le cache interroge `kube-dns` en TCP pour ses misses sur le domaine du cluster (les autres noms partent vers le `resolv.conf` du node, sans forcer TCP). Une connexion TCP libère son entrée conntrack à la fermeture au lieu d'attendre un timeout.
 
 !!! warning "Un cache DNS ne corrige pas un conntrack saturé"
     Seul le trafic DNS des pods vers leur cache local échappe au conntrack. Le reste du trafic du node continue de le remplir : `node-local-dns` tournait déjà sur chaque node pendant l'incident décrit dans [Cilium conntrack plein](../troubleshooting/cilium_conntrack.md).
@@ -117,7 +117,7 @@ kubectl -n my-namespace exec debug -- dig +noall +stats example.com
 
 ## Tuner ndots avec dnsConfig
 
-Réduire `ndots` supprime les requêtes de search qui répondent NXDOMAIN. Le champ `dnsConfig.options` d'un pod est fusionné avec les options générées par la `dnsPolicy`. La doc Kubernetes montre un `ndots:2` qui remplace le `ndots:5` par défaut. Cet exemple fixe `ndots` à 2 sur un Deployment qui appelle surtout des noms externes.
+Réduire `ndots` supprime les requêtes de search qui répondent NXDOMAIN. Le champ `dnsConfig.options` d'un pod est fusionné avec les options générées par la `dnsPolicy`. Avec la `dnsPolicy` `ClusterFirst`, le kubelet génère `ndots:5` et l'option du pod le remplace (la doc Kubernetes le montre avec `dnsPolicy: None`). Cet exemple fixe `ndots` à 2 sur un Deployment qui appelle surtout des noms externes.
 
 ```yaml
 apiVersion: apps/v1
