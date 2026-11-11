@@ -236,4 +236,4 @@ scram scram-sha-512
 mtls tls
 ```
 
-La première commande ne doit rien renvoyer et la seconde ne doit lister aucun listener sans type d'authentification. Le 3e contrôle est dans les logs de l'authorizer, qui ne doivent plus contenir `DefaultAllow`.
+La première commande ne doit rien renvoyer et la seconde ne doit lister aucun listener sans type d'authentification. Le 3e contrôle est dans les logs de l'authorizer, qui ne doivent plus contenir `DefaultAllow`. Les alertes sur l'état des `KafkaUser` et des brokers sont décrites dans [l'article sur l'alerting Strimzi](alerting.md).

@@ -191,7 +191,7 @@ spec:
       replica.selector.class: org.apache.kafka.common.replica.RackAwareReplicaSelector
 ```
 
-Les producers écrivent toujours au leader, donc seule la lecture se rapproche. La réplication entre brokers de zones différentes reste facturée : c'est elle qui donne la tolérance à la panne d'une zone.
+Les producers écrivent toujours au leader, donc seule la lecture se rapproche. La réplication entre brokers de zones différentes reste facturée : c'est elle qui donne la tolérance à la panne d'une zone. Le suivi des brokers est dans [l'alerting Strimzi](../../kubernetes/operator/strimzi/alerting.md).
 
 ## Mesurer le gain
 

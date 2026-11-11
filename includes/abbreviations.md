@@ -14,6 +14,8 @@
 *[fan-out]: Une requête envoyée en parallèle à plusieurs backends, dont on attend toutes les réponses avant de répondre
 *[HPA]: Horizontal Pod Autoscaler, l'objet Kubernetes qui ajuste le nombre de replicas selon une métrique
 *[IRQ]: Interruption matérielle envoyée par une carte réseau ou un disque au CPU
+*[ISR]: In-Sync Replicas, les replicas d'une partition Kafka à jour avec le leader
+*[JMX]: Java Management Extensions, l'interface par laquelle une JVM expose ses métriques
 *[keyless]: Signature sans clé privée à gérer, avec un certificat éphémère délivré pour une identité OIDC
 *[KRaft]: Mode de Kafka sans ZooKeeper, où les controllers gèrent les métadonnées via Raft
 *[lockfile]: Fichier qui fige la version exacte de chaque dépendance installée, comme go.sum ou package-lock.json
