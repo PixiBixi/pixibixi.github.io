@@ -151,7 +151,7 @@ $ kubectl -n my-namespace exec my-db-cluster-1 -c postgres -- \
  max_slot_wal_keep_size | 15360   | MB   | f
 ```
 
-Un `ALTER SYSTEM` ne ferait rien de propre ici : il écrit dans le `postgresql.auto.conf` de l'instance où on le lance seulement. Il masque ensuite le manifest sans qu'on le voie, alors que le manifest doit rester la source.
+Un `ALTER SYSTEM` est refusé par défaut (`spec.postgresql.enableAlterSystem` vaut `false`) et on le garde pour le debug quand on l'active : il écrit dans le `postgresql.auto.conf` de l'instance où on le lance seulement. Il masque ensuite le manifest sans qu'on le voie, alors que le manifest doit rester la source.
 
 Le paramètre `wal_sender_timeout` mérite le même soin. CloudNativePG le règle à 5s par défaut (60s dans PostgreSQL upstream) pour couper les connexions de réplication inactives, y compris celles des standbys et du walsender du consumer CDC : un client lent qui se fait déconnecter en boucle ne rattrape jamais son retard. Les timeouts de session (`statement_timeout`, `idle_session_timeout`) se posent par rôle avec `ALTER ROLE ... SET`, jamais en global, pour ne pas couper le walsender, les dumps ou les backups.
 
@@ -162,6 +162,8 @@ Le symptôme côté client est une sync qui échoue, avec ce message dans les lo
 ```text
 This slot has been invalidated because it exceeded the maximum reserved size.
 ```
+
+PostgreSQL 18 change le texte en `This replication slot has been invalidated due to "wal_removed".`, donc on cherche aussi cette forme dans les logs.
 
 Entre 2 syncs, le slot avait retenu plus de WAL que le plafond. Côté base, `wal_status` passe par 4 états : `reserved` (dans `max_wal_size`), `extended` (au-delà, mais retenu), `unreserved` (le WAL va être supprimé au prochain checkpoint, l'état peut encore revenir en arrière) et `lost`, où le slot est inutilisable. Les alertes plus bas se déclenchent bien avant ce dernier état :
 
