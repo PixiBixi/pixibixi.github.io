@@ -758,7 +758,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/monitoring/lgtm/recording_rules/</loc>
-    <lastmod>2026-11-08</lastmod>
+    <lastmod>2026-11-11</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/monitoring/lgtm/simple_monitoring_stack/</loc>
@@ -783,6 +783,10 @@
   <url>
     <loc>https://wiki.jdelgado.fr/monitoring/lgtm/tips_lgtm/</loc>
     <lastmod>2026-11-10</lastmod>
+  </url>
+  <url>
+    <loc>https://wiki.jdelgado.fr/monitoring/lgtm/workload_alerting/</loc>
+    <lastmod>2026-11-11</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/networking/</loc>
