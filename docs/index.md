@@ -233,6 +233,7 @@ Le plan complet est ci-dessous, sinon la recherche fait le job.
 - [Les slow queries Thanos : slow log, tracing et tail sampling](monitoring/lgtm/thanos-slow-queries.md)
 - [Migrer Grafana vers Grafana Cloud : datasources, alerting et convergence](monitoring/lgtm/grafana-cloud-migration.md)
 - [Datasource Grafana sur Thanos : incremental querying, cache et provisioning](monitoring/lgtm/grafana_datasource_perf.md)
+- [Alertes de workload Kubernetes : replicas, severity, routage et tests](monitoring/lgtm/workload_alerting.md)
 - [Recording rules : nommage, joins, federation et tests](monitoring/lgtm/recording_rules.md)
 - [NetObserv sans Loki : egress internet par namespace, FlowMetric, sampling et coût](monitoring/lgtm/netobserv.md)
 - [Cloudprober : probes HTTP, DNS et ping, traces OTel et alerting](monitoring/lgtm/cloudprober.md)

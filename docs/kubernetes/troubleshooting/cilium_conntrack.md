@@ -202,3 +202,4 @@ Une première hypothèse, des pods `kube-dns` concentrés sur le node, a été �
 ## Voir aussi
 
 - [HAProxy performance tuning](../../web/haproxy/performance_tuning.md) pour les sysctls kernel d'un node de reverse proxy
+- [Alerting sur les workloads Kubernetes](../../monitoring/lgtm/workload_alerting.md) pour structurer les règles de ce type

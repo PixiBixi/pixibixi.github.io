@@ -122,7 +122,7 @@ Le ratio se lit avec 4 précautions :
 - il faut le lire par pod et pas agrégé sur le déploiement : un seul pod chaud noyé dans 50 autres disparaît de la moyenne
 - il se corrèle avec la latence (P99 de l'app) et le QPS, jamais seul : un batch qui consomme tout son quota est throttlé 100% du temps, ce qui est son fonctionnement normal
 
-Pour l'alerting, l'alerte `CPUThrottlingHigh` de kube-prometheus se déclenche à plus de 25% de periods throttlées pendant 15 minutes, en severity `info` ([`resource_alerts.libsonnet`](https://github.com/kubernetes-monitoring/kubernetes-mixin/blob/master/alerts/resource_alerts.libsonnet) dans kubernetes-mixin). Un service sensible à la latence mérite un seuil plus bas et un `for` plus court, à ajuster sur son propre historique.
+Pour l'alerting, l'alerte `CPUThrottlingHigh` de kube-prometheus se déclenche à plus de 25% de periods throttlées pendant 15 minutes, en severity `info` ([`resource_alerts.libsonnet`](https://github.com/kubernetes-monitoring/kubernetes-mixin/blob/master/alerts/resource_alerts.libsonnet) dans kubernetes-mixin). Un service sensible à la latence mérite un seuil plus bas et un `for` plus court, à ajuster sur son propre historique. Plus généralement, les alertes sur les workloads sont traitées dans [l'article sur le workload alerting](../../monitoring/lgtm/workload_alerting.md).
 
 ## Retirer les limits CPU et garder les requests
 
@@ -175,4 +175,5 @@ On vérifie ensuite l'effet du changement : après avoir baissé des `requests` 
 ## Voir aussi
 
 - [GOMAXPROCS et GOMEMLIMIT dans Kubernetes](gomaxprocs_gomemlimit_kubernetes.md) : le throttling fabriqué par un runtime qui voit tous les CPU du node
+- [Workload alerting](../../monitoring/lgtm/workload_alerting.md) : quelles alertes poser sur un workload
 - [Documentation kernel du CFS bandwidth control](https://docs.kernel.org/scheduler/sched-bwc.html) : quota, period, `cpu.stat` et cas limites

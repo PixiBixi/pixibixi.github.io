@@ -13,7 +13,7 @@ tested_with:
 
 Une recording rule qui ment est pire qu'une requête lente. Les dashboards et les alertes lisent sa série bien nommée sans se poser de question, alors qu'un label a disparu en route ou qu'un join a silencieusement doublé les valeurs. Les sections suivantes reprennent les pièges rencontrés sur une flotte de clusters : le nom qui dit ce qu'il y a dans la série, les labels qu'on garde, les joins avec `group_left` et `group_right`, le label qui décide si une série remonte vers le Thanos global, l'endroit où évaluer la règle et le test promtool qui la verrouille.
 
-Les règles complètes qui servent d'exemples sont sur [rules.jdelgado.fr](https://rules.jdelgado.fr/), dans les fichiers [k8s.records.yml](https://github.com/PixiBixi/prometheus-rules/blob/main/rules/k8s.records.yml), [basis.records.yml](https://github.com/PixiBixi/prometheus-rules/blob/main/rules/basis.records.yml) et [haproxy.records.yml](https://github.com/PixiBixi/prometheus-rules/blob/main/rules/haproxy.records.yml).
+Les règles complètes qui servent d'exemples sont sur [rules.jdelgado.fr](https://rules.jdelgado.fr/), dans les fichiers [k8s.records.yml](https://github.com/PixiBixi/prometheus-rules/blob/main/rules/k8s.records.yml), [basis.records.yml](https://github.com/PixiBixi/prometheus-rules/blob/main/rules/basis.records.yml) et [haproxy.records.yml](https://github.com/PixiBixi/prometheus-rules/blob/main/rules/haproxy.records.yml). Pour les alertes qui consomment ces records, voir [Alerter sur les workloads](workload_alerting.md).
 
 ## Nommer : level:metric:operations
 

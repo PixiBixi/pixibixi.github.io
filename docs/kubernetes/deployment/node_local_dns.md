@@ -238,4 +238,5 @@ Quelques remarques sur ces règles :
 ## Voir aussi
 
 - [Cilium conntrack plein](../troubleshooting/cilium_conntrack.md) pour la table conntrack qui sature malgré un cache DNS local
+- [Alerting sur les workloads Kubernetes](../../monitoring/lgtm/workload_alerting.md) pour structurer ces règles
 - [Mémoire du cache local](https://kubernetes.io/docs/tasks/administer-cluster/nodelocaldns/#setting-memory-limits) : la doc recommande de mesurer le pic avant de poser une limite, le cache par défaut de 10 000 entrées pouvant occuper environ 30 Mo par server block
