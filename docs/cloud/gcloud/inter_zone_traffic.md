@@ -52,7 +52,7 @@ Pour descendre à la ressource, il faut l'export détaillé `gcp_billing_export_
 
 Activée sur un cluster, la [cost allocation](https://cloud.google.com/kubernetes-engine/docs/how-to/cost-allocations) ajoute des labels Kubernetes (namespace, workload) aux lignes de l'export détaillé. Pour le SKU réseau, le label `k8s-namespace` valait `goog-k8s-unsupported-sku` : le coût est attribué à la VM nœud et pas au namespace. L'attribution par workload se reconstruit donc ailleurs, avec des flow logs.
 
-Cette limite est un constat sur nos clusters et pas une phrase de la doc : à re-tester sur la version de GKE qu'on tourne.
+La [doc de cost allocation](https://docs.cloud.google.com/kubernetes-engine/docs/how-to/cost-allocations) ne liste que le compute et le stockage, le label `goog-k8s-unsupported-sku` marque le reste. À re-tester sur la version de GKE qu'on tourne.
 
 ## Avant les flow logs : où sont les nœuds
 
