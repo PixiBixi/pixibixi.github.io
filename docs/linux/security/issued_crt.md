@@ -74,3 +74,5 @@ Pour un besoin ponctuel, on peut aussi se passer de psql avec l'endpoint JSON de
 ```bash
 curl -s 'https://crt.sh/?q=%25.mydomain.eu&output=json' | jq -r '.[].name_value' | tr 'A-Z' 'a-z' | sort -u
 ```
+
+Pour aller au-delà de Certificate Transparency, [subfinder](subfinder.md) interroge crt.sh avec une cinquantaine d'autres sources passives.

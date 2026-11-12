@@ -67,6 +67,7 @@ Le plan complet est ci-dessous, sinon la recherche fait le job.
 - [Configurer des notifications Slack pour SSH](linux/security/slack_notifications_ssh.md)
 - [Configurer des notifications Telegram pour SSH](linux/security/telegram_notifications_ssh.md)
 - [Lister tous les certificats émis](linux/security/issued_crt.md)
+- [Énumérer les sous-domaines avec subfinder](linux/security/subfinder.md)
 
 ### Réseau
 
