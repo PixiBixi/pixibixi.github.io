@@ -25,6 +25,8 @@ Sans monitoring, on debug à l'aveugle. Cette section couvre la stack LGTM (Loki
 - [Migrer vers Grafana Cloud](lgtm/grafana-cloud-migration.md) - remapper les datasources, pousser l'alerting en pause, repérer les rules qui ne sonnent jamais et faire converger 2 instances
 - [Datasource Grafana sur Thanos](lgtm/grafana_datasource_perf.md) - incremental querying, cache serveur et cacheLevel côté Grafana, provisionnés en Terraform datasource par datasource
 - [check_mk - Notifications Slack](check_mk/add_slack_notification.md) - envoyer les alertes check_mk dans Slack
+- [Choisir son backend de logs](logs/log-backends.md) - Elasticsearch tuné, VictoriaLogs, Loki et ClickStack mesurés en disque, CPU et lecture
+- [Choisir son collecteur de logs](logs/log-collectors.md) - éviction silencieuse du buffer, pause de l'input, Fluent Bit, Vector et OTel Collector comparés
 - [VictoriaMetrics cluster](victoriametrics.md) - ce que la RAM, le disque et le CPU coûtent face à un Prometheus par cluster, et les pièges de dimensionnement
 - [Munin](munin.md) - configuration et plugins Munin
 - [Eztools](eztools.md) - outils de monitoring légers
