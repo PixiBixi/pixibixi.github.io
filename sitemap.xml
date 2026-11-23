@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://wiki.jdelgado.fr/</loc>
-    <lastmod>2026-11-12</lastmod>
+    <lastmod>2026-11-23</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/about/</loc>
@@ -722,7 +722,7 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/monitoring/</loc>
-    <lastmod>2026-11-08</lastmod>
+    <lastmod>2026-11-23</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/monitoring/eztools/</loc>
@@ -803,6 +803,14 @@
   <url>
     <loc>https://wiki.jdelgado.fr/monitoring/lgtm/workload_alerting/</loc>
     <lastmod>2026-11-11</lastmod>
+  </url>
+  <url>
+    <loc>https://wiki.jdelgado.fr/monitoring/logs/log-backends/</loc>
+    <lastmod>2026-11-23</lastmod>
+  </url>
+  <url>
+    <loc>https://wiki.jdelgado.fr/monitoring/logs/log-collectors/</loc>
+    <lastmod>2026-11-23</lastmod>
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/networking/</loc>
@@ -1246,6 +1254,10 @@
   </url>
   <url>
     <loc>https://wiki.jdelgado.fr/monitoring/lgtm/</loc>
+    <lastmod>2026-11-23</lastmod>
+  </url>
+  <url>
+    <loc>https://wiki.jdelgado.fr/monitoring/logs/</loc>
     <lastmod>2026-11-23</lastmod>
   </url>
   <url>
