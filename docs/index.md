@@ -431,7 +431,6 @@ Le plan complet est ci-dessous, sinon la recherche fait le job.
 ### Windows Server
 
 - [Setup de base d'un Windows 2012R2](os/windows/server/powershell/first_setup.md)
-- [Monter un ISO directement via PowerShell](os/windows/server/powershell/mount_iso.md)
 - [Installer et configurer un serveur DHCP en PowerShell](os/windows/server/powershell/dhcp_server.md)
 - [Manipuler les HDD en PowerShell](os/windows/server/powershell/storage/pool.md)
 - [Autoriser l'ICMP sur un serveur Windows 2012R2 en PowerShell](os/windows/server/powershell/allow_icmp.md)
