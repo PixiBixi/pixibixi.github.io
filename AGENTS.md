@@ -281,6 +281,19 @@ uv run scripts/factcheck_stale.py docs/linux/cli/ss.md --rev origin/master --fet
 
 An entry that cannot be checked (missing clone, pin absent from the clone, malformed front matter) prints `UNKNOWN` and counts as to re-check. Exit code: 0 up to date, 1 stale, 2 unknown. The re-check workflow is in the `wiki-fact-check` skill.
 
+## Search Console report
+
+`scripts/gsc_report.py` reads the zip exported from Search Console (Performance, web search, 28 days or more) without extracting it: the French file names carry accents that `unzip` fails on.
+
+```bash
+# totals, page 1 pages nobody clicks (with their H1), page 1 queries without a click, pages sharing a slug
+uv run scripts/gsc_report.py "$HOME/Downloads/export.zip" --keep
+# compare with an older export, forcing the pages changed since
+uv run scripts/gsc_report.py "$HOME/Downloads/export.zip" --baseline "$HOME/Downloads/older.zip" --page /linux/cli/ss/
+```
+
+`--keep` copies the export to `~/.local/share/wiki-seo/`; without `--baseline`, the most recent kept export ending before the new one starts is the baseline. An hourly export or one under 28 days is refused (`--force` overrides the length only). Exit code: 0 report printed, 2 export unusable. What to do with the report (retitle, merge, leave alone) is in the `wiki-seo` skill.
+
 ## Gotchas
 
 - **MaterialX**: its plugins register as `materialx/<name>`, so a template testing `config.plugins["material/search"]` silently drops the feature. `docs/stylesheets/materialx.css`, first in `extra_css`, undoes the MaterialX restyles the theme was not designed on (nav spacing, header icon sizes, TOC guides, letter spacing). Search runs on `provider: pagefind`: there is no `search/search_index.json` anymore. `jd-palette.js` (Cmd+K) and the 404 suggestions in `pages.js` query `search/pagefind.js` through `window.jdSearch`, and read titles, tags and the article list from `search/jd-pages.json` (`hooks/article_meta.py`). Pagefind marks `?h=` terms with `mark.pagefind-highlight`, which `jd-highlight.js` counts. A new theme block inside the article that is not content goes in `exclude_selectors` in both configs. `tests/search_e2e.py` checks the whole search UI on a served full build.
