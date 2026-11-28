@@ -1,10 +1,10 @@
 ---
-description: Créer des templates de Pull Request et d'Issue GitHub pour standardiser les contributions
+description: "Pull request template et issue template GitHub : fichiers .github/pull_request_template.md et ISSUE_TEMPLATE, issue forms en YAML, config.yml et templates partagés pour toute une organisation."
 tags:
   - GitHub
 ---
 
-# Générer un template pour ses Pull Request et ses Issues
+# Créer un pull request template et des issue templates sur GitHub
 
 Si vous avez un repository à forte influence, vous savez comme il est
 gênant de n'avoir qu'une partie des informations lors d'une issue, ou

@@ -478,6 +478,6 @@ Le plan complet est ci-dessous, sinon la recherche fait le job.
 - [Liens en vrac](misc/useful_links.md)
 - [Performances Linux](misc/linux_performances.md)
 - [Optimisations Linux : liens de référence](misc/optimization.md)
-- [Générer un template pour ses Pull Request et ses Issues](misc/github_template.md)
+- [Créer un pull request template et des issue templates sur GitHub](misc/github_template.md)
 - [Informations utile sur les dénominations fibre optique](misc/fibre_optique/info_transceiver.md)
 - [Télécharger les sous-titres Netflix simplement](misc/download/netflix_subs.md)
