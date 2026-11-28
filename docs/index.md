@@ -30,7 +30,7 @@ Le plan complet est ci-dessous, sinon la recherche fait le job.
 - [La commande find](linux/cli/find.md)
 - [Mémo sur la commande IP](linux/cli/ip.md)
 - [Dotfiles](linux/cli/confrc.md)
-- [La commande ss](linux/cli/ss.md)
+- [Commande ss sous Linux : lister ports ouverts et connexions](linux/cli/ss.md)
 - [Configurer correctement son hostname](linux/cli/define_hostname.md)
 - [Personnaliser ton motd](linux/cli/motd.md)
 - [Simuler des conditions réseau sur Linux](linux/cli/limit_bandwidth.md)
@@ -367,7 +367,7 @@ Le plan complet est ci-dessous, sinon la recherche fait le job.
 - [Commandes de base Cisco IOS](networking/cisco/commandes_base.md)
 - [Cisco : Créér son VLAN](networking/cisco/vlan.md)
 - [QoS Cisco](networking/cisco/qos.md)
-- [Cisco : Désactiver la résolution DNS](networking/cisco/dns.md)
+- [no ip domain-lookup : désactiver la résolution DNS sur Cisco IOS](networking/cisco/dns.md)
 - [STP : Spanning Tree Protocol](networking/cisco/stp.md)
 - [Serveur SSH](networking/cisco/ssh.md)
 - [Installer un serveur DHCP sur un routeur Cisco](networking/cisco/serveur_dhcp.md)
@@ -431,7 +431,6 @@ Le plan complet est ci-dessous, sinon la recherche fait le job.
 ### Windows Server
 
 - [Setup de base d'un Windows 2012R2](os/windows/server/powershell/first_setup.md)
-- [Monter un ISO directement via PowerShell](os/windows/server/powershell/mount_iso.md)
 - [Installer et configurer un serveur DHCP en PowerShell](os/windows/server/powershell/dhcp_server.md)
 - [Manipuler les HDD en PowerShell](os/windows/server/powershell/storage/pool.md)
 - [Autoriser l'ICMP sur un serveur Windows 2012R2 en PowerShell](os/windows/server/powershell/allow_icmp.md)
@@ -479,6 +478,6 @@ Le plan complet est ci-dessous, sinon la recherche fait le job.
 - [Liens en vrac](misc/useful_links.md)
 - [Performances Linux](misc/linux_performances.md)
 - [Optimisations Linux : liens de référence](misc/optimization.md)
-- [Générer un template pour ses Pull Request et ses Issues](misc/github_template.md)
+- [Créer un pull request template et des issue templates sur GitHub](misc/github_template.md)
 - [Informations utile sur les dénominations fibre optique](misc/fibre_optique/info_transceiver.md)
 - [Télécharger les sous-titres Netflix simplement](misc/download/netflix_subs.md)

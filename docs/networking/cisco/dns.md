@@ -5,7 +5,7 @@ tags:
   - DNS
 ---
 
-# Cisco : désactiver la résolution DNS (no ip domain-lookup)
+# no ip domain-lookup : désactiver la résolution DNS sur Cisco IOS
 
 Une faute de frappe en mode enable et IOS considère le mot comme un nom d'hôte à résoudre. Le terminal se bloque une trentaine de secondes, sans qu'aucune touche ne réponde. Une commande globale suffit à supprimer ce comportement, une alternative existe ligne par ligne.
 

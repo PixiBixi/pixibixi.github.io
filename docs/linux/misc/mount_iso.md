@@ -2,6 +2,7 @@
 description: "Monter une image ISO sous Linux avec mount -o loop, sous Windows 10 et 11 en double-clic ou avec Mount-DiskImage en PowerShell et sous macOS avec hdiutil, sans logiciel tiers."
 tags:
   - ISO
+  - PowerShell
 ---
 
 # Monter une image ISO : Linux, Windows et macOS
@@ -74,6 +75,8 @@ Dismount-DiskImage -ImagePath "C:\images\image.iso"
 ```
 
 `-PassThru` renvoie l'objet, seul moyen de récupérer la lettre attribuée, qui n'est pas prévisible. Sans lui, la commande monte l'image sans rien afficher.
+
+Les mêmes cmdlets existent sur Windows Server depuis 2012. Sur Windows Server 2012, seul un administrateur peut monter ou éjecter une ISO.
 
 L'erreur `Le fichier image spécifié n'est pas reconnu comme un fichier image de disque valide` a le plus souvent 2 causes : le fichier est incomplet, ou il porte l'extension `.iso` sans en être une. Une empreinte comparée au hash publié par l'éditeur tranche :
 
