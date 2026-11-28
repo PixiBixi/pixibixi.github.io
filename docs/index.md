@@ -367,7 +367,7 @@ Le plan complet est ci-dessous, sinon la recherche fait le job.
 - [Commandes de base Cisco IOS](networking/cisco/commandes_base.md)
 - [Cisco : Créér son VLAN](networking/cisco/vlan.md)
 - [QoS Cisco](networking/cisco/qos.md)
-- [Cisco : Désactiver la résolution DNS](networking/cisco/dns.md)
+- [no ip domain-lookup : désactiver la résolution DNS sur Cisco IOS](networking/cisco/dns.md)
 - [STP : Spanning Tree Protocol](networking/cisco/stp.md)
 - [Serveur SSH](networking/cisco/ssh.md)
 - [Installer un serveur DHCP sur un routeur Cisco](networking/cisco/serveur_dhcp.md)
