@@ -1,11 +1,11 @@
 ---
-description: Remplacer netstat par ss - filtrer connexions TCP/UDP, états et statistiques avancées
+description: "Commande ss sous Linux : lister les ports en écoute et les connexions TCP, UDP et Unix, retrouver le processus et son PID, filtrer par état ou par port, statistiques TCP. Le remplaçant de netstat."
 tags:
   - ss
   - Networking
 ---
 
-# La commande ss
+# Commande ss sous Linux : lister ports ouverts et connexions (remplace netstat)
 
 La commande ss est aujourd'hui le nouveau *netstat*. *netstat* étant
 déprécié depuis des années, voici comment l'utiliser :

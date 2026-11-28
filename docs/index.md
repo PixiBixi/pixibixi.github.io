@@ -30,7 +30,7 @@ Le plan complet est ci-dessous, sinon la recherche fait le job.
 - [La commande find](linux/cli/find.md)
 - [Mémo sur la commande IP](linux/cli/ip.md)
 - [Dotfiles](linux/cli/confrc.md)
-- [La commande ss](linux/cli/ss.md)
+- [Commande ss sous Linux : lister ports ouverts et connexions](linux/cli/ss.md)
 - [Configurer correctement son hostname](linux/cli/define_hostname.md)
 - [Personnaliser ton motd](linux/cli/motd.md)
 - [Simuler des conditions réseau sur Linux](linux/cli/limit_bandwidth.md)
